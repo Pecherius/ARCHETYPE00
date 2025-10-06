@@ -212,10 +212,10 @@ function useInterval(cb: () => void, ms: number) {
           toggleVHS: () => void,
           onD34D: () => void
         ) {
+          const d34dBufferRef = useRef("");
+          const lastKeyTimeRef = useRef(Date.now());
+          
           useEffect(() => {
-            let d34dBuffer = "";
-            let lastKeyTime = Date.now(); // Initialize with current time
-            
             const handleKeyPress = (e: KeyboardEvent) => {
               const now = Date.now();
               console.log(`%c[KEY_DEBUG] Key pressed: "${e.key}" (length: ${e.key.length})`, "color:#999; font-family: monospace;");
@@ -243,30 +243,30 @@ function useInterval(cb: () => void, ms: number) {
               
               if (isAlphanumeric) {
                 // Reset buffer if too much time has passed (5 seconds) AND buffer is not empty
-                if (d34dBuffer.length > 0 && now - lastKeyTime > 5000) {
-                  console.log(`%c[D34D_BUFFER] Timeout detected. Resetting buffer from: "${d34dBuffer}"`, "color:#ff0000; font-family: monospace;");
-                  d34dBuffer = "";
+                if (d34dBufferRef.current.length > 0 && now - lastKeyTimeRef.current > 5000) {
+                  console.log(`%c[D34D_BUFFER] Timeout detected. Resetting buffer from: "${d34dBufferRef.current}"`, "color:#ff0000; font-family: monospace;");
+                  d34dBufferRef.current = "";
                 }
                 
-                d34dBuffer = d34dBuffer + e.key.toLowerCase();
+                d34dBufferRef.current = d34dBufferRef.current + e.key.toLowerCase();
                 // Only keep last 4 characters if buffer is longer
-                if (d34dBuffer.length > 4) {
-                  d34dBuffer = d34dBuffer.slice(-4);
+                if (d34dBufferRef.current.length > 4) {
+                  d34dBufferRef.current = d34dBufferRef.current.slice(-4);
                 }
-                lastKeyTime = now;
-                console.log(`%c[D34D_BUFFER] Added "${e.key}" -> Buffer: "${d34dBuffer}"`, "color:#ff6600; font-family: monospace;");
+                lastKeyTimeRef.current = now;
+                console.log(`%c[D34D_BUFFER] Added "${e.key}" -> Buffer: "${d34dBufferRef.current}"`, "color:#ff6600; font-family: monospace;");
                 
-                if (d34dBuffer === "d34d") {
+                if (d34dBufferRef.current === "d34d") {
                   console.log("%c[QUARANTINE_PROTOCOL] Access sequence d34d recognized. Initiating quarantine breach...", "color:#ff4444; font-weight: bold;");
                   onD34D();
-                  d34dBuffer = ""; // Reset after successful trigger
+                  d34dBufferRef.current = ""; // Reset after successful trigger
                 }
               } else {
                 // Only reset buffer on non-alphanumeric keys if they're not special keys
                 if (e.key !== "Shift" && e.key !== "Control" && e.key !== "Alt" && e.key !== "Meta" && e.key !== "Tab" && e.key !== "CapsLock" && e.key !== "F12") {
-                  if (d34dBuffer.length > 0) {
-                    console.log(`%c[D34D_BUFFER] Non-alphanumeric key "${e.key}" detected. Resetting buffer from: "${d34dBuffer}"`, "color:#ff0000; font-family: monospace;");
-                    d34dBuffer = "";
+                  if (d34dBufferRef.current.length > 0) {
+                    console.log(`%c[D34D_BUFFER] Non-alphanumeric key "${e.key}" detected. Resetting buffer from: "${d34dBufferRef.current}"`, "color:#ff0000; font-family: monospace;");
+                    d34dBufferRef.current = "";
                   }
                 }
               }
