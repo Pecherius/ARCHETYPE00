@@ -165,7 +165,7 @@ const FALLBACK_GLITCH = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlna
 // No actual people were harmed in the making of this code
 const QUARANTINE_IMAGES = {
   tsumori: "https://bafybeie4hjscx5xwz2ewjzu6qjvl6m7ouxadvk6x6cgtyes65syizdep6e.ipfs.dweb.link/Dr.%20Mikhail%20R.%20Tsumori.png",
-  hoshino: "https://bafybeibr2a76opsgem3tecqz2qti4vddzwrxdq7d4ylntqzrqap6p2ti5y.ipfs.dweb.link/Kai%20N.%20Hoshino.png"
+  hoshino: "https://bafybeibr2a76opsgem3tecqz2qti4vddzwrxdq7d4ylntqzrqap6p2ti5y.ipfs.dweb.link?filename=Kai%20N.%20Hoshino.png"
 };
 
 // ----------------------
