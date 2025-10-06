@@ -64,7 +64,7 @@ import { Shield, ActivitySquare, Waves, Eye, AlertTriangle, Radio } from "lucide
  * - Main title "ARCHETYPE_00" with glitch effects
  * - Auto image switching between 777777 and 888888888888888 every 2.5s
  * - Keyboard shortcuts: R (pulse), G (glitch), : (VHS), Konami code (Resonance Lab), d34d (Quarantine)
- * - DedSec Ping Pong game with epileptic glitch effects (Watch Dogs style)
+ * - Neural Ping Pong game with resonance glitch effects (ARCHETYPE_00 themed)
  * - Binary tooltips on hover
  * - 38Hz sub-bass audio hum
  * - VHS overlay effects
@@ -146,7 +146,7 @@ function useGlobalKeys(
   onD34D: () => void
 ) {
   useEffect(() => {
-    let buffer = "";
+    let d34dBuffer = "";
     const h = (e: KeyboardEvent) => {
       // Handle single key shortcuts first
       if (e.key.toLowerCase() === "r") {
@@ -162,17 +162,36 @@ function useGlobalKeys(
         return;
       }
       
-      // 💀 d34d easter egg - improved detection
-      // Only process alphanumeric keys for the buffer
-      if (e.key.length === 1 && /[a-zA-Z0-9]/.test(e.key)) {
-        buffer = (buffer + e.key.toLowerCase()).slice(-4);
-        console.log("Buffer:", buffer); // Debug log
-        if (buffer === "d34d") {
-          console.log("d34d detected!"); // Debug log
-          onD34D();
-          buffer = ""; // reset buffer after trigger
-          // 🎭 EASTER_EGG: You typed "d34d"! Welcome to the quarantine zone.
+      // 💀 d34d easter egg - completely rewritten for reliability
+      // Track the sequence d-3-4-d
+      if (e.key === "d") {
+        if (d34dBuffer === "" || d34dBuffer === "d34") {
+          d34dBuffer += "d";
+        } else {
+          d34dBuffer = "d"; // Reset if not in sequence
         }
+      } else if (e.key === "3") {
+        if (d34dBuffer === "d") {
+          d34dBuffer += "3";
+        } else {
+          d34dBuffer = ""; // Reset if not in sequence
+        }
+      } else if (e.key === "4") {
+        if (d34dBuffer === "d3") {
+          d34dBuffer += "4";
+        } else {
+          d34dBuffer = ""; // Reset if not in sequence
+        }
+      } else {
+        // Any other key resets the buffer
+        d34dBuffer = "";
+      }
+      
+      // Check if we have the complete sequence
+      if (d34dBuffer === "d34d") {
+        console.log("🎭 d34d SEQUENCE DETECTED! Opening quarantine...");
+        onD34D();
+        d34dBuffer = ""; // Reset after trigger
       }
     };
     window.addEventListener("keydown", h);
@@ -319,9 +338,9 @@ function CodeRain(){
   );
 }
 
-// 🎮 DEDSEC_PING_PONG: Hacker-style ping pong with epileptic glitch effects
-// Inspired by Watch Dogs DedSec aesthetic - gets progressively faster until impossible
-function DedSecPingPong() {
+// 🎮 NEURAL_PING_PONG: Cyberpunk ping pong with resonance glitch effects
+// ARCHETYPE_00 themed - gets progressively faster until impossible
+function NeuralPingPong() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [gameState, setGameState] = useState<'menu' | 'playing' | 'gameOver' | 'won'>('menu');
   const [score, setScore] = useState(0);
@@ -484,7 +503,7 @@ function DedSecPingPong() {
   if (gameState === 'menu') {
     return (
       <div className="border border-zinc-800 p-4 bg-zinc-950">
-        <h3 className="text-lg font-semibold text-zinc-100 mb-4">DEDSEC_PING_PONG // HACKER_MODE</h3>
+        <h3 className="text-lg font-semibold text-zinc-100 mb-4">NEURAL_PING_PONG // RESONANCE_MODE</h3>
         <div className="space-y-4">
           <p className="text-sm text-zinc-400">
             Use ← → arrow keys to control the paddle. Ball gets faster with each hit.
@@ -494,7 +513,7 @@ function DedSecPingPong() {
             onClick={startGame}
             className="w-full px-4 py-2 border border-zinc-700 bg-zinc-800 text-zinc-100 hover:bg-zinc-700"
           >
-            START_HACKING
+            INITIALIZE_NEURAL_LINK
           </button>
         </div>
       </div>
@@ -504,13 +523,13 @@ function DedSecPingPong() {
   if (gameState === 'gameOver') {
     return (
       <div className="border border-zinc-800 p-4 bg-zinc-950 text-center">
-        <h3 className="text-lg font-semibold text-red-400 mb-4">SYSTEM_CRASHED</h3>
+        <h3 className="text-lg font-semibold text-red-400 mb-4">NEURAL_LINK_LOST</h3>
         <p className="text-sm text-zinc-400 mb-4">Score: {score}</p>
         <button 
           onClick={resetGame}
           className="px-4 py-2 border border-zinc-700 bg-zinc-800 text-zinc-100 hover:bg-zinc-700"
         >
-          RETRY_CONNECTION
+          RECONNECT_NEURAL_LINK
         </button>
       </div>
     );
@@ -518,7 +537,7 @@ function DedSecPingPong() {
   
   return (
     <div className="border border-zinc-800 p-4 bg-zinc-950">
-      <h3 className="text-lg font-semibold text-zinc-100 mb-4">DEDSEC_PING_PONG // ACTIVE</h3>
+        <h3 className="text-lg font-semibold text-zinc-100 mb-4">NEURAL_PING_PONG // ACTIVE</h3>
       <div className="relative">
         <canvas 
           ref={canvasRef}
@@ -801,11 +820,11 @@ export default function ArchetypeSite(){
           </DialogContent>
         </Dialog>
 
-        {/* DEDSEC PING PONG SECTION */}
+        {/* NEURAL PING PONG SECTION */}
         <section className="mx-auto max-w-6xl px-4 pb-8 sm:px-6">
-          <h2 className="mb-4 text-lg tracking-wide text-zinc-100">DEDSEC_PING_PONG // HACKER_MODE</h2>
+          <h2 className="mb-4 text-lg tracking-wide text-zinc-100">NEURAL_PING_PONG // RESONANCE_MODE</h2>
           <div className="grid gap-6 md:grid-cols-2">
-            <DedSecPingPong />
+            <NeuralPingPong />
             <div className="border border-zinc-800 p-4 bg-zinc-950">
               <h3 className="text-lg font-semibold text-zinc-100 mb-4">SYSTEM_INSTRUCTIONS</h3>
               <div className="space-y-3 text-sm text-zinc-400">
@@ -823,6 +842,63 @@ export default function ArchetypeSite(){
                 <p className="text-xs text-green-400 font-mono">
                   WINNER REWARD: If you reach 50 points, you win an NFT. DM @punkable on Twitter.
                 </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* NEURAL MATRIX SECTION - Dynamic cyberpunk visualization */}
+        <section className="mx-auto max-w-6xl px-4 pb-8 sm:px-6">
+          <h2 className="mb-6 text-lg tracking-wide text-zinc-100">NEURAL_MATRIX // RESONANCE_VISUALIZATION</h2>
+          <div className="grid gap-6 md:grid-cols-2">
+            <div className="border border-zinc-800 p-6 bg-zinc-950">
+              <h3 className="text-lg font-semibold text-zinc-100 mb-4">SYSTEM_STATUS</h3>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-zinc-400">Neural Link:</span>
+                  <span className="text-sm text-green-400 font-mono">ACTIVE</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-zinc-400">Resonance Level:</span>
+                  <span className="text-sm text-pink-400 font-mono">HIGH</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-zinc-400">Fragment Count:</span>
+                  <span className="text-sm text-blue-400 font-mono">200/200</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-zinc-400">Signal Strength:</span>
+                  <span className="text-sm text-yellow-400 font-mono">MAXIMUM</span>
+                </div>
+              </div>
+              <div className="mt-6 p-4 border border-pink-400/30 bg-pink-400/10 rounded">
+                <p className="text-xs text-pink-400 font-mono">
+                  WARNING: Neural feedback detected. Resonance levels approaching critical threshold.
+                </p>
+              </div>
+            </div>
+            
+            <div className="border border-zinc-800 p-6 bg-zinc-950">
+              <h3 className="text-lg font-semibold text-zinc-100 mb-4">MATRIX_DATA</h3>
+              <div className="space-y-3">
+                <div className="text-xs font-mono text-zinc-500">
+                  <div>01001000 01110101 01101101 01100001 01101110</div>
+                  <div>01000001 01010010 01000011 01001000 01000101 01010100 01011001 01010000 01000101</div>
+                  <div>01010010 01100101 01110011 01101111 01101110 01100001 01101110 01100011 01100101</div>
+                </div>
+                <div className="mt-4 p-3 border border-zinc-700 bg-zinc-900 rounded">
+                  <p className="text-xs text-zinc-400">
+                    Each fragment emits a unique resonance frequency. When multiple fragments 
+                    are held by the same entity, their frequencies synchronize, creating 
+                    a stronger collective signal that the system can detect and respond to.
+                  </p>
+                </div>
+                <div className="mt-4 flex gap-2">
+                  <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                  <div className="w-2 h-2 bg-pink-400 rounded-full animate-pulse" style={{animationDelay: '0.5s'}}></div>
+                  <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse" style={{animationDelay: '1s'}}></div>
+                  <span className="text-xs text-zinc-500 ml-2">Signal pulses detected</span>
+                </div>
               </div>
             </div>
           </div>
