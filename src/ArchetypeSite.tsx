@@ -240,7 +240,11 @@ function useGlobalKeys(
       console.log(`%c[FILTER] Is alphanumeric: ${isAlphanumeric}`, "color:#666; font-family: monospace;");
       
       if (isAlphanumeric) {
-        d34dBuffer = (d34dBuffer + e.key.toLowerCase()).slice(-4);
+        d34dBuffer = d34dBuffer + e.key.toLowerCase();
+        // Only keep last 4 characters if buffer is longer
+        if (d34dBuffer.length > 4) {
+          d34dBuffer = d34dBuffer.slice(-4);
+        }
         console.log(`%c[D34D_BUFFER] Added "${e.key}" -> Buffer: "${d34dBuffer}"`, "color:#ff6600; font-family: monospace;");
         
         if (d34dBuffer === "d34d") {

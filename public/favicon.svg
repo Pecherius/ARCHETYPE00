@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <rect width="32" height="32" fill="#000000"/>
+  <text x="16" y="20" font-family="monospace" font-size="12" fill="#00ff88" text-anchor="middle">00</text>
+  <rect x="8" y="8" width="2" height="2" fill="#ff4444"/>
+  <rect x="22" y="8" width="2" height="2" fill="#ff4444"/>
+  <rect x="8" y="22" width="2" height="2" fill="#ff4444"/>
+  <rect x="22" y="22" width="2" height="2" fill="#ff4444"/>
+  <rect x="14" y="14" width="4" height="4" fill="#ff6600"/>
+  <text x="16" y="28" font-family="monospace" font-size="6" fill="#666" text-anchor="middle">ARCHETYPE</text>
+</svg>
