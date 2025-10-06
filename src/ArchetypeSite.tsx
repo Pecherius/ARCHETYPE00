@@ -150,15 +150,34 @@ function useGlobalKeys(
     let buffer = "";
     const h = (e: KeyboardEvent) => {
       console.log("Key pressed:", e.key, "Buffer:", buffer);
-      if (e.key.toLowerCase() === "r") pulse();
-      if (e.key === ":") toggleVHS();
-      buffer = (buffer + e.key).slice(-4);
-      console.log("New buffer:", buffer);
-      if (buffer.toLowerCase() === "d34d") {
-        console.log("d34d detected! Triggering...");
-        onD34D();
+      
+      // Handle single key shortcuts first
+      if (e.key.toLowerCase() === "r") {
+        pulse();
+        return;
       }
-      if (e.key.toLowerCase() === "g") toggleGlitch();
+      if (e.key === ":") {
+        toggleVHS();
+        return;
+      }
+      if (e.key.toLowerCase() === "g") {
+        toggleGlitch();
+        return;
+      }
+      
+      // Only process alphanumeric keys for d34d buffer
+      if (e.key.length === 1 && /[a-zA-Z0-9]/.test(e.key)) {
+        buffer = (buffer + e.key.toLowerCase()).slice(-4);
+        console.log("New buffer:", buffer);
+        if (buffer === "d34d") {
+          console.log("d34d detected! Triggering...");
+          onD34D();
+          buffer = ""; // Reset buffer after trigger
+        }
+      } else {
+        // Reset buffer on non-alphanumeric keys
+        buffer = "";
+      }
     };
     window.addEventListener("keydown", h);
     return () => window.removeEventListener("keydown", h);
