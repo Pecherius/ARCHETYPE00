@@ -168,6 +168,21 @@ const QUARANTINE_IMAGES = {
   hoshino: "https://bafybeicvhutbdtysa6657tsjwd3k6xx72wn6drkzaygz4tik2jcx6wfn24.ipfs.dweb.link?filename=Kai%20N.%20Hoshino.png"
 };
 
+// Debug function for image loading
+const debugImageLoad = (url: string, name: string) => {
+  console.log(`%c[IMAGE_DEBUG] Loading ${name}: ${url}`, "color:#00ff88; font-family: monospace;");
+  
+  const img = new Image();
+  img.onload = () => {
+    console.log(`%c[IMAGE_SUCCESS] ${name} loaded successfully (${img.width}x${img.height})`, "color:#00ff88; font-family: monospace;");
+  };
+  img.onerror = (error) => {
+    console.log(`%c[IMAGE_ERROR] ${name} failed to load:`, "color:#ff4444; font-family: monospace;", error);
+    console.log(`%c[IMAGE_ERROR] URL: ${url}`, "color:#ff4444; font-family: monospace;");
+  };
+  img.src = url;
+};
+
 // ----------------------
 // Utility hooks
 // ----------------------
@@ -1139,6 +1154,8 @@ export default function ArchetypeSite(){
                   src={QUARANTINE_IMAGES.tsumori} 
                   alt="Dr. Mikhail R. Tsumori" 
                   className="w-24 h-24 object-cover border border-zinc-700"
+                  onLoad={() => debugImageLoad(QUARANTINE_IMAGES.tsumori, "Dr. Tsumori")}
+                  onError={() => debugImageLoad(QUARANTINE_IMAGES.tsumori, "Dr. Tsumori")}
                 />
                 <div>
                   <div className="font-semibold">Dr. Mikhail R. Tsumori — <span className="text-zinc-500">presumed d34d</span></div>
@@ -1150,6 +1167,8 @@ export default function ArchetypeSite(){
                   src={QUARANTINE_IMAGES.hoshino} 
                   alt="Kai N. Hoshino" 
                   className="w-24 h-24 object-cover border border-zinc-700"
+                  onLoad={() => debugImageLoad(QUARANTINE_IMAGES.hoshino, "Kai Hoshino")}
+                  onError={() => debugImageLoad(QUARANTINE_IMAGES.hoshino, "Kai Hoshino")}
                 />
                 <div>
                   <div className="font-semibold">Kai N. Hoshino — <span className="text-zinc-500">presumed d34d</span></div>
