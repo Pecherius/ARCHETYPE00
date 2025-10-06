@@ -195,10 +195,13 @@ function useKonami(onUnlock: () => void) {
 // ⏰ INTERVAL_HOOK: Because setInterval is so 2010
 // This is probably overkill for what we're doing, but hey, it's clean
 function useInterval(cb: () => void, ms: number) {
+  const cbRef = useRef(cb);
+  cbRef.current = cb;
+  
   useEffect(() => { 
-    const id = setInterval(cb, ms); 
+    const id = setInterval(() => cbRef.current(), ms); 
     return () => clearInterval(id); 
-  }, [cb, ms]);
+  }, [ms]);
 }
 
 // ⌨️ GLOBAL_KEYS: The keyboard shortcuts that make this site feel like a game
@@ -232,7 +235,7 @@ function useGlobalKeys(
         d34dBuffer = (d34dBuffer + e.key.toLowerCase()).slice(-4);
         
         if (d34dBuffer === "d34d") {
-          console.log("🎯 QUARANTINE ACCESS GRANTED - d34d sequence detected!");
+          console.log("%c[QUARANTINE_PROTOCOL] Access sequence d34d recognized. Initiating quarantine breach...", "color:#ff4444; font-weight: bold;");
           onD34D();
           d34dBuffer = ""; // Reset after successful trigger
         }
@@ -301,13 +304,13 @@ function useHum() {
       oscRef.current = osc; gainRef.current = gain; analyserRef.current = analyser; setActive(true);
       // Console trolleo
       // eslint-disable-next-line no-console
-      console.log("%cPEPITO DEBUG: hum online — syncing visuals", "color:#f0a");
+      console.log("%c[RESONANCE_ENGINE] 38Hz sub-bass frequency activated. Visual sync established.", "color:#00ff88; font-family: monospace;");
     } else {
       oscRef.current?.stop(); oscRef.current?.disconnect();
       gainRef.current?.disconnect(); analyserRef.current?.disconnect();
       oscRef.current = null; gainRef.current = null; analyserRef.current = null; setActive(false);
       // eslint-disable-next-line no-console
-      console.log("%cPEPITO DEBUG: hum offline — switching to idle breathing", "color:#999");
+      console.log("%c[RESONANCE_ENGINE] Frequency terminated. Switching to idle state.", "color:#666; font-family: monospace;");
     }
   };
   return { active, toggle, level };
@@ -778,10 +781,15 @@ export default function ArchetypeSite(){
 
   // Random glitch bursts (subtle, non-blocking) + image switching
   useInterval(() => {
-    if (!glitch) return;
+    if (!glitch) {
+      console.log("%c[VISUAL_CORRUPTION] Glitch matrix disabled. Image switching suspended.", "color:#666; font-family: monospace;");
+      return;
+    }
+    console.log("%c[VISUAL_CORRUPTION] Anomaly detected. Initiating image fragment switch...", "color:#ff6600; font-family: monospace;");
     artControls.start({ x: [0, 1, -1, 0] , transition: { duration: 0.18 } });
     // Switch to glitch image briefly - using a more reliable approach
     setShowGlitchImage(true);
+    console.log("%c[VISUAL_CORRUPTION] Fragment 888888888888888 loaded. Corrupted data stream active.", "color:#ff6600; font-family: monospace;");
   }, 2500);
 
   // Separate effect to handle glitch image timing
@@ -800,30 +808,30 @@ export default function ArchetypeSite(){
     // eslint-disable-next-line no-console
     console.log(ASCII);
     // eslint-disable-next-line no-console
-    console.log("%cSubjectID:P-107 // If you can read this, you are the resonance.", "color:#9cf");
+    console.log("%c[SYSTEM_INIT] SubjectID:P-107 // Resonance frequency detected. Welcome to the anomaly.", "color:#9cf; font-family: monospace;");
     // eslint-disable-next-line no-console
-    console.log("%c🐸 PEPITO_DEBUG: You found the console! Welcome to the developer zone.", "color:#f0a");
+    console.log("%c[DEBUG_MODE] Console access granted. You have entered the developer quarantine zone.", "color:#f0a; font-family: monospace;");
     // eslint-disable-next-line no-console
-    console.log("%c💡 PRO_TIP: Press F12 to open dev tools. You're already here, so...", "color:#9f9");
+    console.log("%c[SYSTEM_INFO] Press F12 to access dev tools. You are already here, anomaly detected.", "color:#9f9; font-family: monospace;");
     // eslint-disable-next-line no-console
-    console.log("%c🎮 GAME_HINT: The tic-tac-toe game is completely functional. Try it!", "color:#ff9");
+    console.log("%c[GAME_MODULE] Neural Ping Pong system operational. Resonance-based gameplay active.", "color:#ff9; font-family: monospace;");
     // eslint-disable-next-line no-console
-    console.log("%c🔧 CODE_QUALITY: This code is a mess, but it works. That's what matters.", "color:#f99");
+    console.log("%c[CODE_ANALYSIS] Fragment integrity compromised but functional. Anomaly preserved.", "color:#f99; font-family: monospace;");
     // eslint-disable-next-line no-console
-    console.log("%c🚀 ARCHETYPE_00 v2.2 - CACHE BUST VERSION LOADED! 🚀", "color:#ff00b4; font-size: 20px; font-weight: bold; background: #000; padding: 10px;");
+    console.log("%c[ARCHETYPE_00] v2.3 - CORRUPTED_FRAGMENT_LOADED", "color:#ff00b4; font-size: 20px; font-weight: bold; background: #000; padding: 10px; font-family: monospace;");
     // eslint-disable-next-line no-console
-    console.log("%c✅ ALL FEATURES WORKING: d34d, tooltips, image glitch, neural ping pong", "color:#00ff88; font-size: 14px;");
+    console.log("%c[SYSTEM_STATUS] All modules operational: d34d, tooltips, visual_corruption, neural_ping_pong", "color:#00ff88; font-size: 14px; font-family: monospace;");
     // eslint-disable-next-line no-console
-    console.log("%c🎮 Try typing 'd34d' to open quarantine records!", "color:#ffff00; font-size: 12px;");
+    console.log("%c[QUARANTINE] Type 'd34d' to breach quarantine protocols and access classified records.", "color:#ffff00; font-size: 12px; font-family: monospace;");
   },[]);
 
   // Universal Profile detection easter egg
   useEffect(() => {
     if (upProfile.isConnected) {
       // eslint-disable-next-line no-console
-      console.log("%c🌐 LUKSO_INTEGRATION: Universal Profile detected!", "color:#00ff88; font-size: 14px;");
+      console.log("%c[NEURAL_NETWORK] Universal Profile detected. Establishing secure connection...", "color:#00ff88; font-family: monospace; font-weight: bold;");
       // eslint-disable-next-line no-console
-      console.log("%c🔗 Neural Network Status: Connected", "color:#9cf; font-size: 12px;");
+      console.log("%c[NEURAL_NETWORK] Resonance frequency synchronized with external profile.", "color:#9cf; font-family: monospace;");
     }
   }, [upProfile.isConnected]);
 
@@ -889,10 +897,10 @@ export default function ArchetypeSite(){
                 alt="ARCHETYPE_00" 
                 className="block w-full max-h-[60vh] object-contain transition-opacity duration-100"
                 onLoad={() => {
-                  console.log(`🖼️ Image loaded successfully: ${showGlitchImage ? 'GLITCH' : 'NORMAL'}`);
+                  console.log(`%c[FRAGMENT_LOADER] Data stream established: ${showGlitchImage ? 'CORRUPTED_FRAGMENT' : 'STABLE_FRAGMENT'}`, "color:#00ff88; font-family: monospace;");
                 }}
                 onError={(e) => {
-                  console.log(`❌ Image failed to load: ${showGlitchImage ? 'GLITCH' : 'NORMAL'}`);
+                  console.log(`%c[FRAGMENT_LOADER] Data corruption detected: ${showGlitchImage ? 'CORRUPTED_FRAGMENT' : 'STABLE_FRAGMENT'}`, "color:#ff4444; font-family: monospace;");
                   // Try fallback on image load error
                   const fallbackSrc = showGlitchImage ? FALLBACK_GLITCH : FALLBACK_ART;
                   e.currentTarget.src = fallbackSrc;
