@@ -38,6 +38,13 @@ export function TooltipContent({ className = "", children }: TooltipContentProps
       className={`absolute z-50 bg-zinc-800 border border-zinc-600 p-2 rounded text-xs ${className} ${isVisible ? 'block' : 'hidden'}`}
       onMouseEnter={() => setIsVisible(true)}
       onMouseLeave={() => setIsVisible(false)}
+      style={{ 
+        position: 'absolute',
+        top: '100%',
+        left: '50%',
+        transform: 'translateX(-50%)',
+        marginTop: '4px'
+      }}
     >
       {children}
     </div>

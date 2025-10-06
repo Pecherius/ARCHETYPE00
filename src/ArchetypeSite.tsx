@@ -52,10 +52,12 @@ function useGlobalKeys(
       if (e.key.toLowerCase() === "g") toggleGlitch();
       
       // d34d easter egg - more reliable
-      buffer = (buffer + e.key.toLowerCase()).slice(-4);
-      if (buffer === "d34d") {
-        onD34D();
-        buffer = ""; // reset buffer after trigger
+      if (e.key.length === 1) { // only single character keys
+        buffer = (buffer + e.key.toLowerCase()).slice(-4);
+        if (buffer === "d34d") {
+          onD34D();
+          buffer = ""; // reset buffer after trigger
+        }
       }
     };
     window.addEventListener("keydown", h);
@@ -129,18 +131,30 @@ function useHum() {
 // UI atoms
 // ----------------------
 const Binary = ({ text, label }: { text: string; label?: string }) => {
+  const [showTooltip, setShowTooltip] = useState(false);
   const bin = useMemo(() => text.split("").map(c => c.charCodeAt(0).toString(2).padStart(8,"0")).join(" "), [text]);
+  
   return (
-    <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger className="cursor-help text-muted-foreground underline decoration-dotted">
-          {label ?? "binary"}
-        </TooltipTrigger>
-        <TooltipContent className="max-w-[28rem] break-words text-xs leading-snug">
+    <span 
+      className="relative cursor-help text-muted-foreground underline decoration-dotted"
+      onMouseEnter={() => setShowTooltip(true)}
+      onMouseLeave={() => setShowTooltip(false)}
+    >
+      {label ?? "binary"}
+      {showTooltip && (
+        <div className="absolute z-50 bg-zinc-800 border border-zinc-600 p-2 rounded text-xs whitespace-nowrap"
+             style={{ 
+               top: '100%',
+               left: '50%',
+               transform: 'translateX(-50%)',
+               marginTop: '4px',
+               maxWidth: '28rem',
+               wordBreak: 'break-word'
+             }}>
           <p className="font-mono">{bin}</p>
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
+        </div>
+      )}
+    </span>
   );
 };
 
