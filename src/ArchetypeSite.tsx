@@ -100,8 +100,8 @@ const GLITCH_IMG = "https://bafybeiggg5uigjiwqn3yebk6gdd456huk52s3dbq2j25cks4oxa
 // 👻 QUARANTINE_PHOTOS: Fictional characters for the lore
 // No actual people were harmed in the making of this code
 const QUARANTINE_IMAGES = {
-  tsumori: "https://bafybeifizn4hnwivlchzgjzapk5ltdskmhb35ta2vmjfgulxiuaowmpnua.ipfs.dweb.link?filename=Dr.%20Mikhail%20R.%20Tsumori.png",
-  hoshino: "https://bafybeibr2a76opsgem3tecqz2qti4vddzwrxdq7d4ylntqzrqap6p2ti5y.ipfs.dweb.link?filename=Kai%20N.%20Hoshino.png"
+  tsumori: "https://bafybeie4hjscx5xwz2ewjzu6qjvl6m7ouxadvk6x6cgtyes65syizdep6e.ipfs.dweb.link/Dr.%20Mikhail%20R.%20Tsumori.png",
+  hoshino: "https://bafybeie4hjscx5xwz2ewjzu6qjvl6m7ouxadvk6x6cgtyes65syizdep6e.ipfs.dweb.link/Kai%20N.%20Hoshino.png"
 };
 
 // ----------------------
@@ -146,53 +146,13 @@ function useGlobalKeys(
   onD34D: () => void
 ) {
   useEffect(() => {
-    let d34dBuffer = "";
+    let buffer = "";
     const h = (e: KeyboardEvent) => {
-      // Handle single key shortcuts first
-      if (e.key.toLowerCase() === "r") {
-        pulse();
-        return;
-      }
-      if (e.key === ":") {
-        toggleVHS();
-        return;
-      }
-      if (e.key.toLowerCase() === "g") {
-        toggleGlitch();
-        return;
-      }
-      
-      // 💀 d34d easter egg - completely rewritten for reliability
-      // Track the sequence d-3-4-d
-      if (e.key === "d") {
-        if (d34dBuffer === "" || d34dBuffer === "d34") {
-          d34dBuffer += "d";
-        } else {
-          d34dBuffer = "d"; // Reset if not in sequence
-        }
-      } else if (e.key === "3") {
-        if (d34dBuffer === "d") {
-          d34dBuffer += "3";
-        } else {
-          d34dBuffer = ""; // Reset if not in sequence
-        }
-      } else if (e.key === "4") {
-        if (d34dBuffer === "d3") {
-          d34dBuffer += "4";
-        } else {
-          d34dBuffer = ""; // Reset if not in sequence
-        }
-      } else {
-        // Any other key resets the buffer
-        d34dBuffer = "";
-      }
-      
-      // Check if we have the complete sequence
-      if (d34dBuffer === "d34d") {
-        console.log("🎭 d34d SEQUENCE DETECTED! Opening quarantine...");
-        onD34D();
-        d34dBuffer = ""; // Reset after trigger
-      }
+      if (e.key.toLowerCase() === "r") pulse();
+      if (e.key === ":") toggleVHS();
+      buffer = (buffer + e.key).slice(-4);
+      if (buffer.toLowerCase() === "d34d") onD34D();
+      if (e.key.toLowerCase() === "g") toggleGlitch();
     };
     window.addEventListener("keydown", h);
     return () => window.removeEventListener("keydown", h);
@@ -344,9 +304,10 @@ function NeuralPingPong() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [gameState, setGameState] = useState<'menu' | 'playing' | 'gameOver' | 'won'>('menu');
   const [score, setScore] = useState(0);
-  const [speed, setSpeed] = useState(2);
+  const [speed, setSpeed] = useState(8); // Mucho más rápido desde el inicio
   const [glitchIntensity, setGlitchIntensity] = useState(0);
   const [showWinMessage, setShowWinMessage] = useState(false);
+  const [geometricObstacles, setGeometricObstacles] = useState<Array<{x: number, y: number, size: number, rotation: number, speed: number}>>([]);
   
   // Game objects
   const [ball, setBall] = useState({ x: 400, y: 300, dx: 2, dy: 2 });
@@ -360,8 +321,8 @@ function NeuralPingPong() {
     const gameLoop = setInterval(() => {
       setBall(prev => {
         let newBall = { ...prev };
-        newBall.x += newBall.dx;
-        newBall.y += newBall.dy;
+        newBall.x += newBall.dx * speed; // Aplicar velocidad
+        newBall.y += newBall.dy * speed;
         
         // Wall collisions
         if (newBall.x <= 0 || newBall.x >= 800) newBall.dx = -newBall.dx;
@@ -370,9 +331,16 @@ function NeuralPingPong() {
         // Paddle collision
         if (newBall.y >= 550 && newBall.x >= paddle.x && newBall.x <= paddle.x + paddle.width) {
           newBall.dy = -newBall.dy;
-          setScore(prev => prev + 1);
-          setSpeed(prev => Math.min(prev + 0.2, 15)); // Increase speed
-          setGlitchIntensity(prev => Math.min(prev + 0.1, 1)); // Increase glitch
+          setScore(prev => {
+            const newScore = prev + 1;
+            if (newScore >= 50) {
+              setGameState('won');
+              setShowWinMessage(true);
+            }
+            return newScore;
+          });
+          setSpeed(prev => Math.min(prev + 1, 25)); // Aumenta más rápido
+          setGlitchIntensity(prev => Math.min(prev + 0.15, 1)); // Más glitch
         }
         
         // Game over
@@ -381,29 +349,44 @@ function NeuralPingPong() {
           return prev;
         }
         
-        // Win condition (score 50)
-        if (score >= 49) {
-          setGameState('won');
-          setShowWinMessage(true);
-          return prev;
-        }
-        
         return newBall;
       });
       
-      // Generate glitch lines
-      if (Math.random() < glitchIntensity) {
-        setGlitchLines(prev => [...prev.slice(-5), {
+      // Update geometric obstacles
+      setGeometricObstacles(prev => prev.map(obstacle => ({
+        ...obstacle,
+        x: obstacle.x + Math.cos(obstacle.rotation) * obstacle.speed,
+        y: obstacle.y + Math.sin(obstacle.rotation) * obstacle.speed,
+        rotation: obstacle.rotation + 0.05
+      })).filter(obstacle => 
+        obstacle.x > -50 && obstacle.x < 850 && 
+        obstacle.y > -50 && obstacle.y < 650
+      ));
+      
+      // Add new geometric obstacles
+      if (Math.random() < 0.03) {
+        setGeometricObstacles(prev => [...prev, {
           x: Math.random() * 800,
           y: Math.random() * 600,
-          width: Math.random() * 200 + 50,
-          height: Math.random() * 20 + 5
+          size: Math.random() * 40 + 20,
+          rotation: Math.random() * Math.PI * 2,
+          speed: Math.random() * 3 + 1
+        }]);
+      }
+      
+      // Generate glitch lines
+      if (Math.random() < glitchIntensity * 2) {
+        setGlitchLines(prev => [...prev.slice(-8), {
+          x: Math.random() * 800,
+          y: Math.random() * 600,
+          width: Math.random() * 300 + 100,
+          height: Math.random() * 30 + 10
         }]);
       }
     }, 16); // ~60fps
     
     return () => clearInterval(gameLoop);
-  }, [gameState, paddle.x, score, glitchIntensity]);
+  }, [gameState, paddle.x, score, glitchIntensity, speed]);
   
   // Draw function with cyberpunk background
   useEffect(() => {
@@ -434,6 +417,47 @@ function NeuralPingPong() {
       ctx.arc(x, y, 30 + Math.sin(time + i) * 20, 0, Math.PI * 2);
       ctx.stroke();
     }
+    
+    // Draw geometric obstacles
+    geometricObstacles.forEach(obstacle => {
+      ctx.save();
+      ctx.translate(obstacle.x, obstacle.y);
+      ctx.rotate(obstacle.rotation);
+      ctx.strokeStyle = `hsla(${hue + 180}, 80%, 60%, 0.6)`;
+      ctx.fillStyle = `hsla(${hue + 180}, 60%, 40%, 0.3)`;
+      ctx.lineWidth = 3;
+      
+      // Draw different shapes
+      const shapeType = Math.floor(obstacle.rotation * 3) % 3;
+      if (shapeType === 0) {
+        // Triangle
+        ctx.beginPath();
+        ctx.moveTo(0, -obstacle.size);
+        ctx.lineTo(-obstacle.size, obstacle.size);
+        ctx.lineTo(obstacle.size, obstacle.size);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+      } else if (shapeType === 1) {
+        // Square
+        ctx.fillRect(-obstacle.size/2, -obstacle.size/2, obstacle.size, obstacle.size);
+        ctx.strokeRect(-obstacle.size/2, -obstacle.size/2, obstacle.size, obstacle.size);
+      } else {
+        // Hexagon
+        ctx.beginPath();
+        for (let i = 0; i < 6; i++) {
+          const angle = (i * Math.PI) / 3;
+          const x = Math.cos(angle) * obstacle.size;
+          const y = Math.sin(angle) * obstacle.size;
+          if (i === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+      }
+      ctx.restore();
+    });
     
     // Draw grid lines
     ctx.strokeStyle = `hsla(${hue + 240}, 50%, 30%, 0.2)`;
@@ -485,7 +509,7 @@ function NeuralPingPong() {
       ctx.font = 'bold 14px monospace';
       ctx.fillText('WARNING: NEURAL OVERLOAD', 20, 80);
     }
-  }, [ball, paddle, score, speed, glitchIntensity, glitchLines, gameState]);
+  }, [ball, paddle, score, speed, glitchIntensity, glitchLines, gameState, geometricObstacles]);
   
   // Keyboard and touch controls
   useEffect(() => {
@@ -588,7 +612,7 @@ function NeuralPingPong() {
         <div className="space-y-4">
           <p className="text-sm text-zinc-400">
             Use ← → arrow keys, mouse movement, or touch to control the paddle. 
-            Ball gets faster with each hit. Reach 50 points to win an NFT. 
+            Ball gets faster with each hit. Geometric obstacles will appear and move around.
             Warning: Neural overload effects at high speeds.
           </p>
           <button 
@@ -942,9 +966,9 @@ export default function ArchetypeSite(){
               <div className="mt-4 text-xs text-zinc-600">
                 <p>Note: This game operates offline. No data is stored. Each session is isolated.</p>
               </div>
-              <div className="mt-4 p-3 border border-green-400/30 bg-green-400/10 rounded">
-                <p className="text-xs text-green-400 font-mono">
-                  WINNER REWARD: If you reach 50 points, you win an NFT. DM @punkable on Twitter.
+              <div className="mt-4 p-3 border border-zinc-700 bg-zinc-900 rounded">
+                <p className="text-xs text-zinc-500 font-mono">
+                  Neural interface ready. System will respond to your resonance patterns.
                 </p>
               </div>
             </div>
