@@ -149,10 +149,15 @@ function useGlobalKeys(
   useEffect(() => {
     let buffer = "";
     const h = (e: KeyboardEvent) => {
+      console.log("Key pressed:", e.key, "Buffer:", buffer);
       if (e.key.toLowerCase() === "r") pulse();
       if (e.key === ":") toggleVHS();
       buffer = (buffer + e.key).slice(-4);
-      if (buffer.toLowerCase() === "d34d") onD34D();
+      console.log("New buffer:", buffer);
+      if (buffer.toLowerCase() === "d34d") {
+        console.log("d34d detected! Triggering...");
+        onD34D();
+      }
       if (e.key.toLowerCase() === "g") toggleGlitch();
     };
     window.addEventListener("keydown", h);
@@ -231,16 +236,18 @@ const Binary = ({ text, label }: { text: string; label?: string }) => {
   const bin = useMemo(() => text.split("").map(c => c.charCodeAt(0).toString(2).padStart(8,"0")).join(" "), [text]);
   
   return (
-    <Tooltip>
-      <TooltipTrigger>
-        <span className="cursor-help text-muted-foreground underline decoration-dotted">
-          {label ?? "binary"}
-        </span>
-      </TooltipTrigger>
-      <TooltipContent className="bg-zinc-800 border border-zinc-600 p-2 text-xs max-w-28rem">
-        <p className="font-mono break-words">{bin}</p>
-      </TooltipContent>
-    </Tooltip>
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger>
+          <span className="cursor-help text-muted-foreground underline decoration-dotted">
+            {label ?? "binary"}
+          </span>
+        </TooltipTrigger>
+        <TooltipContent className="bg-zinc-800 border border-zinc-600 p-2 text-xs max-w-28rem">
+          <p className="font-mono break-words">{bin}</p>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   );
 };
 
@@ -686,6 +693,7 @@ export default function ArchetypeSite(){
   // Random glitch bursts (subtle, non-blocking) + image switching
   useInterval(() => {
     if (!glitch) return;
+    console.log("Glitch burst triggered, switching image...");
     artControls.start({ x: [0, 1, -1, 0] , transition: { duration: 0.18 } });
     // Switch to glitch image briefly - using a more reliable approach
     setShowGlitchImage(true);
