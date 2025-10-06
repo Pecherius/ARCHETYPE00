@@ -249,10 +249,12 @@ function useGlobalKeys(
           d34dBuffer = ""; // Reset after successful trigger
         }
       } else {
-        // Reset buffer on non-alphanumeric keys
-        if (d34dBuffer.length > 0) {
-          console.log(`%c[D34D_BUFFER] Non-alphanumeric key "${e.key}" detected. Resetting buffer from: "${d34dBuffer}"`, "color:#ff0000; font-family: monospace;");
-          d34dBuffer = "";
+        // Only reset buffer on non-alphanumeric keys if they're not special keys
+        if (e.key !== "Shift" && e.key !== "Control" && e.key !== "Alt" && e.key !== "Meta" && e.key !== "Tab" && e.key !== "CapsLock") {
+          if (d34dBuffer.length > 0) {
+            console.log(`%c[D34D_BUFFER] Non-alphanumeric key "${e.key}" detected. Resetting buffer from: "${d34dBuffer}"`, "color:#ff0000; font-family: monospace;");
+            d34dBuffer = "";
+          }
         }
       }
     };
