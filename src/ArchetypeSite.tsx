@@ -216,6 +216,8 @@ function useGlobalKeys(
     let d34dBuffer = "";
     
     const handleKeyPress = (e: KeyboardEvent) => {
+      console.log(`%c[KEY_DEBUG] Key pressed: ${e.key}`, "color:#999; font-family: monospace;");
+      
       // Handle single key shortcuts first
       if (e.key.toLowerCase() === "r") {
         pulse();
@@ -233,11 +235,18 @@ function useGlobalKeys(
       // Process d34d sequence - only alphanumeric characters
       if (e.key.length === 1 && /[a-zA-Z0-9]/.test(e.key)) {
         d34dBuffer = (d34dBuffer + e.key.toLowerCase()).slice(-4);
+        console.log(`%c[KEY_INPUT] Key: ${e.key} | Buffer: ${d34dBuffer}`, "color:#666; font-family: monospace;");
         
         if (d34dBuffer === "d34d") {
           console.log("%c[QUARANTINE_PROTOCOL] Access sequence d34d recognized. Initiating quarantine breach...", "color:#ff4444; font-weight: bold;");
           onD34D();
           d34dBuffer = ""; // Reset after successful trigger
+        }
+      } else {
+        // Reset buffer on non-alphanumeric keys
+        if (d34dBuffer.length > 0) {
+          console.log(`%c[KEY_INPUT] Non-alphanumeric key detected. Resetting buffer from: ${d34dBuffer}`, "color:#666; font-family: monospace;");
+          d34dBuffer = "";
         }
       }
     };
@@ -883,6 +892,16 @@ export default function ArchetypeSite(){
           <p className="max-w-3xl text-zinc-400 leading-relaxed">
             ARCHETYPE_00 is a corrupted fragment, a residual anomaly recovered from damaged chain archives. Its internal structure is unstable, yet it continues to emit measurable resonance throughout the Punkable Ethereal System. Each fragment is identical in form, but the signal of every holder resonates differently. The more fragments you hold, the stronger your echo becomes. Some fragments contain traces of data from the quarantine zone, where certain entities were marked as d34d.
           </p>
+          
+          {/* Criptic hint for d34d */}
+          <div className="mt-4 p-3 border border-zinc-800 bg-zinc-950/50 rounded">
+            <p className="text-xs text-zinc-500 font-mono">
+              <span className="text-zinc-400">[SYSTEM_HINT]</span> Hidden sequences can be activated through keyboard input. 
+              <br />
+              <span className="text-yellow-400">01000100 00110011 00110100 01000100</span> 
+              <span className="text-zinc-600 ml-2">// Try typing this sequence</span>
+            </p>
+          </div>
 
           {/* Artifact (levitating + glitch layers, audio reactive) */}
           <div className="relative mt-2 w-full select-none sm:max-w-lg md:max-w-xl">
@@ -1002,13 +1021,20 @@ export default function ArchetypeSite(){
             <div className="border border-zinc-800 p-5">
               <h3 className="mb-2 flex items-center gap-2 text-lg text-zinc-100"><span className="text-lg">🛡️</span>Hidden Access</h3>
               <p className="text-sm text-zinc-400">Enter the Konami code to open the Resonance Lab. Discover the hidden sequence to access quarantine records.</p>
+              <div className="mt-3 p-2 bg-zinc-900/50 rounded border border-zinc-700">
+                <p className="text-xs text-zinc-500 font-mono">
+                  <span className="text-yellow-400">[QUARANTINE_HINT]</span> Some sequences are marked as d34d in the system logs.
+                  <br />
+                  <span className="text-zinc-600">Type the sequence to breach quarantine protocols.</span>
+                </p>
+              </div>
             </div>
           </div>
 
           {/* Binary ticker */}
           <div className="mt-6 overflow-hidden border border-zinc-800 py-2">
             <motion.div initial={{ x: "0%" }} animate={{ x: ["0%", "-50%"] }} transition={{ duration: 30, repeat: Infinity, ease: "linear" }} className="whitespace-nowrap text-[10px] text-zinc-500">
-              01010000 01110101 01101110 01101011 01100001 01100010 01101100 01100101 • 01000001 01010010 01000011 01001000 01000101 01010100 01011001 01010000 01000101 01011111 00110000 00110000 • 01010010 01100101 01110011 01101111 01101110 01100001 01101110 01100011 01100101 00100000 01100001 01100011 01100011 01110101 01101101 01110101 01101100 01100001 01110100 01101001 01101110 01100111
+              01010000 01110101 01101110 01101011 01100001 01100010 01101100 01100101 • 01000001 01010010 01000011 01001000 01000101 01010100 01011001 01010000 01000101 01011111 00110000 00110000 • 01010010 01100101 01110011 01101111 01101110 01100001 01101110 01100011 01100101 00100000 01100001 01100011 01100011 01110101 01101101 01110101 01101100 01100001 01110100 01101001 01101110 01100111 • 01000100 00110011 00110100 01000100 00100000 01110001 01110101 01100001 01110010 01100001 01101110 01110100 01101001 01101110 01100101
             </motion.div>
           </div>
         </section>
