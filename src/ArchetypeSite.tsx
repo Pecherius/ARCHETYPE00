@@ -214,8 +214,10 @@ function useGlobalKeys(
 ) {
   useEffect(() => {
     let d34dBuffer = "";
+    let lastKeyTime = 0;
     
     const handleKeyPress = (e: KeyboardEvent) => {
+      const now = Date.now();
       console.log(`%c[KEY_DEBUG] Key pressed: "${e.key}" (length: ${e.key.length})`, "color:#999; font-family: monospace;");
       
       // Handle single key shortcuts first
@@ -240,11 +242,18 @@ function useGlobalKeys(
       console.log(`%c[FILTER] Is alphanumeric: ${isAlphanumeric}`, "color:#666; font-family: monospace;");
       
       if (isAlphanumeric) {
+        // Reset buffer if too much time has passed (5 seconds)
+        if (now - lastKeyTime > 5000) {
+          console.log(`%c[D34D_BUFFER] Timeout detected. Resetting buffer from: "${d34dBuffer}"`, "color:#ff0000; font-family: monospace;");
+          d34dBuffer = "";
+        }
+        
         d34dBuffer = d34dBuffer + e.key.toLowerCase();
         // Only keep last 4 characters if buffer is longer
         if (d34dBuffer.length > 4) {
           d34dBuffer = d34dBuffer.slice(-4);
         }
+        lastKeyTime = now;
         console.log(`%c[D34D_BUFFER] Added "${e.key}" -> Buffer: "${d34dBuffer}"`, "color:#ff6600; font-family: monospace;");
         
         if (d34dBuffer === "d34d") {
@@ -254,7 +263,7 @@ function useGlobalKeys(
         }
       } else {
         // Only reset buffer on non-alphanumeric keys if they're not special keys
-        if (e.key !== "Shift" && e.key !== "Control" && e.key !== "Alt" && e.key !== "Meta" && e.key !== "Tab" && e.key !== "CapsLock") {
+        if (e.key !== "Shift" && e.key !== "Control" && e.key !== "Alt" && e.key !== "Meta" && e.key !== "Tab" && e.key !== "CapsLock" && e.key !== "F12") {
           if (d34dBuffer.length > 0) {
             console.log(`%c[D34D_BUFFER] Non-alphanumeric key "${e.key}" detected. Resetting buffer from: "${d34dBuffer}"`, "color:#ff0000; font-family: monospace;");
             d34dBuffer = "";
