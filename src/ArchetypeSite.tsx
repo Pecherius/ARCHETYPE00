@@ -174,14 +174,12 @@ function useGlobalKeys(
         bufferRef.current = (bufferRef.current + e.key.toLowerCase()).slice(-4);
         console.log("New buffer:", bufferRef.current);
         if (bufferRef.current === "d34d") {
-          console.log("d34d detected! Triggering...");
+          console.log("🎯 d34d detected! Triggering quarantine access...");
           onD34D();
           bufferRef.current = ""; // Reset buffer after trigger
         }
-      } else {
-        // Reset buffer on non-alphanumeric keys
-        bufferRef.current = "";
       }
+      // Don't reset buffer on non-alphanumeric keys - let it persist
     };
     window.addEventListener("keydown", h);
     return () => window.removeEventListener("keydown", h);
