@@ -2,7 +2,66 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./components/ui/dialog";
 // Tooltip components removed - using custom implementation
 import { motion, useAnimation } from "framer-motion";
-import { Shield, ActivitySquare, Waves, Eye, AlertTriangle, Radio } from "lucide-react";
+// Icons removed - not used in current implementation
+
+// 🌐 LUKSO_INTEGRATION: Basic Universal Profile detection
+// Reads data from browser extension without changing the core lore
+
+// Hook to detect Universal Profile extension and read basic data
+function useUniversalProfile() {
+  const [profileData, setProfileData] = useState<{
+    address?: string;
+    name?: string;
+    avatar?: string;
+    isConnected: boolean;
+  }>({ isConnected: false });
+
+  useEffect(() => {
+    // Check if Universal Profile extension is available
+    const checkUP = async () => {
+      try {
+        // Check if the extension is installed
+        if (typeof window !== 'undefined' && (window as any).lukso) {
+          const lukso = (window as any).lukso;
+          
+          // Try to get basic profile data
+          if (lukso.isConnected && lukso.isConnected()) {
+            const accounts = await lukso.request({ method: 'eth_accounts' });
+            if (accounts && accounts.length > 0) {
+              const address = accounts[0];
+              
+              // Try to get profile metadata (basic info)
+              try {
+                // Basic profile detection (simplified)
+                // const profile = await lukso.request({...});
+                
+                setProfileData({
+                  address,
+                  name: `Profile_${address.slice(0, 6)}`,
+                  isConnected: true
+                });
+              } catch (e) {
+                // Fallback to basic address info
+                setProfileData({
+                  address,
+                  name: `UP_${address.slice(0, 6)}`,
+                  isConnected: true
+                });
+              }
+            }
+          }
+        }
+      } catch (error) {
+        // Extension not available or error
+        console.log("Universal Profile not detected");
+      }
+    };
+
+    checkUP();
+  }, []);
+
+  return profileData;
+}
 
 /**
  * ARCHETYPE_00 — Single-file React microsite (public, no secrets)
@@ -153,7 +212,7 @@ function useGlobalKeys(
   useEffect(() => {
     const bufferRef = { current: "" };
     const h = (e: KeyboardEvent) => {
-      console.log("Key pressed:", e.key, "Buffer:", bufferRef.current);
+      // Debug: Key tracking (reduced logging)
       
       // Handle single key shortcuts first
       if (e.key.toLowerCase() === "r") {
@@ -172,7 +231,6 @@ function useGlobalKeys(
       // Only process alphanumeric keys for d34d buffer
       if (e.key.length === 1 && /[a-zA-Z0-9]/.test(e.key)) {
         bufferRef.current = (bufferRef.current + e.key.toLowerCase()).slice(-4);
-        console.log("New buffer:", bufferRef.current);
         if (bufferRef.current === "d34d") {
           console.log("🎯 d34d detected! Triggering quarantine access...");
           onD34D();
@@ -225,6 +283,11 @@ function useHum() {
       ctxRef.current = new (window.AudioContext || window.webkitAudioContext)();
     }
     const ctx = ctxRef.current!;
+    
+    // Resume context if suspended (required for autoplay policy)
+    if (ctx.state === 'suspended') {
+      await ctx.resume();
+    }
     if (!active) {
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
@@ -260,14 +323,8 @@ const Binary = ({ text, label }: { text: string; label?: string }) => {
   return (
     <span 
       className="cursor-help border-b border-dashed border-zinc-500 text-zinc-300 hover:text-zinc-100 relative"
-      onMouseEnter={() => {
-        console.log("🖱️ Binary hovered:", label || text);
-        setShowTooltip(true);
-      }}
-      onMouseLeave={() => {
-        console.log("🖱️ Binary unhovered");
-        setShowTooltip(false);
-      }}
+      onMouseEnter={() => setShowTooltip(true)}
+      onMouseLeave={() => setShowTooltip(false)}
     >
       {label || text}
       {showTooltip && (
@@ -709,6 +766,7 @@ export default function ArchetypeSite(){
   const [showGlitchImage, setShowGlitchImage] = useState(false);
   const [d34dNotification, setD34dNotification] = useState(false);
   const { active: humOn, toggle: toggleHum, level } = useHum();
+  const upProfile = useUniversalProfile();
   const artControls = useAnimation();
 
   useKonami(() => setLabOpen(true));
@@ -721,19 +779,15 @@ export default function ArchetypeSite(){
   // Random glitch bursts (subtle, non-blocking) + image switching
   useInterval(() => {
     if (!glitch) return;
-    console.log("🎨 Glitch burst triggered, switching image...");
     artControls.start({ x: [0, 1, -1, 0] , transition: { duration: 0.18 } });
     // Switch to glitch image briefly - using a more reliable approach
     setShowGlitchImage(true);
-    console.log("🖼️ Image should now show glitch version");
   }, 2500);
 
   // Separate effect to handle glitch image timing
   useEffect(() => {
     if (showGlitchImage) {
-      console.log("⏰ Setting timer to switch back to normal image in 200ms");
       const timer = setTimeout(() => {
-        console.log("🔄 Switching back to normal image");
         setShowGlitchImage(false);
       }, 200);
       return () => clearTimeout(timer);
@@ -762,6 +816,16 @@ export default function ArchetypeSite(){
     // eslint-disable-next-line no-console
     console.log("%c🎮 Try typing 'd34d' to open quarantine records!", "color:#ffff00; font-size: 12px;");
   },[]);
+
+  // Universal Profile detection easter egg
+  useEffect(() => {
+    if (upProfile.isConnected) {
+      // eslint-disable-next-line no-console
+      console.log("%c🌐 LUKSO_INTEGRATION: Universal Profile detected!", "color:#00ff88; font-size: 14px;");
+      // eslint-disable-next-line no-console
+      console.log("%c🔗 Neural Network Status: Connected", "color:#9cf; font-size: 12px;");
+    }
+  }, [upProfile.isConnected]);
 
   return (
     <main className={`min-h-screen ${bg} font-mono text-zinc-200 selection:bg-pink-300/30`}>
@@ -824,12 +888,9 @@ export default function ArchetypeSite(){
                 src={showGlitchImage ? GLITCH_IMG : ART_IMG} 
                 alt="ARCHETYPE_00" 
                 className="block w-full max-h-[60vh] object-contain transition-opacity duration-100"
-                onLoad={() => console.log(`✅ Image loaded: ${showGlitchImage ? 'GLITCH' : 'NORMAL'}`)}
                 onError={(e) => {
-                  console.error(`❌ Image failed to load: ${showGlitchImage ? 'GLITCH' : 'NORMAL'}`, e);
-                  // Try fallback
+                  // Try fallback on image load error
                   const fallbackSrc = showGlitchImage ? FALLBACK_GLITCH : FALLBACK_ART;
-                  console.log(`🔄 Trying fallback: ${fallbackSrc.substring(0, 50)}...`);
                   e.currentTarget.src = fallbackSrc;
                 }}
               />
@@ -859,10 +920,10 @@ export default function ArchetypeSite(){
 
         {/* GRID: Function cards */}
         <section className="mx-auto grid max-w-6xl grid-cols-1 gap-3 px-4 pb-8 sm:px-6 md:grid-cols-3">
-          {[{icon: Waves, title: "Resonance", text: "Measurable frequency emitted by each fragment."},{icon: Eye, title: "Visibility", text: "Recognition increases with cumulative signal."},{icon: ActivitySquare, title: "Network Events", text: "Raffles, retroactive drops, anomaly triggers — responses, not promises."}].map(({icon:Icon,title,text}) => (
+          {[{icon: "🌊", title: "Resonance", text: "Measurable frequency emitted by each fragment."},{icon: "👁", title: "Visibility", text: "Recognition increases with cumulative signal."},{icon: "⚡", title: "Network Events", text: "Raffles, retroactive drops, anomaly triggers — responses, not promises."}].map(({icon,title,text}) => (
             <div key={title} className="border border-zinc-800 bg-black p-4 sm:p-5">
               <div className="flex items-start gap-3">
-                <Icon className="h-5 w-5 text-zinc-300"/>
+                <span className="text-lg">{icon}</span>
                 <div>
                   <h3 className="tracking-wide text-zinc-100">{title}</h3>
                   <p className="text-sm text-zinc-400">{text}</p>
@@ -923,7 +984,7 @@ export default function ArchetypeSite(){
               <p className="mt-2 text-xs text-zinc-600">Hover the underlined word to see its binary payload.</p>
             </div>
             <div className="border border-zinc-800 p-5">
-              <h3 className="mb-2 flex items-center gap-2 text-lg text-zinc-100"><Shield className="h-5 w-5"/>Hidden Access</h3>
+              <h3 className="mb-2 flex items-center gap-2 text-lg text-zinc-100"><span className="text-lg">🛡️</span>Hidden Access</h3>
               <p className="text-sm text-zinc-400">Enter the Konami code to open the Resonance Lab. Discover the hidden sequence to access quarantine records.</p>
             </div>
           </div>
@@ -940,7 +1001,7 @@ export default function ArchetypeSite(){
         <Dialog open={labOpen} onOpenChange={setLabOpen}>
           <DialogContent className="bg-black border border-zinc-700 sm:max-w-3xl">
             <DialogHeader>
-              <DialogTitle className="flex items-center gap-2 tracking-wide text-zinc-100"><Radio className="h-4 w-4"/> RESONANCE LAB // UNLOCKED</DialogTitle>
+              <DialogTitle className="flex items-center gap-2 tracking-wide text-zinc-100"><span className="text-sm">📻</span> RESONANCE LAB // UNLOCKED</DialogTitle>
             </DialogHeader>
             <div className="grid gap-6 md:grid-cols-2">
               <div>
@@ -970,7 +1031,7 @@ export default function ArchetypeSite(){
         <Dialog open={obitOpen} onOpenChange={setObitOpen}>
           <DialogContent className="bg-black border border-zinc-700 sm:max-w-3xl">
             <DialogHeader>
-              <DialogTitle className="flex items-center gap-2 text-zinc-100"><AlertTriangle className="h-4 w-4"/> QUARANTINE RECORDS</DialogTitle>
+              <DialogTitle className="flex items-center gap-2 text-zinc-100"><span className="text-sm">⚠️</span> QUARANTINE RECORDS</DialogTitle>
             </DialogHeader>
             <div className="space-y-6 text-sm text-zinc-300">
               <div className="flex gap-4 items-start">
@@ -1089,6 +1150,20 @@ export default function ArchetypeSite(){
         {/* FOOTER with hum */}
         <footer className="mx-auto max-w-6xl px-4 pb-20 text-center text-xs text-zinc-600 sm:px-6">
           <div className="mb-3">The system doesn't reward. It reacts. • <Binary label="binary" text="resonance accumulating"/></div>
+          
+          {/* Universal Profile Status */}
+          {upProfile.isConnected && (
+            <div className="mb-3 text-zinc-500">
+              <span className="text-zinc-400">Neural Network Status:</span> Connected • 
+              <span className="ml-1 text-zinc-300">{upProfile.name}</span>
+              {upProfile.address && (
+                <span className="ml-2 text-zinc-600 font-mono text-[10px]">
+                  {upProfile.address.slice(0, 6)}...{upProfile.address.slice(-4)}
+                </span>
+              )}
+            </div>
+          )}
+          
           <div className="mb-4">
             <a id="drop" href="https://universal.page/drops/archetype_00" target="_blank" rel="noreferrer" className="inline-block border border-zinc-700 px-3 py-1 text-zinc-100 hover:bg-zinc-900">Access drop →</a>
           </div>
