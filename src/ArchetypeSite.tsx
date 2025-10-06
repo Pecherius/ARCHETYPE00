@@ -399,6 +399,201 @@ function useHum() {
 }
 
 // ----------------------
+// Terminal Interface Component
+// ----------------------
+const TerminalInterface = () => {
+  const [terminalOutput, setTerminalOutput] = useState<string[]>([]);
+  const [currentCommand, setCurrentCommand] = useState("");
+  const [commandHistory, setCommandHistory] = useState<string[]>([]);
+  const [historyIndex, setHistoryIndex] = useState(-1);
+  const terminalRef = useRef<HTMLDivElement>(null);
+
+  // Auto-scroll to bottom
+  useEffect(() => {
+    if (terminalRef.current) {
+      terminalRef.current.scrollTop = terminalRef.current.scrollHeight;
+    }
+  }, [terminalOutput]);
+
+  // Initial terminal boot sequence
+  useEffect(() => {
+    const bootSequence = [
+      "Initializing ARCHETYPE_00 Terminal...",
+      "Loading neural interface protocols...",
+      "Establishing secure connection...",
+      "Accessing quarantine database...",
+      "WARNING: Unauthorized access detected!",
+      "Activating countermeasures...",
+      "Terminal ready. Type 'help' for available commands.",
+      ""
+    ];
+
+    let index = 0;
+    const interval = setInterval(() => {
+      if (index < bootSequence.length) {
+        setTerminalOutput(prev => [...prev, bootSequence[index]]);
+        index++;
+      } else {
+        clearInterval(interval);
+      }
+    }, 300);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const executeCommand = (cmd: string) => {
+    const command = cmd.trim().toLowerCase();
+    let response: string[] = [];
+
+    switch (command) {
+      case "help":
+        response = [
+          "Available commands:",
+          "  help     - Show this help message",
+          "  status   - Show system status",
+          "  scan     - Scan for anomalies",
+          "  decode   - Decode binary sequences",
+          "  clear    - Clear terminal",
+          "  whoami   - Show current user",
+          "  ls       - List files",
+          "  cat      - Display file contents",
+          ""
+        ];
+        break;
+      case "status":
+        response = [
+          "System Status Report:",
+          "  Neural Network: ONLINE",
+          "  Archetype Sync: UNSTABLE",
+          "  Quarantine Status: BREACHED",
+          "  Active Connections: 1",
+          "  Memory Usage: 87%",
+          "  CPU Load: HIGH",
+          ""
+        ];
+        break;
+      case "scan":
+        response = [
+          "Initiating anomaly scan...",
+          "Scanning neural pathways...",
+          "Detected: 2 entities marked as d34d",
+          "Location: Quarantine Zone Alpha",
+          "Threat Level: CRITICAL",
+          "Recommendation: Immediate containment",
+          ""
+        ];
+        break;
+      case "decode":
+        response = [
+          "Binary Decoder v2.1",
+          "Input: 01000100 00110011 00110100 01000100",
+          "Output: d34d",
+          "Analysis: Access sequence for quarantine breach",
+          "Status: ACTIVE",
+          ""
+        ];
+        break;
+      case "whoami":
+        response = [
+          "Current User: root",
+          "Access Level: ADMINISTRATOR",
+          "Session ID: ARCH-001",
+          "Last Login: Unknown",
+          "Security Clearance: MAXIMUM",
+          ""
+        ];
+        break;
+      case "ls":
+        response = [
+          "Directory listing:",
+          "  drwxr-xr-x 2 root root 4096 Jan 01 00:00 .",
+          "  drwxr-xr-x 3 root root 4096 Jan 01 00:00 ..",
+          "  -rw-r--r-- 1 root root 1024 Jan 01 00:00 quarantine.log",
+          "  -rw-r--r-- 1 root root 2048 Jan 01 00:00 neural_data.bin",
+          "  -rw-r--r-- 1 root root  512 Jan 01 00:00 access_codes.txt",
+          ""
+        ];
+        break;
+      case "cat access_codes.txt":
+        response = [
+          "Access Codes File:",
+          "==================",
+          "Primary: d34d",
+          "Secondary: 01000100 00110011 00110100 01000100",
+          "Emergency: ARCHETYPE_00",
+          "Warning: Unauthorized access will result in immediate termination",
+          ""
+        ];
+        break;
+      case "clear":
+        setTerminalOutput([]);
+        return;
+      default:
+        response = [
+          `Command not found: ${cmd}`,
+          "Type 'help' for available commands",
+          ""
+        ];
+    }
+
+    setTerminalOutput(prev => [...prev, `root@archetype:~$ ${cmd}`, ...response]);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      executeCommand(currentCommand);
+      setCommandHistory(prev => [...prev, currentCommand]);
+      setCurrentCommand("");
+      setHistoryIndex(-1);
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      if (commandHistory.length > 0) {
+        const newIndex = historyIndex === -1 ? commandHistory.length - 1 : Math.max(0, historyIndex - 1);
+        setHistoryIndex(newIndex);
+        setCurrentCommand(commandHistory[newIndex]);
+      }
+    } else if (e.key === "ArrowDown") {
+      e.preventDefault();
+      if (historyIndex !== -1) {
+        const newIndex = historyIndex + 1;
+        if (newIndex >= commandHistory.length) {
+          setHistoryIndex(-1);
+          setCurrentCommand("");
+        } else {
+          setHistoryIndex(newIndex);
+          setCurrentCommand(commandHistory[newIndex]);
+        }
+      }
+    }
+  };
+
+  return (
+    <div className="h-full flex flex-col">
+      <div ref={terminalRef} className="flex-1 overflow-y-auto text-green-400 font-mono text-xs leading-relaxed">
+        {terminalOutput.map((line, index) => (
+          <div key={index} className={line.startsWith("root@") ? "text-green-300" : ""}>
+            {line}
+          </div>
+        ))}
+        <div className="flex items-center">
+          <span className="text-green-300">root@archetype:~$</span>
+          <input
+            type="text"
+            value={currentCommand}
+            onChange={(e) => setCurrentCommand(e.target.value)}
+            onKeyDown={handleKeyDown}
+            className="bg-transparent text-green-400 ml-2 outline-none flex-1"
+            autoFocus
+            placeholder=""
+          />
+          <span className="animate-pulse text-green-400">█</span>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// ----------------------
 // UI atoms
 // ----------------------
 const Binary = ({ text, label }: { text: string; label?: string }) => {
@@ -1160,35 +1355,80 @@ export default function ArchetypeSite(){
 
         {/* Obituaries / d34d */}
         <Dialog open={obitOpen} onOpenChange={setObitOpen}>
-          <DialogContent className="bg-black border border-zinc-700 sm:max-w-3xl">
+          <DialogContent className="bg-black border border-green-500 sm:max-w-4xl max-h-[80vh] overflow-hidden">
             <DialogHeader>
-              <DialogTitle className="flex items-center gap-2 text-zinc-100"><span className="text-sm">⚠️</span> QUARANTINE RECORDS</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-6 text-sm text-zinc-300">
-              <div className="flex gap-4 items-start">
-                <img 
-                  src={QUARANTINE_IMAGES.tsumori} 
-                  alt="Dr. Mikhail R. Tsumori" 
-                  className="w-24 h-24 object-cover border border-zinc-700"
-                  onLoad={() => debugImageLoad(QUARANTINE_IMAGES.tsumori, "Dr. Tsumori")}
-                  onError={() => debugImageLoad(QUARANTINE_IMAGES.tsumori, "Dr. Tsumori")}
-                />
-                <div>
-                  <div className="font-semibold">Dr. Mikhail R. Tsumori — <span className="text-zinc-500">presumed d34d</span></div>
-                  <p className="text-zinc-500">Lead Resonance Engineer. Neural feedback loop persisted beyond termination threshold.</p>
-                </div>
+              <div className="border-b border-green-500 pb-2">
+                <DialogTitle className="flex items-center gap-2 text-green-400 font-mono text-sm">
+                  <span className="text-green-500">root@archetype:~$</span> QUARANTINE_TERMINAL v2.1.3
+                  <div className="flex gap-1 ml-auto">
+                    <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                    <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  </div>
+                </DialogTitle>
               </div>
-              <div className="flex gap-4 items-start">
-                <img 
-                  src={QUARANTINE_IMAGES.hoshino} 
-                  alt="Kai N. Hoshino" 
-                  className="w-24 h-24 object-cover border border-zinc-700"
-                  onLoad={() => debugImageLoad(QUARANTINE_IMAGES.hoshino, "Kai Hoshino")}
-                  onError={() => debugImageLoad(QUARANTINE_IMAGES.hoshino, "Kai Hoshino")}
-                />
-                <div>
-                  <div className="font-semibold">Kai N. Hoshino — <span className="text-zinc-500">presumed d34d</span></div>
-                  <p className="text-zinc-500">System Architect / Codebreaker. Layer 3A breach; archetype frequencies duplicated and re-encrypted.</p>
+            </DialogHeader>
+            
+            <div className="flex h-[60vh]">
+              {/* Left Panel - Terminal */}
+              <div className="flex-1 bg-zinc-900 border-r border-green-500 p-4 font-mono text-xs overflow-y-auto">
+                <TerminalInterface />
+              </div>
+              
+              {/* Right Panel - Data */}
+              <div className="w-80 bg-zinc-950 p-4 overflow-y-auto">
+                <div className="space-y-4 text-sm">
+                  <div className="border border-green-500 p-3 bg-zinc-900/50">
+                    <div className="text-green-400 font-semibold mb-2">[CLASSIFIED_PROFILES]</div>
+                    <div className="space-y-3">
+                      <div className="flex gap-3 items-start">
+                        <img 
+                          src={QUARANTINE_IMAGES.tsumori} 
+                          alt="Dr. Mikhail R. Tsumori" 
+                          className="w-16 h-16 object-cover border border-green-500"
+                          onLoad={() => debugImageLoad(QUARANTINE_IMAGES.tsumori, "Dr. Tsumori")}
+                          onError={() => debugImageLoad(QUARANTINE_IMAGES.tsumori, "Dr. Tsumori")}
+                        />
+                        <div>
+                          <div className="text-green-300 font-semibold">Dr. Mikhail R. Tsumori</div>
+                          <div className="text-red-400 text-xs">STATUS: d34d</div>
+                          <p className="text-zinc-400 text-xs mt-1">Lead Resonance Engineer. Neural feedback loop persisted beyond termination threshold.</p>
+                        </div>
+                      </div>
+                      <div className="flex gap-3 items-start">
+                        <img 
+                          src={QUARANTINE_IMAGES.hoshino} 
+                          alt="Kai N. Hoshino" 
+                          className="w-16 h-16 object-cover border border-green-500"
+                          onLoad={() => debugImageLoad(QUARANTINE_IMAGES.hoshino, "Kai Hoshino")}
+                          onError={() => debugImageLoad(QUARANTINE_IMAGES.hoshino, "Kai Hoshino")}
+                        />
+                        <div>
+                          <div className="text-green-300 font-semibold">Kai N. Hoshino</div>
+                          <div className="text-red-400 text-xs">STATUS: d34d</div>
+                          <p className="text-zinc-400 text-xs mt-1">System Architect / Codebreaker. Layer 3A breach; archetype frequencies duplicated and re-encrypted.</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="border border-green-500 p-3 bg-zinc-900/50">
+                    <div className="text-green-400 font-semibold mb-2">[SYSTEM_STATUS]</div>
+                    <div className="space-y-1 text-xs">
+                      <div className="flex justify-between">
+                        <span className="text-zinc-400">Neural Network:</span>
+                        <span className="text-green-400">ONLINE</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-zinc-400">Archetype Sync:</span>
+                        <span className="text-yellow-400">UNSTABLE</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-zinc-400">Quarantine:</span>
+                        <span className="text-red-400">BREACHED</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
