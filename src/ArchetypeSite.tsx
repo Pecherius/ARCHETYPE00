@@ -210,10 +210,9 @@ function useGlobalKeys(
   onD34D: () => void
 ) {
   useEffect(() => {
-    const bufferRef = { current: "" };
-    const h = (e: KeyboardEvent) => {
-      // Debug: Key tracking (reduced logging)
-      
+    let d34dBuffer = "";
+    
+    const handleKeyPress = (e: KeyboardEvent) => {
       // Handle single key shortcuts first
       if (e.key.toLowerCase() === "r") {
         pulse();
@@ -228,19 +227,20 @@ function useGlobalKeys(
         return;
       }
       
-      // Only process alphanumeric keys for d34d buffer
+      // Process d34d sequence - only alphanumeric characters
       if (e.key.length === 1 && /[a-zA-Z0-9]/.test(e.key)) {
-        bufferRef.current = (bufferRef.current + e.key.toLowerCase()).slice(-4);
-        if (bufferRef.current === "d34d") {
-          console.log("🎯 d34d detected! Triggering quarantine access...");
+        d34dBuffer = (d34dBuffer + e.key.toLowerCase()).slice(-4);
+        
+        if (d34dBuffer === "d34d") {
+          console.log("🎯 QUARANTINE ACCESS GRANTED - d34d sequence detected!");
           onD34D();
-          bufferRef.current = ""; // Reset buffer after trigger
+          d34dBuffer = ""; // Reset after successful trigger
         }
       }
-      // Don't reset buffer on non-alphanumeric keys - let it persist
     };
-    window.addEventListener("keydown", h);
-    return () => window.removeEventListener("keydown", h);
+    
+    window.addEventListener("keydown", handleKeyPress);
+    return () => window.removeEventListener("keydown", handleKeyPress);
   }, [toggleGlitch, pulse, toggleVHS, onD34D]);
 }
 
@@ -888,7 +888,11 @@ export default function ArchetypeSite(){
                 src={showGlitchImage ? GLITCH_IMG : ART_IMG} 
                 alt="ARCHETYPE_00" 
                 className="block w-full max-h-[60vh] object-contain transition-opacity duration-100"
+                onLoad={() => {
+                  console.log(`🖼️ Image loaded successfully: ${showGlitchImage ? 'GLITCH' : 'NORMAL'}`);
+                }}
                 onError={(e) => {
+                  console.log(`❌ Image failed to load: ${showGlitchImage ? 'GLITCH' : 'NORMAL'}`);
                   // Try fallback on image load error
                   const fallbackSrc = showGlitchImage ? FALLBACK_GLITCH : FALLBACK_ART;
                   e.currentTarget.src = fallbackSrc;
@@ -901,6 +905,10 @@ export default function ArchetypeSite(){
                    style={{ transform: "translateX(-1px)", filter: "hue-rotate(300deg)" }}/>
               <div className="absolute left-2 top-2 text-[10px] text-zinc-500">CHANNEL_A // VHS_CAPTURE</div>
               <div className="absolute right-2 bottom-2 text-[10px] text-zinc-500">RES_ON: <span className="text-pink-400">LOW</span></div>
+              {/* Debug indicator */}
+              <div className="absolute left-2 bottom-2 text-[10px] text-yellow-400">
+                {showGlitchImage ? "GLITCH_MODE" : "NORMAL_MODE"}
+              </div>
               {/* audio-reactive rings */}
               <div className="pointer-events-none absolute left-1/2 top-1/2 h-56 w-56 -translate-x-1/2 -translate-y-1/2">
                 <Ring delay={0} scale={1 + level*0.6}/>
