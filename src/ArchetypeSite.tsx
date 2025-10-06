@@ -16,6 +16,11 @@ import { Shield, ActivitySquare, Waves, Eye, AlertTriangle, Radio } from "lucide
 
 const bg = "bg-black";
 const ART_IMG = "https://bafybeibvwuxvi3hoxke7rtmlbr6metsldow7rbf7p4r67rjcqkuk2l2taa.ipfs.dweb.link/?filename=777777777777777777.png"; // IPFS-hosted render
+const GLITCH_IMG = "https://bafybeiggg5uigjiwqn3yebk6gdd456huk52s3dbq2j25cks4oxavtjqn54.ipfs.dweb.link?filename=888888888888888.png"; // Glitch image
+const QUARANTINE_IMAGES = {
+  tsumori: "https://bafybeifizn4hnwivlchzgjzapk5ltdskmhb35ta2vmjfgulxiuaowmpnua.ipfs.dweb.link?filename=Dr.%20Mikhail%20R.%20Tsumori.png",
+  hoshino: "https://bafybeibr2a76opsgem3tecqz2qti4vddzwrxdq7d4ylntqzrqap6p2ti5y.ipfs.dweb.link?filename=Kai%20N.%20Hoshino.png"
+};
 
 // ----------------------
 // Utility hooks
@@ -131,30 +136,19 @@ function useHum() {
 // UI atoms
 // ----------------------
 const Binary = ({ text, label }: { text: string; label?: string }) => {
-  const [showTooltip, setShowTooltip] = useState(false);
   const bin = useMemo(() => text.split("").map(c => c.charCodeAt(0).toString(2).padStart(8,"0")).join(" "), [text]);
   
   return (
-    <span 
-      className="relative cursor-help text-muted-foreground underline decoration-dotted"
-      onMouseEnter={() => setShowTooltip(true)}
-      onMouseLeave={() => setShowTooltip(false)}
-    >
-      {label ?? "binary"}
-      {showTooltip && (
-        <div className="absolute z-50 bg-zinc-800 border border-zinc-600 p-2 rounded text-xs whitespace-nowrap"
-             style={{ 
-               top: '100%',
-               left: '50%',
-               transform: 'translateX(-50%)',
-               marginTop: '4px',
-               maxWidth: '28rem',
-               wordBreak: 'break-word'
-             }}>
-          <p className="font-mono">{bin}</p>
-        </div>
-      )}
-    </span>
+    <Tooltip>
+      <TooltipTrigger>
+        <span className="cursor-help text-muted-foreground underline decoration-dotted">
+          {label ?? "binary"}
+        </span>
+      </TooltipTrigger>
+      <TooltipContent className="bg-zinc-800 border border-zinc-600 p-2 text-xs max-w-28rem">
+        <p className="font-mono break-words">{bin}</p>
+      </TooltipContent>
+    </Tooltip>
   );
 };
 
@@ -213,22 +207,122 @@ function CodeRain(){
   );
 }
 
+// Game component for cryptic tic-tac-toe
+function CrypticGame() {
+  const [board, setBoard] = useState<(string | null)[]>(Array(9).fill(null));
+  const [isXNext, setIsXNext] = useState(true);
+  const [gameOver, setGameOver] = useState(false);
+  const [winner, setWinner] = useState<string | null>(null);
+  const [messages, setMessages] = useState<string[]>([]);
+  
+  const pepitoMessages = [
+    "PEPITO_ECHO: Resonance detected in grid pattern",
+    "ARCHETYPE_00: Signal interference in sector 7",
+    "PUNKABLE_SYSTEM: Anomaly detected in tic-tac-toe matrix",
+    "QUARANTINE_LOG: Neural feedback loop activated",
+    "RESONANCE_LAB: Frequency modulation successful",
+    "ETHEAL_NETWORK: Cross-dimensional communication established"
+  ];
+
+  const checkWinner = (squares: (string | null)[]): string | null => {
+    const lines = [
+      [0, 1, 2], [3, 4, 5], [6, 7, 8],
+      [0, 3, 6], [1, 4, 7], [2, 5, 8],
+      [0, 4, 8], [2, 4, 6]
+    ];
+    
+    for (let i = 0; i < lines.length; i++) {
+      const [a, b, c] = lines[i];
+      if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+        return squares[a];
+      }
+    }
+    return null;
+  };
+
+  const handleClick = (i: number) => {
+    if (board[i] || gameOver) return;
+    
+    const newBoard = [...board];
+    newBoard[i] = isXNext ? 'X' : 'O';
+    setBoard(newBoard);
+    
+    const gameWinner = checkWinner(newBoard);
+    if (gameWinner) {
+      setWinner(gameWinner);
+      setGameOver(true);
+      setMessages(prev => [...prev, `WINNER: ${gameWinner} - ${pepitoMessages[Math.floor(Math.random() * pepitoMessages.length)]}`]);
+    } else if (newBoard.every(square => square !== null)) {
+      setGameOver(true);
+      setMessages(prev => [...prev, "DRAW - System equilibrium maintained"]);
+    } else {
+      setIsXNext(!isXNext);
+      setMessages(prev => [...prev, pepitoMessages[Math.floor(Math.random() * pepitoMessages.length)]]);
+    }
+  };
+
+  const resetGame = () => {
+    setBoard(Array(9).fill(null));
+    setIsXNext(true);
+    setGameOver(false);
+    setWinner(null);
+    setMessages([]);
+  };
+
+  return (
+    <div className="border border-zinc-800 p-4 bg-zinc-950">
+      <h3 className="text-lg font-semibold text-zinc-100 mb-4">CRYPTIC MATRIX // PEPITOVERSE_ECHO</h3>
+      <div className="grid grid-cols-3 gap-1 mb-4">
+        {board.map((square, i) => (
+          <button
+            key={i}
+            onClick={() => handleClick(i)}
+            className="w-16 h-16 border border-zinc-700 bg-zinc-900 text-zinc-100 hover:bg-zinc-800 disabled:opacity-50"
+            disabled={gameOver}
+          >
+            {square}
+          </button>
+        ))}
+      </div>
+      <div className="space-y-2 mb-4">
+        <p className="text-sm text-zinc-400">Status: {gameOver ? (winner ? `Winner: ${winner}` : 'Draw') : `Next: ${isXNext ? 'X' : 'O'}`}</p>
+        <button 
+          onClick={resetGame}
+          className="px-3 py-1 text-xs border border-zinc-700 bg-zinc-800 text-zinc-100 hover:bg-zinc-700"
+        >
+          RESET_MATRIX
+        </button>
+      </div>
+      <div className="max-h-32 overflow-y-auto">
+        <h4 className="text-xs text-zinc-500 mb-2">SYSTEM_MESSAGES:</h4>
+        {messages.map((msg, i) => (
+          <p key={i} className="text-xs text-zinc-400 font-mono">{msg}</p>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function ArchetypeSite(){
   const [labOpen, setLabOpen] = useState(false);
   const [obitOpen, setObitOpen] = useState(false);
   const [glitch, setGlitch] = useState(true); // baseline glitch ON
   const [vhs, setVhs] = useState(true); // VHS baseline ON (can toggle with ":")
   const [pulseKey, setPulseKey] = useState(0);
+  const [showGlitchImage, setShowGlitchImage] = useState(false);
   const { active: humOn, toggle: toggleHum, level } = useHum();
   const artControls = useAnimation();
 
   useKonami(() => setLabOpen(true));
   useGlobalKeys(() => setGlitch(v => !v), () => setPulseKey(k => k + 1), () => setVhs(v => !v), () => setObitOpen(true));
 
-  // Random glitch bursts (subtle, non-blocking)
+  // Random glitch bursts (subtle, non-blocking) + image switching
   useInterval(() => {
     if (!glitch) return;
     artControls.start({ x: [0, 1, -1, 0] , transition: { duration: 0.18 } });
+    // Switch to glitch image briefly
+    setShowGlitchImage(true);
+    setTimeout(() => setShowGlitchImage(false), 200);
   }, 2500);
 
   // Console easter eggs (harmless fun for repo explorers)
@@ -240,8 +334,9 @@ export default function ArchetypeSite(){
   },[]);
 
   return (
-    <main className={`min-h-screen ${bg} font-mono text-zinc-200 selection:bg-pink-300/30`}>
-      <div className="relative overflow-hidden">
+    <TooltipProvider>
+      <main className={`min-h-screen ${bg} font-mono text-zinc-200 selection:bg-pink-300/30`}>
+        <div className="relative overflow-hidden">
         <CodeRain/>
         {vhs && (
           <div className="pointer-events-none fixed inset-0 opacity-90">
@@ -270,11 +365,15 @@ export default function ArchetypeSite(){
               className={`relative border border-zinc-800 bg-zinc-950 p-2 ${glitch ? "animate-pulse" : ""}`}
             >
               <div className="pointer-events-none absolute inset-0 bg-[repeating-linear-gradient(0deg,rgba(255,255,255,0.02)_0,rgba(255,255,255,0.02)_2px,rgba(255,255,255,0.06)_3px,rgba(255,255,255,0.06)_4px)]" />
-              <img src={ART_IMG} alt="ARCHETYPE_00" className="block w-full max-h-[60vh] object-contain"/>
+              <img 
+                src={showGlitchImage ? GLITCH_IMG : ART_IMG} 
+                alt="ARCHETYPE_00" 
+                className="block w-full max-h-[60vh] object-contain transition-opacity duration-100"
+              />
               {/* glitch clones */}
-              <img src={ART_IMG} aria-hidden className="pointer-events-none absolute inset-0 w-full opacity-40 mix-blend-screen"
+              <img src={showGlitchImage ? GLITCH_IMG : ART_IMG} aria-hidden className="pointer-events-none absolute inset-0 w-full opacity-40 mix-blend-screen"
                    style={{ transform: "translateX(1px)", filter: "contrast(110%) saturate(0)" }}/>
-              <img src={ART_IMG} aria-hidden className="pointer-events-none absolute inset-0 w-full opacity-30 mix-blend-screen"
+              <img src={showGlitchImage ? GLITCH_IMG : ART_IMG} aria-hidden className="pointer-events-none absolute inset-0 w-full opacity-30 mix-blend-screen"
                    style={{ transform: "translateX(-1px)", filter: "hue-rotate(300deg)" }}/>
               <div className="absolute left-2 top-2 text-[10px] text-zinc-500">CHANNEL_A // VHS_CAPTURE</div>
               <div className="absolute right-2 bottom-2 text-[10px] text-zinc-500">RES_ON: <span className="text-pink-400">LOW</span></div>
@@ -406,22 +505,57 @@ export default function ArchetypeSite(){
 
         {/* Obituaries / d34d */}
         <Dialog open={obitOpen} onOpenChange={setObitOpen}>
-          <DialogContent className="bg-black border border-zinc-700 sm:max-w-2xl">
+          <DialogContent className="bg-black border border-zinc-700 sm:max-w-3xl">
             <DialogHeader>
               <DialogTitle className="flex items-center gap-2 text-zinc-100"><AlertTriangle className="h-4 w-4"/> QUARANTINE RECORDS</DialogTitle>
             </DialogHeader>
-            <div className="space-y-4 text-sm text-zinc-300">
-              <div>
-                <div className="font-semibold">Dr. Mikhail R. Tsumori — <span className="text-zinc-500">presumed d34d</span></div>
-                <p className="text-zinc-500">Lead Resonance Engineer. Neural feedback loop persisted beyond termination threshold.</p>
+            <div className="space-y-6 text-sm text-zinc-300">
+              <div className="flex gap-4 items-start">
+                <img 
+                  src={QUARANTINE_IMAGES.tsumori} 
+                  alt="Dr. Mikhail R. Tsumori" 
+                  className="w-24 h-24 object-cover border border-zinc-700"
+                />
+                <div>
+                  <div className="font-semibold">Dr. Mikhail R. Tsumori — <span className="text-zinc-500">presumed d34d</span></div>
+                  <p className="text-zinc-500">Lead Resonance Engineer. Neural feedback loop persisted beyond termination threshold.</p>
+                </div>
               </div>
-              <div>
-                <div className="font-semibold">Kai N. Hoshino — <span className="text-zinc-500">presumed d34d</span></div>
-                <p className="text-zinc-500">System Architect / Codebreaker. Layer 3A breach; archetype frequencies duplicated and re-encrypted.</p>
+              <div className="flex gap-4 items-start">
+                <img 
+                  src={QUARANTINE_IMAGES.hoshino} 
+                  alt="Kai N. Hoshino" 
+                  className="w-24 h-24 object-cover border border-zinc-700"
+                />
+                <div>
+                  <div className="font-semibold">Kai N. Hoshino — <span className="text-zinc-500">presumed d34d</span></div>
+                  <p className="text-zinc-500">System Architect / Codebreaker. Layer 3A breach; archetype frequencies duplicated and re-encrypted.</p>
+                </div>
               </div>
             </div>
           </DialogContent>
         </Dialog>
+
+        {/* CRYPTIC GAME SECTION */}
+        <section className="mx-auto max-w-6xl px-4 pb-8 sm:px-6">
+          <h2 className="mb-4 text-lg tracking-wide text-zinc-100">CRYPTIC MATRIX // PEPITOVERSE_ECHO</h2>
+          <div className="grid gap-6 md:grid-cols-2">
+            <CrypticGame />
+            <div className="border border-zinc-800 p-4 bg-zinc-950">
+              <h3 className="text-lg font-semibold text-zinc-100 mb-4">SYSTEM_INSTRUCTIONS</h3>
+              <div className="space-y-3 text-sm text-zinc-400">
+                <p>• Each move generates resonance patterns in the PEPITOVERSE</p>
+                <p>• Winning combinations trigger special system messages</p>
+                <p>• The matrix responds to your neural frequency</p>
+                <p>• Draws maintain system equilibrium</p>
+                <p>• Messages contain hidden ARCHETYPE_00 data</p>
+              </div>
+              <div className="mt-4 text-xs text-zinc-600">
+                <p>Note: This game operates offline and stores no data. Each session is isolated.</p>
+              </div>
+            </div>
+          </div>
+        </section>
 
         {/* PEPITOVERSE 2026 — easter egg */}
         <PepitoVerse/>
@@ -436,7 +570,8 @@ export default function ArchetypeSite(){
             <span className={`h-2 w-2 ${humOn ? "bg-pink-500" : "bg-zinc-400"}`}/> {humOn ? "res_hum: on" : "res_hum: off"}
           </button>
         </footer>
-      </div>
-    </main>
+        </div>
+      </main>
+    </TooltipProvider>
   );
 }
