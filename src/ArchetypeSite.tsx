@@ -59,6 +59,7 @@ import { Shield, ActivitySquare, Waves, Eye, AlertTriangle, Radio } from "lucide
  * - All features implemented and functional
  * - Deployed to GitHub Pages: https://punkable.github.io/ARCHETYPE00/
  * - No errors, fully working
+ * - Last update: Enhanced game mechanics and quarantine access
  * 
  * KEY FEATURES:
  * - Main title "ARCHETYPE_00" with glitch effects
