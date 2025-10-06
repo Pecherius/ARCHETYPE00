@@ -172,7 +172,7 @@ function PepitoVerse(){
               <DialogTitle className="tracking-wide text-zinc-100">PEPITOVERSE_2026 // SCHEDULED EMISSION</DialogTitle>
             </DialogHeader>
             <p className="text-sm text-zinc-400">Unverified node detected. If resonance density ≥ threshold, system may open a side-channel in 2026. This is not a promise. It is a probability.</p>
-            <div className="mt-3 text-[10px] text-zinc-500">01010000 01000101 01010000 01001001 01010100 01001111 01010110 01000101 01010010 01010011 01000101 00101111 00110010 00110000 00110110</div>
+            <div className="mt-3 text-[10px] text-zinc-500">01010000 01000101 01010000 01001001 01010100 01001111 01010110 01000101 01010010 01010011 01000101 00101111 00110000 00110000 00110110</div>
           </DialogContent>
         </Dialog>
       </div>
@@ -316,7 +316,7 @@ export default function ArchetypeSite(){
             </div>
             <div className="border border-zinc-800 p-5">
               <h3 className="mb-2 text-zinc-100">Why LSP7 and not LSP8?</h3>
-              <p className="text-sm text-zinc-400">LSP7 allows identical editions with programmable permissions. Our model doesn’t rely on trait rarity; it relies on <em>signal</em>. Uniform form, divergent resonance.</p>
+              <p className="text-sm text-zinc-400">LSP7 allows identical editions with programmable permissions. Our model doesn't rely on trait rarity; it relies on <em>signal</em>. Uniform form, divergent resonance.</p>
             </div>
             <div className="border border-zinc-800 p-5">
               <h3 className="mb-2 text-zinc-100">How do reactions work?</h3>
@@ -338,7 +338,7 @@ export default function ArchetypeSite(){
           <div className="grid gap-3 md:grid-cols-2">
             <div className="border border-zinc-800 p-5">
               <h3 className="mb-2 text-lg tracking-wide text-zinc-100">System Notice</h3>
-              <p className="text-sm text-zinc-400">Holding one doesn’t grant access — the system simply <Binary label="recognizes" text="recognizes resonance"/>.</p>
+              <p className="text-sm text-zinc-400">Holding one doesn't grant access — the system simply <Binary label="recognizes" text="recognizes resonance"/>.</p>
               <p className="mt-2 text-xs text-zinc-600">Hover the underlined word to see its binary payload.</p>
             </div>
             <div className="border border-zinc-800 p-5">
@@ -409,7 +409,7 @@ export default function ArchetypeSite(){
 
         {/* FOOTER with hum */}
         <footer className="mx-auto max-w-6xl px-4 pb-20 text-center text-xs text-zinc-600 sm:px-6">
-          <div className="mb-3">The system doesn’t reward. It reacts. • <Binary label="binary" text="resonance accumulating"/></div>
+          <div className="mb-3">The system doesn't reward. It reacts. • <Binary label="binary" text="resonance accumulating"/></div>
           <div className="mb-4">
             <a id="drop" href="https://universal.page/drops/archetype_00" target="_blank" rel="noreferrer" className="inline-block border border-zinc-700 px-3 py-1 text-zinc-100 hover:bg-zinc-900">Access drop →</a>
           </div>
