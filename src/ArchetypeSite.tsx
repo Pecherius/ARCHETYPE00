@@ -59,7 +59,7 @@ import { Shield, ActivitySquare, Waves, Eye, AlertTriangle, Radio } from "lucide
  * - All features implemented and functional
  * - Deployed to GitHub Pages: https://punkable.github.io/ARCHETYPE00/
  * - No errors, fully working
- * - Last update: Enhanced game mechanics and quarantine access - v2.1
+ * - Last update: Enhanced game mechanics and quarantine access - v2.2 - CACHE BUST
  * 
  * KEY FEATURES:
  * - Main title "ARCHETYPE_00" with glitch effects
@@ -744,7 +744,11 @@ export default function ArchetypeSite(){
     // eslint-disable-next-line no-console
     console.log("%c🔧 CODE_QUALITY: This code is a mess, but it works. That's what matters.", "color:#f99");
     // eslint-disable-next-line no-console
-    console.log("%c🚀 DEPLOYMENT_DEBUG: If you see this, the site is working! GitHub Pages is live.", "color:#0f0");
+    console.log("%c🚀 ARCHETYPE_00 v2.2 - CACHE BUST VERSION LOADED! 🚀", "color:#ff00b4; font-size: 20px; font-weight: bold; background: #000; padding: 10px;");
+    // eslint-disable-next-line no-console
+    console.log("%c✅ ALL FEATURES WORKING: d34d, tooltips, image glitch, neural ping pong", "color:#00ff88; font-size: 14px;");
+    // eslint-disable-next-line no-console
+    console.log("%c🎮 Try typing 'd34d' to open quarantine records!", "color:#ffff00; font-size: 12px;");
   },[]);
 
   return (
