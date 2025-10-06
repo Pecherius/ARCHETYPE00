@@ -405,7 +405,7 @@ function NeuralPingPong() {
     return () => clearInterval(gameLoop);
   }, [gameState, paddle.x, score, glitchIntensity]);
   
-  // Draw function
+  // Draw function with cyberpunk background
   useEffect(() => {
     if (gameState !== 'playing') return;
     
@@ -415,9 +415,41 @@ function NeuralPingPong() {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
     
-    // Clear canvas
-    ctx.fillStyle = '#000000';
-    ctx.fillRect(0, 0, 800, 600);
+    const canvasWidth = canvas.width;
+    const canvasHeight = canvas.height;
+    
+    // Clear canvas with animated background
+    const time = Date.now() * 0.001;
+    const hue = (time * 50) % 360;
+    ctx.fillStyle = `hsl(${hue}, 20%, 5%)`;
+    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+    
+    // Draw geometric patterns
+    ctx.strokeStyle = `hsla(${hue + 120}, 70%, 50%, 0.3)`;
+    ctx.lineWidth = 2;
+    for (let i = 0; i < 20; i++) {
+      const x = (Math.sin(time + i) * canvasWidth / 2) + canvasWidth / 2;
+      const y = (Math.cos(time * 0.5 + i) * canvasHeight / 2) + canvasHeight / 2;
+      ctx.beginPath();
+      ctx.arc(x, y, 30 + Math.sin(time + i) * 20, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+    
+    // Draw grid lines
+    ctx.strokeStyle = `hsla(${hue + 240}, 50%, 30%, 0.2)`;
+    ctx.lineWidth = 1;
+    for (let i = 0; i < canvasWidth; i += 50) {
+      ctx.beginPath();
+      ctx.moveTo(i, 0);
+      ctx.lineTo(i, canvasHeight);
+      ctx.stroke();
+    }
+    for (let i = 0; i < canvasHeight; i += 50) {
+      ctx.beginPath();
+      ctx.moveTo(0, i);
+      ctx.lineTo(canvasWidth, i);
+      ctx.stroke();
+    }
     
     // Glitch effect
     if (glitchIntensity > 0) {
@@ -427,29 +459,35 @@ function NeuralPingPong() {
       });
     }
     
-    // Draw ball
+    // Draw ball with glow effect
+    ctx.shadowColor = '#00ff88';
+    ctx.shadowBlur = 20;
     ctx.fillStyle = '#00ff88';
     ctx.fillRect(ball.x - 5, ball.y - 5, 10, 10);
+    ctx.shadowBlur = 0;
     
-    // Draw paddle
+    // Draw paddle with glow effect
+    ctx.shadowColor = '#ff0088';
+    ctx.shadowBlur = 15;
     ctx.fillStyle = '#ff0088';
     ctx.fillRect(paddle.x, paddle.y, paddle.width, 20);
+    ctx.shadowBlur = 0;
     
-    // Draw score
+    // Draw score with cyberpunk style
     ctx.fillStyle = '#ffffff';
-    ctx.font = '20px monospace';
+    ctx.font = 'bold 16px monospace';
     ctx.fillText(`SCORE: ${score}`, 20, 30);
-    ctx.fillText(`SPEED: ${speed.toFixed(1)}`, 20, 60);
+    ctx.fillText(`SPEED: ${speed.toFixed(1)}`, 20, 55);
     
     // Draw glitch warning
     if (glitchIntensity > 0.5) {
       ctx.fillStyle = '#ff0000';
-      ctx.font = '16px monospace';
-      ctx.fillText('WARNING: EPILEPTIC EFFECTS', 20, 90);
+      ctx.font = 'bold 14px monospace';
+      ctx.fillText('WARNING: NEURAL OVERLOAD', 20, 80);
     }
   }, [ball, paddle, score, speed, glitchIntensity, glitchLines, gameState]);
   
-  // Keyboard controls
+  // Keyboard and touch controls
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
       if (gameState !== 'playing') return;
@@ -462,9 +500,52 @@ function NeuralPingPong() {
       }
     };
     
+    const handleTouch = (e: TouchEvent) => {
+      if (gameState !== 'playing') return;
+      e.preventDefault();
+      
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+      
+      const rect = canvas.getBoundingClientRect();
+      const touch = e.touches[0];
+      const x = touch.clientX - rect.left;
+      const canvasWidth = canvas.width;
+      
+      // Convert touch position to paddle position
+      const newX = (x / rect.width) * canvasWidth - paddle.width / 2;
+      const clampedX = Math.max(0, Math.min(newX, canvasWidth - paddle.width));
+      
+      setPaddle(prev => ({ ...prev, x: clampedX }));
+    };
+    
+    const handleMouseMove = (e: MouseEvent) => {
+      if (gameState !== 'playing') return;
+      
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+      
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const canvasWidth = canvas.width;
+      
+      // Convert mouse position to paddle position
+      const newX = (x / rect.width) * canvasWidth - paddle.width / 2;
+      const clampedX = Math.max(0, Math.min(newX, canvasWidth - paddle.width));
+      
+      setPaddle(prev => ({ ...prev, x: clampedX }));
+    };
+    
     window.addEventListener('keydown', handleKeyPress);
-    return () => window.removeEventListener('keydown', handleKeyPress);
-  }, [gameState]);
+    window.addEventListener('touchmove', handleTouch, { passive: false });
+    window.addEventListener('mousemove', handleMouseMove);
+    
+    return () => {
+      window.removeEventListener('keydown', handleKeyPress);
+      window.removeEventListener('touchmove', handleTouch);
+      window.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, [gameState, paddle.width]);
   
   const startGame = () => {
     setGameState('playing');
@@ -506,8 +587,9 @@ function NeuralPingPong() {
         <h3 className="text-lg font-semibold text-zinc-100 mb-4">NEURAL_PING_PONG // RESONANCE_MODE</h3>
         <div className="space-y-4">
           <p className="text-sm text-zinc-400">
-            Use ← → arrow keys to control the paddle. Ball gets faster with each hit.
-            Reach 50 points to win an NFT. Warning: Epileptic effects at high speeds.
+            Use ← → arrow keys, mouse movement, or touch to control the paddle. 
+            Ball gets faster with each hit. Reach 50 points to win an NFT. 
+            Warning: Neural overload effects at high speeds.
           </p>
           <button 
             onClick={startGame}
@@ -537,16 +619,21 @@ function NeuralPingPong() {
   
   return (
     <div className="border border-zinc-800 p-4 bg-zinc-950">
-        <h3 className="text-lg font-semibold text-zinc-100 mb-4">NEURAL_PING_PONG // ACTIVE</h3>
-      <div className="relative">
+      <h3 className="text-lg font-semibold text-zinc-100 mb-4">NEURAL_PING_PONG // ACTIVE</h3>
+      <div className="relative w-full">
         <canvas 
           ref={canvasRef}
           width={800}
           height={600}
-          className="border border-zinc-700 bg-black"
+          className="w-full max-w-full h-auto border border-zinc-700 bg-black"
+          style={{ maxHeight: '60vh' }}
         />
         <div className="mt-2 text-xs text-zinc-500">
-          Controls: ← → arrow keys | Score: {score} | Speed: {speed.toFixed(1)}
+          <div className="flex flex-wrap gap-4">
+            <span>Controls: ← → keys, mouse, touch</span>
+            <span>Score: {score}</span>
+            <span>Speed: {speed.toFixed(1)}</span>
+          </div>
         </div>
       </div>
     </div>
@@ -560,11 +647,16 @@ export default function ArchetypeSite(){
   const [vhs, setVhs] = useState(true); // VHS baseline ON (can toggle with ":")
   const [pulseKey, setPulseKey] = useState(0);
   const [showGlitchImage, setShowGlitchImage] = useState(false);
+  const [d34dNotification, setD34dNotification] = useState(false);
   const { active: humOn, toggle: toggleHum, level } = useHum();
   const artControls = useAnimation();
 
   useKonami(() => setLabOpen(true));
-  useGlobalKeys(() => setGlitch(v => !v), () => setPulseKey(k => k + 1), () => setVhs(v => !v), () => setObitOpen(true));
+  useGlobalKeys(() => setGlitch(v => !v), () => setPulseKey(k => k + 1), () => setVhs(v => !v), () => {
+    setObitOpen(true);
+    setD34dNotification(true);
+    setTimeout(() => setD34dNotification(false), 3000);
+  });
 
   // Random glitch bursts (subtle, non-blocking) + image switching
   useInterval(() => {
@@ -607,6 +699,18 @@ export default function ArchetypeSite(){
     <TooltipProvider>
       <main className={`min-h-screen ${bg} font-mono text-zinc-200 selection:bg-pink-300/30`}>
         <div className="relative overflow-hidden">
+        
+        {/* d34d Notification */}
+        {d34dNotification && (
+          <motion.div
+            initial={{ opacity: 0, y: -50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -50 }}
+            className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 bg-red-900/90 border border-red-500 px-4 py-2 rounded text-red-100 text-sm font-mono"
+          >
+            QUARANTINE ACCESS GRANTED
+          </motion.div>
+        )}
         <CodeRain/>
         {vhs && (
           <div className="pointer-events-none fixed inset-0 opacity-90">
@@ -638,7 +742,7 @@ export default function ArchetypeSite(){
           </motion.div>
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.9 }} className="text-[10px] uppercase tracking-[0.3em] text-zinc-500">origin · anomaly · resonance</motion.div>
           <p className="max-w-3xl text-zinc-400 leading-relaxed">
-            ARCHETYPE_00 is a corrupted fragment, a residual anomaly recovered from damaged chain archives. Its internal structure is unstable, yet it continues to emit measurable resonance throughout the Punkable Ethereal System. Each fragment is identical in form, but the signal of every holder resonates differently. The more fragments you hold, the stronger your echo becomes.
+            ARCHETYPE_00 is a corrupted fragment, a residual anomaly recovered from damaged chain archives. Its internal structure is unstable, yet it continues to emit measurable resonance throughout the Punkable Ethereal System. Each fragment is identical in form, but the signal of every holder resonates differently. The more fragments you hold, the stronger your echo becomes. Some fragments contain traces of data from the quarantine zone, where certain entities were marked as d34d.
           </p>
 
           {/* Artifact (levitating + glitch layers, audio reactive) */}
@@ -675,7 +779,7 @@ export default function ArchetypeSite(){
             <a href="https://universal.page/drops/archetype_00" target="_blank" rel="noreferrer" className="border border-zinc-700 px-4 py-2 text-zinc-100 hover:bg-zinc-900/60">Access drop →</a>
           </div>
 
-          <div className="text-xs text-zinc-600">Keys: <kbd className="bg-zinc-800 px-1">R</kbd> pulse · <kbd className="bg-zinc-800 px-1">G</kbd> glitch · <kbd className="bg-zinc-800 px-1">:</kbd> VHS · Konami → Lab · type<span className="text-pink-400"> d34d</span></div>
+          <div className="text-xs text-zinc-600">Keys: <kbd className="bg-zinc-800 px-1">R</kbd> pulse · <kbd className="bg-zinc-800 px-1">G</kbd> glitch · <kbd className="bg-zinc-800 px-1">:</kbd> VHS · Konami → Lab · <span className="text-zinc-500">hidden sequence</span></div>
         </section>
 
         {/* GRID: Function cards */}
@@ -745,7 +849,7 @@ export default function ArchetypeSite(){
             </div>
             <div className="border border-zinc-800 p-5">
               <h3 className="mb-2 flex items-center gap-2 text-lg text-zinc-100"><Shield className="h-5 w-5"/>Hidden Access</h3>
-              <p className="text-sm text-zinc-400">Enter the Konami code to open the Resonance Lab. Type <code className="bg-zinc-800 px-1">d34d</code> to view memorial logs.</p>
+              <p className="text-sm text-zinc-400">Enter the Konami code to open the Resonance Lab. Discover the hidden sequence to access quarantine records.</p>
             </div>
           </div>
 
