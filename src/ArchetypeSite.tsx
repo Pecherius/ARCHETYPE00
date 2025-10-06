@@ -407,6 +407,8 @@ export default function ArchetypeSite(){
     console.log("%c🎮 GAME_HINT: The tic-tac-toe game is completely functional. Try it!", "color:#ff9");
     // eslint-disable-next-line no-console
     console.log("%c🔧 CODE_QUALITY: This code is a mess, but it works. That's what matters.", "color:#f99");
+    // eslint-disable-next-line no-console
+    console.log("%c🚀 DEPLOYMENT_DEBUG: If you see this, the site is working! GitHub Pages is live.", "color:#0f0");
   },[]);
 
   return (
