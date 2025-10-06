@@ -49,9 +49,14 @@ function useGlobalKeys(
     const h = (e: KeyboardEvent) => {
       if (e.key.toLowerCase() === "r") pulse();
       if (e.key === ":") toggleVHS();
-      buffer = (buffer + e.key).slice(-4);
-      if (buffer.toLowerCase() === "d34d") onD34D();
       if (e.key.toLowerCase() === "g") toggleGlitch();
+      
+      // d34d easter egg - more reliable
+      buffer = (buffer + e.key.toLowerCase()).slice(-4);
+      if (buffer === "d34d") {
+        onD34D();
+        buffer = ""; // reset buffer after trigger
+      }
     };
     window.addEventListener("keydown", h);
     return () => window.removeEventListener("keydown", h);
