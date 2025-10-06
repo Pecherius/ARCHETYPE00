@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./components/ui/dialog";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./components/ui/tooltip";
+// Tooltip components removed - using custom implementation
 import { motion, useAnimation } from "framer-motion";
 import { Shield, ActivitySquare, Waves, Eye, AlertTriangle, Radio } from "lucide-react";
 
@@ -97,6 +97,10 @@ const bg = "bg-black";
 // If you're wondering why the second one has so many 8s, join the club
 const ART_IMG = "https://bafybeibvwuxvi3hoxke7rtmlbr6metsldow7rbf7p4r67rjcqkuk2l2taa.ipfs.dweb.link/?filename=777777777777777777.png"; // IPFS-hosted render
 const GLITCH_IMG = "https://bafybeiggg5uigjiwqn3yebk6gdd456huk52s3dbq2j25cks4oxavtjqn54.ipfs.dweb.link?filename=888888888888888.png"; // Glitch image
+
+// Fallback images if IPFS fails
+const FALLBACK_ART = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZmYwMGI0Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJtb25vc3BhY2UiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiNmZmZmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5BUkNIRVRZUEVfMDA8L3RleHQ+PC9zdmc+";
+const FALLBACK_GLITCH = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMDAwIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJtb25vc3BhY2UiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiMwMGZmODgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5HTElUQ0g8L3RleHQ+PC9zdmc+";
 
 // 👻 QUARANTINE_PHOTOS: Fictional characters for the lore
 // No actual people were harmed in the making of this code
@@ -253,20 +257,27 @@ function useHum() {
 // ----------------------
 const Binary = ({ text, label }: { text: string; label?: string }) => {
   const bin = useMemo(() => text.split("").map(c => c.charCodeAt(0).toString(2).padStart(8,"0")).join(" "), [text]);
+  const [showTooltip, setShowTooltip] = useState(false);
   
   return (
-    <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger>
-          <span className="cursor-help text-muted-foreground underline decoration-dotted">
-            {label ?? "binary"}
-          </span>
-        </TooltipTrigger>
-        <TooltipContent className="bg-zinc-800 border border-zinc-600 p-2 text-xs max-w-28rem">
-          <p className="font-mono break-words">{bin}</p>
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
+    <span 
+      className="cursor-help border-b border-dashed border-zinc-500 text-zinc-300 hover:text-zinc-100 relative"
+      onMouseEnter={() => {
+        console.log("🖱️ Binary hovered:", label || text);
+        setShowTooltip(true);
+      }}
+      onMouseLeave={() => {
+        console.log("🖱️ Binary unhovered");
+        setShowTooltip(false);
+      }}
+    >
+      {label || text}
+      {showTooltip && (
+        <div className="absolute z-50 bg-zinc-800 border border-zinc-600 p-2 rounded text-xs shadow-lg -top-12 left-1/2 transform -translate-x-1/2 whitespace-nowrap">
+          <p className="font-mono text-xs">{bin}</p>
+        </div>
+      )}
+    </span>
   );
 };
 
@@ -712,16 +723,19 @@ export default function ArchetypeSite(){
   // Random glitch bursts (subtle, non-blocking) + image switching
   useInterval(() => {
     if (!glitch) return;
-    console.log("Glitch burst triggered, switching image...");
+    console.log("🎨 Glitch burst triggered, switching image...");
     artControls.start({ x: [0, 1, -1, 0] , transition: { duration: 0.18 } });
     // Switch to glitch image briefly - using a more reliable approach
     setShowGlitchImage(true);
+    console.log("🖼️ Image should now show glitch version");
   }, 2500);
 
   // Separate effect to handle glitch image timing
   useEffect(() => {
     if (showGlitchImage) {
+      console.log("⏰ Setting timer to switch back to normal image in 200ms");
       const timer = setTimeout(() => {
+        console.log("🔄 Switching back to normal image");
         setShowGlitchImage(false);
       }, 200);
       return () => clearTimeout(timer);
@@ -752,8 +766,7 @@ export default function ArchetypeSite(){
   },[]);
 
   return (
-    <TooltipProvider>
-      <main className={`min-h-screen ${bg} font-mono text-zinc-200 selection:bg-pink-300/30`}>
+    <main className={`min-h-screen ${bg} font-mono text-zinc-200 selection:bg-pink-300/30`}>
         <div className="relative overflow-hidden">
         
         {/* d34d Notification */}
@@ -813,6 +826,14 @@ export default function ArchetypeSite(){
                 src={showGlitchImage ? GLITCH_IMG : ART_IMG} 
                 alt="ARCHETYPE_00" 
                 className="block w-full max-h-[60vh] object-contain transition-opacity duration-100"
+                onLoad={() => console.log(`✅ Image loaded: ${showGlitchImage ? 'GLITCH' : 'NORMAL'}`)}
+                onError={(e) => {
+                  console.error(`❌ Image failed to load: ${showGlitchImage ? 'GLITCH' : 'NORMAL'}`, e);
+                  // Try fallback
+                  const fallbackSrc = showGlitchImage ? FALLBACK_GLITCH : FALLBACK_ART;
+                  console.log(`🔄 Trying fallback: ${fallbackSrc.substring(0, 50)}...`);
+                  e.currentTarget.src = fallbackSrc;
+                }}
               />
               {/* glitch clones */}
               <img src={showGlitchImage ? GLITCH_IMG : ART_IMG} aria-hidden className="pointer-events-none absolute inset-0 w-full opacity-40 mix-blend-screen"
@@ -1079,6 +1100,5 @@ export default function ArchetypeSite(){
         </footer>
         </div>
       </main>
-    </TooltipProvider>
   );
 }
