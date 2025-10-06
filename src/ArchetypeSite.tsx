@@ -147,9 +147,9 @@ function useGlobalKeys(
   onD34D: () => void
 ) {
   useEffect(() => {
-    let buffer = "";
+    const bufferRef = { current: "" };
     const h = (e: KeyboardEvent) => {
-      console.log("Key pressed:", e.key, "Buffer:", buffer);
+      console.log("Key pressed:", e.key, "Buffer:", bufferRef.current);
       
       // Handle single key shortcuts first
       if (e.key.toLowerCase() === "r") {
@@ -167,16 +167,16 @@ function useGlobalKeys(
       
       // Only process alphanumeric keys for d34d buffer
       if (e.key.length === 1 && /[a-zA-Z0-9]/.test(e.key)) {
-        buffer = (buffer + e.key.toLowerCase()).slice(-4);
-        console.log("New buffer:", buffer);
-        if (buffer === "d34d") {
+        bufferRef.current = (bufferRef.current + e.key.toLowerCase()).slice(-4);
+        console.log("New buffer:", bufferRef.current);
+        if (bufferRef.current === "d34d") {
           console.log("d34d detected! Triggering...");
           onD34D();
-          buffer = ""; // Reset buffer after trigger
+          bufferRef.current = ""; // Reset buffer after trigger
         }
       } else {
         // Reset buffer on non-alphanumeric keys
-        buffer = "";
+        bufferRef.current = "";
       }
     };
     window.addEventListener("keydown", h);
