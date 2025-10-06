@@ -109,15 +109,27 @@ function useGlobalKeys(
   useEffect(() => {
     let buffer = "";
     const h = (e: KeyboardEvent) => {
-      if (e.key.toLowerCase() === "r") pulse();
-      if (e.key === ":") toggleVHS();
-      if (e.key.toLowerCase() === "g") toggleGlitch();
+      // Handle single key shortcuts first
+      if (e.key.toLowerCase() === "r") {
+        pulse();
+        return;
+      }
+      if (e.key === ":") {
+        toggleVHS();
+        return;
+      }
+      if (e.key.toLowerCase() === "g") {
+        toggleGlitch();
+        return;
+      }
       
-      // 💀 d34d easter egg - the most reliable way to trigger it
-      // If you're wondering why "d34d", it's because "dead" was too obvious
-      if (e.key.length === 1) { // only single character keys
+      // 💀 d34d easter egg - improved detection
+      // Only process alphanumeric keys for the buffer
+      if (e.key.length === 1 && /[a-zA-Z0-9]/.test(e.key)) {
         buffer = (buffer + e.key.toLowerCase()).slice(-4);
+        console.log("Buffer:", buffer); // Debug log
         if (buffer === "d34d") {
+          console.log("d34d detected!"); // Debug log
           onD34D();
           buffer = ""; // reset buffer after trigger
           // 🎭 EASTER_EGG: You typed "d34d"! Welcome to the quarantine zone.
@@ -387,10 +399,19 @@ export default function ArchetypeSite(){
   useInterval(() => {
     if (!glitch) return;
     artControls.start({ x: [0, 1, -1, 0] , transition: { duration: 0.18 } });
-    // Switch to glitch image briefly
+    // Switch to glitch image briefly - using a more reliable approach
     setShowGlitchImage(true);
-    setTimeout(() => setShowGlitchImage(false), 200);
   }, 2500);
+
+  // Separate effect to handle glitch image timing
+  useEffect(() => {
+    if (showGlitchImage) {
+      const timer = setTimeout(() => {
+        setShowGlitchImage(false);
+      }, 200);
+      return () => clearTimeout(timer);
+    }
+  }, [showGlitchImage]);
 
   // 🎯 CONSOLE_EASTER_EGGS: Hidden messages for the curious
   // If you're reading this in the console, you're officially a code explorer
