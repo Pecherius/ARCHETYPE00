@@ -404,12 +404,26 @@ function useHum() {
 const Binary = ({ text, label }: { text: string; label?: string }) => {
   const bin = useMemo(() => text.split("").map(c => c.charCodeAt(0).toString(2).padStart(8,"0")).join(" "), [text]);
   const [showTooltip, setShowTooltip] = useState(false);
+  const timeoutRef = useRef<number | null>(null);
+  
+  const handleMouseEnter = () => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+    setShowTooltip(true);
+  };
+  
+  const handleMouseLeave = () => {
+    timeoutRef.current = setTimeout(() => {
+      setShowTooltip(false);
+    }, 2000); // 2 seconds delay
+  };
   
   return (
     <span 
       className="cursor-help border-b border-dashed border-zinc-500 text-zinc-300 hover:text-zinc-100 relative"
-      onMouseEnter={() => setShowTooltip(true)}
-      onMouseLeave={() => setShowTooltip(false)}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
       {label || text}
       {showTooltip && (
@@ -972,7 +986,9 @@ export default function ArchetypeSite(){
               <span className="text-zinc-400">[SYSTEM_HINT]</span> Hidden sequences can be activated through keyboard input. 
               <br />
               <span className="text-yellow-400">01000100 00110011 00110100 01000100</span> 
-              <span className="text-zinc-600 ml-2">// Try typing this sequence</span>
+              <span className="text-zinc-600 ml-2">// Convert binary to text and type the result</span>
+              <br />
+              <span className="text-zinc-600">// Some entities were marked as d34d before quarantine</span>
             </p>
           </div>
 
