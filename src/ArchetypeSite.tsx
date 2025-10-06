@@ -206,76 +206,76 @@ function useInterval(cb: () => void, ms: number) {
 
 // ⌨️ GLOBAL_KEYS: The keyboard shortcuts that make this site feel like a game
 // R = pulse (because why not), G = glitch (obviously), : = VHS (retro vibes)
-function useGlobalKeys(
-  toggleGlitch: () => void,
-  pulse: () => void,
-  toggleVHS: () => void,
-  onD34D: () => void
-) {
-  useEffect(() => {
-    let d34dBuffer = "";
-    let lastKeyTime = 0;
-    
-    const handleKeyPress = (e: KeyboardEvent) => {
-      const now = Date.now();
-      console.log(`%c[KEY_DEBUG] Key pressed: "${e.key}" (length: ${e.key.length})`, "color:#999; font-family: monospace;");
-      
-      // Handle single key shortcuts first
-      if (e.key.toLowerCase() === "r") {
-        console.log("%c[SHORTCUT] R key detected - triggering pulse", "color:#00ff88; font-family: monospace;");
-        pulse();
-        return;
-      }
-      if (e.key === ":") {
-        console.log("%c[SHORTCUT] : key detected - toggling VHS", "color:#00ff88; font-family: monospace;");
-        toggleVHS();
-        return;
-      }
-      if (e.key.toLowerCase() === "g") {
-        console.log("%c[SHORTCUT] G key detected - toggling glitch", "color:#00ff88; font-family: monospace;");
-        toggleGlitch();
-        return;
-      }
-      
-      // Process d34d sequence - only alphanumeric characters
-      const isAlphanumeric = e.key.length === 1 && /[a-zA-Z0-9]/.test(e.key);
-      console.log(`%c[FILTER] Is alphanumeric: ${isAlphanumeric}`, "color:#666; font-family: monospace;");
-      
-      if (isAlphanumeric) {
-        // Reset buffer if too much time has passed (5 seconds)
-        if (now - lastKeyTime > 5000) {
-          console.log(`%c[D34D_BUFFER] Timeout detected. Resetting buffer from: "${d34dBuffer}"`, "color:#ff0000; font-family: monospace;");
-          d34dBuffer = "";
+        function useGlobalKeys(
+          toggleGlitch: () => void,
+          pulse: () => void,
+          toggleVHS: () => void,
+          onD34D: () => void
+        ) {
+          useEffect(() => {
+            let d34dBuffer = "";
+            let lastKeyTime = Date.now(); // Initialize with current time
+            
+            const handleKeyPress = (e: KeyboardEvent) => {
+              const now = Date.now();
+              console.log(`%c[KEY_DEBUG] Key pressed: "${e.key}" (length: ${e.key.length})`, "color:#999; font-family: monospace;");
+              
+              // Handle single key shortcuts first
+              if (e.key.toLowerCase() === "r") {
+                console.log("%c[SHORTCUT] R key detected - triggering pulse", "color:#00ff88; font-family: monospace;");
+                pulse();
+                return;
+              }
+              if (e.key === ":") {
+                console.log("%c[SHORTCUT] : key detected - toggling VHS", "color:#00ff88; font-family: monospace;");
+                toggleVHS();
+                return;
+              }
+              if (e.key.toLowerCase() === "g") {
+                console.log("%c[SHORTCUT] G key detected - toggling glitch", "color:#00ff88; font-family: monospace;");
+                toggleGlitch();
+                return;
+              }
+              
+              // Process d34d sequence - only alphanumeric characters
+              const isAlphanumeric = e.key.length === 1 && /[a-zA-Z0-9]/.test(e.key);
+              console.log(`%c[FILTER] Is alphanumeric: ${isAlphanumeric}`, "color:#666; font-family: monospace;");
+              
+              if (isAlphanumeric) {
+                // Reset buffer if too much time has passed (5 seconds) AND buffer is not empty
+                if (d34dBuffer.length > 0 && now - lastKeyTime > 5000) {
+                  console.log(`%c[D34D_BUFFER] Timeout detected. Resetting buffer from: "${d34dBuffer}"`, "color:#ff0000; font-family: monospace;");
+                  d34dBuffer = "";
+                }
+                
+                d34dBuffer = d34dBuffer + e.key.toLowerCase();
+                // Only keep last 4 characters if buffer is longer
+                if (d34dBuffer.length > 4) {
+                  d34dBuffer = d34dBuffer.slice(-4);
+                }
+                lastKeyTime = now;
+                console.log(`%c[D34D_BUFFER] Added "${e.key}" -> Buffer: "${d34dBuffer}"`, "color:#ff6600; font-family: monospace;");
+                
+                if (d34dBuffer === "d34d") {
+                  console.log("%c[QUARANTINE_PROTOCOL] Access sequence d34d recognized. Initiating quarantine breach...", "color:#ff4444; font-weight: bold;");
+                  onD34D();
+                  d34dBuffer = ""; // Reset after successful trigger
+                }
+              } else {
+                // Only reset buffer on non-alphanumeric keys if they're not special keys
+                if (e.key !== "Shift" && e.key !== "Control" && e.key !== "Alt" && e.key !== "Meta" && e.key !== "Tab" && e.key !== "CapsLock" && e.key !== "F12") {
+                  if (d34dBuffer.length > 0) {
+                    console.log(`%c[D34D_BUFFER] Non-alphanumeric key "${e.key}" detected. Resetting buffer from: "${d34dBuffer}"`, "color:#ff0000; font-family: monospace;");
+                    d34dBuffer = "";
+                  }
+                }
+              }
+            };
+            
+            window.addEventListener("keydown", handleKeyPress);
+            return () => window.removeEventListener("keydown", handleKeyPress);
+          }, [toggleGlitch, pulse, toggleVHS, onD34D]);
         }
-        
-        d34dBuffer = d34dBuffer + e.key.toLowerCase();
-        // Only keep last 4 characters if buffer is longer
-        if (d34dBuffer.length > 4) {
-          d34dBuffer = d34dBuffer.slice(-4);
-        }
-        lastKeyTime = now;
-        console.log(`%c[D34D_BUFFER] Added "${e.key}" -> Buffer: "${d34dBuffer}"`, "color:#ff6600; font-family: monospace;");
-        
-        if (d34dBuffer === "d34d") {
-          console.log("%c[QUARANTINE_PROTOCOL] Access sequence d34d recognized. Initiating quarantine breach...", "color:#ff4444; font-weight: bold;");
-          onD34D();
-          d34dBuffer = ""; // Reset after successful trigger
-        }
-      } else {
-        // Only reset buffer on non-alphanumeric keys if they're not special keys
-        if (e.key !== "Shift" && e.key !== "Control" && e.key !== "Alt" && e.key !== "Meta" && e.key !== "Tab" && e.key !== "CapsLock" && e.key !== "F12") {
-          if (d34dBuffer.length > 0) {
-            console.log(`%c[D34D_BUFFER] Non-alphanumeric key "${e.key}" detected. Resetting buffer from: "${d34dBuffer}"`, "color:#ff0000; font-family: monospace;");
-            d34dBuffer = "";
-          }
-        }
-      }
-    };
-    
-    window.addEventListener("keydown", handleKeyPress);
-    return () => window.removeEventListener("keydown", handleKeyPress);
-  }, [toggleGlitch, pulse, toggleVHS, onD34D]);
-}
 
 // 🎵 AUDIO_HOOK: The sub-bass hum that makes your speakers vibrate
 // 38Hz because it's the frequency of the universe (or something like that)
