@@ -216,26 +216,32 @@ function useGlobalKeys(
     let d34dBuffer = "";
     
     const handleKeyPress = (e: KeyboardEvent) => {
-      console.log(`%c[KEY_DEBUG] Key pressed: ${e.key}`, "color:#999; font-family: monospace;");
+      console.log(`%c[KEY_DEBUG] Key pressed: "${e.key}" (length: ${e.key.length})`, "color:#999; font-family: monospace;");
       
       // Handle single key shortcuts first
       if (e.key.toLowerCase() === "r") {
+        console.log("%c[SHORTCUT] R key detected - triggering pulse", "color:#00ff88; font-family: monospace;");
         pulse();
         return;
       }
       if (e.key === ":") {
+        console.log("%c[SHORTCUT] : key detected - toggling VHS", "color:#00ff88; font-family: monospace;");
         toggleVHS();
         return;
       }
       if (e.key.toLowerCase() === "g") {
+        console.log("%c[SHORTCUT] G key detected - toggling glitch", "color:#00ff88; font-family: monospace;");
         toggleGlitch();
         return;
       }
       
       // Process d34d sequence - only alphanumeric characters
-      if (e.key.length === 1 && /[a-zA-Z0-9]/.test(e.key)) {
+      const isAlphanumeric = e.key.length === 1 && /[a-zA-Z0-9]/.test(e.key);
+      console.log(`%c[FILTER] Is alphanumeric: ${isAlphanumeric}`, "color:#666; font-family: monospace;");
+      
+      if (isAlphanumeric) {
         d34dBuffer = (d34dBuffer + e.key.toLowerCase()).slice(-4);
-        console.log(`%c[KEY_INPUT] Key: ${e.key} | Buffer: ${d34dBuffer}`, "color:#666; font-family: monospace;");
+        console.log(`%c[D34D_BUFFER] Added "${e.key}" -> Buffer: "${d34dBuffer}"`, "color:#ff6600; font-family: monospace;");
         
         if (d34dBuffer === "d34d") {
           console.log("%c[QUARANTINE_PROTOCOL] Access sequence d34d recognized. Initiating quarantine breach...", "color:#ff4444; font-weight: bold;");
@@ -245,7 +251,7 @@ function useGlobalKeys(
       } else {
         // Reset buffer on non-alphanumeric keys
         if (d34dBuffer.length > 0) {
-          console.log(`%c[KEY_INPUT] Non-alphanumeric key detected. Resetting buffer from: ${d34dBuffer}`, "color:#666; font-family: monospace;");
+          console.log(`%c[D34D_BUFFER] Non-alphanumeric key "${e.key}" detected. Resetting buffer from: "${d34dBuffer}"`, "color:#ff0000; font-family: monospace;");
           d34dBuffer = "";
         }
       }
