@@ -12,11 +12,54 @@ import { Shield, ActivitySquare, Waves, Eye, AlertTriangle, Radio } from "lucide
  *
  * NOTE FOR CURIOUS READERS: No credentials or private data live here. Enjoy the breadcrumbs.🐸
  * PEPITO says hi. If you found this, you're early. (PEPITOVERSE_2026 maybe?)
+ * 
+ * // HIDDEN EASTER EGGS FOR CODE EXPLORERS //
+ * 
+ * 🐸 PEPITO_DEBUG: If you're reading this, you're either:
+ *    - A curious developer (welcome to the resonance!)
+ *    - A bot scraping for secrets (spoiler: there are none)
+ *    - Someone who actually understands this code (impressive!)
+ * 
+ * 💀 QUARANTINE_LOG: The d34d easter egg is real. Those names? 
+ *    They're fictional characters for the lore. No actual people were harmed.
+ *    (Unlike this codebase, which was definitely harmed by my coding skills)
+ * 
+ * 🎮 GAME_LOGIC: The tic-tac-toe game is completely functional and offline.
+ *    No data is stored, no analytics, no tracking. Just pure, chaotic fun.
+ *    The messages are randomly generated because I couldn't think of anything better.
+ * 
+ * 🖼️ IMAGE_GLITCH: The 777777/888888888888888 switching is intentional.
+ *    No, I don't know why the second image has so many 8s. 
+ *    Yes, it's probably a reference to something I forgot.
+ * 
+ * 🔧 TOOLTIP_FIX: The tooltips were broken because I forgot to wrap everything
+ *    in TooltipProvider. Classic React mistake. Fixed it, but left this comment
+ *    as a reminder that even "experts" make dumb errors.
+ * 
+ * 🎵 AUDIO_HUM: The 38Hz sub-bass hum is real and will make your speakers vibrate.
+ *    Use responsibly. I'm not responsible for any structural damage to your house.
+ * 
+ * 📱 RESPONSIVE_HELL: This site works on mobile, but barely.
+ *    The glitch effects might give you a seizure. You've been warned.
+ * 
+ * 🚀 DEPLOYMENT: If you're seeing this on GitHub Pages, congrats!
+ *    The build process actually worked for once. Miracles do happen.
+ * 
+ * // END OF HIDDEN MESSAGES //
+ * // If you read all of this, you're either very bored or very dedicated. //
+ * // Either way, thanks for exploring the code! - PEPITO //
  */
 
+// 🎨 VISUAL_CONFIG: Black background because we're edgy like that
 const bg = "bg-black";
+
+// 🖼️ IMAGE_URLS: These are real IPFS hashes, not made up
+// If you're wondering why the second one has so many 8s, join the club
 const ART_IMG = "https://bafybeibvwuxvi3hoxke7rtmlbr6metsldow7rbf7p4r67rjcqkuk2l2taa.ipfs.dweb.link/?filename=777777777777777777.png"; // IPFS-hosted render
 const GLITCH_IMG = "https://bafybeiggg5uigjiwqn3yebk6gdd456huk52s3dbq2j25cks4oxavtjqn54.ipfs.dweb.link?filename=888888888888888.png"; // Glitch image
+
+// 👻 QUARANTINE_PHOTOS: Fictional characters for the lore
+// No actual people were harmed in the making of this code
 const QUARANTINE_IMAGES = {
   tsumori: "https://bafybeifizn4hnwivlchzgjzapk5ltdskmhb35ta2vmjfgulxiuaowmpnua.ipfs.dweb.link?filename=Dr.%20Mikhail%20R.%20Tsumori.png",
   hoshino: "https://bafybeibr2a76opsgem3tecqz2qti4vddzwrxdq7d4ylntqzrqap6p2ti5y.ipfs.dweb.link?filename=Kai%20N.%20Hoshino.png"
@@ -25,24 +68,38 @@ const QUARANTINE_IMAGES = {
 // ----------------------
 // Utility hooks
 // ----------------------
+// 🕹️ KONAMI_HOOK: The classic cheat code that everyone knows
+// If you don't know what this is, you're either too young or too old
 function useKonami(onUnlock: () => void) {
   useEffect(() => {
+    // The legendary sequence that unlocked everything in the 80s
     const seq = ["ArrowUp","ArrowUp","ArrowDown","ArrowDown","ArrowLeft","ArrowRight","ArrowLeft","ArrowRight","b","a"];
     let i = 0;
     const h = (e: KeyboardEvent) => {
       const k = e.key;
       i = k === seq[i] ? i + 1 : 0;
-      if (i === seq.length) { onUnlock(); i = 0; }
+      if (i === seq.length) { 
+        onUnlock(); 
+        i = 0; 
+        // 🎉 EASTER_EGG: You found the Konami code! Congrats, you're officially old.
+      }
     };
     window.addEventListener("keydown", h);
     return () => window.removeEventListener("keydown", h);
   }, [onUnlock]);
 }
 
+// ⏰ INTERVAL_HOOK: Because setInterval is so 2010
+// This is probably overkill for what we're doing, but hey, it's clean
 function useInterval(cb: () => void, ms: number) {
-  useEffect(() => { const id = setInterval(cb, ms); return () => clearInterval(id); }, [cb, ms]);
+  useEffect(() => { 
+    const id = setInterval(cb, ms); 
+    return () => clearInterval(id); 
+  }, [cb, ms]);
 }
 
+// ⌨️ GLOBAL_KEYS: The keyboard shortcuts that make this site feel like a game
+// R = pulse (because why not), G = glitch (obviously), : = VHS (retro vibes)
 function useGlobalKeys(
   toggleGlitch: () => void,
   pulse: () => void,
@@ -56,12 +113,14 @@ function useGlobalKeys(
       if (e.key === ":") toggleVHS();
       if (e.key.toLowerCase() === "g") toggleGlitch();
       
-      // d34d easter egg - more reliable
+      // 💀 d34d easter egg - the most reliable way to trigger it
+      // If you're wondering why "d34d", it's because "dead" was too obvious
       if (e.key.length === 1) { // only single character keys
         buffer = (buffer + e.key.toLowerCase()).slice(-4);
         if (buffer === "d34d") {
           onD34D();
           buffer = ""; // reset buffer after trigger
+          // 🎭 EASTER_EGG: You typed "d34d"! Welcome to the quarantine zone.
         }
       }
     };
@@ -70,13 +129,15 @@ function useGlobalKeys(
   }, [toggleGlitch, pulse, toggleVHS, onD34D]);
 }
 
+// 🎵 AUDIO_HOOK: The sub-bass hum that makes your speakers vibrate
+// 38Hz because it's the frequency of the universe (or something like that)
 function useHum() {
   const ctxRef = useRef<AudioContext | null>(null);
   const oscRef = useRef<OscillatorNode | null>(null);
   const gainRef = useRef<GainNode | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
   const [active, setActive] = useState(false);
-  const [level, setLevel] = useState(0.1); // visual amplitude proxy
+  const [level, setLevel] = useState(0.1); // visual amplitude proxy (totally scientific)
 
   // Drive visuals from audio (or fallback to gentle noise if off)
   useEffect(() => {
@@ -207,7 +268,8 @@ function CodeRain(){
   );
 }
 
-// Game component for cryptic tic-tac-toe
+// 🎮 CRYPTIC_GAME: A tic-tac-toe that's more complex than it needs to be
+// Because why make a simple game when you can make it unnecessarily complicated?
 function CrypticGame() {
   const [board, setBoard] = useState<(string | null)[]>(Array(9).fill(null));
   const [isXNext, setIsXNext] = useState(true);
@@ -215,13 +277,18 @@ function CrypticGame() {
   const [winner, setWinner] = useState<string | null>(null);
   const [messages, setMessages] = useState<string[]>([]);
   
+  // 🎭 PEPITO_MESSAGES: Random cryptic messages that sound important
+  // But are actually just me being dramatic about a simple game
   const pepitoMessages = [
     "PEPITO_ECHO: Resonance detected in grid pattern",
     "ARCHETYPE_00: Signal interference in sector 7",
     "PUNKABLE_SYSTEM: Anomaly detected in tic-tac-toe matrix",
     "QUARANTINE_LOG: Neural feedback loop activated",
     "RESONANCE_LAB: Frequency modulation successful",
-    "ETHEAL_NETWORK: Cross-dimensional communication established"
+    "ETHEAL_NETWORK: Cross-dimensional communication established",
+    "DEBUG_MODE: You're playing tic-tac-toe. This is not that deep.",
+    "SYSTEM_LOG: The matrix is just a 3x3 grid. Calm down.",
+    "PEPITO_DEBUG: Seriously, it's just tic-tac-toe. Stop overthinking it."
   ];
 
   const checkWinner = (squares: (string | null)[]): string | null => {
@@ -325,12 +392,21 @@ export default function ArchetypeSite(){
     setTimeout(() => setShowGlitchImage(false), 200);
   }, 2500);
 
-  // Console easter eggs (harmless fun for repo explorers)
+  // 🎯 CONSOLE_EASTER_EGGS: Hidden messages for the curious
+  // If you're reading this in the console, you're officially a code explorer
   useEffect(()=>{
     // eslint-disable-next-line no-console
     console.log(ASCII);
     // eslint-disable-next-line no-console
     console.log("%cSubjectID:P-107 // If you can read this, you are the resonance.", "color:#9cf");
+    // eslint-disable-next-line no-console
+    console.log("%c🐸 PEPITO_DEBUG: You found the console! Welcome to the developer zone.", "color:#f0a");
+    // eslint-disable-next-line no-console
+    console.log("%c💡 PRO_TIP: Press F12 to open dev tools. You're already here, so...", "color:#9f9");
+    // eslint-disable-next-line no-console
+    console.log("%c🎮 GAME_HINT: The tic-tac-toe game is completely functional. Try it!", "color:#ff9");
+    // eslint-disable-next-line no-console
+    console.log("%c🔧 CODE_QUALITY: This code is a mess, but it works. That's what matters.", "color:#f99");
   },[]);
 
   return (
@@ -347,11 +423,25 @@ export default function ArchetypeSite(){
 
         {/* HERO */}
         <section className="mx-auto flex max-w-6xl flex-col items-center gap-6 px-6 py-16 text-center">
-          <motion.h1 className="text-3xl md:text-6xl font-semibold tracking-tight text-zinc-100"
+          <motion.h1 
+            className={`text-4xl md:text-7xl font-bold tracking-tight text-zinc-100 mb-4 ${glitch ? "animate-pulse" : ""}`}
             initial={{ opacity: 0, y: 16, letterSpacing: "0.05em" }}
-            animate={{ opacity: 1, y: 0, letterSpacing: ["0.05em","0.1em","0.05em"] }} transition={{ duration: 1.2 }}>
-            [SYSTEM BOOT] ARCHETYPE_00<span className="text-zinc-600"> //</span> <span className="text-zinc-300">Corrupted Fragment</span>
+            animate={{ 
+              opacity: 1, 
+              y: 0, 
+              letterSpacing: ["0.05em","0.1em","0.05em"],
+              textShadow: glitch ? ["0 0 0px #ff00b4", "2px 0 0px #00ff88", "-2px 0 0px #ff0088", "0 0 0px #ff00b4"] : "0 0 0px transparent"
+            }} 
+            transition={{ duration: 1.2 }}>
+            ARCHETYPE_00
           </motion.h1>
+          <motion.div className="text-sm md:text-base text-zinc-500 font-mono"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }} 
+            transition={{ delay: 0.9 }}>
+            <div className="mb-2">[SYSTEM BOOT] // Initializing...</div>
+            <div className="text-zinc-400">Corrupted Fragment // Status: ACTIVE</div>
+          </motion.div>
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.9 }} className="text-[10px] uppercase tracking-[0.3em] text-zinc-500">origin · anomaly · resonance</motion.div>
           <p className="max-w-3xl text-zinc-400 leading-relaxed">
             ARCHETYPE_00 is a corrupted fragment, a residual anomaly recovered from damaged chain archives. Its internal structure is unstable, yet it continues to emit measurable resonance throughout the Punkable Ethereal System. Each fragment is identical in form, but the signal of every holder resonates differently. The more fragments you hold, the stronger your echo becomes.
