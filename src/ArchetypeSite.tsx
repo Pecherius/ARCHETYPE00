@@ -696,10 +696,11 @@ function NeuralPingPong() {
   const [geometricObstacles, setGeometricObstacles] = useState<Array<{x: number, y: number, size: number, rotation: number, speed: number}>>([]);
   const [lossCount, setLossCount] = useState(0);
   const [gameHistory, setGameHistory] = useState<Array<{score: number, timestamp: number}>>([]);
+  const [lastHitTime, setLastHitTime] = useState(0); // Prevent rapid score increases
   
   // Game objects
   const [ball, setBall] = useState({ x: 400, y: 100, dx: 0, dy: 0, vx: 0, vy: 0 });
-  const [paddle, setPaddle] = useState({ x: 350, y: 550, width: 150 });
+  const [paddle, setPaddle] = useState({ x: 350, y: 550, width: 120 });
   const [glitchLines, setGlitchLines] = useState<Array<{x: number, y: number, width: number, height: number}>>([]);
   const [gameStartTime, setGameStartTime] = useState<number>(0);
   const [floatingMessages, setFloatingMessages] = useState<Array<{id: number, text: string, x: number, y: number, vx: number, vy: number, life: number}>>([]);
@@ -793,7 +794,7 @@ function NeuralPingPong() {
              // No velocity limit - progressive difficulty only
              
              // Update position with constant movement
-             const baseSpeed = 3; // Constant base speed
+             const baseSpeed = 1.5; // Slower base speed
              const currentSpeed = baseSpeed * difficultyMultiplier;
              
              // Debug: Log ball movement every 60 frames (1 second at 60fps)
@@ -821,34 +822,45 @@ function NeuralPingPong() {
              const paddleLeft = paddle.x;
              const paddleRight = paddle.x + paddle.width;
              
-             // Simple collision detection
-             if (newBall.y >= paddleTop - 10 && newBall.y <= paddleBottom + 10 && 
-                 newBall.x >= paddleLeft - 25 && newBall.x <= paddleRight + 25) {
-               // Calculate hit position (0 to 1)
-               const hitPos = Math.max(0, Math.min(1, (newBall.x - paddleLeft) / paddle.width));
+             // Better collision detection with cooldown
+             if (newBall.y >= paddleTop - 15 && newBall.y <= paddleBottom + 5 && 
+                 newBall.x >= paddleLeft - 10 && newBall.x <= paddleRight + 10) {
                
-               // Simple bounce physics
-               newBall.vy = -Math.abs(newBall.vy); // Bounce up
-               newBall.vx = (hitPos - 0.5) * 4; // -2 to 2 range
-          
-          newBall.y = paddleTop - 5; // Position above paddle
-          
-          setScore(prev => {
-            const newScore = prev + 1;
-            if (newScore >= 40) {
-              setGameState('won');
-              setShowWinMessage(true);
-            }
-            return newScore;
-          });
-               // Speed increase removed - game now uses constant base speed
-          
-          // Spawn floating message on successful hit
-          if (Math.random() < 0.3) { // 30% chance
-            spawnFloatingMessage(newBall.x, newBall.y);
-          }
-          setGlitchIntensity(prev => Math.min(prev + 0.1, 1));
-        }
+               // Prevent rapid score increases - only count hit if enough time has passed
+               const now = Date.now();
+               if (now - lastHitTime > 800) { // 800ms cooldown between hits
+                 setLastHitTime(now);
+                 
+                 // Calculate hit position (0 to 1)
+                 const hitPos = Math.max(0, Math.min(1, (newBall.x - paddleLeft) / paddle.width));
+                 
+                 // Improved bounce physics
+                 newBall.vy = -Math.abs(newBall.vy) * 0.9; // Slightly reduce vertical speed
+                 newBall.vx = (hitPos - 0.5) * 3; // -1.5 to 1.5 range
+                 
+                 newBall.y = paddleTop - 10; // Position above paddle
+                 
+                 setScore(prev => {
+                   const newScore = prev + 1;
+                   if (newScore >= 50) { // Increased win condition
+                     setGameState('won');
+                     setShowWinMessage(true);
+                   }
+                   return newScore;
+                 });
+                 
+                 // Spawn floating message on successful hit
+                 if (Math.random() < 0.2) { // 20% chance
+                   spawnFloatingMessage(newBall.x, newBall.y);
+                 }
+                 setGlitchIntensity(prev => Math.min(prev + 0.05, 1));
+               } else {
+                 // Still bounce but don't count score
+                 newBall.vy = -Math.abs(newBall.vy) * 0.8;
+                 newBall.vx = (Math.max(0, Math.min(1, (newBall.x - paddleLeft) / paddle.width)) - 0.5) * 2;
+                 newBall.y = paddleTop - 10;
+               }
+             }
         
         // Game over
         if (newBall.y >= 600) {
@@ -1018,28 +1030,38 @@ function NeuralPingPong() {
     
     // Draw sombrero mexicano paddle with neon effect
     ctx.shadowColor = '#ff69b4';
-    ctx.shadowBlur = 20;
+    ctx.shadowBlur = 25;
     
-    // Sombrero brim (base)
+    // Sombrero brim (base) - larger and more prominent
     ctx.fillStyle = '#ff69b4';
     ctx.beginPath();
-    ctx.ellipse(paddle.x + paddle.width/2, paddle.y + 15, paddle.width/2 + 10, 8, 0, 0, 2 * Math.PI);
+    ctx.ellipse(paddle.x + paddle.width/2, paddle.y + 18, paddle.width/2 + 15, 12, 0, 0, 2 * Math.PI);
     ctx.fill();
     
-    // Sombrero crown (top part)
+    // Sombrero crown (top part) - more conical
     ctx.fillStyle = '#ff1493';
     ctx.beginPath();
-    ctx.ellipse(paddle.x + paddle.width/2, paddle.y + 5, paddle.width/2 - 5, 12, 0, 0, 2 * Math.PI);
+    ctx.ellipse(paddle.x + paddle.width/2, paddle.y + 8, paddle.width/2 - 8, 15, 0, 0, 2 * Math.PI);
     ctx.fill();
     
-    // Sombrero decoration (neon border)
+    // Sombrero decoration (neon border) - more detailed
     ctx.strokeStyle = '#ff69b4';
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 3;
     ctx.shadowColor = '#ff69b4';
-    ctx.shadowBlur = 10;
+    ctx.shadowBlur = 15;
     ctx.beginPath();
-    ctx.ellipse(paddle.x + paddle.width/2, paddle.y + 15, paddle.width/2 + 10, 8, 0, 0, 2 * Math.PI);
+    ctx.ellipse(paddle.x + paddle.width/2, paddle.y + 18, paddle.width/2 + 15, 12, 0, 0, 2 * Math.PI);
     ctx.stroke();
+    
+    // Sombrero pattern (decorative lines)
+    ctx.strokeStyle = '#ffc0cb';
+    ctx.lineWidth = 1;
+    ctx.shadowBlur = 5;
+    for (let i = 0; i < 3; i++) {
+      ctx.beginPath();
+      ctx.ellipse(paddle.x + paddle.width/2, paddle.y + 18, paddle.width/2 + 10 - i*2, 10 - i*2, 0, 0, 2 * Math.PI);
+      ctx.stroke();
+    }
     
     ctx.shadowBlur = 0;
     
@@ -1147,11 +1169,12 @@ function NeuralPingPong() {
     setSpeed(2);
     setGlitchIntensity(0);
     setGameStartTime(Date.now());
+    setLastHitTime(0); // Reset hit cooldown
     
-    // Start ball from center top with simple random direction
-    const randomAngle = (Math.random() - 0.5) * Math.PI / 3; // -30 to 30 degrees
-    const initialVx = Math.sin(randomAngle) * 2; // Simple horizontal movement
-    const initialVy = Math.abs(Math.cos(randomAngle)) * 2; // Always downward
+    // Start ball from center top with stronger initial movement
+    const randomAngle = (Math.random() - 0.5) * Math.PI / 4; // -45 to 45 degrees
+    const initialVx = Math.sin(randomAngle) * 3; // Stronger horizontal movement
+    const initialVy = Math.abs(Math.cos(randomAngle)) * 3; // Always downward, stronger
     
     const ballData = { 
       x: 400, 
@@ -1164,7 +1187,7 @@ function NeuralPingPong() {
     
     console.log('Starting game with ball data:', ballData);
     setBall(ballData);
-    setPaddle({ x: 350, y: 550, width: 150 });
+    setPaddle({ x: 350, y: 550, width: 120 });
     setGlitchLines([]);
     setShowWinMessage(false);
   };

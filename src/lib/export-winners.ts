@@ -16,12 +16,32 @@ export interface WinnerExport {
 }
 
 export function exportWinnersAsImage(winnerData: WinnerExport): void {
-  // Find the winners section element
-  const winnersSection = document.querySelector('[data-section="winners"]') as HTMLElement
+  // Find the winners section element - try multiple selectors
+  let winnersSection = document.querySelector('[data-section="winners"]') as HTMLElement
+  
   if (!winnersSection) {
-    console.error('Winners section not found')
+    // Try alternative selectors
+    winnersSection = document.querySelector('.winners-section') as HTMLElement
+  }
+  
+  if (!winnersSection) {
+    // Try finding by text content
+    const sections = document.querySelectorAll('div')
+    for (const section of sections) {
+      if (section.textContent?.includes('Winners') && section.textContent?.includes('Export as Image')) {
+        winnersSection = section as HTMLElement
+        break
+      }
+    }
+  }
+  
+  if (!winnersSection) {
+    console.error('Winners section not found, using fallback')
+    createManualCanvas(winnerData)
     return
   }
+
+  console.log('Found winners section:', winnersSection)
 
   // Use html2canvas to capture the actual element
   import('html2canvas').then((html2canvas) => {
@@ -31,11 +51,17 @@ export function exportWinnersAsImage(winnerData: WinnerExport): void {
       useCORS: true,
       allowTaint: true,
       width: winnersSection.offsetWidth,
-      height: winnersSection.offsetHeight
+      height: winnersSection.offsetHeight,
+      logging: true // Enable logging for debugging
     }).then((canvas) => {
+      console.log('Canvas created successfully:', canvas)
       // Convert to image and download
       canvas.toBlob((blob) => {
-        if (!blob) return
+        if (!blob) {
+          console.error('Failed to create blob from canvas')
+          createManualCanvas(winnerData)
+          return
+        }
         
         const url = URL.createObjectURL(blob)
         const link = document.createElement('a')
@@ -45,6 +71,7 @@ export function exportWinnersAsImage(winnerData: WinnerExport): void {
         link.click()
         document.body.removeChild(link)
         URL.revokeObjectURL(url)
+        console.log('Image exported successfully')
       })
     }).catch((error) => {
       console.error('Error capturing winners section:', error)
