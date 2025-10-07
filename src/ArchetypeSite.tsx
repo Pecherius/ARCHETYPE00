@@ -1185,7 +1185,11 @@ export default function ArchetypeSite(){
             </button>
             <button
               onClick={() => {
-                // Game functionality - placeholder for now
+                // Scroll to game section
+                const gameSection = document.querySelector('[data-section="game"]');
+                if (gameSection) {
+                  gameSection.scrollIntoView({ behavior: 'smooth' });
+                }
                 setIsMenuOpen(false);
               }}
               className="px-6 py-3 bg-zinc-800 border border-green-500 text-green-400 hover:bg-zinc-700 transition-colors"
@@ -1194,7 +1198,11 @@ export default function ArchetypeSite(){
             </button>
             <button
               onClick={() => {
-                // Matrix functionality - placeholder for now
+                // Scroll to matrix section
+                const matrixSection = document.querySelector('[data-section="matrix"]');
+                if (matrixSection) {
+                  matrixSection.scrollIntoView({ behavior: 'smooth' });
+                }
                 setIsMenuOpen(false);
               }}
               className="px-6 py-3 bg-zinc-800 border border-green-500 text-green-400 hover:bg-zinc-700 transition-colors"
@@ -1324,7 +1332,7 @@ export default function ArchetypeSite(){
         </section>
 
         {/* NEURAL PING PONG GAME - MOVED UP */}
-        <section className="mx-auto max-w-6xl px-4 pb-12 sm:px-6">
+        <section data-section="game" className="mx-auto max-w-6xl px-4 pb-12 sm:px-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -1851,7 +1859,7 @@ export default function ArchetypeSite(){
 
 
         {/* NEURAL MATRIX SECTION - Dynamic cyberpunk visualization */}
-        <section className="mx-auto max-w-6xl px-4 pb-8 sm:px-6">
+        <section data-section="matrix" className="mx-auto max-w-6xl px-4 pb-8 sm:px-6">
           <h2 className="mb-6 text-lg tracking-wide text-zinc-100">NEURAL_MATRIX // RESONANCE_VISUALIZATION</h2>
           <div className="grid gap-6 md:grid-cols-2">
             <div className="border border-zinc-800 p-6 bg-zinc-950">
