@@ -129,6 +129,20 @@ export interface Translations {
   saveUserDescription: string
   quickAdd: string
   fromSaved: string
+  savedPrizes: string
+  searchPrizes: string
+  noPrizesFound: string
+  noSavedPrizes: string
+  prizes: string
+  quantity: string
+  savePrize: string
+  fromSavedPrizes: string
+  exportWinners: string
+  exportAsImage: string
+  exportAsJSON: string
+  algorithmDescription: string
+  randomSelection: string
+  fairDistribution: string
 }
 
 const translations: Record<string, Translations> = {
@@ -238,6 +252,18 @@ const translations: Record<string, Translations> = {
     saveUserDescription: "Save this user for quick access in future raffles",
     quickAdd: "Quick Add",
     fromSaved: "From Saved",
+    savedPrizes: "Saved Prizes",
+    searchPrizes: "Search prizes...",
+    noPrizesFound: "No prizes found",
+    noSavedPrizes: "No saved prizes yet",
+    savePrize: "Save Prize",
+    fromSavedPrizes: "From Saved",
+    exportWinners: "Export Winners",
+    exportAsImage: "Export as Image",
+    exportAsJSON: "Export as JSON",
+    algorithmDescription: "Uses advanced algorithms to ensure fair and random selection based on participant ticket weights",
+    randomSelection: "Random Selection",
+    fairDistribution: "Fair Distribution",
   },
   es: {
     raffleSystem: "Sistema de Sorteos Etéreos Punkable",
@@ -345,6 +371,18 @@ const translations: Record<string, Translations> = {
     saveUserDescription: "Guarda este usuario para acceso rápido en futuros sorteos",
     quickAdd: "Agregar Rápido",
     fromSaved: "Desde Guardados",
+    savedPrizes: "Premios Guardados",
+    searchPrizes: "Buscar premios...",
+    noPrizesFound: "No se encontraron premios",
+    noSavedPrizes: "Aún no hay premios guardados",
+    savePrize: "Guardar Premio",
+    fromSavedPrizes: "Desde Guardados",
+    exportWinners: "Exportar Ganadores",
+    exportAsImage: "Exportar como Imagen",
+    exportAsJSON: "Exportar como JSON",
+    algorithmDescription: "Utiliza algoritmos avanzados para garantizar una selección justa y aleatoria basada en el peso de los tickets de los participantes",
+    randomSelection: "Selección Aleatoria",
+    fairDistribution: "Distribución Justa",
   }
 }
 

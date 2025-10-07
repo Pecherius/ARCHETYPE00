@@ -7,9 +7,12 @@ import { RaffleService, type Raffle, type Participant, type Prize, type Winner }
 import { useRaffleLanguage } from "../hooks/use-raffle-language"
 import { ParticipantIcon } from "../lib/participant-icons"
 import { userStorageService, type SavedUser } from "../lib/user-storage"
+import { prizeStorageService, type SavedPrize } from "../lib/prize-storage"
+import { exportWinnersAsImage, exportWinnersAsJSON, type WinnerExport } from "../lib/export-winners"
 import RaffleLanguageSelector from "./RaffleLanguageSelector"
 import RaffleResultsScreen from "./RaffleResultsScreen"
 import SavedUsersManager from "./SavedUsersManager"
+import SavedPrizesManager from "./SavedPrizesManager"
 
 const COLORS = [
   "#FF69B4", "#FFB6C1", "#FF1493", "#FFC0CB", "#FF91A4", "#FF6B9D", "#C71585", 
@@ -59,6 +62,14 @@ const PunkableRaffleSystem = () => {
   const [showSaveUserDialog, setShowSaveUserDialog] = useState(false)
   const [saveUserName, setSaveUserName] = useState("")
   const [saveUserUpAddress, setSaveUserUpAddress] = useState("")
+
+  // Saved prizes states
+  const [showSavedPrizes, setShowSavedPrizes] = useState(false)
+  const [showSavePrizeDialog, setShowSavePrizeDialog] = useState(false)
+  const [savePrizeName, setSavePrizeName] = useState("")
+  const [savePrizeDescription, setSavePrizeDescription] = useState("")
+  const [savePrizeCount, setSavePrizeCount] = useState("")
+  const [savePrizeImage, setSavePrizeImage] = useState("")
 
   // Load raffle data
   const loadRaffleData = async (raffleId: string) => {
@@ -267,6 +278,16 @@ const PunkableRaffleSystem = () => {
     const prize = await RaffleService.addPrize(currentRaffle.id, prizeData)
     if (prize) {
       setPrizes((prev) => [...prev, prize])
+      
+      // Update saved prize usage if exists
+      if (newPrizeName.trim()) {
+        const savedPrizes = prizeStorageService.getAllPrizes()
+        const savedPrize = savedPrizes.find(p => p.name.toLowerCase() === newPrizeName.toLowerCase())
+        if (savedPrize) {
+          prizeStorageService.updatePrizeUsage(savedPrize.id)
+        }
+      }
+      
       setNewPrizeName("")
       setNewPrizeCount("")
     }
@@ -331,6 +352,69 @@ const PunkableRaffleSystem = () => {
     userStorageService.saveUser(newParticipantName, newParticipantUpAddress, color)
   }
 
+  // Handle saved prize selection
+  const handleSelectSavedPrize = (prize: SavedPrize) => {
+    setNewPrizeName(prize.name)
+    setNewPrizeCount(prize.count.toString())
+    setShowSavedPrizes(false)
+  }
+
+  // Handle saving prize
+  const handleSavePrize = () => {
+    if (!savePrizeName.trim() || !savePrizeCount.trim()) return
+
+    const count = parseInt(savePrizeCount)
+    if (isNaN(count) || count <= 0) return
+
+    // Save prize
+    prizeStorageService.savePrize(savePrizeName, savePrizeDescription, count, savePrizeImage)
+    
+    // Reset form
+    setSavePrizeName("")
+    setSavePrizeDescription("")
+    setSavePrizeCount("")
+    setSavePrizeImage("")
+    setShowSavePrizeDialog(false)
+  }
+
+  // Handle quick save from current prize form
+  const handleQuickSavePrize = () => {
+    if (!newPrizeName.trim() || !newPrizeCount.trim()) return
+
+    const count = parseInt(newPrizeCount)
+    if (isNaN(count) || count <= 0) return
+
+    // Save prize
+    prizeStorageService.savePrize(newPrizeName, "", count, "")
+  }
+
+  // Handle export winners
+  const handleExportWinners = (format: 'image' | 'json') => {
+    if (!currentRaffle || winners.length === 0) return
+
+    const winnerData: WinnerExport = {
+      raffleName: currentRaffle.title,
+      raffleDescription: currentRaffle.description || '',
+      raffleImage: currentRaffle.image_url || '',
+      winners: winners.map(winner => ({
+        participantName: winner.participant_name,
+        participantUpAddress: winner.up_address || '',
+        prizeName: winner.prize_name,
+        prizeDescription: '',
+        prizeImage: '',
+        selectedAt: new Date(winner.won_at).toLocaleString()
+      })),
+      exportDate: new Date().toLocaleString(),
+      totalWinners: winners.length
+    }
+
+    if (format === 'image') {
+      exportWinnersAsImage(winnerData)
+    } else {
+      exportWinnersAsJSON(winnerData)
+    }
+  }
+
   useEffect(() => {
     return () => {
       if (shuffleRef.current) {
@@ -383,37 +467,53 @@ const PunkableRaffleSystem = () => {
             <h3 className="text-3xl font-black bg-gradient-to-r from-pink-500 via-rose-500 to-purple-600 bg-clip-text text-transparent mb-4">
               {t.raffleSystem}
             </h3>
-            <p className="text-gray-400 text-lg">{t.manageRaffles}</p>
+            <p className="text-gray-400 text-lg mb-4">{t.manageRaffles}</p>
+            <div className="bg-zinc-800/50 border border-zinc-700 rounded-lg p-4 max-w-3xl mx-auto">
+              <h4 className="text-lg font-semibold text-zinc-200 mb-2 flex items-center gap-2">
+                <span className="text-pink-500">⚡</span>
+                {t.algorithmDescription}
+              </h4>
+              <div className="grid md:grid-cols-2 gap-4 text-sm text-zinc-400">
+                <div className="flex items-center gap-2">
+                  <span className="text-green-400">✓</span>
+                  <span>{t.randomSelection}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-green-400">✓</span>
+                  <span>{t.fairDistribution}</span>
+                </div>
+              </div>
+            </div>
           </div>
 
           <div className="grid md:grid-cols-3 gap-6 mb-8">
             <div className="border border-pink-500 p-4 bg-pink-500/5">
-              <h4 className="text-pink-400 font-semibold mb-3">🎲 Rifas Descentralizadas</h4>
+              <h4 className="text-pink-400 font-semibold mb-3">🎲 Random Selection</h4>
               <p className="text-xs text-zinc-400 mb-3">
-                Sistema de rifas basado en fragmentos de resonancia. Cada participante genera una frecuencia única que influye en la selección.
+                Advanced algorithms ensure fair and random selection based on participant ticket weights. Each ticket increases your chances proportionally.
               </p>
               <p className="text-xs text-zinc-500">
-                Los fragmentos ARCHETYPE_00 amplifican la señal de resonancia de cada participante, creando un sistema justo y transparente.
+                Mathematical algorithms guarantee that participants with more tickets have proportionally higher chances of winning, ensuring fairness.
               </p>
             </div>
             
             <div className="border border-purple-500 p-4 bg-purple-500/5">
-              <h4 className="text-purple-400 font-semibold mb-3">🔗 Integración LUKSO</h4>
+              <h4 className="text-purple-400 font-semibold mb-3">🌐 Local Storage</h4>
               <p className="text-xs text-zinc-400 mb-3">
-                Utiliza Universal Profiles para identificación única. Las direcciones UP permiten verificación de identidad sin comprometer la privacidad.
+                All raffle data is stored locally in your browser. No external dependencies, complete privacy and control over your data.
               </p>
               <p className="text-xs text-zinc-500">
-                Cada participante puede vincular su UP Address para mayor transparencia y verificación de identidad en el sistema.
+                UP addresses are optional and used only for identification purposes. No blockchain integration required.
               </p>
             </div>
             
             <div className="border border-rose-500 p-4 bg-rose-500/5">
-              <h4 className="text-rose-400 font-semibold mb-3">⚡ Selección Cuántica</h4>
+              <h4 className="text-rose-400 font-semibold mb-3">⚡ Fair Distribution</h4>
               <p className="text-xs text-zinc-400 mb-3">
-                Algoritmo de selección basado en peso de tickets y resonancia de fragmentos. Cada ticket tiene una probabilidad proporcional.
+                Weighted random selection algorithm ensures proportional chances based on ticket count. More tickets = higher probability of winning.
               </p>
               <p className="text-xs text-zinc-500">
-                El sistema responde a la densidad de resonancia de los fragmentos, creando eventos espontáneos y distribuciones inesperadas.
+                The system uses cryptographic randomness to ensure unpredictable and fair outcomes for all participants.
               </p>
             </div>
           </div>
@@ -586,7 +686,7 @@ const PunkableRaffleSystem = () => {
             <h4 className="text-lg font-bold text-zinc-100 flex items-center gap-2">
               <span className="text-pink-500">👥</span> {t.participants} ({participants.length})
             </h4>
-            <div className="space-y-3 max-h-96 overflow-y-auto">
+            <div className="space-y-3 max-h-96 overflow-y-auto border border-zinc-700 rounded-lg p-3 bg-zinc-800/30">
               {participants.map((participant) => (
                 <motion.div
                   key={participant.id}
@@ -762,7 +862,7 @@ const PunkableRaffleSystem = () => {
               <h4 className="text-lg font-bold text-zinc-100 flex items-center gap-2 mb-4">
                 <span className="text-pink-500">🏆</span> {t.prizes} ({remainingPrizeCount})
               </h4>
-              <div className="space-y-3 max-h-48 overflow-y-auto">
+              <div className="space-y-3 max-h-48 overflow-y-auto border border-zinc-700 rounded-lg p-3 bg-zinc-800/30">
                 {prizes.map((prize) => (
                   <motion.div
                     key={prize.id}
@@ -788,7 +888,23 @@ const PunkableRaffleSystem = () => {
 
               {/* Add Prize Form */}
               <div className="mt-4 bg-zinc-800/30 p-4 rounded-lg border border-zinc-700">
-                <h5 className="text-sm font-semibold text-zinc-300 mb-3">{t.addNewPrize}</h5>
+                <div className="flex items-center justify-between mb-3">
+                  <h5 className="text-sm font-semibold text-zinc-300">{t.addNewPrize}</h5>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => setShowSavedPrizes(true)}
+                      className="px-2 py-1 bg-zinc-700 hover:bg-zinc-600 text-zinc-300 text-xs rounded transition-colors"
+                    >
+                      {t.fromSavedPrizes}
+                    </button>
+                    <button
+                      onClick={() => setShowSavePrizeDialog(true)}
+                      className="px-2 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded transition-colors"
+                    >
+                      {t.savePrize}
+                    </button>
+                  </div>
+                </div>
                 <div className="space-y-3">
                   <input
                     type="text"
@@ -805,22 +921,51 @@ const PunkableRaffleSystem = () => {
                     min="1"
                     className="w-full px-3 py-2 bg-zinc-700 border border-zinc-600 rounded-md text-zinc-100 text-sm"
                   />
-                  <button
-                    onClick={addPrize}
-                    className="w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-semibold py-2 rounded-lg text-sm"
-                  >
-                    {t.addPrize}
-                  </button>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={addPrize}
+                      className="flex-1 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-semibold py-2 rounded-lg text-sm"
+                    >
+                      {t.addPrize}
+                    </button>
+                    {newPrizeName.trim() && newPrizeCount.trim() && (
+                      <button
+                        onClick={handleQuickSavePrize}
+                        className="px-3 py-2 bg-green-600 hover:bg-green-700 text-white text-sm rounded-lg transition-colors"
+                        title="Save this prize for quick access"
+                      >
+                        💾
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
 
             {/* Winners */}
             <div>
-              <h4 className="text-lg font-bold text-zinc-100 flex items-center gap-2 mb-4">
-                <span className="text-pink-500">🎉</span> {t.winners} ({winners.length})
-              </h4>
-              <div className="space-y-3 max-h-48 overflow-y-auto">
+              <div className="flex items-center justify-between mb-4">
+                <h4 className="text-lg font-bold text-zinc-100 flex items-center gap-2">
+                  <span className="text-pink-500">🎉</span> {t.winners} ({winners.length})
+                </h4>
+                {winners.length > 0 && (
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => handleExportWinners('image')}
+                      className="px-3 py-1 bg-pink-600 hover:bg-pink-700 text-white text-xs rounded transition-colors"
+                    >
+                      {t.exportAsImage}
+                    </button>
+                    <button
+                      onClick={() => handleExportWinners('json')}
+                      className="px-3 py-1 bg-zinc-600 hover:bg-zinc-700 text-white text-xs rounded transition-colors"
+                    >
+                      {t.exportAsJSON}
+                    </button>
+                  </div>
+                )}
+              </div>
+              <div className="space-y-3 max-h-48 overflow-y-auto border border-zinc-700 rounded-lg p-3 bg-zinc-800/30">
                 {winners.length === 0 ? (
                   <div className="text-center text-zinc-500 py-8">
                     <span className="text-3xl mb-2 block">🏆</span>
@@ -865,6 +1010,13 @@ const PunkableRaffleSystem = () => {
         isOpen={showSavedUsers}
         onSelectUser={handleSelectSavedUser}
         onClose={() => setShowSavedUsers(false)}
+      />
+
+      {/* Saved Prizes Manager */}
+      <SavedPrizesManager
+        isOpen={showSavedPrizes}
+        onSelectPrize={handleSelectSavedPrize}
+        onClose={() => setShowSavedPrizes(false)}
       />
 
       {/* Save User Dialog */}
@@ -922,6 +1074,92 @@ const PunkableRaffleSystem = () => {
                 </button>
                 <button
                   onClick={() => setShowSaveUserDialog(false)}
+                  className="px-6 py-2 border border-zinc-600 text-zinc-300 hover:bg-zinc-800 rounded-lg"
+                >
+                  {t.cancel}
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Save Prize Dialog */}
+      <AnimatePresence>
+        {showSavePrizeDialog && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50"
+            onClick={() => setShowSavePrizeDialog(false)}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.8, y: 20 }}
+              className="bg-zinc-900 rounded-2xl p-6 shadow-2xl max-w-md w-full mx-4"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="text-center mb-6">
+                <h3 className="text-xl font-bold text-zinc-100 mb-2">{t.savePrize}</h3>
+                <p className="text-sm text-zinc-400">Save this prize for quick access in future raffles</p>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-zinc-300 mb-2">{t.prizeName}</label>
+                  <input
+                    type="text"
+                    value={savePrizeName}
+                    onChange={(e) => setSavePrizeName(e.target.value)}
+                    placeholder={t.prizeName}
+                    className="w-full px-3 py-2 bg-zinc-800 border border-zinc-600 rounded-md text-zinc-100 focus:border-pink-500 focus:ring-pink-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-zinc-300 mb-2">Description</label>
+                  <input
+                    type="text"
+                    value={savePrizeDescription}
+                    onChange={(e) => setSavePrizeDescription(e.target.value)}
+                    placeholder="Prize description (optional)"
+                    className="w-full px-3 py-2 bg-zinc-800 border border-zinc-600 rounded-md text-zinc-100 focus:border-pink-500 focus:ring-pink-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-zinc-300 mb-2">{t.quantity}</label>
+                  <input
+                    type="number"
+                    value={savePrizeCount}
+                    onChange={(e) => setSavePrizeCount(e.target.value)}
+                    placeholder={t.quantity}
+                    min="1"
+                    className="w-full px-3 py-2 bg-zinc-800 border border-zinc-600 rounded-md text-zinc-100 focus:border-pink-500 focus:ring-pink-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-zinc-300 mb-2">Image URL</label>
+                  <input
+                    type="text"
+                    value={savePrizeImage}
+                    onChange={(e) => setSavePrizeImage(e.target.value)}
+                    placeholder="Prize image URL (optional)"
+                    className="w-full px-3 py-2 bg-zinc-800 border border-zinc-600 rounded-md text-zinc-100 focus:border-pink-500 focus:ring-pink-500"
+                  />
+                </div>
+              </div>
+
+              <div className="flex gap-3 mt-6">
+                <button
+                  onClick={handleSavePrize}
+                  disabled={!savePrizeName.trim() || !savePrizeCount.trim()}
+                  className="flex-1 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-semibold py-2 rounded-lg shadow-md disabled:opacity-50"
+                >
+                  {t.savePrize}
+                </button>
+                <button
+                  onClick={() => setShowSavePrizeDialog(false)}
                   className="px-6 py-2 border border-zinc-600 text-zinc-300 hover:bg-zinc-800 rounded-lg"
                 >
                   {t.cancel}

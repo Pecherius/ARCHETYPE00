@@ -12,13 +12,13 @@ interface LanguageContextType {
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined)
 
 export function RaffleLanguageProvider({ children }: { children: React.ReactNode }) {
-  const [language, setLanguageState] = useState("es")
-  const [t, setTranslations] = useState<Translations>(getTranslations("es"))
+  const [language, setLanguageState] = useState("en")
+  const [t, setTranslations] = useState<Translations>(getTranslations("en"))
 
   useEffect(() => {
     // Load saved language from localStorage
     if (typeof window !== "undefined") {
-      const savedLanguage = localStorage.getItem("punkable_language") || "es"
+      const savedLanguage = localStorage.getItem("punkable_language") || "en"
       setLanguageState(savedLanguage)
       setTranslations(getTranslations(savedLanguage))
     }
