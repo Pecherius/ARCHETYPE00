@@ -259,9 +259,6 @@ const translations: Record<string, Translations> = {
     exportWinners: "Export Winners",
     exportAsImage: "Export as Image",
     exportAsJSON: "Export as JSON",
-    algorithmDescription: "Uses advanced algorithms to ensure fair and random selection based on participant ticket weights",
-    randomSelection: "Random Selection",
-    fairDistribution: "Fair Distribution",
   },
   es: {
     raffleSystem: "Sistema de Sorteos Etéreos Punkable",
@@ -378,9 +375,6 @@ const translations: Record<string, Translations> = {
     exportWinners: "Exportar Ganadores",
     exportAsImage: "Exportar como Imagen",
     exportAsJSON: "Exportar como JSON",
-    algorithmDescription: "Utiliza algoritmos avanzados para garantizar una selección justa y aleatoria basada en el peso de los tickets de los participantes",
-    randomSelection: "Selección Aleatoria",
-    fairDistribution: "Distribución Justa",
   }
 }
 
