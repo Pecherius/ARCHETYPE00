@@ -771,33 +771,35 @@ function NeuralPingPong() {
       setBall(prev => {
         let newBall = { ...prev };
         
-             // Progressive difficulty - much easier overall
+             // Progressive difficulty - MUCH easier for first 10 seconds
              const currentTime = Date.now();
              const gameDuration = (currentTime - gameStartTime) / 1000; // seconds
              let difficultyMultiplier = 1;
-             if (gameDuration < 15) {
-               difficultyMultiplier = 0.4; // 60% easier for first 15 seconds
+             if (gameDuration < 10) {
+               difficultyMultiplier = 0.2; // 80% easier for first 10 seconds
+             } else if (gameDuration < 20) {
+               difficultyMultiplier = 0.4; // 60% easier for next 10 seconds
              } else if (gameDuration < 30) {
-               difficultyMultiplier = 0.6; // 40% easier for next 15 seconds
+               difficultyMultiplier = 0.6; // 40% easier for next 10 seconds
              } else {
-               difficultyMultiplier = Math.min(0.8 + (gameDuration - 30) * 0.05, 1.2); // Very gradual increase
+               difficultyMultiplier = Math.min(0.8 + (gameDuration - 30) * 0.02, 1.0); // Very gradual increase
              }
         
-             // Apply physics with progressive difficulty - much easier
-             newBall.vx += newBall.dx * 0.03 * difficultyMultiplier; // Much slower acceleration
-             newBall.vy += newBall.dy * 0.03 * difficultyMultiplier;
+             // Apply physics with progressive difficulty - MUCH easier
+             newBall.vx += newBall.dx * 0.015 * difficultyMultiplier; // MUCH slower acceleration
+             newBall.vy += newBall.dy * 0.015 * difficultyMultiplier;
              
              // Apply friction (more aggressive to prevent runaway speeds)
              newBall.vx *= 0.98; // More friction
              newBall.vy *= 0.98;
              
              // Limit maximum velocity to prevent impossible situations
-             const maxVelocity = 4; // Much slower max speed
+             const maxVelocity = 2; // MUCH slower max speed
              newBall.vx = Math.max(-maxVelocity, Math.min(maxVelocity, newBall.vx));
              newBall.vy = Math.max(-maxVelocity, Math.min(maxVelocity, newBall.vy));
              
              // Update position with progressive speed
-             const currentSpeed = Math.min(speed * difficultyMultiplier, 3); // Much slower overall
+             const currentSpeed = Math.min(speed * difficultyMultiplier, 2); // MUCH slower overall
              newBall.x += newBall.vx * currentSpeed;
              newBall.y += newBall.vy * currentSpeed;
         
@@ -841,7 +843,7 @@ function NeuralPingPong() {
             }
             return newScore;
           });
-               setSpeed(prev => Math.min(prev + 0.2, 8)); // Much slower speed increase
+               setSpeed(prev => Math.min(prev + 0.1, 6)); // MUCH slower speed increase
           
           // Spawn floating message on successful hit
           if (Math.random() < 0.3) { // 30% chance
@@ -1139,7 +1141,7 @@ function NeuralPingPong() {
     
     // Start ball from center top with more random direction
     const randomAngle = (Math.random() - 0.5) * Math.PI / 2; // -45 to 45 degrees for more variety
-    const randomSpeed = Math.random() * 0.5 + 0.5; // 0.5 to 1 speed range - much slower
+    const randomSpeed = Math.random() * 0.3 + 0.2; // 0.2 to 0.5 speed range - MUCH slower
     const initialVx = Math.sin(randomAngle) * randomSpeed;
     const initialVy = Math.abs(Math.cos(randomAngle)) * randomSpeed; // Always downward
     
@@ -1148,8 +1150,8 @@ function NeuralPingPong() {
       y: 100, 
       dx: initialVx, 
       dy: initialVy,
-      vx: initialVx * 0.05, // Much smaller initial velocity
-      vy: initialVy * 0.05
+      vx: initialVx * 0.02, // MUCH smaller initial velocity
+      vy: initialVy * 0.02
     });
     setPaddle({ x: 350, y: 550, width: 150 }); // Bigger paddle
     setGlitchLines([]);
@@ -1307,7 +1309,7 @@ function NeuralPingPong() {
     <div className="border border-zinc-800 p-4 bg-zinc-950">
       <h3 className="text-lg font-semibold text-zinc-100 mb-4">NEURAL_PING_PONG // ACTIVE</h3>
       <div className="relative w-full" style={{ height: '60vh', minHeight: '400px' }}>
-        <div className="absolute inset-0 border-2 border-zinc-700 bg-gradient-to-br from-zinc-900/20 to-zinc-950">
+        <div className="absolute inset-0 border-2 border-red-500 bg-gradient-to-br from-red-900/20 to-zinc-950">
           <canvas 
             ref={canvasRef}
             width={800}
