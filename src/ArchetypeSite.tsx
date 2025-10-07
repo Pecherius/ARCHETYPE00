@@ -221,28 +221,25 @@ function useInterval(cb: () => void, ms: number) {
 
 // ⌨️ GLOBAL_KEYS: The keyboard shortcuts that make this site feel like a game
 // R = pulse (because why not), G = glitch (obviously), : = VHS (retro vibes)
-        function useGlobalKeys(
-          toggleGlitch: () => void,
-          pulse: () => void,
-          toggleVHS: () => void,
-          onD34D: () => void
-        ) {
+function useGlobalKeys(
+  toggleGlitch: () => void,
+  pulse: () => void,
+  toggleVHS: () => void,
+  onD34D: () => void
+) {
           const d34dBufferRef = useRef("");
           const lastKeyTimeRef = useRef(Date.now());
           
-          useEffect(() => {
-            // Initialize debug info
+  useEffect(() => {
+            // Initialize debug info (reduced for performance)
             console.log("%c[NEURAL_INTERFACE] Keyboard monitoring system initialized", "color:#00ff88; font-family: monospace;");
             console.log("%c[QUARANTINE_PROTOCOL] Waiting for access sequence: d34d", "color:#ff6600; font-family: monospace;");
-            console.log("%c[DEBUG_INFO] Buffer state: useRef initialized, timeout: 5000ms", "color:#999; font-family: monospace;");
             
             const handleKeyPress = (e: KeyboardEvent) => {
               const now = Date.now();
               const timeSinceLastKey = now - lastKeyTimeRef.current;
               
-              console.log(`%c[KEY_DEBUG] Key pressed: "${e.key}" (length: ${e.key.length})`, "color:#999; font-family: monospace;");
-              console.log(`%c[TIMING_DEBUG] Time since last key: ${timeSinceLastKey}ms`, "color:#666; font-family: monospace;");
-              console.log(`%c[BUFFER_STATE] Current buffer: "${d34dBufferRef.current}" (length: ${d34dBufferRef.current.length})`, "color:#666; font-family: monospace;");
+            // Reduced debug logging for performance
               
               // Handle single key shortcuts first
               if (e.key.toLowerCase() === "r") {
@@ -296,7 +293,7 @@ function useInterval(cb: () => void, ms: number) {
                 if (isComplete) {
                   console.log("%c[QUARANTINE_PROTOCOL] 🚨 ACCESS SEQUENCE d34d RECOGNIZED! Initiating quarantine breach...", "color:#ff4444; font-weight: bold;");
                   console.log("%c[SUCCESS] Buffer accumulation successful: d -> d3 -> d34 -> d34d", "color:#00ff88; font-weight: bold;");
-                  onD34D();
+          onD34D();
                   d34dBufferRef.current = ""; // Reset after successful trigger
                   console.log("%c[BUFFER_RESET] Buffer cleared after successful trigger", "color:#00ff88; font-family: monospace;");
                 } else {
@@ -326,8 +323,8 @@ function useInterval(cb: () => void, ms: number) {
               console.log("%c[NEURAL_INTERFACE] Keyboard monitoring system terminated", "color:#ff0000; font-family: monospace;");
               window.removeEventListener("keydown", handleKeyPress);
             };
-          }, [toggleGlitch, pulse, toggleVHS, onD34D]);
-        }
+  }, [toggleGlitch, pulse, toggleVHS, onD34D]);
+}
 
 // 🎵 AUDIO_HOOK: The sub-bass hum that makes your speakers vibrate
 // 38Hz because it's the frequency of the universe (or something like that)
@@ -1145,7 +1142,7 @@ export default function ArchetypeSite(){
 
   return (
     <main className={`min-h-screen ${bg} font-mono text-zinc-200 selection:bg-pink-300/30`}>
-        <div className="relative overflow-hidden">
+      <div className="relative overflow-hidden">
         
         {/* d34d Notification */}
         {d34dNotification && (
@@ -1326,19 +1323,81 @@ export default function ArchetypeSite(){
           ))}
         </section>
 
+        {/* NEURAL PING PONG GAME - MOVED UP */}
+        <section className="mx-auto max-w-6xl px-4 pb-12 sm:px-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            <h2 className="mb-6 text-2xl font-bold tracking-wide text-zinc-100 text-center">
+              <span className="text-red-500">NEURAL_PING_PONG</span> // <span className="text-green-400">RESONANCE_MODE</span>
+            </h2>
+            <div className="grid gap-6 md:grid-cols-2">
+              <NeuralPingPong />
+              <div className="border border-zinc-800 p-4 bg-zinc-950">
+                <h3 className="text-lg font-semibold text-zinc-100 mb-4">SYSTEM_INSTRUCTIONS</h3>
+                <div className="space-y-3 text-sm text-zinc-400">
+                  <p>• Use ← → arrow keys, mouse movement, or touch to control the paddle</p>
+                  <p>• Ball speed increases with each successful hit</p>
+                  <p>• Geometric obstacles will appear and obstruct vision</p>
+                  <p>• Resonance glitch effects intensify over time</p>
+                  <p>• Survive as long as possible in the neural network</p>
+                </div>
+                <div className="mt-4 p-3 border border-red-500 bg-red-500/10">
+                  <p className="text-xs text-red-400 font-mono">
+                    WARNING: High-frequency gameplay may cause visual distortion
+                  </p>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </section>
+
         {/* RESONANCE FIELD */}
         <section className="mx-auto max-w-6xl px-4 pb-12 sm:px-6">
-          <h2 className="mb-6 text-2xl font-bold tracking-wide text-zinc-100">Resonance Field // Frequency Emission</h2>
-          <div className="border border-zinc-800 p-6 text-sm leading-relaxed text-zinc-300 bg-zinc-950/50">
-            <p className="mb-6 text-base">
+          <motion.h2 
+            className="mb-6 text-2xl font-bold tracking-wide text-zinc-100"
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          >
+            Resonance Field // Frequency Emission
+          </motion.h2>
+          <motion.div 
+            className="border border-zinc-800 p-6 text-sm leading-relaxed text-zinc-300 bg-zinc-950/50"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+          >
+            <motion.p 
+              className="mb-6 text-base"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 1, delay: 0.6 }}
+            >
               ARCHETYPE_00 functions as the core frequency emitter within the Punkable Ethereal System. Each artifact establishes a measurable resonance signal—a silent, persistent vibration that interacts with the network's underlying layer. This resonance defines visibility, influences probability, and ultimately shapes outcomes across connected events.
-            </p>
-            <p className="mb-6">
+            </motion.p>
+            <motion.p 
+              className="mb-6"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 1, delay: 0.8 }}
+            >
               As holders accumulate multiple fragments, their resonance intensity increases, strengthening their presence within the system's recognition field. Over time, these amplified frequencies can trigger network reactions: unannounced raffles, NFT emissions, or anomaly-based rewards. The artifact doesn't grant access. It generates signal. The network decides how to respond.
-            </p>
+            </motion.p>
             
-            <div className="grid md:grid-cols-2 gap-6 mb-6">
-              <div className="border border-zinc-700 p-4 bg-zinc-900/30">
+            <motion.div 
+              className="grid md:grid-cols-2 gap-6 mb-6"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 1 }}
+            >
+              <motion.div 
+                className="border border-zinc-700 p-4 bg-zinc-900/30"
+                whileHover={{ scale: 1.02, borderColor: "#10b981" }}
+                transition={{ duration: 0.3 }}
+              >
                 <h3 className="text-green-400 font-semibold mb-3">System Layers</h3>
                 <div className="space-y-2 text-xs">
                   <div className="flex justify-between">
@@ -1362,9 +1421,13 @@ export default function ArchetypeSite(){
                     <span>Distribution of retroactive NFTs or anomaly-based outcomes</span>
                   </div>
                 </div>
-              </div>
+              </motion.div>
               
-              <div className="border border-zinc-700 p-4 bg-zinc-900/30">
+              <motion.div 
+                className="border border-zinc-700 p-4 bg-zinc-900/30"
+                whileHover={{ scale: 1.02, borderColor: "#ef4444" }}
+                transition={{ duration: 0.3 }}
+              >
                 <h3 className="text-red-400 font-semibold mb-3">Technical Specifications</h3>
                 <div className="space-y-2 text-xs">
                   <div className="flex justify-between">
@@ -1388,17 +1451,34 @@ export default function ArchetypeSite(){
                     <span className="text-red-400">Corrupted Fragment</span>
                   </div>
                 </div>
-              </div>
-            </div>
-          </div>
+              </motion.div>
+            </motion.div>
+          </motion.div>
         </section>
 
         {/* CYPHERPUNK MANIFESTO */}
         <section className="mx-auto max-w-6xl px-4 pb-12 sm:px-6">
-          <h2 className="mb-6 text-2xl font-bold tracking-wide text-zinc-100">Cypherpunk Manifesto // Digital Resistance</h2>
-          <div className="border border-zinc-800 p-6 text-sm leading-relaxed text-zinc-300">
+          <motion.h2 
+            className="mb-6 text-2xl font-bold tracking-wide text-zinc-100"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          >
+            Cypherpunk Manifesto // Digital Resistance
+          </motion.h2>
+          <motion.div 
+            className="border border-zinc-800 p-6 text-sm leading-relaxed text-zinc-300"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+          >
             <div className="grid md:grid-cols-2 gap-8">
-              <div>
+              <motion.div
+                initial={{ opacity: 0, x: -30 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.8, delay: 0.6 }}
+                whileHover={{ scale: 1.02 }}
+              >
                 <h3 className="text-lg font-semibold text-green-400 mb-4">The Resonance Revolution</h3>
                 <p className="mb-4">
                   In the digital underground, where LUKSO's Universal Profiles intersect with the fragmented remnants of corrupted chains, a new form of resistance emerges. ARCHETYPE_00 represents more than a digital asset—it's a frequency weapon against centralized control.
@@ -1406,9 +1486,14 @@ export default function ArchetypeSite(){
                 <p className="mb-4">
                   Each fragment carries the DNA of rebellion, encoded in resonance patterns that traditional systems cannot comprehend. The more fragments you accumulate, the stronger your signal becomes in the ethereal network—a digital echo that grows louder with each acquisition.
                 </p>
-              </div>
+              </motion.div>
               
-              <div>
+              <motion.div
+                initial={{ opacity: 0, x: 30 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.8, delay: 0.8 }}
+                whileHover={{ scale: 1.02 }}
+              >
                 <h3 className="text-lg font-semibold text-red-400 mb-4">Network Anomalies</h3>
                 <p className="mb-4">
                   The Punkable Ethereal System operates on principles that defy conventional blockchain mechanics. Resonance fields create spontaneous events—unannounced distributions, anomaly-based rewards, and network reactions that respond to frequency patterns rather than traditional smart contract logic.
@@ -1416,21 +1501,50 @@ export default function ArchetypeSite(){
                 <p className="mb-4">
                   This isn't just about holding tokens. It's about becoming part of a living, breathing digital organism that responds to the collective resonance of its participants. The network decides how to react, but your signal strength determines your influence.
                 </p>
-              </div>
+              </motion.div>
             </div>
             
-            <div className="mt-8 p-4 border border-yellow-500 bg-yellow-500/5">
-              <p className="text-center text-yellow-400 font-mono text-sm">
+            <motion.div 
+              className="mt-8 p-4 border border-yellow-500 bg-yellow-500/5"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, delay: 1 }}
+              whileHover={{ scale: 1.02, borderColor: "#eab308" }}
+            >
+              <motion.p 
+                className="text-center text-yellow-400 font-mono text-sm"
+                animate={{ 
+                  textShadow: [
+                    "0 0 0px #eab308",
+                    "0 0 10px #eab308",
+                    "0 0 0px #eab308"
+                  ]
+                }}
+                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+              >
                 "The resonance field is not controlled—it evolves. Each fragment amplifies the signal. Each holder becomes a node in the resistance. The network responds to frequency, not authority."
-              </p>
-            </div>
-          </div>
+              </motion.p>
+            </motion.div>
+          </motion.div>
         </section>
 
         {/* MINT OPERATION */}
         <section className="mx-auto max-w-6xl px-4 pb-12 sm:px-6">
-          <h2 className="mb-6 text-2xl font-bold tracking-wide text-zinc-100">Mint Operation // Corrupted Resonance</h2>
-          <div className="border border-red-500 p-6 text-sm leading-relaxed text-zinc-300 bg-red-500/5">
+          <motion.h2 
+            className="mb-6 text-2xl font-bold tracking-wide text-zinc-100"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          >
+            Mint Operation // Corrupted Resonance
+          </motion.h2>
+          <motion.div 
+            className="border border-red-500 p-6 text-sm leading-relaxed text-zinc-300 bg-red-500/5"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            whileHover={{ scale: 1.01 }}
+          >
             <div className="font-mono text-red-400 mb-4 text-center">
               [ARCHETYPE_00::corrupted_resonance_detected]
             </div>
@@ -1438,33 +1552,73 @@ export default function ArchetypeSite(){
               Emission layer active. Each mint stabilizes the anomaly, amplifying the system's response probability. Holders influence signal strength across the Punkable Ethereal field. Retroactive transmissions are unpredictable. Proceed with caution.
             </p>
             
-            <div className="grid md:grid-cols-3 gap-6">
-              <div className="text-center p-4 border border-zinc-700 bg-zinc-900/30">
-                <div className="text-2xl font-bold text-green-400 mb-2">200</div>
+            <motion.div 
+              className="grid md:grid-cols-3 gap-6"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.6 }}
+            >
+              <motion.div 
+                className="text-center p-4 border border-zinc-700 bg-zinc-900/30"
+                whileHover={{ scale: 1.05, borderColor: "#10b981" }}
+                transition={{ duration: 0.3 }}
+              >
+                <motion.div 
+                  className="text-2xl font-bold text-green-400 mb-2"
+                  animate={{ scale: [1, 1.05, 1] }}
+                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                >
+                  200
+                </motion.div>
                 <div className="text-xs text-zinc-500">Total Supply</div>
                 <div className="text-xs text-zinc-400 mt-1">Fragments</div>
-              </div>
+              </motion.div>
               
-              <div className="text-center p-4 border border-zinc-700 bg-zinc-900/30">
-                <div className="text-2xl font-bold text-yellow-400 mb-2">2 LYX</div>
+              <motion.div 
+                className="text-center p-4 border border-zinc-700 bg-zinc-900/30"
+                whileHover={{ scale: 1.05, borderColor: "#eab308" }}
+                transition={{ duration: 0.3 }}
+              >
+                <motion.div 
+                  className="text-2xl font-bold text-yellow-400 mb-2"
+                  animate={{ scale: [1, 1.05, 1] }}
+                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+                >
+                  2 LYX
+                </motion.div>
                 <div className="text-xs text-zinc-500">Mint Price</div>
                 <div className="text-xs text-zinc-400 mt-1">Per Fragment</div>
-              </div>
+              </motion.div>
               
-              <div className="text-center p-4 border border-zinc-700 bg-zinc-900/30">
-                <div className="text-2xl font-bold text-red-400 mb-2">∞</div>
+              <motion.div 
+                className="text-center p-4 border border-zinc-700 bg-zinc-900/30"
+                whileHover={{ scale: 1.05, borderColor: "#ef4444" }}
+                transition={{ duration: 0.3 }}
+              >
+                <motion.div 
+                  className="text-2xl font-bold text-red-400 mb-2"
+                  animate={{ scale: [1, 1.05, 1] }}
+                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+                >
+                  ∞
+                </motion.div>
                 <div className="text-xs text-zinc-500">Resonance</div>
                 <div className="text-xs text-zinc-400 mt-1">Amplification</div>
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
             
-            <div className="mt-6 p-4 border border-zinc-700 bg-zinc-900/50">
+            <motion.div 
+              className="mt-6 p-4 border border-zinc-700 bg-zinc-900/50"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.8 }}
+            >
               <h4 className="text-green-400 font-semibold mb-3">Warning: Unstable Fragment</h4>
               <p className="text-xs text-zinc-400">
                 This artifact contains corrupted data from damaged chain archives. Its internal structure is unstable and may cause unexpected network reactions. Each mint increases the probability of spontaneous events across the Punkable Ethereal System. Holders assume full responsibility for resonance field interactions.
               </p>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         </section>
 
         {/* HACKING CULTURE */}
@@ -1649,11 +1803,11 @@ export default function ArchetypeSite(){
                           onLoad={() => debugImageLoad(QUARANTINE_IMAGES.tsumori, "Dr. Tsumori")}
                           onError={() => debugImageLoad(QUARANTINE_IMAGES.tsumori, "Dr. Tsumori")}
                         />
-                        <div>
+              <div>
                           <div className="text-green-300 font-semibold">Dr. Mikhail R. Tsumori</div>
                           <div className="text-red-400 text-xs">STATUS: d34d</div>
                           <p className="text-zinc-400 text-xs mt-1">Lead Resonance Engineer. Neural feedback loop persisted beyond termination threshold.</p>
-                        </div>
+              </div>
                       </div>
                       <div className="flex gap-3 items-start">
                         <img 
@@ -1663,7 +1817,7 @@ export default function ArchetypeSite(){
                           onLoad={() => debugImageLoad(QUARANTINE_IMAGES.hoshino, "Kai Hoshino")}
                           onError={() => debugImageLoad(QUARANTINE_IMAGES.hoshino, "Kai Hoshino")}
                         />
-                        <div>
+              <div>
                           <div className="text-green-300 font-semibold">Kai N. Hoshino</div>
                           <div className="text-red-400 text-xs">STATUS: d34d</div>
                           <p className="text-zinc-400 text-xs mt-1">System Architect / Codebreaker. Layer 3A breach; archetype frequencies duplicated and re-encrypted.</p>
@@ -1806,7 +1960,7 @@ export default function ArchetypeSite(){
             <span className={`h-2 w-2 ${humOn ? "bg-pink-500" : "bg-zinc-400"}`}/> {humOn ? "res_hum: on" : "res_hum: off"}
           </button>
         </footer>
-        </div>
-      </main>
+      </div>
+    </main>
   );
 }
