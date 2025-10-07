@@ -650,14 +650,14 @@ const PunkableRaffleSystem = () => {
           </div>
         </div>
 
-        {/* Winner Alert */}
+        {/* Winner Alert - Floating */}
         <AnimatePresence>
           {showWinnerAlert && latestWinner && (
             <motion.div
               initial={{ opacity: 0, scale: 0.8, y: -20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.8, y: -20 }}
-              className="mb-6 p-4 bg-gradient-to-r from-pink-500/20 to-purple-500/20 border border-pink-500/30 rounded-lg"
+              className="fixed top-4 right-4 z-50 p-4 bg-gradient-to-r from-pink-500/20 to-purple-500/20 border border-pink-500/30 rounded-lg shadow-2xl backdrop-blur-sm"
             >
               <div className="flex items-center gap-3">
                 <div
@@ -775,24 +775,22 @@ const PunkableRaffleSystem = () => {
                 {duplicateUpAddressError && (
                   <p className="text-xs text-red-400">{duplicateUpAddressError}</p>
                 )}
-                <div className="flex gap-2">
+                <button
+                  onClick={addParticipant}
+                  disabled={!!duplicateUpAddressError}
+                  className="w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-semibold py-2 rounded-lg text-sm disabled:opacity-50"
+                >
+                  {t.addParticipant}
+                </button>
+                {newParticipantName.trim() && newParticipantUpAddress.trim() && (
                   <button
-                    onClick={addParticipant}
-                    disabled={!!duplicateUpAddressError}
-                    className="flex-1 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-semibold py-2 rounded-lg text-sm disabled:opacity-50"
+                    onClick={handleQuickSaveUser}
+                    className="w-full bg-green-600 hover:bg-green-700 text-white text-sm rounded-lg transition-colors py-2"
+                    title={t.saveUserDescription}
                   >
-                    {t.addParticipant}
+                    💾 {t.saveUser}
                   </button>
-                  {newParticipantName.trim() && newParticipantUpAddress.trim() && (
-                    <button
-                      onClick={handleQuickSaveUser}
-                      className="px-3 py-2 bg-green-600 hover:bg-green-700 text-white text-sm rounded-lg transition-colors"
-                      title={t.saveUserDescription}
-                    >
-                      💾
-                    </button>
-                  )}
-                </div>
+                )}
               </div>
             </div>
           </div>
