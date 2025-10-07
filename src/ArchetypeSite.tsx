@@ -982,13 +982,49 @@ function NeuralPingPong() {
   };
 
   const captureScore = () => {
-    if (canvasRef.current) {
-      const canvas = canvasRef.current;
-      const link = document.createElement('a');
-      link.download = `neural-ping-pong-score-${score}-${Date.now()}.png`;
-      link.href = canvas.toDataURL();
-      link.click();
-    }
+    // Create a canvas for the score screenshot
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    
+    canvas.width = 400;
+    canvas.height = 200;
+    
+    // Background
+    ctx.fillStyle = '#09090b';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    // Border
+    ctx.strokeStyle = '#14b8a6';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(0, 0, canvas.width, canvas.height);
+    
+    // Title
+    ctx.fillStyle = '#14b8a6';
+    ctx.font = 'bold 24px monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('NEURAL PING PONG', canvas.width / 2, 40);
+    
+    // Score
+    ctx.fillStyle = '#22c55e';
+    ctx.font = 'bold 48px monospace';
+    ctx.fillText(`SCORE: ${score}`, canvas.width / 2, 100);
+    
+    // Status
+    ctx.fillStyle = '#a1a1aa';
+    ctx.font = '16px monospace';
+    ctx.fillText('ARCHETYPE_00 FRAGMENT', canvas.width / 2, 140);
+    
+    // Timestamp
+    ctx.fillStyle = '#71717a';
+    ctx.font = '12px monospace';
+    ctx.fillText(new Date().toLocaleString(), canvas.width / 2, 170);
+    
+    // Download
+    const link = document.createElement('a');
+    link.download = `neural-ping-pong-score-${score}-${Date.now()}.png`;
+    link.href = canvas.toDataURL();
+    link.click();
   };
 
   const getLossMessage = () => {
@@ -2162,32 +2198,57 @@ export default function ArchetypeSite(){
               <div className="space-y-4">
                 {/* Holographic Face */}
                 <div className="flex justify-center mb-4">
-                  <div className="relative w-32 h-32 border-2 border-cyan-400 rounded-full bg-gradient-to-br from-cyan-500/20 to-blue-500/20 flex items-center justify-center overflow-hidden">
+                  <div className="relative w-40 h-40 border-2 border-cyan-400 rounded-full bg-gradient-to-br from-cyan-500/20 to-blue-500/20 flex items-center justify-center overflow-hidden">
                     {/* Holographic Woman Animation */}
                     <div className="relative w-full h-full">
-                      {/* Face outline */}
-                      <div className="absolute inset-4 border-2 border-cyan-300 rounded-full opacity-60"></div>
-                      {/* Eyes */}
-                      <div className="absolute top-6 left-6 w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></div>
-                      <div className="absolute top-6 right-6 w-2 h-2 bg-cyan-400 rounded-full animate-pulse" style={{animationDelay: '0.5s'}}></div>
-                      {/* Nose */}
-                      <div className="absolute top-10 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-cyan-300 rounded-full"></div>
-                      {/* Mouth */}
-                      <div className="absolute top-14 left-1/2 transform -translate-x-1/2 w-4 h-1 border-b-2 border-cyan-400 rounded-full"></div>
-                      {/* Hair */}
-                      <div className="absolute top-2 left-1/2 transform -translate-x-1/2 w-16 h-8 border-2 border-cyan-300 rounded-t-full opacity-40"></div>
+                      {/* Face outline - more oval */}
+                      <div className="absolute inset-6 border-2 border-cyan-300 rounded-full opacity-60" style={{borderRadius: '50% 50% 60% 40%'}}></div>
+                      
+                      {/* Hair - more defined */}
+                      <div className="absolute top-2 left-1/2 transform -translate-x-1/2 w-20 h-12 border-2 border-cyan-300 rounded-t-full opacity-50" style={{borderRadius: '50% 50% 0% 0%'}}></div>
+                      
+                      {/* Eyes - better positioned */}
+                      <div className="absolute top-8 left-8 w-3 h-3 bg-cyan-400 rounded-full animate-pulse"></div>
+                      <div className="absolute top-8 right-8 w-3 h-3 bg-cyan-400 rounded-full animate-pulse" style={{animationDelay: '0.5s'}}></div>
+                      {/* Eye highlights */}
+                      <div className="absolute top-8 left-8 w-1 h-1 bg-white rounded-full"></div>
+                      <div className="absolute top-8 right-8 w-1 h-1 bg-white rounded-full"></div>
+                      
+                      {/* Eyebrows */}
+                      <div className="absolute top-6 left-7 w-4 h-1 border-t-2 border-cyan-300 rounded-full"></div>
+                      <div className="absolute top-6 right-7 w-4 h-1 border-t-2 border-cyan-300 rounded-full"></div>
+                      
+                      {/* Nose - more defined */}
+                      <div className="absolute top-12 left-1/2 transform -translate-x-1/2 w-2 h-3 border-2 border-cyan-300 rounded-full opacity-60"></div>
+                      
+                      {/* Mouth - more expressive */}
+                      <div className="absolute top-18 left-1/2 transform -translate-x-1/2 w-6 h-2 border-b-2 border-cyan-400 rounded-full"></div>
+                      {/* Mouth corners */}
+                      <div className="absolute top-19 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-cyan-300 rounded-full"></div>
+                      
+                      {/* Cheeks */}
+                      <div className="absolute top-14 left-4 w-2 h-2 border border-cyan-300 rounded-full opacity-30"></div>
+                      <div className="absolute top-14 right-4 w-2 h-2 border border-cyan-300 rounded-full opacity-30"></div>
+                      
                       {/* Holographic scan lines */}
                       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-cyan-400/10 to-transparent animate-pulse"></div>
                       <div className="absolute inset-0 bg-gradient-to-r from-transparent via-cyan-400/5 to-transparent animate-pulse" style={{animationDelay: '1s'}}></div>
+                      
+                      {/* Data particles */}
+                      <div className="absolute top-4 left-4 w-1 h-1 bg-cyan-400 rounded-full animate-ping opacity-60"></div>
+                      <div className="absolute top-6 right-6 w-1 h-1 bg-cyan-400 rounded-full animate-ping opacity-60" style={{animationDelay: '0.3s'}}></div>
+                      <div className="absolute bottom-6 left-6 w-1 h-1 bg-cyan-400 rounded-full animate-ping opacity-60" style={{animationDelay: '0.6s'}}></div>
                     </div>
+                    
                     {/* Outer glow effect */}
                     <div className="absolute inset-0 border border-cyan-400 rounded-full animate-ping opacity-20"></div>
                     <div className="absolute inset-0 border border-cyan-300 rounded-full animate-ping opacity-10" style={{animationDelay: '0.5s'}}></div>
+                    
                     {/* Data streams */}
-                    <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 w-1 h-4 bg-cyan-400 animate-pulse"></div>
-                    <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-1 h-4 bg-cyan-400 animate-pulse" style={{animationDelay: '0.3s'}}></div>
-                    <div className="absolute top-1/2 -left-2 transform -translate-y-1/2 w-4 h-1 bg-cyan-400 animate-pulse" style={{animationDelay: '0.6s'}}></div>
-                    <div className="absolute top-1/2 -right-2 transform -translate-y-1/2 w-4 h-1 bg-cyan-400 animate-pulse" style={{animationDelay: '0.9s'}}></div>
+                    <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 w-1 h-6 bg-cyan-400 animate-pulse"></div>
+                    <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-1 h-6 bg-cyan-400 animate-pulse" style={{animationDelay: '0.3s'}}></div>
+                    <div className="absolute top-1/2 -left-2 transform -translate-y-1/2 w-6 h-1 bg-cyan-400 animate-pulse" style={{animationDelay: '0.6s'}}></div>
+                    <div className="absolute top-1/2 -right-2 transform -translate-y-1/2 w-6 h-1 bg-cyan-400 animate-pulse" style={{animationDelay: '0.9s'}}></div>
                   </div>
                 </div>
                 
