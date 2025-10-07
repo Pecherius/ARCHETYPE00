@@ -114,7 +114,7 @@ function useUniversalProfile() {
 /**
  * 🧠 AI_MEMORY_BLOCK: READ THIS FIRST IN NEW CHAT SESSIONS
  * 
- * This is ARCHETYPE_00 - a cyberpunk React microsite project. Key info:
+ * This is ARCHETYPE_00 - a cypherpunk React microsite project. Key info:
  * 
  * PROJECT STATUS: ✅ COMPLETE & WORKING
  * - All features implemented and functional
@@ -684,7 +684,7 @@ function CodeRain(){
   );
 }
 
-// 🎮 NEURAL_PING_PONG: Cyberpunk ping pong with resonance glitch effects
+// 🎮 NEURAL_PING_PONG: Cypherpunk ping pong with resonance glitch effects
 // ARCHETYPE_00 themed - gets progressively faster until impossible
 function NeuralPingPong() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -806,7 +806,7 @@ function NeuralPingPong() {
     return () => clearInterval(gameLoop);
   }, [gameState, paddle.x, score, glitchIntensity, speed]);
   
-  // Draw function with cyberpunk background
+  // Draw function with cypherpunk background
   useEffect(() => {
     if (gameState !== 'playing') return;
     
@@ -915,7 +915,7 @@ function NeuralPingPong() {
     ctx.fillRect(paddle.x, paddle.y, paddle.width, 20);
     ctx.shadowBlur = 0;
     
-    // Draw score with cyberpunk style
+    // Draw score with cypherpunk style
     ctx.fillStyle = '#ffffff';
     ctx.font = 'bold 16px monospace';
     ctx.fillText(`SCORE: ${score}`, 20, 30);
@@ -2121,7 +2121,7 @@ export default function ArchetypeSite(){
         </Dialog>
 
 
-        {/* NEURAL MATRIX SECTION - Dynamic cyberpunk visualization */}
+        {/* NEURAL MATRIX SECTION - Dynamic cypherpunk visualization */}
         <section data-section="matrix" className="mx-auto max-w-6xl px-4 pb-8 sm:px-6">
           <h2 className="mb-6 text-lg tracking-wide text-zinc-100">NEURAL_MATRIX // RESONANCE_VISUALIZATION</h2>
           <div className="grid gap-6 md:grid-cols-2">

@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import confetti from "canvas-confetti"
 import { RaffleService, type Raffle, type Participant, type Prize, type Winner } from "../lib/raffle-service"
@@ -34,8 +34,8 @@ const PunkableRaffleSystem = () => {
   const [currentParticipant, setCurrentParticipant] = useState<Participant | null>(null)
   const [latestWinner, setLatestWinner] = useState<{ participant: Participant; prize: Prize } | null>(null)
   const [showWinnerAlert, setShowWinnerAlert] = useState(false)
-  const shuffleRef = useRef<NodeJS.Timeout | null>(null)
-  const winnerAlertTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const shuffleRef = useRef<number | null>(null)
+  const winnerAlertTimeoutRef = useRef<number | null>(null)
 
   // Form states
   const [newParticipantName, setNewParticipantName] = useState("")
@@ -84,11 +84,6 @@ const PunkableRaffleSystem = () => {
     }
   }
 
-  // Handle raffle selection
-  const handleSelectRaffle = (raffleId: string) => {
-    loadRaffleData(raffleId)
-    setCurrentView("raffle")
-  }
 
   const handleCreateRaffle = async () => {
     if (!newRaffleTitle.trim()) return
