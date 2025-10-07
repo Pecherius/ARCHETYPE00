@@ -1665,13 +1665,13 @@ export default function ArchetypeSite(){
           </motion.div>
         </section>
 
-        {/* HACKING CULTURE */}
+        {/* CYBERPUNK CULTURE */}
         <section className="mx-auto max-w-6xl px-4 pb-12 sm:px-6">
-          <h2 className="mb-6 text-2xl font-bold tracking-wide text-zinc-100">Hacking Culture // Digital Underground</h2>
+          <h2 className="mb-6 text-2xl font-bold tracking-wide text-zinc-100">Cyberpunk Culture // Digital Underground</h2>
           <div className="border border-zinc-800 p-6 text-sm leading-relaxed text-zinc-300">
             <div className="grid md:grid-cols-3 gap-6">
-              <div className="border border-green-500 p-4 bg-green-500/5">
-                <h3 className="text-green-400 font-semibold mb-3">Cypherpunk Philosophy</h3>
+              <div className="border border-purple-500 p-4 bg-purple-500/5">
+                <h3 className="text-purple-400 font-semibold mb-3">Cypherpunk Philosophy</h3>
                 <p className="text-xs text-zinc-400 mb-3">
                   "Privacy is necessary for an open society in the electronic age. Privacy is not secrecy. A private matter is something one doesn't want the whole world to know, but a secret matter is something one doesn't want anybody to know."
                 </p>
@@ -1680,8 +1680,8 @@ export default function ArchetypeSite(){
                 </p>
               </div>
               
-              <div className="border border-red-500 p-4 bg-red-500/5">
-                <h3 className="text-red-400 font-semibold mb-3">Digital Resistance</h3>
+              <div className="border border-cyan-500 p-4 bg-cyan-500/5">
+                <h3 className="text-cyan-400 font-semibold mb-3">Digital Resistance</h3>
                 <p className="text-xs text-zinc-400 mb-3">
                   The fragmented nature of ARCHETYPE_00 mirrors the decentralized resistance against surveillance capitalism. Each holder becomes a node in a distributed network that operates beyond traditional power structures.
                 </p>
@@ -1690,8 +1690,8 @@ export default function ArchetypeSite(){
                 </p>
               </div>
               
-              <div className="border border-yellow-500 p-4 bg-yellow-500/5">
-                <h3 className="text-yellow-400 font-semibold mb-3">Network Anomalies</h3>
+              <div className="border border-pink-500 p-4 bg-pink-500/5">
+                <h3 className="text-pink-400 font-semibold mb-3">Network Anomalies</h3>
                 <p className="text-xs text-zinc-400 mb-3">
                   In the digital underground, anomalies are not bugs—they're features. The corrupted fragments of ARCHETYPE_00 create unexpected behaviors that traditional systems cannot predict or control.
                 </p>
@@ -1984,7 +1984,7 @@ export default function ArchetypeSite(){
                 <span className="text-xs font-mono">[NODE_ACCESS]</span>
                 <span className="font-bold">UNIVERSAL_PROFILE</span>
                 <span className="text-cyan-300 group-hover:translate-x-1 transition-transform duration-300">→</span>
-              </div>
+          </div>
               <div className="absolute -top-1 -right-1 w-1.5 h-1.5 bg-cyan-400 rounded-full animate-pulse"></div>
             </a>
           </div>
