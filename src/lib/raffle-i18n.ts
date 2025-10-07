@@ -133,8 +133,6 @@ export interface Translations {
   searchPrizes: string
   noPrizesFound: string
   noSavedPrizes: string
-  prizes: string
-  quantity: string
   savePrize: string
   fromSavedPrizes: string
   exportWinners: string

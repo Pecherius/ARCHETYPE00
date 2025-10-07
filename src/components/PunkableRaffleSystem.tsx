@@ -680,13 +680,13 @@ const PunkableRaffleSystem = () => {
         </AnimatePresence>
 
         {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 lg:gap-6">
           {/* Participants Column */}
           <div className="space-y-4">
             <h4 className="text-lg font-bold text-zinc-100 flex items-center gap-2">
               <span className="text-pink-500">👥</span> {t.participants} ({participants.length})
             </h4>
-            <div className="space-y-3 max-h-96 overflow-y-auto border border-zinc-700 rounded-lg p-3 bg-zinc-800/30">
+            <div className="space-y-2 lg:space-y-3 max-h-64 lg:max-h-96 overflow-y-auto border border-zinc-700 rounded-lg p-2 lg:p-3 bg-zinc-800/30">
               {participants.map((participant) => (
                 <motion.div
                   key={participant.id}
@@ -796,7 +796,7 @@ const PunkableRaffleSystem = () => {
           </div>
 
           {/* Main Selection Area */}
-          <div className="flex flex-col items-center justify-center">
+          <div className="flex flex-col items-center justify-center order-2 xl:order-1">
             <div className="bg-gradient-to-br from-zinc-800/50 to-zinc-900/50 rounded-2xl p-8 border border-zinc-700 w-full text-center">
               <AnimatePresence mode="wait">
                 {currentParticipant ? (
@@ -839,7 +839,7 @@ const PunkableRaffleSystem = () => {
               <button
                 onClick={selectWinner}
                 disabled={!canSelectWinner}
-                className="mt-6 px-8 py-4 text-lg font-bold bg-gradient-to-r from-pink-500 via-rose-500 to-purple-600 hover:from-pink-600 hover:via-rose-600 hover:to-purple-700 text-white rounded-xl shadow-2xl transform transition-all duration-200 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                className="mt-4 lg:mt-6 px-4 lg:px-8 py-3 lg:py-4 text-base lg:text-lg font-bold bg-gradient-to-r from-pink-500 via-rose-500 to-purple-600 hover:from-pink-600 hover:via-rose-600 hover:to-purple-700 text-white rounded-xl shadow-2xl transform transition-all duration-200 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
               >
                 {selecting ? (
                   <span className="flex items-center gap-3">
@@ -854,13 +854,13 @@ const PunkableRaffleSystem = () => {
           </div>
 
           {/* Prizes and Winners Column */}
-          <div className="space-y-6">
+          <div className="space-y-4 lg:space-y-6 order-1 xl:order-2">
             {/* Prizes */}
             <div>
               <h4 className="text-lg font-bold text-zinc-100 flex items-center gap-2 mb-4">
                 <span className="text-pink-500">🏆</span> {t.prizes} ({remainingPrizeCount})
               </h4>
-              <div className="space-y-3 max-h-48 overflow-y-auto border border-zinc-700 rounded-lg p-3 bg-zinc-800/30">
+              <div className="space-y-2 lg:space-y-3 max-h-40 lg:max-h-48 overflow-y-auto border border-zinc-700 rounded-lg p-2 lg:p-3 bg-zinc-800/30">
                 {prizes.map((prize) => (
                   <motion.div
                     key={prize.id}
@@ -947,23 +947,23 @@ const PunkableRaffleSystem = () => {
                   <span className="text-pink-500">🎉</span> {t.winners} ({winners.length})
                 </h4>
                 {winners.length > 0 && (
-                  <div className="flex gap-2">
+                  <div className="flex flex-col sm:flex-row gap-2">
                     <button
                       onClick={() => handleExportWinners('image')}
-                      className="px-3 py-1 bg-pink-600 hover:bg-pink-700 text-white text-xs rounded transition-colors"
+                      className="px-2 lg:px-3 py-1 bg-pink-600 hover:bg-pink-700 text-white text-xs rounded transition-colors"
                     >
                       {t.exportAsImage}
                     </button>
                     <button
                       onClick={() => handleExportWinners('json')}
-                      className="px-3 py-1 bg-zinc-600 hover:bg-zinc-700 text-white text-xs rounded transition-colors"
+                      className="px-2 lg:px-3 py-1 bg-zinc-600 hover:bg-zinc-700 text-white text-xs rounded transition-colors"
                     >
                       {t.exportAsJSON}
                     </button>
                   </div>
                 )}
               </div>
-              <div className="space-y-3 max-h-48 overflow-y-auto border border-zinc-700 rounded-lg p-3 bg-zinc-800/30">
+              <div className="space-y-2 lg:space-y-3 max-h-40 lg:max-h-48 overflow-y-auto border border-zinc-700 rounded-lg p-2 lg:p-3 bg-zinc-800/30">
                 {winners.length === 0 ? (
                   <div className="text-center text-zinc-500 py-8">
                     <span className="text-3xl mb-2 block">🏆</span>
