@@ -431,16 +431,13 @@ const PunkableRaffleSystem = () => {
 
   // Handle quick save from current prize form
   const handleQuickSavePrize = () => {
-    if (!newPrizeName.trim() || !newPrizeCount.trim()) return
+    if (!newPrizeName.trim()) return
 
-    const count = parseInt(newPrizeCount)
-    if (isNaN(count) || count <= 0) return
-
-    // Save prize
-    const savedPrize = prizeStorageService.savePrize(newPrizeName, "", count, "")
+    // Save prize as template (with count 1, not the actual count from form)
+    const savedPrize = prizeStorageService.savePrize(newPrizeName, "", 1, "")
     
-    console.log('Prize saved successfully:', savedPrize)
-    alert("Prize saved successfully!")
+    console.log('Prize saved successfully as template:', savedPrize)
+    alert("Prize saved as template! You can reuse it in future raffles.")
   }
 
   // Handle export winners
@@ -1368,13 +1365,29 @@ const PunkableRaffleSystem = () => {
                   >
                     <span className="font-semibold text-zinc-100">{prize.name}</span>
                     <div className="flex items-center gap-2">
-                      <span className="font-bold text-pink-400 bg-pink-500/20 px-3 py-1 rounded-full text-sm">
-                        {prize.remaining}
-                      </span>
+                      {/* Editable quantity field */}
+                      <div className="flex items-center gap-1">
+                        <input
+                          type="number"
+                          value={prize.remaining}
+                          onChange={(e) => {
+                            const newCount = Math.max(0, parseInt(e.target.value) || 0);
+                            setPrizes(prev => prev.map(p => 
+                              p.id === prize.id ? { ...p, remaining: newCount } : p
+                            ));
+                          }}
+                          className="w-16 px-2 py-1 bg-zinc-700 border border-zinc-600 rounded text-pink-400 text-center text-sm font-bold focus:border-pink-400 focus:ring-1 focus:ring-pink-400"
+                          min="0"
+                          title="Click to edit remaining quantity"
+                        />
+                        <span className="text-xs text-zinc-400">left</span>
+                      </div>
+                      
+                      {/* Save button - only show if not already saved */}
                       {!prizeStorageService.getAllPrizes().find(p => p.name.toLowerCase() === prize.name.toLowerCase()) && (
                         <button
                           onClick={() => {
-                            const savedPrize = prizeStorageService.savePrize(prize.name, "", prize.remaining, "");
+                            const savedPrize = prizeStorageService.savePrize(prize.name, "", 1, ""); // Save with count 1 as template
                             console.log('Prize saved to database:', savedPrize);
                             alert('Prize saved to database!');
                           }}
@@ -1384,9 +1397,12 @@ const PunkableRaffleSystem = () => {
                           💾
                         </button>
                       )}
+                      
+                      {/* Remove button */}
                       <button
                         onClick={() => removePrize(prize)}
                         className="text-red-400 hover:text-red-300 text-xl"
+                        title="Remove prize"
                       >
                         ×
                       </button>

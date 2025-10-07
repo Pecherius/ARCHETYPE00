@@ -684,28 +684,54 @@ function CodeRain(){
   );
 }
 
-// 🎮 NEURAL_PING_PONG: Cypherpunk ping pong with resonance glitch effects
+// 🎮 NEURAL_PING_PONG: Modern semi-3D cypherpunk ping pong with WebGL effects
 // ARCHETYPE_00 themed - gets progressively faster until impossible
 function NeuralPingPong() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const glRef = useRef<WebGLRenderingContext | null>(null);
+  const animationRef = useRef<number | null>(null);
+  
   const [gameState, setGameState] = useState<'menu' | 'playing' | 'gameOver' | 'won'>('menu');
   const [score, setScore] = useState(0);
-  const [speed, setSpeed] = useState(8); // Mucho más rápido desde el inicio
+  const [speed, setSpeed] = useState(2);
   const [glitchIntensity, setGlitchIntensity] = useState(0);
   const [showWinMessage, setShowWinMessage] = useState(false);
-  const [geometricObstacles, setGeometricObstacles] = useState<Array<{x: number, y: number, size: number, rotation: number, speed: number}>>([]);
   const [lossCount, setLossCount] = useState(0);
   const [gameHistory, setGameHistory] = useState<Array<{score: number, timestamp: number}>>([]);
-  const [lastHitTime, setLastHitTime] = useState(0); // Prevent rapid score increases
+  const [lastHitTime, setLastHitTime] = useState(0);
   
-  // Game objects
-  const [ball, setBall] = useState({ x: 400, y: 100, dx: 0, dy: 0, vx: 0, vy: 0 });
-  const [paddle, setPaddle] = useState({ x: 350, y: 550, width: 120 });
-  const [glitchLines, setGlitchLines] = useState<Array<{x: number, y: number, width: number, height: number}>>([]);
+  // Modern semi-3D game objects with enhanced effects
+  const [ball, setBall] = useState({ 
+    x: 400, y: 100, z: 0, 
+    vx: 0, vy: 0, vz: 0,
+    rotation: 0, scale: 1,
+    trail: [] as Array<{x: number, y: number, z: number, life: number, size: number}>,
+    glowIntensity: 1
+  });
+  const [paddle, setPaddle] = useState({ 
+    x: 350, y: 550, z: 0, 
+    width: 120, height: 20, depth: 10,
+    rotation: 0, scale: 1,
+    glowIntensity: 1
+  });
+  
+  // Modern effects
+  const [particles, setParticles] = useState<Array<{
+    id: number, x: number, y: number, z: number,
+    vx: number, vy: number, vz: number,
+    life: number, maxLife: number, size: number,
+    color: string, type: 'hit' | 'glitch' | 'trail'
+  }>>([]);
+  const [floatingMessages, setFloatingMessages] = useState<Array<{
+    id: number, text: string, x: number, y: number, z: number,
+    vx: number, vy: number, vz: number, life: number,
+    rotation: number, scale: number
+  }>>([]);
   const [gameStartTime, setGameStartTime] = useState<number>(0);
-  const [floatingMessages, setFloatingMessages] = useState<Array<{id: number, text: string, x: number, y: number, vx: number, vy: number, life: number}>>([]);
+  const [camera, setCamera] = useState({ x: 0, y: 0, z: 0, rotation: 0 });
+  const [lighting, setLighting] = useState({ intensity: 1, color: '#ff69b4' });
   
-  // Meme messages for floating text
+  // Modern meme messages with 3D positioning
   const memeMessages = [
     "PEPITO CAN'T PLAY PING PONG 😂",
     "Pebubu lost internet connection",
@@ -722,37 +748,446 @@ function NeuralPingPong() {
     "Punkable: 'Deploying fix...'",
     "PEPITO: 'Why is it moving by itself?'",
     "Pebubu: 'This is impossible'",
-    "Punkable: 'Working as intended'",
-    "PEPITO: 'Where is the pause button?'",
-    "Pebubu: 'My code is better'",
-    "Punkable: 'Feature request denied'",
-    "PEPITO: 'Is this a virus?'",
-    "Pebubu: 'I need to debug this'",
-    "Punkable: 'User error detected'",
-    "PEPITO: 'Why is there no tutorial?'",
-    "Pebubu: 'This is more complex than React'",
-    "Punkable: 'Documentation updated'",
-    "PEPITO: 'Where is the manual?'",
-    "Pebubu: 'I need more RAM'",
-    "Punkable: 'System requirements updated'",
-    "PEPITO: 'Does this work in Internet Explorer?'",
-    "Pebubu: 'I need to refactor this'",
-    "Punkable: 'Legacy support dropped'"
+    "Punkable: 'Working as intended'"
   ];
+
+  // WebGL shader programs
+  const vertexShaderSource = `
+    attribute vec3 position;
+    attribute vec3 color;
+    attribute float size;
+    uniform mat4 modelViewMatrix;
+    uniform mat4 projectionMatrix;
+    varying vec3 vColor;
+    varying float vSize;
+    
+    void main() {
+      vColor = color;
+      vSize = size;
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      gl_PointSize = size;
+    }
+  `;
+
+  const fragmentShaderSource = `
+    precision mediump float;
+    varying vec3 vColor;
+    varying float vSize;
+    
+    void main() {
+      vec2 center = gl_PointCoord - vec2(0.5);
+      float dist = length(center);
+      float alpha = 1.0 - smoothstep(0.0, 0.5, dist);
+      gl_FragColor = vec4(vColor, alpha);
+    }
+  `;
+
+  // Initialize WebGL
+  const initWebGL = () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return false;
+
+    const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+    if (!gl) return false;
+
+    glRef.current = gl as WebGLRenderingContext;
+    
+    // Create shader program
+    const vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
+    const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
+    const program = createProgram(gl, vertexShader, fragmentShader);
+    
+    gl.useProgram(program);
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    
+    return true;
+  };
+
+  const createShader = (gl: WebGLRenderingContext, type: number, source: string) => {
+    const shader = gl.createShader(type);
+    if (!shader) return null;
+    
+    gl.shaderSource(shader, source);
+    gl.compileShader(shader);
+    
+    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+      console.error('Shader compilation error:', gl.getShaderInfoLog(shader));
+      gl.deleteShader(shader);
+      return null;
+    }
+    
+    return shader;
+  };
+
+  const createProgram = (gl: WebGLRenderingContext, vertexShader: WebGLShader | null, fragmentShader: WebGLShader | null) => {
+    if (!vertexShader || !fragmentShader) return null;
+    
+    const program = gl.createProgram();
+    if (!program) return null;
+    
+    gl.attachShader(program, vertexShader);
+    gl.attachShader(program, fragmentShader);
+    gl.linkProgram(program);
+    
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+      console.error('Program linking error:', gl.getProgramInfoLog(program));
+      gl.deleteProgram(program);
+      return null;
+    }
+    
+    return program;
+  };
   
-  // Function to spawn floating message
-  const spawnFloatingMessage = (x: number, y: number) => {
+  // Modern particle system
+  const createParticle = (x: number, y: number, z: number, type: 'hit' | 'glitch' | 'trail') => {
+    const colors = {
+      hit: ['#ff69b4', '#ff1493', '#ffc0cb'],
+      glitch: ['#00ff88', '#00ffff', '#0088ff'],
+      trail: ['#ff69b4', '#ff1493', '#ffc0cb']
+    };
+    
+    return {
+      id: Date.now() + Math.random(),
+      x, y, z,
+      vx: (Math.random() - 0.5) * 4,
+      vy: (Math.random() - 0.5) * 4,
+      vz: (Math.random() - 0.5) * 2,
+      life: type === 'trail' ? 30 : 60,
+      maxLife: type === 'trail' ? 30 : 60,
+      size: Math.random() * 8 + 2,
+      color: colors[type][Math.floor(Math.random() * colors[type].length)],
+      type
+    };
+  };
+
+  // Modern floating message system
+  const spawnFloatingMessage = (x: number, y: number, z: number = 0) => {
     const message = memeMessages[Math.floor(Math.random() * memeMessages.length)];
     const newMessage = {
       id: Date.now() + Math.random(),
       text: message,
-      x: x,
-      y: y,
-      vx: (Math.random() - 0.5) * 2,
-      vy: -Math.random() * 2 - 1,
-      life: 120 // frames
+      x, y, z,
+      vx: (Math.random() - 0.5) * 1,
+      vy: -Math.random() * 1 - 0.5,
+      vz: (Math.random() - 0.5) * 0.5,
+      life: 180,
+      rotation: (Math.random() - 0.5) * 0.2,
+      scale: Math.random() * 0.5 + 0.8
     };
     setFloatingMessages(prev => [...prev, newMessage]);
+  };
+
+  // Modern semi-3D rendering system using Canvas 2D with advanced effects
+  const renderModern = () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    // Clear canvas with animated background
+    const gradient = ctx.createRadialGradient(400, 300, 0, 400, 300, 500);
+    gradient.addColorStop(0, '#0a0a0a');
+    gradient.addColorStop(0.5, '#1a1a2e');
+    gradient.addColorStop(1, '#16213e');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Add animated grid background
+    ctx.strokeStyle = '#ff69b4';
+    ctx.lineWidth = 0.5;
+    ctx.globalAlpha = 0.1;
+    for (let i = 0; i < canvas.width; i += 50) {
+      ctx.beginPath();
+      ctx.moveTo(i, 0);
+      ctx.lineTo(i, canvas.height);
+      ctx.stroke();
+    }
+    for (let i = 0; i < canvas.height; i += 50) {
+      ctx.beginPath();
+      ctx.moveTo(0, i);
+      ctx.lineTo(canvas.width, i);
+      ctx.stroke();
+    }
+    ctx.globalAlpha = 1;
+
+    // Render ball with modern effects
+    renderModernBall(ctx, ball);
+    
+    // Render paddle with 3D sombrero effect
+    renderModernPaddle(ctx, paddle);
+    
+    // Render particles
+    renderModernParticles(ctx, particles);
+    
+    // Render floating messages
+    renderModernMessages(ctx, floatingMessages);
+    
+    // Render UI overlay
+    renderUI(ctx);
+  };
+
+  const renderModernBall = (ctx: CanvasRenderingContext2D, ball: any) => {
+    // Render ball trail with depth effect
+    ball.trail.forEach((trailPoint: any, index: number) => {
+      const alpha = trailPoint.life / 30;
+      const size = trailPoint.size * alpha;
+      const zOffset = trailPoint.z * 0.5;
+      
+      // Create glow effect
+      ctx.shadowColor = '#00ff88';
+      ctx.shadowBlur = 20 * alpha;
+      ctx.fillStyle = `rgba(0, 255, 136, ${alpha * 0.8})`;
+      ctx.beginPath();
+      ctx.arc(trailPoint.x + zOffset, trailPoint.y - zOffset, size, 0, Math.PI * 2);
+      ctx.fill();
+    });
+    
+    // Render main ball with 3D effect
+    const zOffset = ball.z * 0.5;
+    const ballX = ball.x + zOffset;
+    const ballY = ball.y - zOffset;
+    
+    // Outer glow
+    ctx.shadowColor = '#00ff88';
+    ctx.shadowBlur = 30;
+    ctx.fillStyle = '#00ff88';
+    ctx.beginPath();
+    ctx.arc(ballX, ballY, 15, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Inner ball
+    ctx.shadowBlur = 0;
+    const gradient = ctx.createRadialGradient(ballX - 3, ballY - 3, 0, ballX, ballY, 12);
+    gradient.addColorStop(0, '#ffffff');
+    gradient.addColorStop(0.5, '#00ff88');
+    gradient.addColorStop(1, '#00aa55');
+    ctx.fillStyle = gradient;
+    ctx.beginPath();
+    ctx.arc(ballX, ballY, 12, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Highlight
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+    ctx.beginPath();
+    ctx.arc(ballX - 3, ballY - 3, 4, 0, Math.PI * 2);
+    ctx.fill();
+  };
+
+  const renderModernPaddle = (ctx: CanvasRenderingContext2D, paddle: any) => {
+    const zOffset = paddle.z * 0.3;
+    const paddleX = paddle.x + zOffset;
+    const paddleY = paddle.y - zOffset;
+    
+    // Sombrero mexicano 3D effect
+    ctx.shadowColor = '#ff69b4';
+    ctx.shadowBlur = 25;
+    
+    // Sombrero brim (base) with 3D effect
+    ctx.fillStyle = '#ff69b4';
+    ctx.beginPath();
+    ctx.ellipse(paddleX + paddle.width/2, paddleY + 18, paddle.width/2 + 15, 12, 0, 0, 2 * Math.PI);
+    ctx.fill();
+    
+    // Sombrero crown (top part) with depth
+    ctx.fillStyle = '#ff1493';
+    ctx.beginPath();
+    ctx.ellipse(paddleX + paddle.width/2, paddleY + 8, paddle.width/2 - 8, 15, 0, 0, 2 * Math.PI);
+    ctx.fill();
+    
+    // 3D shadow effect
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+    ctx.beginPath();
+    ctx.ellipse(paddleX + paddle.width/2 + 2, paddleY + 20, paddle.width/2 + 15, 12, 0, 0, 2 * Math.PI);
+    ctx.fill();
+    
+    // Neon border
+    ctx.strokeStyle = '#ff69b4';
+    ctx.lineWidth = 3;
+    ctx.shadowColor = '#ff69b4';
+    ctx.shadowBlur = 15;
+    ctx.beginPath();
+    ctx.ellipse(paddleX + paddle.width/2, paddleY + 18, paddle.width/2 + 15, 12, 0, 0, 2 * Math.PI);
+    ctx.stroke();
+    
+    // Decorative pattern
+    ctx.strokeStyle = '#ffc0cb';
+    ctx.lineWidth = 1;
+    ctx.shadowBlur = 5;
+    for (let i = 0; i < 3; i++) {
+      ctx.beginPath();
+      ctx.ellipse(paddleX + paddle.width/2, paddleY + 18, paddle.width/2 + 10 - i*2, 10 - i*2, 0, 0, 2 * Math.PI);
+      ctx.stroke();
+    }
+    
+    ctx.shadowBlur = 0;
+  };
+
+  const renderModernParticles = (ctx: CanvasRenderingContext2D, particles: any[]) => {
+    particles.forEach(particle => {
+      const alpha = particle.life / particle.maxLife;
+      const zOffset = particle.z * 0.5;
+      const particleX = particle.x + zOffset;
+      const particleY = particle.y - zOffset;
+      
+      ctx.shadowColor = particle.color;
+      ctx.shadowBlur = 15 * alpha;
+      ctx.fillStyle = particle.color + Math.floor(alpha * 255).toString(16).padStart(2, '0');
+      ctx.beginPath();
+      ctx.arc(particleX, particleY, particle.size * alpha, 0, Math.PI * 2);
+      ctx.fill();
+    });
+  };
+
+  const renderModernMessages = (ctx: CanvasRenderingContext2D, messages: any[]) => {
+    messages.forEach(message => {
+      const alpha = message.life / 180;
+      const zOffset = message.z * 0.3;
+      const messageX = message.x + zOffset;
+      const messageY = message.y - zOffset;
+      
+      ctx.save();
+      ctx.translate(messageX, messageY);
+      ctx.rotate(message.rotation);
+      ctx.scale(message.scale, message.scale);
+      
+      ctx.shadowColor = '#ffffff';
+      ctx.shadowBlur = 10;
+      ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
+      ctx.font = 'bold 16px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText(message.text, 0, 0);
+      
+      ctx.restore();
+    });
+  };
+
+  const renderUI = (ctx: CanvasRenderingContext2D) => {
+    // Score display with modern styling
+    ctx.fillStyle = '#ff69b4';
+    ctx.font = 'bold 24px monospace';
+    ctx.textAlign = 'left';
+    ctx.fillText(`Score: ${score}`, 20, 40);
+    
+    // Speed indicator
+    ctx.fillStyle = '#00ff88';
+    ctx.font = 'bold 18px monospace';
+    ctx.fillText(`Speed: ${speed.toFixed(1)}`, 20, 70);
+    
+    // Glitch intensity bar
+    if (glitchIntensity > 0) {
+      ctx.fillStyle = '#ff0000';
+      ctx.font = 'bold 14px monospace';
+      ctx.fillText('WARNING: NEURAL OVERLOAD', 20, 100);
+      
+      // Progress bar
+      ctx.fillStyle = 'rgba(255, 0, 0, 0.3)';
+      ctx.fillRect(20, 110, 200, 10);
+      ctx.fillStyle = '#ff0000';
+      ctx.fillRect(20, 110, 200 * glitchIntensity, 10);
+    }
+  };
+
+  // Matrix creation functions
+  const createPerspectiveMatrix = (fov: number, aspect: number, near: number, far: number) => {
+    const f = Math.tan(Math.PI * 0.5 - 0.5 * fov);
+    const rangeInv = 1.0 / (near - far);
+    
+    return [
+      f / aspect, 0, 0, 0,
+      0, f, 0, 0,
+      0, 0, (near + far) * rangeInv, -1,
+      0, 0, near * far * rangeInv * 2, 0
+    ];
+  };
+
+  const createModelViewMatrix = (camera: {x: number, y: number, z: number, rotation: number}) => {
+    const cos = Math.cos(camera.rotation);
+    const sin = Math.sin(camera.rotation);
+    
+    return [
+      cos, 0, sin, 0,
+      0, 1, 0, 0,
+      -sin, 0, cos, 0,
+      -camera.x, -camera.y, -camera.z, 1
+    ];
+  };
+
+  // Rendering functions
+  const renderBall = (gl: WebGLRenderingContext, ball: any, projectionMatrix: number[], modelViewMatrix: number[]) => {
+    // Render ball trail
+    ball.trail.forEach((trailPoint: any, index: number) => {
+      const alpha = trailPoint.life / 30;
+      const size = 8 * alpha;
+      
+      // Create ball geometry
+      const positions = [trailPoint.x, trailPoint.y, trailPoint.z];
+      const colors = [1, 0.4, 0.8, alpha]; // Pink with alpha
+      
+      // Render using WebGL
+      renderPoint(gl, positions, colors, size, projectionMatrix, modelViewMatrix);
+    });
+    
+    // Render main ball
+    const positions = [ball.x, ball.y, ball.z];
+    const colors = [0, 1, 0.5, 1]; // Green
+    renderPoint(gl, positions, colors, 12, projectionMatrix, modelViewMatrix);
+  };
+
+  const renderPaddle = (gl: WebGLRenderingContext, paddle: any, projectionMatrix: number[], modelViewMatrix: number[]) => {
+    // Render sombrero mexicano in 3D
+    const positions = [
+      paddle.x, paddle.y, paddle.z,
+      paddle.x + paddle.width, paddle.y, paddle.z,
+      paddle.x + paddle.width, paddle.y + paddle.height, paddle.z,
+      paddle.x, paddle.y + paddle.height, paddle.z
+    ];
+    
+    const colors = [1, 0.4, 0.8, 1]; // Pink
+    renderQuad(gl, positions, colors, projectionMatrix, modelViewMatrix);
+  };
+
+  const renderParticles = (gl: WebGLRenderingContext, particles: any[], projectionMatrix: number[], modelViewMatrix: number[]) => {
+    particles.forEach(particle => {
+      const alpha = particle.life / particle.maxLife;
+      const positions = [particle.x, particle.y, particle.z];
+      const colors = hexToRgb(particle.color).concat(alpha);
+      
+      renderPoint(gl, positions, colors, particle.size * alpha, projectionMatrix, modelViewMatrix);
+    });
+  };
+
+  const renderFloatingMessages = (gl: WebGLRenderingContext, messages: any[], projectionMatrix: number[], modelViewMatrix: number[]) => {
+    // For now, render as particles - in a full implementation, you'd use text rendering
+    messages.forEach(message => {
+      const alpha = message.life / 180;
+      const positions = [message.x, message.y, message.z];
+      const colors = [1, 1, 1, alpha]; // White with alpha
+      
+      renderPoint(gl, positions, colors, 6 * message.scale, projectionMatrix, modelViewMatrix);
+    });
+  };
+
+  // Helper functions
+  const renderPoint = (gl: WebGLRenderingContext, position: number[], color: number[], size: number, projectionMatrix: number[], modelViewMatrix: number[]) => {
+    // Simplified point rendering - in a full implementation, you'd use proper buffers
+    gl.enable(gl.POINT_SPRITES);
+    gl.enable(gl.VERTEX_PROGRAM_POINT_SIZE);
+  };
+
+  const renderQuad = (gl: WebGLRenderingContext, positions: number[], color: number[], projectionMatrix: number[], modelViewMatrix: number[]) => {
+    // Simplified quad rendering
+  };
+
+  const hexToRgb = (hex: string) => {
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? [
+      parseInt(result[1], 16) / 255,
+      parseInt(result[2], 16) / 255,
+      parseInt(result[3], 16) / 255
+    ] : [1, 1, 1];
   };
   
   // Game loop - optimized for better performance
