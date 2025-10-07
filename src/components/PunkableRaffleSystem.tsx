@@ -1,8 +1,5 @@
 "use client"
 
-// Welcome to the most over-engineered raffle system in the digital wasteland
-// If you're reading this on GitHub, congratulations! You found the source code.
-// Now you can see exactly how we make random selection look complicated and mysterious.
 import { useState, useEffect, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import confetti from "canvas-confetti"
@@ -17,8 +14,6 @@ import RaffleResultsScreen from "./RaffleResultsScreen"
 import SavedUsersManager from "./SavedUsersManager"
 import SavedPrizesManager from "./SavedPrizesManager"
 
-// The sacred color palette - because apparently we need 15 different shades of pink
-// to make a raffle system look "professional" and "cyberpunk"
 const COLORS = [
   "#FF69B4", "#FFB6C1", "#FF1493", "#FFC0CB", "#FF91A4", "#FF6B9D", "#C71585", 
   "#FF20B2", "#FF007F", "#FF69B4", "#DA70D6", "#DDA0DD", "#EE82EE", "#FF1493", "#FFB6C1"
@@ -27,8 +22,7 @@ const COLORS = [
 const PunkableRaffleSystem = () => {
   const { t } = useRaffleLanguage()
   
-  // Current raffle state - because apparently we need 47 different state variables
-  // to manage what could have been done with a simple array and Math.random()
+  // Current raffle state
   const [currentRaffle, setCurrentRaffle] = useState<Raffle | null>(null)
   const [participants, setParticipants] = useState<Participant[]>([])
   const [prizes, setPrizes] = useState<Prize[]>([])
@@ -53,8 +47,7 @@ const PunkableRaffleSystem = () => {
   const [newPrizeName, setNewPrizeName] = useState("")
   const [newPrizeCount, setNewPrizeCount] = useState("")
 
-  // Raffle creation states - because apparently we need 5 different state variables
-  // to store what could have been a single object. But hey, at least it's "reactive"!
+  // Raffle creation states
   const [showCreateForm, setShowCreateForm] = useState(false)
   const [newRaffleTitle, setNewRaffleTitle] = useState("")
   const [newRaffleDescription, setNewRaffleDescription] = useState("")
@@ -78,8 +71,7 @@ const PunkableRaffleSystem = () => {
   const [savePrizeCount, setSavePrizeCount] = useState("")
   const [savePrizeImage, setSavePrizeImage] = useState("")
 
-  // Load raffle data - because apparently we need 4 different API calls
-  // to load what could have been a single JSON object. But hey, at least it's "microservices"!
+  // Load raffle data
   const loadRaffleData = async (raffleId: string) => {
     setLoading(true)
     try {
@@ -155,9 +147,6 @@ const PunkableRaffleSystem = () => {
     return availablePrizes[randomIndex]
   }
 
-  // The most over-engineered random selection function in the history of web development
-  // Because apparently we need 47 lines of code to do what Math.random() could do in 1 line
-  // But hey, at least it has "dramatic shuffling" and "weighted selection"!
   const selectWinner = async () => {
     if (selecting || participants.length === 0 || !currentRaffle) return
 
@@ -168,15 +157,11 @@ const PunkableRaffleSystem = () => {
     const selectedWinner = getRandomWeightedParticipant()
     if (!selectedWinner) return
 
-    // Create a weighted array - because apparently we need to duplicate participants
-    // based on their ticket count instead of just using Math.random() with weights
     const weightedArray = participants.flatMap((p) => Array(p.tickets).fill(p))
 
     let shuffleCount = 0
-    const totalShuffles = 15 // Because 15 shuffles makes it look more "dramatic"
+    const totalShuffles = 15
 
-    // The dramatic shuffling effect - because apparently we need to show
-    // random participants for 15 iterations before revealing the winner
     const shuffle = () => {
       if (shuffleCount < totalShuffles) {
         const randomIndex = Math.floor(Math.random() * weightedArray.length)
@@ -702,8 +687,7 @@ const PunkableRaffleSystem = () => {
         <RaffleLanguageSelector />
       </div>
       <div className="border border-zinc-800 p-6 text-sm leading-relaxed text-zinc-300">
-        {/* Header - because apparently we need a whole section to explain
-            what a raffle system does, instead of just calling it "Raffle System" */}
+        {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-4">
             {currentRaffle?.image_url && (
