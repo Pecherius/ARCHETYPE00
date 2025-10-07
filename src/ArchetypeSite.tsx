@@ -702,12 +702,72 @@ function NeuralPingPong() {
   const [paddle, setPaddle] = useState({ x: 350, y: 550, width: 100 });
   const [glitchLines, setGlitchLines] = useState<Array<{x: number, y: number, width: number, height: number}>>([]);
   const [gameStartTime, setGameStartTime] = useState<number>(0);
+  const [floatingMessages, setFloatingMessages] = useState<Array<{id: number, text: string, x: number, y: number, vx: number, vy: number, life: number}>>([]);
   
-  // Game loop
+  // Meme messages for floating text
+  const memeMessages = [
+    "PEPITO NO SABE JUGAR PING PONG 😂",
+    "Pebubu se quedó sin internet",
+    "Punkable está en maintenance mode",
+    "ERROR 404: Skill not found",
+    "PEPITO: '¿Dónde está la pelota?'",
+    "Pebubu: 'Esto es más difícil que programar'",
+    "Punkable: 'Hold my beer'",
+    "PEPITO perdió la conexión neural",
+    "Pebubu: '¿Por qué no funciona?'",
+    "Punkable: 'It's not a bug, it's a feature'",
+    "PEPITO: '¿Qué es un paddle?'",
+    "Pebubu: 'Necesito más café'",
+    "Punkable: 'Deploying fix...'",
+    "PEPITO: '¿Por qué se mueve solo?'",
+    "Pebubu: 'Esto es imposible'",
+    "Punkable: 'Working as intended'",
+    "PEPITO: '¿Dónde está el botón de pausa?'",
+    "Pebubu: 'Mi código es mejor'",
+    "Punkable: 'Feature request denied'",
+    "PEPITO: '¿Esto es un virus?'",
+    "Pebubu: 'Necesito debuggear esto'",
+    "Punkable: 'User error detected'",
+    "PEPITO: '¿Por qué no hay tutorial?'",
+    "Pebubu: 'Esto es más complejo que React'",
+    "Punkable: 'Documentation updated'",
+    "PEPITO: '¿Dónde está el manual?'",
+    "Pebubu: 'Necesito más RAM'",
+    "Punkable: 'System requirements updated'",
+    "PEPITO: '¿Esto funciona en Internet Explorer?'",
+    "Pebubu: 'Necesito refactorizar'",
+    "Punkable: 'Legacy support dropped'"
+  ];
+  
+  // Function to spawn floating message
+  const spawnFloatingMessage = (x: number, y: number) => {
+    const message = memeMessages[Math.floor(Math.random() * memeMessages.length)];
+    const newMessage = {
+      id: Date.now() + Math.random(),
+      text: message,
+      x: x,
+      y: y,
+      vx: (Math.random() - 0.5) * 2,
+      vy: -Math.random() * 2 - 1,
+      life: 120 // frames
+    };
+    setFloatingMessages(prev => [...prev, newMessage]);
+  };
+  
+  // Game loop - optimized for better performance
   useEffect(() => {
     if (gameState !== 'playing') return;
     
-    const gameLoop = setInterval(() => {
+    let lastTime = 0;
+    const targetFPS = 60;
+    const frameTime = 1000 / targetFPS;
+    
+    const gameLoop = (currentTime: number) => {
+      if (currentTime - lastTime < frameTime) {
+        requestAnimationFrame(gameLoop);
+        return;
+      }
+      lastTime = currentTime;
       setBall(prev => {
         let newBall = { ...prev };
         
@@ -780,6 +840,11 @@ function NeuralPingPong() {
             return newScore;
           });
           setSpeed(prev => Math.min(prev + 0.5, 20)); // Slower speed increase
+          
+          // Spawn floating message on successful hit
+          if (Math.random() < 0.3) { // 30% chance
+            spawnFloatingMessage(newBall.x, newBall.y);
+          }
           setGlitchIntensity(prev => Math.min(prev + 0.1, 1));
         }
         
@@ -794,7 +859,15 @@ function NeuralPingPong() {
         return newBall;
       });
       
-      // Update geometric obstacles
+      // Update floating messages
+      setFloatingMessages(prev => prev.map(msg => ({
+        ...msg,
+        x: msg.x + msg.vx,
+        y: msg.y + msg.vy,
+        life: msg.life - 1
+      })).filter(msg => msg.life > 0 && msg.y > -50));
+      
+      // Update geometric obstacles (reduced frequency for performance)
       setGeometricObstacles(prev => prev.map(obstacle => ({
         ...obstacle,
         x: obstacle.x + Math.cos(obstacle.rotation) * obstacle.speed,
@@ -805,8 +878,8 @@ function NeuralPingPong() {
         obstacle.y > -50 && obstacle.y < 650
       ));
       
-      // Add new geometric obstacles
-      if (Math.random() < 0.03) {
+      // Add new geometric obstacles (reduced frequency)
+      if (Math.random() < 0.015) {
         setGeometricObstacles(prev => [...prev, {
           x: Math.random() * 800,
           y: Math.random() * 600,
@@ -816,8 +889,8 @@ function NeuralPingPong() {
         }]);
       }
       
-      // Generate glitch lines
-      if (Math.random() < glitchIntensity * 2) {
+      // Generate glitch lines (reduced frequency)
+      if (Math.random() < glitchIntensity * 1) {
         setGlitchLines(prev => [...prev.slice(-8), {
           x: Math.random() * 800,
           y: Math.random() * 600,
@@ -825,9 +898,18 @@ function NeuralPingPong() {
           height: Math.random() * 30 + 10
         }]);
       }
-    }, 16); // ~60fps
+      
+      // Spawn random floating messages occasionally
+      if (Math.random() < 0.02) {
+        spawnFloatingMessage(Math.random() * 800, Math.random() * 400 + 100);
+      }
+    };
     
-    return () => clearInterval(gameLoop);
+    requestAnimationFrame(gameLoop);
+    
+    return () => {
+      // Cleanup handled by requestAnimationFrame
+    };
   }, [gameState, paddle.x, score, glitchIntensity, speed]);
   
   // Draw function with cypherpunk background
@@ -958,6 +1040,19 @@ function NeuralPingPong() {
     ctx.stroke();
     
     ctx.shadowBlur = 0;
+    
+    // Draw floating messages
+    floatingMessages.forEach(msg => {
+      ctx.save();
+      ctx.globalAlpha = Math.min(msg.life / 60, 1); // Fade out
+      ctx.fillStyle = '#ff69b4';
+      ctx.font = 'bold 14px monospace';
+      ctx.textAlign = 'center';
+      ctx.shadowColor = '#ff69b4';
+      ctx.shadowBlur = 5;
+      ctx.fillText(msg.text, msg.x, msg.y);
+      ctx.restore();
+    });
     
     // Draw score with cypherpunk style
     ctx.fillStyle = '#ffffff';
