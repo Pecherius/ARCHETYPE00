@@ -1619,52 +1619,131 @@ export default function ArchetypeSite(){
 
         {/* Mobile Menu Overlay */}
         {isMobile && isMenuOpen && (
-          <div className="fixed inset-0 bg-black/90 z-40 flex flex-col items-center justify-center space-y-6">
-            <button
-              onClick={() => {
-                setObitOpen(true);
-                setIsMenuOpen(false);
-              }}
-              className="px-6 py-3 bg-zinc-800 border border-green-500 text-green-400 hover:bg-zinc-700 transition-colors"
-            >
-              [QUARANTINE_ACCESS]
-            </button>
-            <button
-              onClick={() => {
-                // Scroll to game section
-                const gameSection = document.querySelector('[data-section="game"]');
-                if (gameSection) {
-                  gameSection.scrollIntoView({ behavior: 'smooth' });
-                }
-                setIsMenuOpen(false);
-              }}
-              className="px-6 py-3 bg-zinc-800 border border-green-500 text-green-400 hover:bg-zinc-700 transition-colors"
-            >
-              [NEURAL_GAME]
-            </button>
-            <button
-              onClick={() => {
-                // Scroll to matrix section
-                const matrixSection = document.querySelector('[data-section="matrix"]');
-                if (matrixSection) {
-                  matrixSection.scrollIntoView({ behavior: 'smooth' });
-                }
-                setIsMenuOpen(false);
-              }}
-              className="px-6 py-3 bg-zinc-800 border border-green-500 text-green-400 hover:bg-zinc-700 transition-colors"
-            >
-              [MATRIX_VISUALIZATION]
-            </button>
-            <button
-              onClick={() => {
-                toggleHum();
-                setIsMenuOpen(false);
-              }}
-              className="px-6 py-3 bg-zinc-800 border border-green-500 text-green-400 hover:bg-zinc-700 transition-colors"
-            >
-              {humOn ? '[AUDIO_OFF]' : '[AUDIO_ON]'}
-            </button>
-          </div>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/95 z-40 flex flex-col"
+          >
+            {/* Header */}
+            <div className="flex items-center justify-between p-4 border-b border-zinc-700">
+              <h2 className="text-lg font-bold text-green-400">ARCHETYPE_00 // MOBILE_ACCESS</h2>
+              <button
+                onClick={() => setIsMenuOpen(false)}
+                className="text-zinc-400 hover:text-zinc-200 text-2xl"
+              >
+                ✕
+              </button>
+            </div>
+            
+            {/* Menu Items */}
+            <div className="flex-1 overflow-y-auto p-4 space-y-4">
+              <button
+                onClick={() => {
+                  setObitOpen(true);
+                  setIsMenuOpen(false);
+                }}
+                className="w-full px-6 py-4 bg-zinc-800 border border-green-500 text-green-400 hover:bg-zinc-700 transition-colors rounded-lg text-left"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl">🔒</span>
+                  <div>
+                    <div className="font-bold">QUARANTINE_ACCESS</div>
+                    <div className="text-sm text-zinc-400">Terminal interface</div>
+                  </div>
+                </div>
+              </button>
+              
+              <button
+                onClick={() => {
+                  const gameSection = document.querySelector('[data-section="game"]');
+                  if (gameSection) {
+                    gameSection.scrollIntoView({ behavior: 'smooth' });
+                  }
+                  setIsMenuOpen(false);
+                }}
+                className="w-full px-6 py-4 bg-zinc-800 border border-pink-500 text-pink-400 hover:bg-zinc-700 transition-colors rounded-lg text-left"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl">🎮</span>
+                  <div>
+                    <div className="font-bold">NEURAL_GAME</div>
+                    <div className="text-sm text-zinc-400">Ping pong simulation</div>
+                  </div>
+                </div>
+              </button>
+              
+              <button
+                onClick={() => {
+                  const matrixSection = document.querySelector('[data-section="matrix"]');
+                  if (matrixSection) {
+                    matrixSection.scrollIntoView({ behavior: 'smooth' });
+                  }
+                  setIsMenuOpen(false);
+                }}
+                className="w-full px-6 py-4 bg-zinc-800 border border-cyan-500 text-cyan-400 hover:bg-zinc-700 transition-colors rounded-lg text-left"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl">🌐</span>
+                  <div>
+                    <div className="font-bold">MATRIX_VISUALIZATION</div>
+                    <div className="text-sm text-zinc-400">Interactive chat</div>
+                  </div>
+                </div>
+              </button>
+              
+              <button
+                onClick={() => {
+                  const raffleSection = document.querySelector('[data-section="raffle"]');
+                  if (raffleSection) {
+                    raffleSection.scrollIntoView({ behavior: 'smooth' });
+                  }
+                  setIsMenuOpen(false);
+                }}
+                className="w-full px-6 py-4 bg-zinc-800 border border-purple-500 text-purple-400 hover:bg-zinc-700 transition-colors rounded-lg text-left"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl">🎲</span>
+                  <div>
+                    <div className="font-bold">RAFFLE_SYSTEM</div>
+                    <div className="text-sm text-zinc-400">Fragment selection</div>
+                  </div>
+                </div>
+              </button>
+              
+              <button
+                onClick={() => {
+                  toggleHum();
+                  setIsMenuOpen(false);
+                }}
+                className="w-full px-6 py-4 bg-zinc-800 border border-yellow-500 text-yellow-400 hover:bg-zinc-700 transition-colors rounded-lg text-left"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl">{humOn ? '🔇' : '🔊'}</span>
+                  <div>
+                    <div className="font-bold">{humOn ? 'AUDIO_OFF' : 'AUDIO_ON'}</div>
+                    <div className="text-sm text-zinc-400">Toggle sound</div>
+                  </div>
+                </div>
+              </button>
+              
+              <button
+                onClick={() => {
+                  setGlitch(!glitch);
+                  setIsMenuOpen(false);
+                }}
+                className="w-full px-6 py-4 bg-zinc-800 border border-red-500 text-red-400 hover:bg-zinc-700 transition-colors rounded-lg text-left"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl">⚡</span>
+                  <div>
+                    <div className="font-bold">{glitch ? 'GLITCH_OFF' : 'GLITCH_ON'}</div>
+                    <div className="text-sm text-zinc-400">Visual effects</div>
+                  </div>
+                </div>
+              </button>
+            </div>
+          </motion.div>
         )}
         <CodeRain/>
         {vhs && (
@@ -2112,9 +2191,11 @@ export default function ArchetypeSite(){
         </section>
 
         {/* PUNKABLE ETHEREAL RAFFLE SYSTEM */}
-        <RaffleLanguageProvider>
-          <PunkableRaffleSystem />
-        </RaffleLanguageProvider>
+        <section data-section="raffle">
+          <RaffleLanguageProvider>
+            <PunkableRaffleSystem />
+          </RaffleLanguageProvider>
+        </section>
 
         {/* PROJECT FAQ */}
         <section className="mx-auto max-w-6xl px-4 pb-16 sm:px-6">
@@ -2342,7 +2423,7 @@ export default function ArchetypeSite(){
           </div>
           
           {/* MATRIX CHAT INTERFACE */}
-          <div className="mt-8 border border-cyan-500 p-6 bg-gradient-to-r from-cyan-900/10 to-blue-900/10">
+          <div data-section="matrix" className="mt-8 border border-cyan-500 p-6 bg-gradient-to-r from-cyan-900/10 to-blue-900/10">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold text-cyan-400">MATRIX_INTERFACE // AI_CONVERSATION</h3>
               <button
