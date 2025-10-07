@@ -138,9 +138,6 @@ export interface Translations {
   exportWinners: string
   exportAsImage: string
   exportAsJSON: string
-  algorithmDescription: string
-  randomSelection: string
-  fairDistribution: string
 }
 
 const translations: Record<string, Translations> = {
