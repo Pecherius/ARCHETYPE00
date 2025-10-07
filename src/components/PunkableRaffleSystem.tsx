@@ -1036,7 +1036,7 @@ const PunkableRaffleSystem = () => {
             <h4 className="text-lg font-bold text-zinc-100 flex items-center gap-2">
               <span className="text-pink-500">👥</span> Participants ({participants.length})
             </h4>
-            <div className="space-y-2 lg:space-y-3 max-h-64 lg:max-h-96 overflow-y-auto border border-zinc-700 rounded-lg p-2 lg:p-3 bg-zinc-800/30">
+            <div className="space-y-2 lg:space-y-3 h-48 overflow-y-auto border border-zinc-700 rounded-lg p-2 lg:p-3 bg-zinc-800/30 scrollbar-thin scrollbar-thumb-zinc-600 scrollbar-track-zinc-800">
               {participants.map((participant) => (
                 <motion.div
                   key={participant.id}
@@ -1210,7 +1210,7 @@ const PunkableRaffleSystem = () => {
               <h4 className="text-lg font-bold text-zinc-100 flex items-center gap-2 mb-4">
                 <span className="text-pink-500">🏆</span> Prizes ({remainingPrizeCount})
               </h4>
-              <div className="space-y-2 lg:space-y-3 max-h-40 lg:max-h-48 overflow-y-auto border border-zinc-700 rounded-lg p-2 lg:p-3 bg-zinc-800/30">
+              <div className="space-y-2 lg:space-y-3 h-48 overflow-y-auto border border-zinc-700 rounded-lg p-2 lg:p-3 bg-zinc-800/30 scrollbar-thin scrollbar-thumb-zinc-600 scrollbar-track-zinc-800">
                 {prizes.map((prize) => (
                   <motion.div
                     key={prize.id}
@@ -1313,7 +1313,7 @@ const PunkableRaffleSystem = () => {
                   </div>
                 )}
               </div>
-              <div className="space-y-2 lg:space-y-3 max-h-40 lg:max-h-48 overflow-y-auto border border-zinc-700 rounded-lg p-2 lg:p-3 bg-zinc-800/30">
+              <div className="space-y-2 lg:space-y-3 h-48 overflow-y-auto border border-zinc-700 rounded-lg p-2 lg:p-3 bg-zinc-800/30 scrollbar-thin scrollbar-thumb-zinc-600 scrollbar-track-zinc-800">
                 {winners.length === 0 ? (
                   <div className="text-center text-zinc-500 py-8">
                     <span className="text-3xl mb-2 block">🏆</span>

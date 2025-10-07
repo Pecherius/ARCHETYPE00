@@ -21,74 +21,97 @@ export function exportWinnersAsImage(winnerData: WinnerExport): void {
   const ctx = canvas.getContext('2d')
   if (!ctx) return
 
-  // Set canvas size
-  canvas.width = 800
-  canvas.height = 600
+  // Set canvas size - larger for better quality
+  canvas.width = 1000
+  canvas.height = 800
 
-  // Background
-  ctx.fillStyle = '#0a0a0a'
+  // Black background
+  ctx.fillStyle = '#000000'
   ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-  // Title
-  ctx.fillStyle = '#ffffff'
-  ctx.font = 'bold 32px monospace'
+  // Border
+  ctx.strokeStyle = '#ff69b4'
+  ctx.lineWidth = 4
+  ctx.strokeRect(20, 20, canvas.width - 40, canvas.height - 40)
+
+  // Header background
+  ctx.fillStyle = '#1a1a1a'
+  ctx.fillRect(30, 30, canvas.width - 60, 120)
+
+  // Title with gradient effect
+  ctx.fillStyle = '#ff69b4'
+  ctx.font = 'bold 36px monospace'
   ctx.textAlign = 'center'
-  ctx.fillText('RAFFLE RESULTS', canvas.width / 2, 60)
+  ctx.fillText('ARCHETYPE_00 // RAFFLE_RESULTS', canvas.width / 2, 70)
 
   // Raffle name
-  ctx.fillStyle = '#ff69b4'
-  ctx.font = 'bold 24px monospace'
-  ctx.fillText(winnerData.raffleName, canvas.width / 2, 100)
+  ctx.fillStyle = '#ffffff'
+  ctx.font = 'bold 28px monospace'
+  ctx.fillText(winnerData.raffleName, canvas.width / 2, 110)
 
   // Raffle description
   if (winnerData.raffleDescription) {
     ctx.fillStyle = '#a1a1aa'
-    ctx.font = '16px monospace'
-    ctx.fillText(winnerData.raffleDescription, canvas.width / 2, 130)
+    ctx.font = '18px monospace'
+    ctx.fillText(winnerData.raffleDescription, canvas.width / 2, 140)
   }
 
-  // Winners section
-  ctx.fillStyle = '#ffffff'
-  ctx.font = 'bold 20px monospace'
+  // Winners section header
+  ctx.fillStyle = '#ff69b4'
+  ctx.font = 'bold 24px monospace'
   ctx.textAlign = 'left'
-  ctx.fillText('WINNERS:', 50, 180)
+  ctx.fillText('WINNERS:', 60, 200)
 
-  // Draw winners
-  let yPosition = 220
+  // Draw winners with better styling
+  let yPosition = 250
   winnerData.winners.forEach((winner, index) => {
-    if (yPosition > 500) return // Prevent overflow
+    if (yPosition > 700) return // Prevent overflow
+
+    // Winner card background
+    ctx.fillStyle = '#1a1a1a'
+    ctx.fillRect(50, yPosition - 30, canvas.width - 100, 100)
+
+    // Winner card border
+    ctx.strokeStyle = '#ff69b4'
+    ctx.lineWidth = 2
+    ctx.strokeRect(50, yPosition - 30, canvas.width - 100, 100)
 
     // Winner number
     ctx.fillStyle = '#ff69b4'
-    ctx.font = 'bold 16px monospace'
-    ctx.fillText(`${index + 1}.`, 50, yPosition)
+    ctx.font = 'bold 20px monospace'
+    ctx.fillText(`${index + 1}.`, 70, yPosition)
 
     // Winner name
     ctx.fillStyle = '#ffffff'
-    ctx.font = '16px monospace'
-    ctx.fillText(winner.participantName, 80, yPosition)
+    ctx.font = 'bold 18px monospace'
+    ctx.fillText(winner.participantName, 100, yPosition)
 
-    // Prize name
+    // Prize name with icon
     ctx.fillStyle = '#a1a1aa'
-    ctx.font = '14px monospace'
-    ctx.fillText(`Prize: ${winner.prizeName}`, 80, yPosition + 20)
+    ctx.font = '16px monospace'
+    ctx.fillText(`🏆 Prize: ${winner.prizeName}`, 100, yPosition + 25)
 
     // UP Address (truncated)
-    const truncatedUp = winner.participantUpAddress.length > 20 
-      ? winner.participantUpAddress.substring(0, 20) + '...'
+    const truncatedUp = winner.participantUpAddress.length > 25 
+      ? winner.participantUpAddress.substring(0, 25) + '...'
       : winner.participantUpAddress
     ctx.fillStyle = '#71717a'
-    ctx.font = '12px monospace'
-    ctx.fillText(`UP: ${truncatedUp}`, 80, yPosition + 40)
+    ctx.font = '14px monospace'
+    ctx.fillText(`📍 UP: ${truncatedUp}`, 100, yPosition + 50)
 
-    yPosition += 80
+    // Selected at time
+    ctx.fillStyle = '#71717a'
+    ctx.font = '12px monospace'
+    ctx.fillText(`⏰ ${winner.selectedAt}`, 100, yPosition + 70)
+
+    yPosition += 120
   })
 
   // Footer
   ctx.fillStyle = '#71717a'
-  ctx.font = '12px monospace'
+  ctx.font = '14px monospace'
   ctx.textAlign = 'center'
-  ctx.fillText(`Exported on ${winnerData.exportDate}`, canvas.width / 2, 580)
+  ctx.fillText(`Exported on ${winnerData.exportDate} | Total Winners: ${winnerData.totalWinners}`, canvas.width / 2, 760)
 
   // Convert to image and download
   canvas.toBlob((blob) => {

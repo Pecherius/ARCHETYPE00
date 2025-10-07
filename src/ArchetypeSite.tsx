@@ -1148,8 +1148,8 @@ function NeuralPingPong() {
       y: 100, 
       dx: initialVx, 
       dy: initialVy,
-      vx: initialVx * 0.5, // Stronger initial velocity for automatic movement
-      vy: initialVy * 0.5
+      vx: initialVx * 1.5, // Much stronger initial velocity for automatic movement
+      vy: initialVy * 1.5
     });
     setPaddle({ x: 350, y: 550, width: 150 }); // Bigger paddle
     setGlitchLines([]);
