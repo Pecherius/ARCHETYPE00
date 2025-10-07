@@ -1670,8 +1670,8 @@ export default function ArchetypeSite(){
           <h2 className="mb-6 text-2xl font-bold tracking-wide text-zinc-100">Cyberpunk Culture // Digital Underground</h2>
           <div className="border border-zinc-800 p-6 text-sm leading-relaxed text-zinc-300">
             <div className="grid md:grid-cols-3 gap-6">
-              <div className="border border-purple-500 p-4 bg-purple-500/5">
-                <h3 className="text-purple-400 font-semibold mb-3">Cypherpunk Philosophy</h3>
+              <div className="border border-indigo-500 p-4 bg-indigo-500/5">
+                <h3 className="text-indigo-400 font-semibold mb-3">Cypherpunk Philosophy</h3>
                 <p className="text-xs text-zinc-400 mb-3">
                   "Privacy is necessary for an open society in the electronic age. Privacy is not secrecy. A private matter is something one doesn't want the whole world to know, but a secret matter is something one doesn't want anybody to know."
                 </p>
@@ -1680,8 +1680,8 @@ export default function ArchetypeSite(){
                 </p>
               </div>
               
-              <div className="border border-cyan-500 p-4 bg-cyan-500/5">
-                <h3 className="text-cyan-400 font-semibold mb-3">Digital Resistance</h3>
+              <div className="border border-teal-500 p-4 bg-teal-500/5">
+                <h3 className="text-teal-400 font-semibold mb-3">Digital Resistance</h3>
                 <p className="text-xs text-zinc-400 mb-3">
                   The fragmented nature of ARCHETYPE_00 mirrors the decentralized resistance against surveillance capitalism. Each holder becomes a node in a distributed network that operates beyond traditional power structures.
                 </p>
@@ -1690,8 +1690,8 @@ export default function ArchetypeSite(){
                 </p>
               </div>
               
-              <div className="border border-pink-500 p-4 bg-pink-500/5">
-                <h3 className="text-pink-400 font-semibold mb-3">Network Anomalies</h3>
+              <div className="border border-orange-500 p-4 bg-orange-500/5">
+                <h3 className="text-orange-400 font-semibold mb-3">Network Anomalies</h3>
                 <p className="text-xs text-zinc-400 mb-3">
                   In the digital underground, anomalies are not bugs—they're features. The corrupted fragments of ARCHETYPE_00 create unexpected behaviors that traditional systems cannot predict or control.
                 </p>
