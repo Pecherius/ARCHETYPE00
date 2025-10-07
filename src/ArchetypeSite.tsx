@@ -797,8 +797,14 @@ function NeuralPingPong() {
              // No velocity limit - progressive difficulty only
              
              // Update position with constant base speed + progressive difficulty
-             const baseSpeed = 2; // Constant base speed
+             const baseSpeed = 4; // Higher constant base speed
              const currentSpeed = baseSpeed * difficultyMultiplier;
+             
+             // Debug: Log ball movement every 60 frames (1 second at 60fps)
+             if (Math.random() < 0.016) {
+               console.log('Ball moving:', { x: newBall.x, y: newBall.y, vx: newBall.vx, vy: newBall.vy, currentSpeed });
+             }
+             
              newBall.x += newBall.vx * currentSpeed;
              newBall.y += newBall.vy * currentSpeed;
         
@@ -1130,6 +1136,17 @@ function NeuralPingPong() {
       window.removeEventListener('mousemove', handleMouseMove);
     };
   }, [gameState, paddle.width]);
+
+  // Auto-center paddle if no input for 3 seconds
+  useEffect(() => {
+    if (gameState !== 'playing') return;
+    
+    const autoCenterTimer = setTimeout(() => {
+      setPaddle(prev => ({ ...prev, x: 350 })); // Center the paddle
+    }, 3000);
+    
+    return () => clearTimeout(autoCenterTimer);
+  }, [gameState, paddle.x]);
   
   const startGame = () => {
     setGameState('playing');
@@ -1144,14 +1161,17 @@ function NeuralPingPong() {
     const initialVx = Math.sin(randomAngle) * randomSpeed;
     const initialVy = Math.abs(Math.cos(randomAngle)) * randomSpeed; // Always downward
     
-    setBall({ 
+    const ballData = { 
       x: 400, 
       y: 100, 
-      dx: initialVx * 2, // Much stronger initial direction
-      dy: initialVy * 2, // Much stronger initial direction
-      vx: initialVx * 3, // Much stronger initial velocity for automatic movement
-      vy: initialVy * 3
-    });
+      dx: initialVx * 4, // Much stronger initial direction
+      dy: initialVy * 4, // Much stronger initial direction
+      vx: initialVx * 5, // Much stronger initial velocity for automatic movement
+      vy: initialVy * 5
+    };
+    
+    console.log('Starting game with ball data:', ballData);
+    setBall(ballData);
     setPaddle({ x: 350, y: 550, width: 150 }); // Bigger paddle
     setGlitchLines([]);
     setShowWinMessage(false);

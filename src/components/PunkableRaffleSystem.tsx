@@ -207,12 +207,49 @@ const PunkableRaffleSystem = () => {
     )
       return
 
-    // Check for duplicate UP address
+    // Check for duplicate UP address in current raffle
     if (newParticipantUpAddress.trim() && (await checkDuplicateUpAddress(newParticipantUpAddress))) {
-      setDuplicateUpAddressError("This UP address is already in use")
+      setDuplicateUpAddressError("This UP address is already in use in this raffle")
       return
     }
 
+    // Check if user exists in database
+    let existingUser = null;
+    if (newParticipantUpAddress.trim()) {
+      existingUser = userStorageService.getUserByUpAddress(newParticipantUpAddress);
+    } else {
+      existingUser = userStorageService.getUserByName(newParticipantName.trim());
+    }
+
+    if (existingUser) {
+      const confirmAdd = confirm(
+        `User "${existingUser.name}" already exists in your database.\n\n` +
+        `Do you want to add them to this raffle with ${newParticipantTickets} tickets?`
+      );
+      
+      if (!confirmAdd) return;
+      
+      // Use existing user data
+      const participantData = {
+        name: existingUser.name,
+        tickets: Number.parseInt(newParticipantTickets),
+        color: existingUser.color,
+        up_address: existingUser.up_address,
+      };
+
+      const participant = await RaffleService.addParticipant(currentRaffle.id, participantData);
+      if (participant) {
+        setParticipants((prev) => [...prev, participant]);
+        userStorageService.updateUserUsage(existingUser.id);
+        setNewParticipantName("");
+        setNewParticipantTickets("");
+        setNewParticipantUpAddress("");
+        setDuplicateUpAddressError("");
+      }
+      return;
+    }
+
+    // Add new participant
     const participantData = {
       name: newParticipantName.trim(),
       tickets: Number.parseInt(newParticipantTickets),
@@ -250,6 +287,36 @@ const PunkableRaffleSystem = () => {
   const addPrize = async () => {
     if (!newPrizeName.trim() || !newPrizeCount || Number.parseInt(newPrizeCount) <= 0 || !currentRaffle) return
 
+    // Check if prize exists in database
+    const existingPrize = prizeStorageService.getAllPrizes().find(p => 
+      p.name.toLowerCase() === newPrizeName.trim().toLowerCase()
+    );
+
+    if (existingPrize) {
+      const confirmAdd = confirm(
+        `Prize "${existingPrize.name}" already exists in your database.\n\n` +
+        `Do you want to add it to this raffle with ${newPrizeCount} count?`
+      );
+      
+      if (!confirmAdd) return;
+      
+      // Use existing prize data
+      const prizeData = {
+        name: existingPrize.name,
+        count: Number.parseInt(newPrizeCount),
+      };
+
+      const prize = await RaffleService.addPrize(currentRaffle.id, prizeData);
+      if (prize) {
+        setPrizes((prev) => [...prev, prize]);
+        prizeStorageService.updatePrizeUsage(existingPrize.id);
+        setNewPrizeName("");
+        setNewPrizeCount("");
+      }
+      return;
+    }
+
+    // Add new prize
     const prizeData = {
       name: newPrizeName.trim(),
       count: Number.parseInt(newPrizeCount),
@@ -1123,6 +1190,20 @@ const PunkableRaffleSystem = () => {
                       <span className="text-sm font-medium text-pink-400 bg-pink-500/20 px-2 py-1 rounded-full">
                         {participant.tickets} tickets
                       </span>
+                      {participant.up_address && !userStorageService.getUserByUpAddress(participant.up_address) && (
+                        <button
+                          onClick={() => {
+                            const color = COLORS[userStorageService.getAllUsers().length % COLORS.length];
+                            const savedUser = userStorageService.saveUser(participant.name, participant.up_address || "", color);
+                            console.log('Participant saved to database:', savedUser);
+                            alert('Participant saved to database!');
+                          }}
+                          className="text-green-400 hover:text-green-300 text-sm px-2 py-1 border border-green-400 rounded"
+                          title="Save to database"
+                        >
+                          💾
+                        </button>
+                      )}
                       <button
                         onClick={() => removeParticipant(participant)}
                         className="text-red-400 hover:text-red-300 text-xl"
@@ -1283,6 +1364,19 @@ const PunkableRaffleSystem = () => {
                       <span className="font-bold text-pink-400 bg-pink-500/20 px-3 py-1 rounded-full text-sm">
                         {prize.remaining}
                       </span>
+                      {!prizeStorageService.getAllPrizes().find(p => p.name.toLowerCase() === prize.name.toLowerCase()) && (
+                        <button
+                          onClick={() => {
+                            const savedPrize = prizeStorageService.savePrize(prize.name, "", prize.remaining, "");
+                            console.log('Prize saved to database:', savedPrize);
+                            alert('Prize saved to database!');
+                          }}
+                          className="text-green-400 hover:text-green-300 text-sm px-2 py-1 border border-green-400 rounded"
+                          title="Save to database"
+                        >
+                          💾
+                        </button>
+                      )}
                       <button
                         onClick={() => removePrize(prize)}
                         className="text-red-400 hover:text-red-300 text-xl"
