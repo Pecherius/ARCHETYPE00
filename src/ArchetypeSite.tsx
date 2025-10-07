@@ -981,51 +981,6 @@ function NeuralPingPong() {
     setShowWinMessage(false);
   };
 
-  const captureScore = () => {
-    // Create a canvas for the score screenshot
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-    
-    canvas.width = 400;
-    canvas.height = 200;
-    
-    // Background
-    ctx.fillStyle = '#09090b';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    
-    // Border
-    ctx.strokeStyle = '#14b8a6';
-    ctx.lineWidth = 2;
-    ctx.strokeRect(0, 0, canvas.width, canvas.height);
-    
-    // Title
-    ctx.fillStyle = '#14b8a6';
-    ctx.font = 'bold 24px monospace';
-    ctx.textAlign = 'center';
-    ctx.fillText('NEURAL PING PONG', canvas.width / 2, 40);
-    
-    // Score
-    ctx.fillStyle = '#22c55e';
-    ctx.font = 'bold 48px monospace';
-    ctx.fillText(`SCORE: ${score}`, canvas.width / 2, 100);
-    
-    // Status
-    ctx.fillStyle = '#a1a1aa';
-    ctx.font = '16px monospace';
-    ctx.fillText('ARCHETYPE_00 FRAGMENT', canvas.width / 2, 140);
-    
-    // Timestamp
-    ctx.fillStyle = '#71717a';
-    ctx.font = '12px monospace';
-    ctx.fillText(new Date().toLocaleString(), canvas.width / 2, 170);
-    
-    // Download
-    const link = document.createElement('a');
-    link.download = `neural-ping-pong-score-${score}-${Date.now()}.png`;
-    link.href = canvas.toDataURL();
-    link.click();
-  };
 
   const getLossMessage = () => {
     const messages = [
@@ -1055,14 +1010,8 @@ function NeuralPingPong() {
         </div>
         <div className="mb-4">
           <button 
-            onClick={captureScore}
-            className="px-4 py-2 border border-cyan-500 bg-cyan-500/20 text-cyan-400 hover:bg-cyan-500/30 mr-2"
-          >
-            📸 CAPTURE SCORE
-          </button>
-          <button 
             onClick={resetGame}
-            className="px-4 py-2 border border-green-400 bg-green-400/20 text-green-400 hover:bg-green-400/30"
+            className="px-6 py-3 border border-green-400 bg-green-400/20 text-green-400 hover:bg-green-400/30 font-bold text-lg"
           >
             PLAY AGAIN
           </button>
@@ -1097,37 +1046,55 @@ function NeuralPingPong() {
     const averageScore = gameHistory.length > 0 ? Math.round(gameHistory.reduce((sum, g) => sum + g.score, 0) / gameHistory.length) : score;
     
     return (
-      <div className="border border-zinc-800 p-4 bg-zinc-950 text-center">
-        <h3 className="text-lg font-semibold text-red-400 mb-4">NEURAL_LINK_LOST</h3>
-        <div className="text-sm text-zinc-400 mb-4">
-          <p>Score: {score}</p>
-          <p className="text-xs text-zinc-500 mt-2">{getLossMessage()}</p>
-        </div>
-        
-        <div className="mb-4 p-3 border border-zinc-700 bg-zinc-900/50 rounded">
-          <h4 className="text-xs text-zinc-300 mb-2">SYSTEM_STATISTICS</h4>
-          <div className="text-xs text-zinc-400 space-y-1">
-            <p>Losses: {lossCount}</p>
-            <p>Best Score: {bestScore}</p>
-            <p>Average: {averageScore}</p>
-            <p>Games Played: {gameHistory.length + 1}</p>
+      <div className="border-2 border-red-500 p-6 bg-gradient-to-br from-red-900/20 to-zinc-950 text-center">
+        <motion.div
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
+          <h3 className="text-2xl font-bold text-red-400 mb-4 animate-pulse">NEURAL_LINK_LOST</h3>
+          
+          <div className="mb-6 p-4 border border-red-500/30 bg-red-500/10 rounded-lg">
+            <div className="text-4xl font-bold text-red-300 mb-2">SCORE: {score}</div>
+            <div className="text-lg text-red-400 mb-2">ARCHETYPE_00 FRAGMENT</div>
+            <div className="text-sm text-red-500 italic">{getLossMessage()}</div>
           </div>
-        </div>
-        
-        <div className="mb-4">
-          <button 
-            onClick={captureScore}
-            className="px-3 py-1 border border-cyan-500 bg-cyan-500/20 text-cyan-400 hover:bg-cyan-500/30 mr-2 text-xs"
-          >
-            📸 SAVE SCORE
-          </button>
-          <button 
-            onClick={resetGame}
-            className="px-3 py-1 border border-zinc-700 bg-zinc-800 text-zinc-100 hover:bg-zinc-700 text-xs"
-          >
-            TRY AGAIN
-          </button>
-        </div>
+          
+          <div className="mb-6 p-4 border border-zinc-600 bg-zinc-900/70 rounded-lg">
+            <h4 className="text-lg font-semibold text-zinc-300 mb-3">SYSTEM_STATISTICS</h4>
+            <div className="grid grid-cols-2 gap-4 text-sm">
+              <div className="text-zinc-400">
+                <div className="text-xs text-zinc-500">Losses</div>
+                <div className="text-xl font-bold text-red-400">{lossCount}</div>
+              </div>
+              <div className="text-zinc-400">
+                <div className="text-xs text-zinc-500">Best Score</div>
+                <div className="text-xl font-bold text-green-400">{bestScore}</div>
+              </div>
+              <div className="text-zinc-400">
+                <div className="text-xs text-zinc-500">Average</div>
+                <div className="text-xl font-bold text-blue-400">{averageScore}</div>
+              </div>
+              <div className="text-zinc-400">
+                <div className="text-xs text-zinc-500">Games Played</div>
+                <div className="text-xl font-bold text-purple-400">{gameHistory.length + 1}</div>
+              </div>
+            </div>
+          </div>
+          
+          <div className="mb-4">
+            <button 
+              onClick={resetGame}
+              className="px-8 py-3 border-2 border-red-500 bg-red-500/20 text-red-400 hover:bg-red-500/30 font-bold text-lg transition-all duration-300 hover:scale-105"
+            >
+              TRY AGAIN
+            </button>
+          </div>
+          
+          <div className="text-xs text-zinc-600 mt-4">
+            Take a screenshot to share your score!
+          </div>
+        </motion.div>
       </div>
     );
   }
@@ -1185,7 +1152,7 @@ export default function ArchetypeSite(){
       return "2026";
     }
     if (lowerMessage.includes('punkable')) {
-      return "god";
+      return "Just another digital architect trying to build the future. Nothing special, really.";
     }
     if (lowerMessage.includes('jxn')) {
       return "The co-architect of digital realms. JXN and Punkable together forge the future.";
@@ -2198,58 +2165,329 @@ export default function ArchetypeSite(){
               <div className="space-y-4">
                 {/* Holographic Face */}
                 <div className="flex justify-center mb-4">
-                  <div className="relative w-40 h-40 border-2 border-cyan-400 rounded-full bg-gradient-to-br from-cyan-500/20 to-blue-500/20 flex items-center justify-center overflow-hidden">
+                  <motion.div 
+                    className="relative w-40 h-40 border-2 border-cyan-400 rounded-full bg-gradient-to-br from-cyan-500/20 to-blue-500/20 flex items-center justify-center overflow-hidden"
+                    animate={{ 
+                      scale: [1, 1.05, 1],
+                      rotate: [0, 1, -1, 0],
+                      boxShadow: [
+                        "0 0 20px rgba(34, 211, 238, 0.3)",
+                        "0 0 40px rgba(34, 211, 238, 0.6)",
+                        "0 0 20px rgba(34, 211, 238, 0.3)"
+                      ]
+                    }}
+                    transition={{ 
+                      duration: 4, 
+                      repeat: Infinity, 
+                      ease: "easeInOut" 
+                    }}
+                  >
                     {/* Holographic Woman Animation */}
-                    <div className="relative w-full h-full">
+                    <motion.div 
+                      className="relative w-full h-full"
+                      animate={{ 
+                        opacity: [0.7, 1, 0.7],
+                        scale: [0.95, 1, 0.95]
+                      }}
+                      transition={{ 
+                        duration: 3, 
+                        repeat: Infinity, 
+                        ease: "easeInOut" 
+                      }}
+                    >
                       {/* Face outline - more oval */}
-                      <div className="absolute inset-6 border-2 border-cyan-300 rounded-full opacity-60" style={{borderRadius: '50% 50% 60% 40%'}}></div>
+                      <motion.div 
+                        className="absolute inset-6 border-2 border-cyan-300 rounded-full opacity-60" 
+                        style={{borderRadius: '50% 50% 60% 40%'}}
+                        animate={{ 
+                          borderColor: ["#67e8f9", "#22d3ee", "#06b6d4", "#67e8f9"],
+                          opacity: [0.4, 0.8, 0.4]
+                        }}
+                        transition={{ 
+                          duration: 2, 
+                          repeat: Infinity, 
+                          ease: "easeInOut" 
+                        }}
+                      ></motion.div>
                       
                       {/* Hair - more defined */}
-                      <div className="absolute top-2 left-1/2 transform -translate-x-1/2 w-20 h-12 border-2 border-cyan-300 rounded-t-full opacity-50" style={{borderRadius: '50% 50% 0% 0%'}}></div>
+                      <motion.div 
+                        className="absolute top-2 left-1/2 transform -translate-x-1/2 w-20 h-12 border-2 border-cyan-300 rounded-t-full opacity-50" 
+                        style={{borderRadius: '50% 50% 0% 0%'}}
+                        animate={{ 
+                          y: [0, -2, 0],
+                          opacity: [0.3, 0.7, 0.3]
+                        }}
+                        transition={{ 
+                          duration: 2.5, 
+                          repeat: Infinity, 
+                          ease: "easeInOut" 
+                        }}
+                      ></motion.div>
                       
                       {/* Eyes - better positioned */}
-                      <div className="absolute top-8 left-8 w-3 h-3 bg-cyan-400 rounded-full animate-pulse"></div>
-                      <div className="absolute top-8 right-8 w-3 h-3 bg-cyan-400 rounded-full animate-pulse" style={{animationDelay: '0.5s'}}></div>
+                      <motion.div 
+                        className="absolute top-8 left-8 w-3 h-3 bg-cyan-400 rounded-full"
+                        animate={{ 
+                          scale: [1, 1.2, 1],
+                          opacity: [0.8, 1, 0.8]
+                        }}
+                        transition={{ 
+                          duration: 1.5, 
+                          repeat: Infinity, 
+                          ease: "easeInOut" 
+                        }}
+                      ></motion.div>
+                      <motion.div 
+                        className="absolute top-8 right-8 w-3 h-3 bg-cyan-400 rounded-full"
+                        animate={{ 
+                          scale: [1, 1.2, 1],
+                          opacity: [0.8, 1, 0.8]
+                        }}
+                        transition={{ 
+                          duration: 1.5, 
+                          repeat: Infinity, 
+                          ease: "easeInOut",
+                          delay: 0.5
+                        }}
+                      ></motion.div>
                       {/* Eye highlights */}
                       <div className="absolute top-8 left-8 w-1 h-1 bg-white rounded-full"></div>
                       <div className="absolute top-8 right-8 w-1 h-1 bg-white rounded-full"></div>
                       
                       {/* Eyebrows */}
-                      <div className="absolute top-6 left-7 w-4 h-1 border-t-2 border-cyan-300 rounded-full"></div>
-                      <div className="absolute top-6 right-7 w-4 h-1 border-t-2 border-cyan-300 rounded-full"></div>
+                      <motion.div 
+                        className="absolute top-6 left-7 w-4 h-1 border-t-2 border-cyan-300 rounded-full"
+                        animate={{ 
+                          y: [0, -1, 0],
+                          opacity: [0.5, 1, 0.5]
+                        }}
+                        transition={{ 
+                          duration: 2, 
+                          repeat: Infinity, 
+                          ease: "easeInOut" 
+                        }}
+                      ></motion.div>
+                      <motion.div 
+                        className="absolute top-6 right-7 w-4 h-1 border-t-2 border-cyan-300 rounded-full"
+                        animate={{ 
+                          y: [0, -1, 0],
+                          opacity: [0.5, 1, 0.5]
+                        }}
+                        transition={{ 
+                          duration: 2, 
+                          repeat: Infinity, 
+                          ease: "easeInOut",
+                          delay: 0.3
+                        }}
+                      ></motion.div>
                       
                       {/* Nose - more defined */}
-                      <div className="absolute top-12 left-1/2 transform -translate-x-1/2 w-2 h-3 border-2 border-cyan-300 rounded-full opacity-60"></div>
+                      <motion.div 
+                        className="absolute top-12 left-1/2 transform -translate-x-1/2 w-2 h-3 border-2 border-cyan-300 rounded-full opacity-60"
+                        animate={{ 
+                          scale: [1, 1.1, 1],
+                          opacity: [0.4, 0.8, 0.4]
+                        }}
+                        transition={{ 
+                          duration: 3, 
+                          repeat: Infinity, 
+                          ease: "easeInOut" 
+                        }}
+                      ></motion.div>
                       
                       {/* Mouth - more expressive */}
-                      <div className="absolute top-18 left-1/2 transform -translate-x-1/2 w-6 h-2 border-b-2 border-cyan-400 rounded-full"></div>
-                      {/* Mouth corners */}
-                      <div className="absolute top-19 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-cyan-300 rounded-full"></div>
+                      <motion.div 
+                        className="absolute top-18 left-1/2 transform -translate-x-1/2 w-6 h-2 border-b-2 border-cyan-400 rounded-full"
+                        animate={{ 
+                          scaleX: [1, 1.1, 1],
+                          opacity: [0.7, 1, 0.7]
+                        }}
+                        transition={{ 
+                          duration: 2.5, 
+                          repeat: Infinity, 
+                          ease: "easeInOut" 
+                        }}
+                      ></motion.div>
                       
                       {/* Cheeks */}
-                      <div className="absolute top-14 left-4 w-2 h-2 border border-cyan-300 rounded-full opacity-30"></div>
-                      <div className="absolute top-14 right-4 w-2 h-2 border border-cyan-300 rounded-full opacity-30"></div>
+                      <motion.div 
+                        className="absolute top-14 left-4 w-2 h-2 border border-cyan-300 rounded-full opacity-30"
+                        animate={{ 
+                          scale: [1, 1.2, 1],
+                          opacity: [0.2, 0.5, 0.2]
+                        }}
+                        transition={{ 
+                          duration: 2.8, 
+                          repeat: Infinity, 
+                          ease: "easeInOut" 
+                        }}
+                      ></motion.div>
+                      <motion.div 
+                        className="absolute top-14 right-4 w-2 h-2 border border-cyan-300 rounded-full opacity-30"
+                        animate={{ 
+                          scale: [1, 1.2, 1],
+                          opacity: [0.2, 0.5, 0.2]
+                        }}
+                        transition={{ 
+                          duration: 2.8, 
+                          repeat: Infinity, 
+                          ease: "easeInOut",
+                          delay: 0.4
+                        }}
+                      ></motion.div>
                       
                       {/* Holographic scan lines */}
-                      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-cyan-400/10 to-transparent animate-pulse"></div>
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-cyan-400/5 to-transparent animate-pulse" style={{animationDelay: '1s'}}></div>
+                      <motion.div 
+                        className="absolute inset-0 bg-gradient-to-b from-transparent via-cyan-400/10 to-transparent"
+                        animate={{ 
+                          y: [-100, 200, -100],
+                          opacity: [0, 1, 0]
+                        }}
+                        transition={{ 
+                          duration: 2, 
+                          repeat: Infinity, 
+                          ease: "linear" 
+                        }}
+                      ></motion.div>
+                      <motion.div 
+                        className="absolute inset-0 bg-gradient-to-r from-transparent via-cyan-400/5 to-transparent"
+                        animate={{ 
+                          x: [-100, 200, -100],
+                          opacity: [0, 1, 0]
+                        }}
+                        transition={{ 
+                          duration: 3, 
+                          repeat: Infinity, 
+                          ease: "linear",
+                          delay: 1
+                        }}
+                      ></motion.div>
                       
                       {/* Data particles */}
-                      <div className="absolute top-4 left-4 w-1 h-1 bg-cyan-400 rounded-full animate-ping opacity-60"></div>
-                      <div className="absolute top-6 right-6 w-1 h-1 bg-cyan-400 rounded-full animate-ping opacity-60" style={{animationDelay: '0.3s'}}></div>
-                      <div className="absolute bottom-6 left-6 w-1 h-1 bg-cyan-400 rounded-full animate-ping opacity-60" style={{animationDelay: '0.6s'}}></div>
-                    </div>
+                      <motion.div 
+                        className="absolute top-4 left-4 w-1 h-1 bg-cyan-400 rounded-full"
+                        animate={{ 
+                          scale: [0, 1, 0],
+                          opacity: [0, 1, 0],
+                          y: [0, -20, 0]
+                        }}
+                        transition={{ 
+                          duration: 2, 
+                          repeat: Infinity, 
+                          ease: "easeInOut" 
+                        }}
+                      ></motion.div>
+                      <motion.div 
+                        className="absolute top-6 right-6 w-1 h-1 bg-cyan-400 rounded-full"
+                        animate={{ 
+                          scale: [0, 1, 0],
+                          opacity: [0, 1, 0],
+                          y: [0, -20, 0]
+                        }}
+                        transition={{ 
+                          duration: 2, 
+                          repeat: Infinity, 
+                          ease: "easeInOut",
+                          delay: 0.5
+                        }}
+                      ></motion.div>
+                      <motion.div 
+                        className="absolute bottom-6 left-6 w-1 h-1 bg-cyan-400 rounded-full"
+                        animate={{ 
+                          scale: [0, 1, 0],
+                          opacity: [0, 1, 0],
+                          y: [0, 20, 0]
+                        }}
+                        transition={{ 
+                          duration: 2, 
+                          repeat: Infinity, 
+                          ease: "easeInOut",
+                          delay: 1
+                        }}
+                      ></motion.div>
+                    </motion.div>
                     
                     {/* Outer glow effect */}
-                    <div className="absolute inset-0 border border-cyan-400 rounded-full animate-ping opacity-20"></div>
-                    <div className="absolute inset-0 border border-cyan-300 rounded-full animate-ping opacity-10" style={{animationDelay: '0.5s'}}></div>
+                    <motion.div 
+                      className="absolute inset-0 border border-cyan-400 rounded-full"
+                      animate={{ 
+                        scale: [1, 1.1, 1],
+                        opacity: [0.1, 0.3, 0.1]
+                      }}
+                      transition={{ 
+                        duration: 2, 
+                        repeat: Infinity, 
+                        ease: "easeInOut" 
+                      }}
+                    ></motion.div>
+                    <motion.div 
+                      className="absolute inset-0 border border-cyan-300 rounded-full"
+                      animate={{ 
+                        scale: [1, 1.2, 1],
+                        opacity: [0.05, 0.2, 0.05]
+                      }}
+                      transition={{ 
+                        duration: 2.5, 
+                        repeat: Infinity, 
+                        ease: "easeInOut",
+                        delay: 0.5
+                      }}
+                    ></motion.div>
                     
                     {/* Data streams */}
-                    <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 w-1 h-6 bg-cyan-400 animate-pulse"></div>
-                    <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-1 h-6 bg-cyan-400 animate-pulse" style={{animationDelay: '0.3s'}}></div>
-                    <div className="absolute top-1/2 -left-2 transform -translate-y-1/2 w-6 h-1 bg-cyan-400 animate-pulse" style={{animationDelay: '0.6s'}}></div>
-                    <div className="absolute top-1/2 -right-2 transform -translate-y-1/2 w-6 h-1 bg-cyan-400 animate-pulse" style={{animationDelay: '0.9s'}}></div>
-                  </div>
+                    <motion.div 
+                      className="absolute -top-2 left-1/2 transform -translate-x-1/2 w-1 h-6 bg-cyan-400"
+                      animate={{ 
+                        scaleY: [0, 1, 0],
+                        opacity: [0, 1, 0]
+                      }}
+                      transition={{ 
+                        duration: 1.5, 
+                        repeat: Infinity, 
+                        ease: "easeInOut" 
+                      }}
+                    ></motion.div>
+                    <motion.div 
+                      className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-1 h-6 bg-cyan-400"
+                      animate={{ 
+                        scaleY: [0, 1, 0],
+                        opacity: [0, 1, 0]
+                      }}
+                      transition={{ 
+                        duration: 1.5, 
+                        repeat: Infinity, 
+                        ease: "easeInOut",
+                        delay: 0.3
+                      }}
+                    ></motion.div>
+                    <motion.div 
+                      className="absolute top-1/2 -left-2 transform -translate-y-1/2 w-6 h-1 bg-cyan-400"
+                      animate={{ 
+                        scaleX: [0, 1, 0],
+                        opacity: [0, 1, 0]
+                      }}
+                      transition={{ 
+                        duration: 1.5, 
+                        repeat: Infinity, 
+                        ease: "easeInOut",
+                        delay: 0.6
+                      }}
+                    ></motion.div>
+                    <motion.div 
+                      className="absolute top-1/2 -right-2 transform -translate-y-1/2 w-6 h-1 bg-cyan-400"
+                      animate={{ 
+                        scaleX: [0, 1, 0],
+                        opacity: [0, 1, 0]
+                      }}
+                      transition={{ 
+                        duration: 1.5, 
+                        repeat: Infinity, 
+                        ease: "easeInOut",
+                        delay: 0.9
+                      }}
+                    ></motion.div>
+                  </motion.div>
                 </div>
                 
                 {/* Chat History */}
