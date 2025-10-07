@@ -1444,7 +1444,7 @@ export default function ArchetypeSite(){
                   </div>
                   <div className="flex justify-between">
                     <span className="text-zinc-500">Mint Price:</span>
-                    <span className="text-green-400">2 LYX per fragment</span>
+                    <span className="text-green-400">2.5 LYX per fragment</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-zinc-500">Status:</span>
@@ -1584,7 +1584,7 @@ export default function ArchetypeSite(){
                   animate={{ scale: [1, 1.05, 1] }}
                   transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
                 >
-                  2 LYX
+                  2.5 LYX
                 </motion.div>
                 <div className="text-xs text-zinc-500">Mint Price</div>
                 <div className="text-xs text-zinc-400 mt-1">Per Fragment</div>
@@ -1849,32 +1849,6 @@ export default function ArchetypeSite(){
           </DialogContent>
         </Dialog>
 
-        {/* NEURAL PING PONG SECTION */}
-        <section className="mx-auto max-w-6xl px-4 pb-8 sm:px-6">
-          <h2 className="mb-4 text-lg tracking-wide text-zinc-100">NEURAL_PING_PONG // RESONANCE_MODE</h2>
-          <div className="grid gap-6 md:grid-cols-2">
-            <NeuralPingPong />
-            <div className="border border-zinc-800 p-4 bg-zinc-950">
-              <h3 className="text-lg font-semibold text-zinc-100 mb-4">SYSTEM_INSTRUCTIONS</h3>
-              <div className="space-y-3 text-sm text-zinc-400">
-                <p>• Use ← → arrow keys to control the paddle</p>
-                <p>• Ball speed increases with each successful hit</p>
-                <p>• Glitch effects intensify as speed increases</p>
-                <p>• Reach 50 points to win an NFT</p>
-                <p>• Warning: Epileptic effects at high speeds</p>
-                <p>• Game becomes practically impossible at max speed</p>
-              </div>
-              <div className="mt-4 text-xs text-zinc-600">
-                <p>Note: This game operates offline. No data is stored. Each session is isolated.</p>
-              </div>
-              <div className="mt-4 p-3 border border-zinc-700 bg-zinc-900 rounded">
-                <p className="text-xs text-zinc-500 font-mono">
-                  Neural interface ready. System will respond to your resonance patterns.
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
 
         {/* NEURAL MATRIX SECTION - Dynamic cyberpunk visualization */}
         <section className="mx-auto max-w-6xl px-4 pb-8 sm:px-6">
@@ -1956,6 +1930,22 @@ export default function ArchetypeSite(){
           <div className="mb-4">
             <a id="drop" href="https://universal.page/drops/archetype_00" target="_blank" rel="noreferrer" className="inline-block border border-zinc-700 px-3 py-1 text-zinc-100 hover:bg-zinc-900">Access drop →</a>
           </div>
+          
+          {/* Real Information - Out of Character */}
+          <div className="mb-6 p-4 border border-zinc-800 bg-zinc-950/50 rounded">
+            <h3 className="text-sm font-semibold text-zinc-300 mb-2">About ARCHETYPE_00</h3>
+            <p className="text-xs text-zinc-400 leading-relaxed">
+              ARCHETYPE_00 is an NFT collection created by <strong className="text-zinc-300">Punkable</strong>, 
+              creative director of Pepito and part of the Pepitoverse. This collection functions as a 
+              retroactive benefit for all holders. Punkable is committed to delivering airdrops and 
+              benefits to holders of this asset. It's not a key—it's a resonance, a frequency that 
+              connects you to the broader ecosystem of rewards and opportunities within the Pepitoverse.
+            </p>
+            <div className="mt-3 text-xs text-zinc-500">
+              <p>Collection: 200 fragments • Price: 2.5 LYX each • Network: LUKSO</p>
+            </div>
+          </div>
+          
           <button onClick={toggleHum} className="inline-flex items-center gap-2 border border-zinc-800 px-3 py-1 hover:bg-zinc-900">
             <span className={`h-2 w-2 ${humOn ? "bg-pink-500" : "bg-zinc-400"}`}/> {humOn ? "res_hum: on" : "res_hum: off"}
           </button>
