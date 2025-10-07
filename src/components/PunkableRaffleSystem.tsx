@@ -458,22 +458,23 @@ const PunkableRaffleSystem = () => {
   if (currentView === "selector") {
     return (
       <section className="mx-auto max-w-6xl px-4 pb-12 sm:px-6">
-        <div className="flex items-center justify-between mb-6">
-          <RaffleLanguageSelector />
-        </div>
         <div className="border border-zinc-800 p-6 text-sm leading-relaxed text-zinc-300">
+          {/* Language Selector - Inside the main container */}
+          <div className="flex justify-end mb-6">
+            <RaffleLanguageSelector />
+          </div>
           <div className="text-center mb-8">
             <div className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-500/30 rounded-full text-amber-400 text-sm font-medium mb-6">
               <span className="w-2 h-2 bg-amber-500 rounded-full animate-pulse"></span>
-              WASTELAND CERTIFIED RAFFLE SYSTEM v2.1
+              ARCHETYPE FRAGMENT RAFFLE SYSTEM v2.1
             </div>
             <h3 className="text-4xl font-bold text-zinc-100 mb-6 bg-gradient-to-r from-amber-400 to-orange-400 bg-clip-text text-transparent">
               {t.raffleSystem}
             </h3>
             <div className="max-w-4xl mx-auto space-y-4">
               <p className="text-zinc-300 text-lg leading-relaxed">
-                Welcome to the most <span className="text-amber-400 font-semibold">irreverent and unpredictable</span> raffle system in the digital wasteland. 
-                Unlike those boring, predictable raffles that everyone else uses, our system doesn't just pick winners—it creates <span className="text-pink-400 font-semibold">chaos in the most beautiful way possible</span>.
+                Welcome to the most <span className="text-amber-400 font-semibold">sophisticated and unpredictable</span> raffle system in the digital consciousness. 
+                Unlike those basic, predictable raffles that everyone else uses, our system doesn't just pick winners—it creates <span className="text-pink-400 font-semibold">resonance patterns in the most elegant way possible</span>.
               </p>
               <div className="bg-gradient-to-r from-zinc-800/50 to-zinc-900/50 border border-zinc-700/50 rounded-xl p-6 backdrop-blur-sm">
                 <h4 className="text-xl font-bold text-amber-400 mb-3 flex items-center gap-2">
@@ -583,10 +584,10 @@ const PunkableRaffleSystem = () => {
                 <div className="text-center mb-6">
                   <div className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-500/30 rounded-full text-amber-400 text-sm font-medium mb-4">
                     <span className="w-2 h-2 bg-amber-500 rounded-full animate-pulse"></span>
-                    WASTELAND RAFFLE INITIALIZATION
+                    FRAGMENT RESONANCE INITIALIZATION
                   </div>
                   <h4 className="text-3xl font-bold text-zinc-100 mb-2 bg-gradient-to-r from-amber-400 to-orange-400 bg-clip-text text-transparent">{t.createNewRaffle}</h4>
-                  <p className="text-zinc-400 text-sm">Configure your wasteland selection parameters</p>
+                  <p className="text-zinc-400 text-sm">Configure your fragment resonance parameters for optimal selection algorithms</p>
                 </div>
                 
                 <div className="space-y-6">

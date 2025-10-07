@@ -722,42 +722,54 @@ function NeuralPingPong() {
         }
         
         // Apply physics with progressive difficulty
-        newBall.vx += newBall.dx * 0.08 * difficultyMultiplier; // Reduced base acceleration
-        newBall.vy += newBall.dy * 0.08 * difficultyMultiplier;
+        newBall.vx += newBall.dx * 0.06 * difficultyMultiplier; // Even more reduced base acceleration
+        newBall.vy += newBall.dy * 0.06 * difficultyMultiplier;
         
-        // Apply friction (less aggressive)
-        newBall.vx *= 0.998;
-        newBall.vy *= 0.998;
+        // Apply friction (more aggressive to prevent runaway speeds)
+        newBall.vx *= 0.995;
+        newBall.vy *= 0.995;
+        
+        // Limit maximum velocity to prevent impossible situations
+        const maxVelocity = 8;
+        newBall.vx = Math.max(-maxVelocity, Math.min(maxVelocity, newBall.vx));
+        newBall.vy = Math.max(-maxVelocity, Math.min(maxVelocity, newBall.vy));
         
         // Update position with progressive speed
         const currentSpeed = Math.min(speed * difficultyMultiplier, 6);
         newBall.x += newBall.vx * currentSpeed;
         newBall.y += newBall.vy * currentSpeed;
         
-        // Wall collisions with less energy loss
-        if (newBall.x <= 0 || newBall.x >= 800) {
-          newBall.vx = -newBall.vx * 0.95; // Less energy loss
+        // Wall collisions with better physics
+        if (newBall.x <= 5 || newBall.x >= 795) {
+          newBall.vx = -newBall.vx * 0.9; // Consistent energy loss
           newBall.dx = -newBall.dx;
-          newBall.x = newBall.x <= 0 ? 0 : 800;
+          newBall.x = newBall.x <= 5 ? 5 : 795; // Keep ball in bounds
         }
-        if (newBall.y <= 0) {
-          newBall.vy = -newBall.vy * 0.95; // Less energy loss
+        if (newBall.y <= 5) {
+          newBall.vy = -newBall.vy * 0.9; // Consistent energy loss
           newBall.dy = -newBall.dy;
-          newBall.y = 0;
+          newBall.y = 5; // Keep ball in bounds
         }
         
-        // Paddle collision with more forgiving physics
-        if (newBall.y >= 540 && newBall.y <= 560 && newBall.x >= paddle.x - 10 && newBall.x <= paddle.x + paddle.width + 10) {
-          // Calculate hit position (0 to 1)
-          const hitPos = Math.max(0, Math.min(1, (newBall.x - paddle.x) / paddle.width));
+        // Paddle collision with more forgiving physics and better detection
+        const paddleTop = paddle.y;
+        const paddleBottom = paddle.y + 20;
+        const paddleLeft = paddle.x;
+        const paddleRight = paddle.x + paddle.width;
+        
+        // More generous collision detection
+        if (newBall.y >= paddleTop - 5 && newBall.y <= paddleBottom + 5 && 
+            newBall.x >= paddleLeft - 15 && newBall.x <= paddleRight + 15) {
+          // Calculate hit position (0 to 1) with better bounds
+          const hitPos = Math.max(0, Math.min(1, (newBall.x - paddleLeft) / paddle.width));
           
           // Apply more forgiving bounce physics
-          newBall.vy = -Math.abs(newBall.vy) * 1.05; // Less energy gain
-          newBall.vx = (hitPos - 0.5) * 6; // -3 to 3 range (less extreme)
+          newBall.vy = -Math.abs(newBall.vy) * 1.1; // Slightly more energy gain
+          newBall.vx = (hitPos - 0.5) * 8; // -4 to 4 range (more responsive)
           newBall.dy = -Math.abs(newBall.dy);
-          newBall.dx = (hitPos - 0.5) * 1.5; // -0.75 to 0.75 range
+          newBall.dx = (hitPos - 0.5) * 2; // -1 to 1 range
           
-          newBall.y = 540;
+          newBall.y = paddleTop - 5; // Position above paddle
           
           setScore(prev => {
             const newScore = prev + 1;
@@ -920,11 +932,31 @@ function NeuralPingPong() {
     ctx.fillRect(ball.x - 5, ball.y - 5, 10, 10);
     ctx.shadowBlur = 0;
     
-    // Draw paddle with glow effect
-    ctx.shadowColor = '#ff0088';
-    ctx.shadowBlur = 15;
-    ctx.fillStyle = '#ff0088';
-    ctx.fillRect(paddle.x, paddle.y, paddle.width, 20);
+    // Draw sombrero mexicano paddle with neon effect
+    ctx.shadowColor = '#ff69b4';
+    ctx.shadowBlur = 20;
+    
+    // Sombrero brim (base)
+    ctx.fillStyle = '#ff69b4';
+    ctx.beginPath();
+    ctx.ellipse(paddle.x + paddle.width/2, paddle.y + 15, paddle.width/2 + 10, 8, 0, 0, 2 * Math.PI);
+    ctx.fill();
+    
+    // Sombrero crown (top part)
+    ctx.fillStyle = '#ff1493';
+    ctx.beginPath();
+    ctx.ellipse(paddle.x + paddle.width/2, paddle.y + 5, paddle.width/2 - 5, 12, 0, 0, 2 * Math.PI);
+    ctx.fill();
+    
+    // Sombrero decoration (neon border)
+    ctx.strokeStyle = '#ff69b4';
+    ctx.lineWidth = 2;
+    ctx.shadowColor = '#ff69b4';
+    ctx.shadowBlur = 10;
+    ctx.beginPath();
+    ctx.ellipse(paddle.x + paddle.width/2, paddle.y + 15, paddle.width/2 + 10, 8, 0, 0, 2 * Math.PI);
+    ctx.stroke();
+    
     ctx.shadowBlur = 0;
     
     // Draw score with cypherpunk style
@@ -1008,16 +1040,19 @@ function NeuralPingPong() {
     setGlitchIntensity(0);
     setGameStartTime(Date.now());
     
-    // Start ball from center top with random direction
-    const randomAngle = (Math.random() - 0.5) * Math.PI / 3; // -30 to 30 degrees
-    const randomSpeed = Math.random() * 2 + 1; // 1 to 3 speed
+    // Start ball from center top with more random direction
+    const randomAngle = (Math.random() - 0.5) * Math.PI / 2; // -45 to 45 degrees for more variety
+    const randomSpeed = Math.random() * 1.5 + 1.5; // 1.5 to 3 speed range
+    const initialVx = Math.sin(randomAngle) * randomSpeed;
+    const initialVy = Math.abs(Math.cos(randomAngle)) * randomSpeed; // Always downward
+    
     setBall({ 
       x: 400, 
       y: 100, 
-      dx: Math.sin(randomAngle) * randomSpeed, 
-      dy: Math.cos(randomAngle) * randomSpeed,
-      vx: 0,
-      vy: 0
+      dx: initialVx, 
+      dy: initialVy,
+      vx: initialVx * 0.1, // Small initial velocity
+      vy: initialVy * 0.1
     });
     setPaddle({ x: 350, y: 550, width: 100 });
     setGlitchLines([]);
