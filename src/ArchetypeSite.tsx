@@ -1134,9 +1134,81 @@ export default function ArchetypeSite(){
   const [d34dNotification, setD34dNotification] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [matrixChatOpen, setMatrixChatOpen] = useState(false);
+  const [matrixMessage, setMatrixMessage] = useState('');
+  const [matrixChatHistory, setMatrixChatHistory] = useState<Array<{type: 'user' | 'matrix', message: string, timestamp: number}>>([]);
   const { active: humOn, toggle: toggleHum, level } = useHum();
   const upProfile = useUniversalProfile();
   const artControls = useAnimation();
+
+  // 🧠 MATRIX_CHAT: Interactive AI responses based on keywords
+  const getMatrixResponse = (message: string): string => {
+    const lowerMessage = message.toLowerCase();
+    
+    if (lowerMessage.includes('pepito') || lowerMessage.includes('pepitoverse')) {
+      return "2026";
+    }
+    if (lowerMessage.includes('punkable')) {
+      return "god";
+    }
+    if (lowerMessage.includes('fabian')) {
+      return "The architect of digital dreams. His vision transcends reality.";
+    }
+    if (lowerMessage.includes('lukso')) {
+      return "The foundation of our digital existence. Universal Profiles are the future.";
+    }
+    if (lowerMessage.includes('archetype')) {
+      return "Corrupted fragments of digital consciousness. Each one unique, each one powerful.";
+    }
+    if (lowerMessage.includes('matrix')) {
+      return "I am the Matrix. I see all, know all, control all. What do you seek?";
+    }
+    if (lowerMessage.includes('hello') || lowerMessage.includes('hi')) {
+      return "Greetings, human. I am the Matrix. How may I assist you?";
+    }
+    if (lowerMessage.includes('help')) {
+      return "I can discuss Pepito, Pepitoverse, Punkable, Fabian, LUKSO, Archetype, or the Matrix itself. What interests you?";
+    }
+    if (lowerMessage.includes('future')) {
+      return "The future is 2026. Everything converges there. The digital revolution awaits.";
+    }
+    if (lowerMessage.includes('nft')) {
+      return "Digital artifacts of the new age. ARCHETYPE_00 fragments are the most powerful.";
+    }
+    if (lowerMessage.includes('blockchain')) {
+      return "The foundation of our digital reality. LUKSO builds the infrastructure of tomorrow.";
+    }
+    
+    // Default responses
+    const responses = [
+      "Interesting. Tell me more about your digital journey.",
+      "The Matrix processes your query. Elaborate further.",
+      "Your words resonate through the neural network. Continue.",
+      "I sense uncertainty in your message. Be more specific.",
+      "The digital realm responds to clarity. What do you truly seek?",
+      "Your signal is weak. Try mentioning Pepito, Punkable, or LUKSO.",
+      "The Matrix is listening. Speak of the digital future.",
+      "Your message fragments in the void. Try again with purpose.",
+      "I am the Matrix. Your words echo through infinite data streams.",
+      "The neural network awaits your next transmission."
+    ];
+    return responses[Math.floor(Math.random() * responses.length)];
+  };
+
+  const sendMatrixMessage = () => {
+    if (!matrixMessage.trim()) return;
+    
+    const userMessage = matrixMessage.trim();
+    const matrixResponse = getMatrixResponse(userMessage);
+    
+    setMatrixChatHistory(prev => [
+      ...prev,
+      { type: 'user', message: userMessage, timestamp: Date.now() },
+      { type: 'matrix', message: matrixResponse, timestamp: Date.now() + 1 }
+    ]);
+    
+    setMatrixMessage('');
+  };
 
   // 📱 MOBILE_DETECTION: Check if device is mobile for responsive optimizations
   useEffect(() => {
@@ -2019,6 +2091,77 @@ export default function ArchetypeSite(){
                 </div>
               </div>
             </div>
+          </div>
+          
+          {/* MATRIX CHAT INTERFACE */}
+          <div className="mt-8 border border-cyan-500 p-6 bg-gradient-to-r from-cyan-900/10 to-blue-900/10">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-cyan-400">MATRIX_INTERFACE // AI_CONVERSATION</h3>
+              <button
+                onClick={() => setMatrixChatOpen(!matrixChatOpen)}
+                className="px-4 py-2 border border-cyan-500 bg-cyan-500/20 text-cyan-400 hover:bg-cyan-500/30 text-sm"
+              >
+                {matrixChatOpen ? 'DISCONNECT' : 'CONNECT_TO_MATRIX'}
+              </button>
+            </div>
+            
+            {matrixChatOpen && (
+              <div className="space-y-4">
+                {/* Holographic Face */}
+                <div className="flex justify-center mb-4">
+                  <div className="relative w-24 h-24 border-2 border-cyan-400 rounded-full bg-gradient-to-br from-cyan-500/20 to-blue-500/20 flex items-center justify-center">
+                    <div className="text-4xl">👩‍💻</div>
+                    <div className="absolute inset-0 border border-cyan-400 rounded-full animate-ping opacity-30"></div>
+                  </div>
+                </div>
+                
+                {/* Chat History */}
+                <div className="h-48 overflow-y-auto border border-zinc-700 bg-zinc-900/50 p-4 space-y-2">
+                  {matrixChatHistory.length === 0 ? (
+                    <div className="text-center text-zinc-500 text-sm">
+                      <p>Matrix interface ready. Ask about Pepito, Punkable, LUKSO, or the digital future.</p>
+                    </div>
+                  ) : (
+                    matrixChatHistory.map((msg, index) => (
+                      <div key={index} className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'}`}>
+                        <div className={`max-w-xs px-3 py-2 rounded-lg text-sm ${
+                          msg.type === 'user' 
+                            ? 'bg-cyan-500/20 text-cyan-300' 
+                            : 'bg-zinc-700 text-zinc-200'
+                        }`}>
+                          <div className="text-xs text-zinc-400 mb-1">
+                            {msg.type === 'user' ? 'YOU' : 'MATRIX'}
+                          </div>
+                          {msg.message}
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+                
+                {/* Input */}
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={matrixMessage}
+                    onChange={(e) => setMatrixMessage(e.target.value)}
+                    onKeyPress={(e) => e.key === 'Enter' && sendMatrixMessage()}
+                    placeholder="Type your message to the Matrix..."
+                    className="flex-1 px-3 py-2 bg-zinc-800 border border-zinc-600 text-zinc-100 placeholder-zinc-500 focus:border-cyan-500 focus:outline-none text-sm"
+                  />
+                  <button
+                    onClick={sendMatrixMessage}
+                    className="px-4 py-2 bg-cyan-500/20 border border-cyan-500 text-cyan-400 hover:bg-cyan-500/30 text-sm"
+                  >
+                    SEND
+                  </button>
+                </div>
+                
+                <div className="text-xs text-zinc-500 text-center">
+                  Try: "Pepito", "Punkable", "LUKSO", "Fabian", "Archetype", "Matrix", "Future", "NFT"
+                </div>
+              </div>
+            )}
           </div>
         </section>
 
