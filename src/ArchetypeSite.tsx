@@ -786,18 +786,14 @@ function NeuralPingPong() {
                difficultyMultiplier = 1.0 + (gameDuration - 30) * 0.05; // 5% increase per second after 30s
              }
         
-             // Apply physics with progressive difficulty - balanced
-             newBall.vx += newBall.dx * 0.04 * difficultyMultiplier; // Balanced acceleration
-             newBall.vy += newBall.dy * 0.04 * difficultyMultiplier;
-             
-             // Apply friction (more aggressive to prevent runaway speeds)
-             newBall.vx *= 0.98; // More friction
-             newBall.vy *= 0.98;
+             // Apply constant movement - no acceleration needed
+             // The ball should move at constant speed based on initial velocity
+             // Remove the acceleration and friction that was causing issues
              
              // No velocity limit - progressive difficulty only
              
-             // Update position with constant base speed + progressive difficulty
-             const baseSpeed = 4; // Higher constant base speed
+             // Update position with constant movement
+             const baseSpeed = 3; // Constant base speed
              const currentSpeed = baseSpeed * difficultyMultiplier;
              
              // Debug: Log ball movement every 60 frames (1 second at 60fps)
@@ -805,38 +801,35 @@ function NeuralPingPong() {
                console.log('Ball moving:', { x: newBall.x, y: newBall.y, vx: newBall.vx, vy: newBall.vy, currentSpeed });
              }
              
+             // Direct movement based on initial velocity
              newBall.x += newBall.vx * currentSpeed;
              newBall.y += newBall.vy * currentSpeed;
         
         // Wall collisions with better physics
         if (newBall.x <= 5 || newBall.x >= 795) {
-          newBall.vx = -newBall.vx * 0.9; // Consistent energy loss
-          newBall.dx = -newBall.dx;
+          newBall.vx = -newBall.vx; // Simple bounce
           newBall.x = newBall.x <= 5 ? 5 : 795; // Keep ball in bounds
         }
         if (newBall.y <= 5) {
-          newBall.vy = -newBall.vy * 0.9; // Consistent energy loss
-          newBall.dy = -newBall.dy;
+          newBall.vy = -newBall.vy; // Simple bounce
           newBall.y = 5; // Keep ball in bounds
         }
         
-             // Paddle collision with much more forgiving physics
+             // Paddle collision with simple physics
              const paddleTop = paddle.y;
-             const paddleBottom = paddle.y + 25; // Taller paddle
+             const paddleBottom = paddle.y + 25;
              const paddleLeft = paddle.x;
              const paddleRight = paddle.x + paddle.width;
              
-             // Much more generous collision detection
+             // Simple collision detection
              if (newBall.y >= paddleTop - 10 && newBall.y <= paddleBottom + 10 && 
                  newBall.x >= paddleLeft - 25 && newBall.x <= paddleRight + 25) {
-               // Calculate hit position (0 to 1) with better bounds
+               // Calculate hit position (0 to 1)
                const hitPos = Math.max(0, Math.min(1, (newBall.x - paddleLeft) / paddle.width));
                
-               // Apply much more forgiving bounce physics
-               newBall.vy = -Math.abs(newBall.vy) * 1.2; // More energy gain
-               newBall.vx = (hitPos - 0.5) * 6; // -3 to 3 range (less extreme)
-               newBall.dy = -Math.abs(newBall.dy);
-               newBall.dx = (hitPos - 0.5) * 1.5; // -0.75 to 0.75 range
+               // Simple bounce physics
+               newBall.vy = -Math.abs(newBall.vy); // Bounce up
+               newBall.vx = (hitPos - 0.5) * 4; // -2 to 2 range
           
           newBall.y = paddleTop - 5; // Position above paddle
           
@@ -1151,28 +1144,27 @@ function NeuralPingPong() {
   const startGame = () => {
     setGameState('playing');
     setScore(0);
-    setSpeed(2); // Much slower initial speed
+    setSpeed(2);
     setGlitchIntensity(0);
     setGameStartTime(Date.now());
     
-    // Start ball from center top with more random direction
-    const randomAngle = (Math.random() - 0.5) * Math.PI / 2; // -45 to 45 degrees for more variety
-    const randomSpeed = Math.random() * 1.0 + 0.8; // 0.8 to 1.8 speed range - stronger initial movement
-    const initialVx = Math.sin(randomAngle) * randomSpeed;
-    const initialVy = Math.abs(Math.cos(randomAngle)) * randomSpeed; // Always downward
+    // Start ball from center top with simple random direction
+    const randomAngle = (Math.random() - 0.5) * Math.PI / 3; // -30 to 30 degrees
+    const initialVx = Math.sin(randomAngle) * 2; // Simple horizontal movement
+    const initialVy = Math.abs(Math.cos(randomAngle)) * 2; // Always downward
     
     const ballData = { 
       x: 400, 
       y: 100, 
-      dx: initialVx * 4, // Much stronger initial direction
-      dy: initialVy * 4, // Much stronger initial direction
-      vx: initialVx * 5, // Much stronger initial velocity for automatic movement
-      vy: initialVy * 5
+      dx: initialVx, // Simple direction
+      dy: initialVy, // Simple direction
+      vx: initialVx, // Simple velocity
+      vy: initialVy
     };
     
     console.log('Starting game with ball data:', ballData);
     setBall(ballData);
-    setPaddle({ x: 350, y: 550, width: 150 }); // Bigger paddle
+    setPaddle({ x: 350, y: 550, width: 150 });
     setGlitchLines([]);
     setShowWinMessage(false);
   };
