@@ -1135,55 +1135,73 @@ function NeuralPingPong() {
     const averageScore = gameHistory.length > 0 ? Math.round(gameHistory.reduce((sum, g) => sum + g.score, 0) / gameHistory.length) : score;
     
     return (
-      <div className="border-2 border-red-500 p-6 bg-gradient-to-br from-red-900/20 to-zinc-950 text-center">
-        <motion.div
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.5 }}
-        >
-          <h3 className="text-2xl font-bold text-red-400 mb-4 animate-pulse">NEURAL_LINK_LOST</h3>
-          
-          <div className="mb-6 p-4 border border-red-500/30 bg-red-500/10 rounded-lg">
-            <div className="text-4xl font-bold text-red-300 mb-2">SCORE: {score}</div>
-            <div className="text-lg text-red-400 mb-2">ARCHETYPE_00 FRAGMENT</div>
-            <div className="text-sm text-red-500 italic">{getLossMessage()}</div>
-          </div>
-          
-          <div className="mb-6 p-4 border border-zinc-600 bg-zinc-900/70 rounded-lg">
-            <h4 className="text-lg font-semibold text-zinc-300 mb-3">SYSTEM_STATISTICS</h4>
-            <div className="grid grid-cols-2 gap-4 text-sm">
-              <div className="text-zinc-400">
-                <div className="text-xs text-zinc-500">Losses</div>
-                <div className="text-xl font-bold text-red-400">{lossCount}</div>
-              </div>
-              <div className="text-zinc-400">
-                <div className="text-xs text-zinc-500">Best Score</div>
-                <div className="text-xl font-bold text-green-400">{bestScore}</div>
-              </div>
-              <div className="text-zinc-400">
-                <div className="text-xs text-zinc-500">Average</div>
-                <div className="text-xl font-bold text-blue-400">{averageScore}</div>
-              </div>
-              <div className="text-zinc-400">
-                <div className="text-xs text-zinc-500">Games Played</div>
-                <div className="text-xl font-bold text-purple-400">{gameHistory.length + 1}</div>
-              </div>
-            </div>
-          </div>
-          
-          <div className="mb-4">
-            <button 
-              onClick={startGame}
-              className="px-8 py-3 border-2 border-red-500 bg-red-500/20 text-red-400 hover:bg-red-500/30 font-bold text-lg transition-all duration-300 hover:scale-105"
+      <div className="border border-zinc-800 p-4 bg-zinc-950">
+        <h3 className="text-lg font-semibold text-zinc-100 mb-4">NEURAL_PING_PONG // CONNECTION_LOST</h3>
+        <div className="relative w-full" style={{ height: '60vh', minHeight: '400px' }}>
+          <div className="absolute inset-0 border-2 border-red-500 bg-gradient-to-br from-red-900/20 to-zinc-950 text-center flex items-center justify-center">
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.5 }}
+              className="w-full max-w-md"
             >
-              TRY AGAIN
-            </button>
+              <h3 className="text-2xl font-bold text-red-400 mb-4 animate-pulse">NEURAL_LINK_LOST</h3>
+              
+              <div className="mb-6 p-4 border border-red-500/30 bg-red-500/10 rounded-lg">
+                <div className="text-4xl font-bold text-red-300 mb-2">SCORE: {score}</div>
+                <div className="text-lg text-red-400 mb-2">ARCHETYPE_00 FRAGMENT</div>
+                <div className="text-sm text-red-500 italic">{getLossMessage()}</div>
+              </div>
+              
+              <div className="mb-6 p-4 border border-zinc-600 bg-zinc-900/70 rounded-lg">
+                <h4 className="text-lg font-semibold text-zinc-300 mb-3">SYSTEM_STATISTICS</h4>
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div className="text-zinc-400">
+                    <div className="text-xs text-zinc-500">Losses</div>
+                    <div className="text-xl font-bold text-red-400">{lossCount}</div>
+                  </div>
+                  <div className="text-zinc-400">
+                    <div className="text-xs text-zinc-500">Best Score</div>
+                    <div className="text-xl font-bold text-green-400">{bestScore}</div>
+                  </div>
+                  <div className="text-zinc-400">
+                    <div className="text-xs text-zinc-500">Average</div>
+                    <div className="text-xl font-bold text-blue-400">{averageScore}</div>
+                  </div>
+                  <div className="text-zinc-400">
+                    <div className="text-xs text-zinc-500">Games Played</div>
+                    <div className="text-xl font-bold text-purple-400">{gameHistory.length + 1}</div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="mb-4">
+                <button 
+                  onClick={startGame}
+                  className="px-8 py-3 border-2 border-red-500 bg-red-500/20 text-red-400 hover:bg-red-500/30 font-bold text-lg transition-all duration-300 hover:scale-105"
+                >
+                  TRY AGAIN
+                </button>
+              </div>
+              
+              <div className="text-xs text-zinc-600 mt-4">
+                Take a screenshot to share your score!
+              </div>
+            </motion.div>
           </div>
-          
-          <div className="text-xs text-zinc-600 mt-4">
-            Take a screenshot to share your score!
+        </div>
+        <div className="mt-2 text-xs text-zinc-500">
+          <div className="flex flex-wrap gap-4">
+            <span>Controls: ← → keys, mouse, touch</span>
+            <span>Score: {score}</span>
+            <span>Speed: {speed.toFixed(1)}</span>
           </div>
-        </motion.div>
+        </div>
+        {typeof window !== 'undefined' && window.innerWidth < 768 && (
+          <div className="mt-4 p-3 bg-zinc-800 border border-zinc-600 text-xs text-zinc-400">
+            <p className="text-center">Touch and drag to control the paddle</p>
+          </div>
+        )}
       </div>
     );
   }
