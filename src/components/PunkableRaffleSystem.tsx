@@ -47,10 +47,12 @@ const PunkableRaffleSystem = () => {
 
   // Raffle creation states
   const [showCreateForm, setShowCreateForm] = useState(false)
+  const [showRaffleHistory, setShowRaffleHistory] = useState(false)
   const [newRaffleTitle, setNewRaffleTitle] = useState("")
   const [newRaffleDescription, setNewRaffleDescription] = useState("")
   const [newRaffleImage, setNewRaffleImage] = useState("")
   const [creating, setCreating] = useState(false)
+  const [savedRaffles, setSavedRaffles] = useState<Raffle[]>([])
 
   // Validation states
   const [duplicateUpAddressError, setDuplicateUpAddressError] = useState("")
@@ -92,6 +94,8 @@ const PunkableRaffleSystem = () => {
       setNewRaffleDescription("")
       setNewRaffleImage("")
       setShowCreateForm(false)
+      // Save to history
+      saveRaffleToHistory(raffle)
     }
     setCreating(false)
   }
@@ -397,6 +401,41 @@ const PunkableRaffleSystem = () => {
     }
   }
 
+  // Load saved raffles from localStorage
+  const loadSavedRaffles = () => {
+    try {
+      const saved = localStorage.getItem('savedRaffles')
+      if (saved) {
+        setSavedRaffles(JSON.parse(saved))
+      }
+    } catch (error) {
+      console.error('Error loading saved raffles:', error)
+    }
+  }
+
+  // Save raffle to localStorage
+  const saveRaffleToHistory = (raffle: Raffle) => {
+    try {
+      const updated = [...savedRaffles, raffle]
+      setSavedRaffles(updated)
+      localStorage.setItem('savedRaffles', JSON.stringify(updated))
+    } catch (error) {
+      console.error('Error saving raffle:', error)
+    }
+  }
+
+  // Load a saved raffle
+  const loadSavedRaffle = (raffle: Raffle) => {
+    setCurrentRaffle(raffle)
+    setCurrentView("raffle")
+    setShowRaffleHistory(false)
+  }
+
+  // Load raffle data on component mount
+  useEffect(() => {
+    loadSavedRaffles()
+  }, [])
+
   useEffect(() => {
     return () => {
       if (shuffleRef.current) {
@@ -597,20 +636,36 @@ const PunkableRaffleSystem = () => {
           </div>
 
           <div className="text-center">
-            <div className="inline-flex flex-col items-center gap-3">
-              <motion.button
-                onClick={() => setShowCreateForm(true)}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="group relative px-8 py-4 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-bold text-lg rounded-xl transition-all duration-300 shadow-lg hover:shadow-pink-500/30 border border-pink-400/50 overflow-hidden"
-              >
-                <div className="absolute inset-0 bg-gradient-to-r from-pink-400/20 to-purple-400/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                <div className="relative flex items-center gap-3">
-                  <span className="text-xl">⚡</span>
-                  <span>INITIALIZE_RAFFLE</span>
-                  <span className="text-xl">⚡</span>
-                </div>
-              </motion.button>
+            <div className="inline-flex flex-col items-center gap-4">
+              <div className="flex gap-4">
+                <motion.button
+                  onClick={() => setShowCreateForm(true)}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="group relative px-6 py-3 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-bold rounded-lg transition-all duration-300 shadow-lg hover:shadow-pink-500/30 border border-pink-400/50 overflow-hidden"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-pink-400/20 to-purple-400/20 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div className="relative flex items-center gap-2">
+                    <span>⚡</span>
+                    <span>INITIALIZE_RAFFLE</span>
+                  </div>
+                </motion.button>
+                
+                {savedRaffles.length > 0 && (
+                  <motion.button
+                    onClick={() => setShowRaffleHistory(true)}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="group relative px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold rounded-lg transition-all duration-300 shadow-lg hover:shadow-green-500/30 border border-green-400/50 overflow-hidden"
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-r from-green-400/20 to-emerald-400/20 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div className="relative flex items-center gap-2">
+                      <span>📁</span>
+                      <span>RAFFLE_HISTORY</span>
+                    </div>
+                  </motion.button>
+                )}
+              </div>
               <p className="text-zinc-400 text-sm max-w-md">
                 Initialize fragment resonance parameters for your first raffle session. 
                 <span className="text-pink-400 font-semibold"> No experience required—just pure digital consciousness.</span>
@@ -621,24 +676,52 @@ const PunkableRaffleSystem = () => {
           <AnimatePresence>
             {showCreateForm && (
               <motion.div
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                className="mt-6 p-6 bg-gradient-to-br from-zinc-900/80 to-zinc-800/80 border border-zinc-700/50 rounded-xl backdrop-blur-sm"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50"
+                onClick={() => setShowCreateForm(false)}
               >
-                <div className="text-center mb-6">
-                  <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-pink-500/20 to-purple-500/20 border border-pink-500/30 rounded-full text-pink-400 text-sm font-medium mb-4">
-                    <span className="w-2 h-2 bg-pink-500 rounded-full animate-pulse"></span>
-                    FRAGMENT_RESONANCE_INITIALIZATION
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.8, y: 20 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.8, y: 20 }}
+                  className="bg-zinc-900 border border-zinc-700 rounded-lg shadow-2xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-hidden"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {/* Terminal Header */}
+                  <div className="bg-zinc-800 border-b border-zinc-700 px-4 py-3 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="flex gap-2">
+                        <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                        <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+                        <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                      </div>
+                      <span className="text-zinc-300 text-sm font-mono">ARCHETYPE_00 // FRAGMENT_RAFFLE_INIT</span>
+                    </div>
+                    <button
+                      onClick={() => setShowCreateForm(false)}
+                      className="text-zinc-400 hover:text-zinc-200 transition-colors"
+                    >
+                      <span className="text-lg">✕</span>
+                    </button>
                   </div>
-                  <h4 className="text-2xl font-bold text-zinc-100 mb-2 bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent">
-                    ⚡ INITIALIZE_RAFFLE
-                  </h4>
-                  <p className="text-zinc-400 text-sm max-w-xl mx-auto">
-                    Configure fragment resonance parameters for optimal selection algorithms. 
-                    <span className="text-pink-400 font-semibold"> Every detail matters in the digital consciousness.</span>
-                  </p>
-                </div>
+                  
+                  {/* Terminal Content */}
+                  <div className="p-6 overflow-y-auto max-h-[calc(90vh-80px)]">
+                    <div className="text-center mb-6">
+                      <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-pink-500/20 to-purple-500/20 border border-pink-500/30 rounded-full text-pink-400 text-sm font-medium mb-4">
+                        <span className="w-2 h-2 bg-pink-500 rounded-full animate-pulse"></span>
+                        FRAGMENT_RESONANCE_INITIALIZATION
+                      </div>
+                      <h4 className="text-2xl font-bold text-zinc-100 mb-2 bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent">
+                        ⚡ INITIALIZE_RAFFLE
+                      </h4>
+                      <p className="text-zinc-400 text-sm max-w-xl mx-auto">
+                        Configure fragment resonance parameters for optimal selection algorithms. 
+                        <span className="text-pink-400 font-semibold"> Every detail matters in the digital consciousness.</span>
+                      </p>
+                    </div>
                 
                 <div className="space-y-6">
                   <motion.div 
@@ -755,7 +838,101 @@ const PunkableRaffleSystem = () => {
                       Cancel
                     </motion.button>
                   </motion.div>
-                </div>
+                    </div>
+                  </div>
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Raffle History Popup */}
+          <AnimatePresence>
+            {showRaffleHistory && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50"
+                onClick={() => setShowRaffleHistory(false)}
+              >
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.8, y: 20 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.8, y: 20 }}
+                  className="bg-zinc-900 border border-zinc-700 rounded-lg shadow-2xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-hidden"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {/* Terminal Header */}
+                  <div className="bg-zinc-800 border-b border-zinc-700 px-4 py-3 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="flex gap-2">
+                        <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                        <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+                        <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                      </div>
+                      <span className="text-zinc-300 text-sm font-mono">ARCHETYPE_00 // RAFFLE_HISTORY</span>
+                    </div>
+                    <button
+                      onClick={() => setShowRaffleHistory(false)}
+                      className="text-zinc-400 hover:text-zinc-200 transition-colors"
+                    >
+                      <span className="text-lg">✕</span>
+                    </button>
+                  </div>
+                  
+                  {/* Terminal Content */}
+                  <div className="p-6 overflow-y-auto max-h-[calc(90vh-80px)]">
+                    <div className="text-center mb-6">
+                      <h3 className="text-2xl font-bold text-zinc-100 mb-2 bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">
+                        📁 RAFFLE_HISTORY
+                      </h3>
+                      <p className="text-zinc-400 text-sm">
+                        Select a previous raffle to load its configuration
+                      </p>
+                    </div>
+                    
+                    {savedRaffles.length === 0 ? (
+                      <div className="text-center py-12">
+                        <div className="text-6xl mb-4">📁</div>
+                        <h4 className="text-xl font-semibold text-zinc-300 mb-2">No Raffles Found</h4>
+                        <p className="text-zinc-400">Create your first raffle to see it here</p>
+                      </div>
+                    ) : (
+                      <div className="grid gap-4">
+                        {savedRaffles.map((raffle, index) => (
+                          <motion.div
+                            key={raffle.id}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: index * 0.1 }}
+                            className="group border border-zinc-700 rounded-lg p-4 hover:border-green-500/50 transition-all duration-200 cursor-pointer"
+                            onClick={() => loadSavedRaffle(raffle)}
+                          >
+                            <div className="flex items-center justify-between">
+                              <div className="flex-1">
+                                <h4 className="text-lg font-semibold text-zinc-100 group-hover:text-green-400 transition-colors">
+                                  {raffle.title}
+                                </h4>
+                                {raffle.description && (
+                                  <p className="text-zinc-400 text-sm mt-1 line-clamp-2">
+                                    {raffle.description}
+                                  </p>
+                                )}
+                                <div className="flex items-center gap-4 mt-2 text-xs text-zinc-500">
+                                  <span>ID: {raffle.id}</span>
+                                  <span>Created: {new Date(raffle.created_at).toLocaleDateString()}</span>
+                                </div>
+                              </div>
+                              <div className="text-green-400 group-hover:scale-110 transition-transform">
+                                <span className="text-2xl">→</span>
+                              </div>
+                            </div>
+                          </motion.div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </motion.div>
               </motion.div>
             )}
           </AnimatePresence>
