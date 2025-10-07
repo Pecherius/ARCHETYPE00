@@ -16,6 +16,49 @@ export interface WinnerExport {
 }
 
 export function exportWinnersAsImage(winnerData: WinnerExport): void {
+  // Find the winners section element
+  const winnersSection = document.querySelector('[data-section="winners"]') as HTMLElement
+  if (!winnersSection) {
+    console.error('Winners section not found')
+    return
+  }
+
+  // Use html2canvas to capture the actual element
+  import('html2canvas').then((html2canvas) => {
+    html2canvas.default(winnersSection, {
+      backgroundColor: null, // Transparent background
+      scale: 2, // Higher resolution
+      useCORS: true,
+      allowTaint: true,
+      width: winnersSection.offsetWidth,
+      height: winnersSection.offsetHeight
+    }).then((canvas) => {
+      // Convert to image and download
+      canvas.toBlob((blob) => {
+        if (!blob) return
+        
+        const url = URL.createObjectURL(blob)
+        const link = document.createElement('a')
+        link.href = url
+        link.download = `raffle-${winnerData.raffleName.replace(/[^a-zA-Z0-9]/g, '-')}-winners-${new Date().toISOString().split('T')[0]}.png`
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+        URL.revokeObjectURL(url)
+      })
+    }).catch((error) => {
+      console.error('Error capturing winners section:', error)
+      // Fallback to manual canvas if html2canvas fails
+      createManualCanvas(winnerData)
+    })
+  }).catch((error) => {
+    console.error('Error loading html2canvas:', error)
+    // Fallback to manual canvas if html2canvas is not available
+    createManualCanvas(winnerData)
+  })
+}
+
+function createManualCanvas(winnerData: WinnerExport): void {
   // Create a canvas element
   const canvas = document.createElement('canvas')
   const ctx = canvas.getContext('2d')
@@ -25,8 +68,11 @@ export function exportWinnersAsImage(winnerData: WinnerExport): void {
   canvas.width = 1000
   canvas.height = 800
 
-  // Black background
-  ctx.fillStyle = '#000000'
+  // Background with gradient like the actual component
+  const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height)
+  gradient.addColorStop(0, '#0a0a0a')
+  gradient.addColorStop(1, '#1a1a1a')
+  ctx.fillStyle = gradient
   ctx.fillRect(0, 0, canvas.width, canvas.height)
 
   // Border

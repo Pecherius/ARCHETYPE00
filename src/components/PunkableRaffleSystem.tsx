@@ -1291,7 +1291,7 @@ const PunkableRaffleSystem = () => {
             </div>
 
             {/* Winners */}
-            <div>
+            <div data-section="winners">
               <div className="flex items-center justify-between mb-4">
                 <h4 className="text-lg font-bold text-zinc-100 flex items-center gap-2">
                   <span className="text-pink-500">🎉</span> Winners ({winners.length})
