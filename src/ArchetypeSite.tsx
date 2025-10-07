@@ -699,43 +699,43 @@ function NeuralPingPong() {
   
   // Game objects
   const [ball, setBall] = useState({ x: 400, y: 100, dx: 0, dy: 0, vx: 0, vy: 0 });
-  const [paddle, setPaddle] = useState({ x: 350, y: 550, width: 100 });
+  const [paddle, setPaddle] = useState({ x: 350, y: 550, width: 150 });
   const [glitchLines, setGlitchLines] = useState<Array<{x: number, y: number, width: number, height: number}>>([]);
   const [gameStartTime, setGameStartTime] = useState<number>(0);
   const [floatingMessages, setFloatingMessages] = useState<Array<{id: number, text: string, x: number, y: number, vx: number, vy: number, life: number}>>([]);
   
   // Meme messages for floating text
   const memeMessages = [
-    "PEPITO NO SABE JUGAR PING PONG 😂",
-    "Pebubu se quedó sin internet",
-    "Punkable está en maintenance mode",
+    "PEPITO CAN'T PLAY PING PONG 😂",
+    "Pebubu lost internet connection",
+    "Punkable is in maintenance mode",
     "ERROR 404: Skill not found",
-    "PEPITO: '¿Dónde está la pelota?'",
-    "Pebubu: 'Esto es más difícil que programar'",
+    "PEPITO: 'Where is the ball?'",
+    "Pebubu: 'This is harder than coding'",
     "Punkable: 'Hold my beer'",
-    "PEPITO perdió la conexión neural",
-    "Pebubu: '¿Por qué no funciona?'",
+    "PEPITO lost neural connection",
+    "Pebubu: 'Why isn't this working?'",
     "Punkable: 'It's not a bug, it's a feature'",
-    "PEPITO: '¿Qué es un paddle?'",
-    "Pebubu: 'Necesito más café'",
+    "PEPITO: 'What is a paddle?'",
+    "Pebubu: 'I need more coffee'",
     "Punkable: 'Deploying fix...'",
-    "PEPITO: '¿Por qué se mueve solo?'",
-    "Pebubu: 'Esto es imposible'",
+    "PEPITO: 'Why is it moving by itself?'",
+    "Pebubu: 'This is impossible'",
     "Punkable: 'Working as intended'",
-    "PEPITO: '¿Dónde está el botón de pausa?'",
-    "Pebubu: 'Mi código es mejor'",
+    "PEPITO: 'Where is the pause button?'",
+    "Pebubu: 'My code is better'",
     "Punkable: 'Feature request denied'",
-    "PEPITO: '¿Esto es un virus?'",
-    "Pebubu: 'Necesito debuggear esto'",
+    "PEPITO: 'Is this a virus?'",
+    "Pebubu: 'I need to debug this'",
     "Punkable: 'User error detected'",
-    "PEPITO: '¿Por qué no hay tutorial?'",
-    "Pebubu: 'Esto es más complejo que React'",
+    "PEPITO: 'Why is there no tutorial?'",
+    "Pebubu: 'This is more complex than React'",
     "Punkable: 'Documentation updated'",
-    "PEPITO: '¿Dónde está el manual?'",
-    "Pebubu: 'Necesito más RAM'",
+    "PEPITO: 'Where is the manual?'",
+    "Pebubu: 'I need more RAM'",
     "Punkable: 'System requirements updated'",
-    "PEPITO: '¿Esto funciona en Internet Explorer?'",
-    "Pebubu: 'Necesito refactorizar'",
+    "PEPITO: 'Does this work in Internet Explorer?'",
+    "Pebubu: 'I need to refactor this'",
     "Punkable: 'Legacy support dropped'"
   ];
   
@@ -771,33 +771,35 @@ function NeuralPingPong() {
       setBall(prev => {
         let newBall = { ...prev };
         
-        // Progressive difficulty - easier for first 10 seconds
-        const currentTime = Date.now();
-        const gameDuration = (currentTime - gameStartTime) / 1000; // seconds
-        let difficultyMultiplier = 1;
-        if (gameDuration < 10) {
-          difficultyMultiplier = 0.6; // 40% easier for first 10 seconds
-        } else {
-          difficultyMultiplier = Math.min(1 + (gameDuration - 10) * 0.1, 2); // Gradually increase difficulty
-        }
+             // Progressive difficulty - much easier overall
+             const currentTime = Date.now();
+             const gameDuration = (currentTime - gameStartTime) / 1000; // seconds
+             let difficultyMultiplier = 1;
+             if (gameDuration < 15) {
+               difficultyMultiplier = 0.4; // 60% easier for first 15 seconds
+             } else if (gameDuration < 30) {
+               difficultyMultiplier = 0.6; // 40% easier for next 15 seconds
+             } else {
+               difficultyMultiplier = Math.min(0.8 + (gameDuration - 30) * 0.05, 1.2); // Very gradual increase
+             }
         
-        // Apply physics with progressive difficulty
-        newBall.vx += newBall.dx * 0.06 * difficultyMultiplier; // Even more reduced base acceleration
-        newBall.vy += newBall.dy * 0.06 * difficultyMultiplier;
-        
-        // Apply friction (more aggressive to prevent runaway speeds)
-        newBall.vx *= 0.995;
-        newBall.vy *= 0.995;
-        
-        // Limit maximum velocity to prevent impossible situations
-        const maxVelocity = 8;
-        newBall.vx = Math.max(-maxVelocity, Math.min(maxVelocity, newBall.vx));
-        newBall.vy = Math.max(-maxVelocity, Math.min(maxVelocity, newBall.vy));
-        
-        // Update position with progressive speed
-        const currentSpeed = Math.min(speed * difficultyMultiplier, 6);
-        newBall.x += newBall.vx * currentSpeed;
-        newBall.y += newBall.vy * currentSpeed;
+             // Apply physics with progressive difficulty - much easier
+             newBall.vx += newBall.dx * 0.03 * difficultyMultiplier; // Much slower acceleration
+             newBall.vy += newBall.dy * 0.03 * difficultyMultiplier;
+             
+             // Apply friction (more aggressive to prevent runaway speeds)
+             newBall.vx *= 0.98; // More friction
+             newBall.vy *= 0.98;
+             
+             // Limit maximum velocity to prevent impossible situations
+             const maxVelocity = 4; // Much slower max speed
+             newBall.vx = Math.max(-maxVelocity, Math.min(maxVelocity, newBall.vx));
+             newBall.vy = Math.max(-maxVelocity, Math.min(maxVelocity, newBall.vy));
+             
+             // Update position with progressive speed
+             const currentSpeed = Math.min(speed * difficultyMultiplier, 3); // Much slower overall
+             newBall.x += newBall.vx * currentSpeed;
+             newBall.y += newBall.vy * currentSpeed;
         
         // Wall collisions with better physics
         if (newBall.x <= 5 || newBall.x >= 795) {
@@ -811,23 +813,23 @@ function NeuralPingPong() {
           newBall.y = 5; // Keep ball in bounds
         }
         
-        // Paddle collision with more forgiving physics and better detection
-        const paddleTop = paddle.y;
-        const paddleBottom = paddle.y + 20;
-        const paddleLeft = paddle.x;
-        const paddleRight = paddle.x + paddle.width;
-        
-        // More generous collision detection
-        if (newBall.y >= paddleTop - 5 && newBall.y <= paddleBottom + 5 && 
-            newBall.x >= paddleLeft - 15 && newBall.x <= paddleRight + 15) {
-          // Calculate hit position (0 to 1) with better bounds
-          const hitPos = Math.max(0, Math.min(1, (newBall.x - paddleLeft) / paddle.width));
-          
-          // Apply more forgiving bounce physics
-          newBall.vy = -Math.abs(newBall.vy) * 1.1; // Slightly more energy gain
-          newBall.vx = (hitPos - 0.5) * 8; // -4 to 4 range (more responsive)
-          newBall.dy = -Math.abs(newBall.dy);
-          newBall.dx = (hitPos - 0.5) * 2; // -1 to 1 range
+             // Paddle collision with much more forgiving physics
+             const paddleTop = paddle.y;
+             const paddleBottom = paddle.y + 25; // Taller paddle
+             const paddleLeft = paddle.x;
+             const paddleRight = paddle.x + paddle.width;
+             
+             // Much more generous collision detection
+             if (newBall.y >= paddleTop - 10 && newBall.y <= paddleBottom + 10 && 
+                 newBall.x >= paddleLeft - 25 && newBall.x <= paddleRight + 25) {
+               // Calculate hit position (0 to 1) with better bounds
+               const hitPos = Math.max(0, Math.min(1, (newBall.x - paddleLeft) / paddle.width));
+               
+               // Apply much more forgiving bounce physics
+               newBall.vy = -Math.abs(newBall.vy) * 1.2; // More energy gain
+               newBall.vx = (hitPos - 0.5) * 6; // -3 to 3 range (less extreme)
+               newBall.dy = -Math.abs(newBall.dy);
+               newBall.dx = (hitPos - 0.5) * 1.5; // -0.75 to 0.75 range
           
           newBall.y = paddleTop - 5; // Position above paddle
           
@@ -839,7 +841,7 @@ function NeuralPingPong() {
             }
             return newScore;
           });
-          setSpeed(prev => Math.min(prev + 0.5, 20)); // Slower speed increase
+               setSpeed(prev => Math.min(prev + 0.2, 8)); // Much slower speed increase
           
           // Spawn floating message on successful hit
           if (Math.random() < 0.3) { // 30% chance
@@ -1131,13 +1133,13 @@ function NeuralPingPong() {
   const startGame = () => {
     setGameState('playing');
     setScore(0);
-    setSpeed(8);
+    setSpeed(2); // Much slower initial speed
     setGlitchIntensity(0);
     setGameStartTime(Date.now());
     
     // Start ball from center top with more random direction
     const randomAngle = (Math.random() - 0.5) * Math.PI / 2; // -45 to 45 degrees for more variety
-    const randomSpeed = Math.random() * 1.5 + 1.5; // 1.5 to 3 speed range
+    const randomSpeed = Math.random() * 0.5 + 0.5; // 0.5 to 1 speed range - much slower
     const initialVx = Math.sin(randomAngle) * randomSpeed;
     const initialVy = Math.abs(Math.cos(randomAngle)) * randomSpeed; // Always downward
     
@@ -1146,10 +1148,10 @@ function NeuralPingPong() {
       y: 100, 
       dx: initialVx, 
       dy: initialVy,
-      vx: initialVx * 0.1, // Small initial velocity
-      vy: initialVy * 0.1
+      vx: initialVx * 0.05, // Much smaller initial velocity
+      vy: initialVy * 0.05
     });
-    setPaddle({ x: 350, y: 550, width: 100 });
+    setPaddle({ x: 350, y: 550, width: 150 }); // Bigger paddle
     setGlitchLines([]);
     setShowWinMessage(false);
   };
@@ -1304,27 +1306,28 @@ function NeuralPingPong() {
   return (
     <div className="border border-zinc-800 p-4 bg-zinc-950">
       <h3 className="text-lg font-semibold text-zinc-100 mb-4">NEURAL_PING_PONG // ACTIVE</h3>
-      <div className="relative w-full">
-        <canvas 
-          ref={canvasRef}
-          width={800}
-          height={600}
-          className="w-full max-w-full h-auto border border-zinc-700 bg-black touch-none"
-          style={{ maxHeight: '60vh' }}
-        />
-        <div className="mt-2 text-xs text-zinc-500">
-          <div className="flex flex-wrap gap-4">
-            <span>Controls: ← → keys, mouse, touch</span>
-            <span>Score: {score}</span>
-            <span>Speed: {speed.toFixed(1)}</span>
-          </div>
+      <div className="relative w-full" style={{ height: '60vh', minHeight: '400px' }}>
+        <div className="absolute inset-0 border-2 border-zinc-700 bg-gradient-to-br from-zinc-900/20 to-zinc-950">
+          <canvas 
+            ref={canvasRef}
+            width={800}
+            height={600}
+            className="w-full h-full touch-none"
+          />
         </div>
-        {typeof window !== 'undefined' && window.innerWidth < 768 && (
-          <div className="mt-4 p-3 bg-zinc-800 border border-zinc-600 text-xs text-zinc-400">
-            <p className="text-center">Touch and drag to control the paddle</p>
-          </div>
-        )}
       </div>
+      <div className="mt-2 text-xs text-zinc-500">
+        <div className="flex flex-wrap gap-4">
+          <span>Controls: ← → keys, mouse, touch</span>
+          <span>Score: {score}</span>
+          <span>Speed: {speed.toFixed(1)}</span>
+        </div>
+      </div>
+      {typeof window !== 'undefined' && window.innerWidth < 768 && (
+        <div className="mt-4 p-3 bg-zinc-800 border border-zinc-600 text-xs text-zinc-400">
+          <p className="text-center">Touch and drag to control the paddle</p>
+        </div>
+      )}
     </div>
   );
 }
