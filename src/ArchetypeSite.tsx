@@ -701,6 +701,7 @@ function NeuralPingPong() {
   const [ball, setBall] = useState({ x: 400, y: 100, dx: 0, dy: 0, vx: 0, vy: 0 });
   const [paddle, setPaddle] = useState({ x: 350, y: 550, width: 100 });
   const [glitchLines, setGlitchLines] = useState<Array<{x: number, y: number, width: number, height: number}>>([]);
+  const [gameStartTime, setGameStartTime] = useState<number>(0);
   
   // Game loop
   useEffect(() => {
@@ -710,42 +711,53 @@ function NeuralPingPong() {
       setBall(prev => {
         let newBall = { ...prev };
         
-        // Apply physics with acceleration and friction
-        newBall.vx += newBall.dx * 0.1; // Acceleration
-        newBall.vy += newBall.dy * 0.1;
+        // Progressive difficulty - easier for first 10 seconds
+        const currentTime = Date.now();
+        const gameDuration = (currentTime - gameStartTime) / 1000; // seconds
+        let difficultyMultiplier = 1;
+        if (gameDuration < 10) {
+          difficultyMultiplier = 0.6; // 40% easier for first 10 seconds
+        } else {
+          difficultyMultiplier = Math.min(1 + (gameDuration - 10) * 0.1, 2); // Gradually increase difficulty
+        }
         
-        // Apply friction
-        newBall.vx *= 0.999;
-        newBall.vy *= 0.999;
+        // Apply physics with progressive difficulty
+        newBall.vx += newBall.dx * 0.08 * difficultyMultiplier; // Reduced base acceleration
+        newBall.vy += newBall.dy * 0.08 * difficultyMultiplier;
         
-        // Update position
-        newBall.x += newBall.vx * speed;
-        newBall.y += newBall.vy * speed;
+        // Apply friction (less aggressive)
+        newBall.vx *= 0.998;
+        newBall.vy *= 0.998;
         
-        // Wall collisions with energy loss
+        // Update position with progressive speed
+        const currentSpeed = Math.min(speed * difficultyMultiplier, 6);
+        newBall.x += newBall.vx * currentSpeed;
+        newBall.y += newBall.vy * currentSpeed;
+        
+        // Wall collisions with less energy loss
         if (newBall.x <= 0 || newBall.x >= 800) {
-          newBall.vx = -newBall.vx * 0.9; // Energy loss on bounce
+          newBall.vx = -newBall.vx * 0.95; // Less energy loss
           newBall.dx = -newBall.dx;
           newBall.x = newBall.x <= 0 ? 0 : 800;
         }
         if (newBall.y <= 0) {
-          newBall.vy = -newBall.vy * 0.9; // Energy loss on bounce
+          newBall.vy = -newBall.vy * 0.95; // Less energy loss
           newBall.dy = -newBall.dy;
           newBall.y = 0;
         }
         
-        // Paddle collision with realistic physics
-        if (newBall.y >= 550 && newBall.x >= paddle.x && newBall.x <= paddle.x + paddle.width) {
+        // Paddle collision with more forgiving physics
+        if (newBall.y >= 540 && newBall.y <= 560 && newBall.x >= paddle.x - 10 && newBall.x <= paddle.x + paddle.width + 10) {
           // Calculate hit position (0 to 1)
-          const hitPos = (newBall.x - paddle.x) / paddle.width;
+          const hitPos = Math.max(0, Math.min(1, (newBall.x - paddle.x) / paddle.width));
           
-          // Apply realistic bounce physics
-          newBall.vy = -Math.abs(newBall.vy) * 1.1; // Always bounce up with slight energy gain
-          newBall.vx = (hitPos - 0.5) * 8; // -4 to 4 range based on hit position
+          // Apply more forgiving bounce physics
+          newBall.vy = -Math.abs(newBall.vy) * 1.05; // Less energy gain
+          newBall.vx = (hitPos - 0.5) * 6; // -3 to 3 range (less extreme)
           newBall.dy = -Math.abs(newBall.dy);
-          newBall.dx = (hitPos - 0.5) * 2; // -1 to 1 range
+          newBall.dx = (hitPos - 0.5) * 1.5; // -0.75 to 0.75 range
           
-          newBall.y = 550;
+          newBall.y = 540;
           
           setScore(prev => {
             const newScore = prev + 1;
@@ -994,6 +1006,7 @@ function NeuralPingPong() {
     setScore(0);
     setSpeed(8);
     setGlitchIntensity(0);
+    setGameStartTime(Date.now());
     
     // Start ball from center top with random direction
     const randomAngle = (Math.random() - 0.5) * Math.PI / 3; // -30 to 30 degrees
@@ -1125,7 +1138,7 @@ function NeuralPingPong() {
           
           <div className="mb-4">
             <button 
-              onClick={resetGame}
+              onClick={startGame}
               className="px-8 py-3 border-2 border-red-500 bg-red-500/20 text-red-400 hover:bg-red-500/30 font-bold text-lg transition-all duration-300 hover:scale-105"
             >
               TRY AGAIN

@@ -459,7 +459,7 @@ const PunkableRaffleSystem = () => {
     return (
       <section className="mx-auto max-w-6xl px-4 pb-12 sm:px-6">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold tracking-wide text-zinc-100">{t.raffleSystem}</h2>
+          <h2 className="text-2xl font-bold tracking-wide text-zinc-100">Punkable Ethereal Raffle System</h2>
           <RaffleLanguageSelector />
         </div>
         <div className="border border-zinc-800 p-6 text-sm leading-relaxed text-zinc-300">
@@ -468,53 +468,67 @@ const PunkableRaffleSystem = () => {
               {t.raffleSystem}
             </h3>
             <p className="text-gray-400 text-lg mb-4">{t.manageRaffles}</p>
-            <div className="bg-zinc-800/50 border border-zinc-700 rounded-lg p-4 max-w-3xl mx-auto">
-              <h4 className="text-lg font-semibold text-zinc-200 mb-2 flex items-center gap-2">
-                <span className="text-pink-500">⚡</span>
-                {t.algorithmDescription}
-              </h4>
-              <div className="grid md:grid-cols-2 gap-4 text-sm text-zinc-400">
-                <div className="flex items-center gap-2">
-                  <span className="text-green-400">✓</span>
-                  <span>{t.randomSelection}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-green-400">✓</span>
-                  <span>{t.fairDistribution}</span>
+            <div className="bg-gradient-to-r from-zinc-800/30 to-zinc-900/30 border border-zinc-700/50 rounded-xl p-6 max-w-4xl mx-auto backdrop-blur-sm">
+              <div className="text-center mb-4">
+                <div className="inline-flex items-center gap-2 px-4 py-2 bg-pink-500/10 border border-pink-500/30 rounded-full text-pink-400 text-sm font-medium">
+                  <span className="w-2 h-2 bg-pink-500 rounded-full animate-pulse"></span>
+                  Fragment Resonance Engine
                 </div>
               </div>
+              <p className="text-zinc-300 text-center text-sm leading-relaxed">
+                Each participant generates a unique frequency signature. The system responds to collective resonance patterns, 
+                creating spontaneous selection events that cannot be predicted or manipulated.
+              </p>
             </div>
           </div>
 
           <div className="grid md:grid-cols-3 gap-6 mb-8">
-            <div className="border border-pink-500 p-4 bg-pink-500/5">
-              <h4 className="text-pink-400 font-semibold mb-3">🎲 Random Selection</h4>
-              <p className="text-xs text-zinc-400 mb-3">
-                Advanced algorithms ensure fair and random selection based on participant ticket weights. Each ticket increases your chances proportionally.
-              </p>
-              <p className="text-xs text-zinc-500">
-                Mathematical algorithms guarantee that participants with more tickets have proportionally higher chances of winning, ensuring fairness.
-              </p>
+            <div className="group relative overflow-hidden border border-zinc-700/50 rounded-xl bg-gradient-to-br from-zinc-800/20 to-zinc-900/20 p-6 backdrop-blur-sm hover:border-pink-500/30 transition-all duration-300">
+              <div className="absolute inset-0 bg-gradient-to-br from-pink-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <div className="relative">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-8 h-8 rounded-lg bg-pink-500/20 flex items-center justify-center">
+                    <span className="text-pink-400 text-lg">⚡</span>
+                  </div>
+                  <h4 className="text-pink-400 font-semibold">Resonance Field</h4>
+                </div>
+                <p className="text-xs text-zinc-400 leading-relaxed">
+                  Each participant generates unique frequency patterns. The system responds to collective resonance, 
+                  creating spontaneous selection events that emerge from the ethereal network.
+                </p>
+              </div>
             </div>
             
-            <div className="border border-purple-500 p-4 bg-purple-500/5">
-              <h4 className="text-purple-400 font-semibold mb-3">🌐 Local Storage</h4>
-              <p className="text-xs text-zinc-400 mb-3">
-                All raffle data is stored locally in your browser. No external dependencies, complete privacy and control over your data.
-              </p>
-              <p className="text-xs text-zinc-500">
-                UP addresses are optional and used only for identification purposes. No blockchain integration required.
-              </p>
+            <div className="group relative overflow-hidden border border-zinc-700/50 rounded-xl bg-gradient-to-br from-zinc-800/20 to-zinc-900/20 p-6 backdrop-blur-sm hover:border-purple-500/30 transition-all duration-300">
+              <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <div className="relative">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-8 h-8 rounded-lg bg-purple-500/20 flex items-center justify-center">
+                    <span className="text-purple-400 text-lg">🌐</span>
+                  </div>
+                  <h4 className="text-purple-400 font-semibold">Fragment Storage</h4>
+                </div>
+                <p className="text-xs text-zinc-400 leading-relaxed">
+                  All data exists within your local fragment matrix. No external dependencies, 
+                  complete privacy and control over your resonance patterns.
+                </p>
+              </div>
             </div>
             
-            <div className="border border-rose-500 p-4 bg-rose-500/5">
-              <h4 className="text-rose-400 font-semibold mb-3">⚡ Fair Distribution</h4>
-              <p className="text-xs text-zinc-400 mb-3">
-                Weighted random selection algorithm ensures proportional chances based on ticket count. More tickets = higher probability of winning.
-              </p>
-              <p className="text-xs text-zinc-500">
-                The system uses cryptographic randomness to ensure unpredictable and fair outcomes for all participants.
-              </p>
+            <div className="group relative overflow-hidden border border-zinc-700/50 rounded-xl bg-gradient-to-br from-zinc-800/20 to-zinc-900/20 p-6 backdrop-blur-sm hover:border-rose-500/30 transition-all duration-300">
+              <div className="absolute inset-0 bg-gradient-to-br from-rose-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <div className="relative">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-8 h-8 rounded-lg bg-rose-500/20 flex items-center justify-center">
+                    <span className="text-rose-400 text-lg">🎯</span>
+                  </div>
+                  <h4 className="text-rose-400 font-semibold">Quantum Selection</h4>
+                </div>
+                <p className="text-xs text-zinc-400 leading-relaxed">
+                  The system operates beyond traditional probability. Winners emerge from the 
+                  collective resonance field, responding to frequency density patterns.
+                </p>
+              </div>
             </div>
           </div>
 
@@ -533,51 +547,81 @@ const PunkableRaffleSystem = () => {
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
-                className="mt-8 p-6 bg-zinc-900/50 border border-zinc-700 rounded-lg"
+                className="mt-8 p-8 bg-gradient-to-br from-zinc-900/80 to-zinc-800/80 border border-zinc-700/50 rounded-2xl backdrop-blur-sm"
               >
-                <h4 className="text-xl font-bold text-zinc-100 mb-4">{t.createNewRaffle}</h4>
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-zinc-300 mb-2">{t.raffleTitle} *</label>
+                <div className="text-center mb-6">
+                  <div className="inline-flex items-center gap-2 px-4 py-2 bg-pink-500/10 border border-pink-500/30 rounded-full text-pink-400 text-sm font-medium mb-4">
+                    <span className="w-2 h-2 bg-pink-500 rounded-full animate-pulse"></span>
+                    Initialize Fragment Resonance
+                  </div>
+                  <h4 className="text-2xl font-bold text-zinc-100">{t.createNewRaffle}</h4>
+                  <p className="text-zinc-400 text-sm mt-2">Configure your ethereal selection parameters</p>
+                </div>
+                
+                <div className="space-y-6">
+                  <div className="group">
+                    <label className="block text-sm font-medium text-zinc-300 mb-3 flex items-center gap-2">
+                      <span className="text-pink-400">⚡</span>
+                      {t.raffleTitle} <span className="text-red-400">*</span>
+                    </label>
                     <input
                       type="text"
                       value={newRaffleTitle}
                       onChange={(e) => setNewRaffleTitle(e.target.value)}
                       placeholder={t.raffleTitlePlaceholder}
-                      className="w-full px-3 py-2 bg-zinc-800 border border-zinc-600 rounded-md text-zinc-100 focus:border-pink-500 focus:ring-pink-500"
+                      className="w-full px-4 py-3 bg-zinc-800/50 border border-zinc-600/50 rounded-xl text-zinc-100 focus:border-pink-500 focus:ring-2 focus:ring-pink-500/20 transition-all duration-200 placeholder-zinc-500"
                     />
                   </div>
-                  <div>
-                    <label className="block text-sm font-medium text-zinc-300 mb-2">{t.description}</label>
+                  
+                  <div className="group">
+                    <label className="block text-sm font-medium text-zinc-300 mb-3 flex items-center gap-2">
+                      <span className="text-purple-400">📝</span>
+                      {t.description}
+                    </label>
                     <input
                       type="text"
                       value={newRaffleDescription}
                       onChange={(e) => setNewRaffleDescription(e.target.value)}
                       placeholder={t.descriptionPlaceholder}
-                      className="w-full px-3 py-2 bg-zinc-800 border border-zinc-600 rounded-md text-zinc-100 focus:border-pink-500 focus:ring-pink-500"
+                      className="w-full px-4 py-3 bg-zinc-800/50 border border-zinc-600/50 rounded-xl text-zinc-100 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-200 placeholder-zinc-500"
                     />
                   </div>
-                  <div>
-                    <label className="block text-sm font-medium text-zinc-300 mb-2">{t.imageUrl}</label>
+                  
+                  <div className="group">
+                    <label className="block text-sm font-medium text-zinc-300 mb-3 flex items-center gap-2">
+                      <span className="text-cyan-400">🖼️</span>
+                      {t.imageUrl}
+                    </label>
                     <input
                       type="url"
                       value={newRaffleImage}
                       onChange={(e) => setNewRaffleImage(e.target.value)}
                       placeholder={t.imageUrlPlaceholder}
-                      className="w-full px-3 py-2 bg-zinc-800 border border-zinc-600 rounded-md text-zinc-100 focus:border-pink-500 focus:ring-pink-500"
+                      className="w-full px-4 py-3 bg-zinc-800/50 border border-zinc-600/50 rounded-xl text-zinc-100 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all duration-200 placeholder-zinc-500"
                     />
                   </div>
-                  <div className="flex gap-3">
+                  
+                  <div className="flex gap-4 pt-4">
                     <button
                       onClick={handleCreateRaffle}
                       disabled={!newRaffleTitle.trim() || creating}
-                      className="bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-semibold px-6 py-2 rounded-lg shadow-md disabled:opacity-50"
+                      className="flex-1 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-semibold px-6 py-3 rounded-xl shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:scale-105 disabled:hover:scale-100"
                     >
-                      {creating ? t.creating : t.createRaffle}
+                      {creating ? (
+                        <span className="flex items-center justify-center gap-2">
+                          <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                          {t.creating}
+                        </span>
+                      ) : (
+                        <span className="flex items-center justify-center gap-2">
+                          <span>⚡</span>
+                          {t.createRaffle}
+                        </span>
+                      )}
                     </button>
                     <button
                       onClick={() => setShowCreateForm(false)}
-                      className="border border-zinc-600 text-zinc-300 hover:bg-zinc-800 px-6 py-2 rounded-lg"
+                      className="px-6 py-3 border border-zinc-600/50 text-zinc-300 hover:bg-zinc-800/50 rounded-xl transition-all duration-200 hover:border-zinc-500"
                     >
                       {t.cancel}
                     </button>
