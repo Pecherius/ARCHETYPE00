@@ -530,6 +530,13 @@ const PunkableRaffleSystem = () => {
     loadSavedRaffles()
   }, [])
 
+  // Clear duplicate UP address error when UP address changes
+  useEffect(() => {
+    if (duplicateUpAddressError) {
+      setDuplicateUpAddressError("")
+    }
+  }, [newParticipantUpAddress])
+
   // Update raffle history when participants, prizes, or winners change
   useEffect(() => {
     if (currentRaffle) {
@@ -1268,8 +1275,8 @@ const PunkableRaffleSystem = () => {
                 )}
                 <button
                   onClick={addParticipant}
-                  disabled={!!duplicateUpAddressError}
-                  className="w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-semibold py-2 rounded-lg text-sm disabled:opacity-50"
+                  disabled={!!duplicateUpAddressError || !newParticipantName.trim() || !newParticipantTickets.trim() || Number.parseInt(newParticipantTickets) <= 0}
+                  className="w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-semibold py-2 rounded-lg text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                     Add Participant
                 </button>
@@ -1426,7 +1433,8 @@ const PunkableRaffleSystem = () => {
                   <div className="flex gap-2">
                     <button
                       onClick={addPrize}
-                      className="flex-1 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-semibold py-2 rounded-lg text-sm"
+                      disabled={!newPrizeName.trim() || !newPrizeCount.trim() || Number.parseInt(newPrizeCount) <= 0}
+                      className="flex-1 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-semibold py-2 rounded-lg text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       Add Prize
                     </button>
