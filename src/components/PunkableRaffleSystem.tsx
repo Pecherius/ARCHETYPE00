@@ -4,15 +4,13 @@ import { useState, useEffect, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import confetti from "canvas-confetti"
 import { RaffleService, type Raffle, type Participant, type Prize, type Winner } from "../lib/raffle-service"
-import { useRaffleLanguage } from "../hooks/use-raffle-language"
+// Removed i18n system - using fixed English text
 import { ParticipantIcon } from "../lib/participant-icons"
 import { userStorageService, type SavedUser } from "../lib/user-storage"
 import { prizeStorageService, type SavedPrize } from "../lib/prize-storage"
 import { exportWinnersAsImage, exportWinnersAsJSON, type WinnerExport } from "../lib/export-winners"
-import RaffleLanguageSelector from "./RaffleLanguageSelector"
-import RaffleResultsScreen from "./RaffleResultsScreen"
-import SavedUsersManager from "./SavedUsersManager"
-import SavedPrizesManager from "./SavedPrizesManager"
+// Removed language selector import
+// Removed language-dependent components - using fixed English text
 
 const COLORS = [
   "#FF69B4", "#FFB6C1", "#FF1493", "#FFC0CB", "#FF91A4", "#FF6B9D", "#C71585", 
@@ -20,14 +18,14 @@ const COLORS = [
 ]
 
 const PunkableRaffleSystem = () => {
-  const { t } = useRaffleLanguage()
+  // Removed i18n hook - using fixed English text
   
   // Current raffle state
   const [currentRaffle, setCurrentRaffle] = useState<Raffle | null>(null)
   const [participants, setParticipants] = useState<Participant[]>([])
   const [prizes, setPrizes] = useState<Prize[]>([])
   const [winners, setWinners] = useState<Winner[]>([])
-  const [loading, setLoading] = useState(false)
+  const [loading] = useState(false)
 
   // View state
   const [currentView, setCurrentView] = useState<"selector" | "raffle" | "results">("selector")
@@ -71,29 +69,7 @@ const PunkableRaffleSystem = () => {
   const [savePrizeCount, setSavePrizeCount] = useState("")
   const [savePrizeImage, setSavePrizeImage] = useState("")
 
-  // Load raffle data
-  const loadRaffleData = async (raffleId: string) => {
-    setLoading(true)
-    try {
-      const [raffle, participantsData, prizesData, winnersData] = await Promise.all([
-        RaffleService.getRaffle(raffleId),
-        RaffleService.getParticipants(raffleId),
-        RaffleService.getPrizes(raffleId),
-        RaffleService.getWinners(raffleId),
-      ])
-
-      if (raffle) {
-        setCurrentRaffle(raffle)
-        setParticipants(participantsData)
-        setPrizes(prizesData)
-        setWinners(winnersData)
-      }
-    } catch (error) {
-      console.error("Error loading raffle data:", error)
-    } finally {
-      setLoading(false)
-    }
-  }
+  // Removed unused loadRaffleData function
 
 
   const handleCreateRaffle = async () => {
@@ -229,7 +205,7 @@ const PunkableRaffleSystem = () => {
 
     // Check for duplicate UP address
     if (newParticipantUpAddress.trim() && (await checkDuplicateUpAddress(newParticipantUpAddress))) {
-      setDuplicateUpAddressError(t.duplicateUpAddress)
+      setDuplicateUpAddressError("This UP address is already in use")
       return
     }
 
@@ -308,6 +284,8 @@ const PunkableRaffleSystem = () => {
     setCurrentView("selector")
   }
 
+  // Removed unused handleSelectSavedUser function
+
   // Handle saved user selection
   const handleSelectSavedUser = (user: SavedUser) => {
     setNewParticipantName(user.name)
@@ -322,7 +300,7 @@ const PunkableRaffleSystem = () => {
     // Check if user already exists
     const existingUser = userStorageService.userExists(saveUserName, saveUserUpAddress)
     if (existingUser.exists) {
-      alert(t.duplicateUpAddress)
+      alert("This UP address is already in use")
       return
     }
 
@@ -343,13 +321,15 @@ const PunkableRaffleSystem = () => {
     // Check if user already exists
     const existingUser = userStorageService.userExists(newParticipantName, newParticipantUpAddress)
     if (existingUser.exists) {
-      alert(t.duplicateUpAddress)
+      alert("This UP address is already in use")
       return
     }
 
     // Save user
     const color = COLORS[userStorageService.getAllUsers().length % COLORS.length]
     userStorageService.saveUser(newParticipantName, newParticipantUpAddress, color)
+    
+    alert("User saved successfully!")
   }
 
   // Handle saved prize selection
@@ -386,6 +366,8 @@ const PunkableRaffleSystem = () => {
 
     // Save prize
     prizeStorageService.savePrize(newPrizeName, "", count, "")
+    
+    alert("Prize saved successfully!")
   }
 
   // Handle export winners
@@ -429,28 +411,92 @@ const PunkableRaffleSystem = () => {
   // Show results screen
   if (currentView === "results" && currentRaffle) {
     return (
-      <RaffleResultsScreen
-        raffle={currentRaffle}
-        winners={winners}
-        onBackToEdit={() => setCurrentView("raffle")}
-        onViewWinners={() => setCurrentView("raffle")}
-        onRestartRaffle={async () => {
-          if (!currentRaffle || !confirm("¿Estás seguro de que quieres reiniciar este sorteo? Todos los ganadores serán eliminados.")) return
+      <div className="mx-auto max-w-6xl px-4 pb-12 sm:px-6">
+        <div className="border border-zinc-800 p-6 rounded-xl bg-gradient-to-br from-zinc-900/50 to-zinc-800/30">
+          {/* Header */}
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-green-500/20 to-emerald-500/20 border border-green-500/30 rounded-full text-green-400 text-sm font-medium mb-4">
+              <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+              RAFFLE COMPLETED
+            </div>
+            <h2 className="text-4xl font-bold text-zinc-100 mb-2 bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">
+              🏆 Raffle Results
+            </h2>
+            <p className="text-zinc-400 text-lg">{currentRaffle.title}</p>
+          </div>
 
-          // Clear all winners and reset prize counts
-          await RaffleService.clearWinners(currentRaffle.id)
-          
-          // Reset prizes to original counts
-          const currentPrizes = await RaffleService.getPrizes(currentRaffle.id)
-          for (const prize of currentPrizes) {
-            await RaffleService.updatePrizeRemaining(prize.id, prize.count)
-          }
+          {/* Winners Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            {winners.map((winner, index) => (
+              <motion.div
+                key={winner.id}
+                initial={{ opacity: 0, y: 20, scale: 0.9 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ delay: index * 0.1, duration: 0.5 }}
+                className="bg-gradient-to-br from-pink-500/10 to-purple-500/10 p-6 rounded-xl border border-pink-500/20 relative overflow-hidden"
+              >
+                <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-pink-500/20 to-purple-500/20 rounded-full -translate-y-10 translate-x-10"></div>
+                <div className="relative z-10">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-pink-500 to-purple-500 flex items-center justify-center text-white text-xl font-bold">
+                      {index + 1}
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold text-pink-400">{winner.participant_name}</h3>
+                      <p className="text-zinc-400 text-sm">Winner #{index + 1}</p>
+                    </div>
+                  </div>
+                  <div className="bg-zinc-800/50 p-4 rounded-lg border border-zinc-700">
+                    <p className="text-zinc-300 font-medium">🎁 {winner.prize_name}</p>
+                    {winner.up_address && (
+                      <p className="text-zinc-500 text-sm font-mono mt-2">
+                        UP: {winner.up_address.slice(0, 20)}...
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
 
-          // Reload data
-          await loadRaffleData(currentRaffle.id)
-          setCurrentView("raffle")
-        }}
-      />
+          {/* Export and Actions */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <div className="flex gap-3">
+              <button
+                onClick={() => handleExportWinners('image')}
+                className="px-6 py-3 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-semibold rounded-lg shadow-lg hover:shadow-pink-500/25 transition-all duration-200 hover:scale-105 flex items-center gap-2"
+              >
+                <span>📸</span>
+                Export as Image
+              </button>
+              <button
+                onClick={() => handleExportWinners('json')}
+                className="px-6 py-3 bg-gradient-to-r from-zinc-600 to-zinc-700 hover:from-zinc-700 hover:to-zinc-800 text-white font-semibold rounded-lg shadow-lg transition-all duration-200 hover:scale-105 flex items-center gap-2"
+              >
+                <span>📄</span>
+                Export as JSON
+              </button>
+            </div>
+            
+            <div className="flex gap-3">
+              <button
+                onClick={() => setCurrentView("raffle")}
+                className="px-6 py-3 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-semibold rounded-lg shadow-lg hover:shadow-blue-500/25 transition-all duration-200 hover:scale-105 flex items-center gap-2"
+              >
+                <span>✏️</span>
+                Back to Edit
+              </button>
+              <button
+                onClick={() => setCurrentView("selector")}
+                className="px-6 py-3 border border-zinc-600 text-zinc-300 hover:bg-zinc-800 hover:border-zinc-500 rounded-lg transition-all duration-200 flex items-center gap-2"
+              >
+                <span>🏠</span>
+                New Raffle
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     )
   }
 
@@ -461,7 +507,7 @@ const PunkableRaffleSystem = () => {
         <div className="border border-zinc-800 p-6 text-sm leading-relaxed text-zinc-300">
           {/* Language Selector - Inside the main container */}
           <div className="flex justify-end mb-6">
-            <RaffleLanguageSelector />
+            {/* Language selector removed */}
           </div>
           <div className="text-center mb-8">
             <div className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-500/30 rounded-full text-amber-400 text-sm font-medium mb-6">
@@ -469,7 +515,7 @@ const PunkableRaffleSystem = () => {
               ARCHETYPE FRAGMENT RAFFLE SYSTEM v2.1
             </div>
             <h3 className="text-4xl font-bold text-zinc-100 mb-6 bg-gradient-to-r from-amber-400 to-orange-400 bg-clip-text text-transparent">
-              {t.raffleSystem}
+              Punkable Ethereal Raffle System
             </h3>
             <div className="max-w-4xl mx-auto space-y-4">
               <p className="text-zinc-300 text-lg leading-relaxed">
@@ -555,17 +601,34 @@ const PunkableRaffleSystem = () => {
 
           <div className="text-center">
             <div className="inline-flex flex-col items-center gap-3">
-              <button
+              <motion.button
                 onClick={() => setShowCreateForm(true)}
-                className="group relative px-10 py-5 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-black font-bold text-xl rounded-xl transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-amber-500/25 border-2 border-amber-400/50"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="group relative px-12 py-6 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-black font-bold text-2xl rounded-2xl transition-all duration-300 shadow-2xl hover:shadow-amber-500/30 border-2 border-amber-400/50 overflow-hidden"
               >
-                <div className="absolute inset-0 bg-gradient-to-r from-amber-400/20 to-orange-400/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                <div className="relative flex items-center gap-3">
-                  <span className="text-2xl">⚡</span>
-                  {t.createNewRaffle}
-                  <span className="text-2xl">⚡</span>
+                <div className="absolute inset-0 bg-gradient-to-r from-amber-400/20 to-orange-400/20 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+                <div className="relative flex items-center gap-4">
+                  <motion.span 
+                    className="text-3xl"
+                    animate={{ rotate: [0, 10, -10, 0] }}
+                    transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
+                  >
+                    ⚡
+                  </motion.span>
+                  <span className="bg-gradient-to-r from-black to-gray-800 bg-clip-text text-transparent">
+                    Create New Raffle
+                  </span>
+                  <motion.span 
+                    className="text-3xl"
+                    animate={{ rotate: [0, -10, 10, 0] }}
+                    transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
+                  >
+                    ⚡
+                  </motion.span>
                 </div>
-              </button>
+              </motion.button>
               <p className="text-zinc-400 text-sm max-w-md">
                 Click to unleash chaos and create your first epic raffle. 
                 <span className="text-amber-400 font-semibold"> No experience required—just pure, unadulterated fun.</span>
@@ -581,83 +644,135 @@ const PunkableRaffleSystem = () => {
                 exit={{ opacity: 0, y: -20 }}
                 className="mt-8 p-8 bg-gradient-to-br from-zinc-900/80 to-zinc-800/80 border border-zinc-700/50 rounded-2xl backdrop-blur-sm"
               >
-                <div className="text-center mb-6">
-                  <div className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-500/30 rounded-full text-amber-400 text-sm font-medium mb-4">
+                <div className="text-center mb-8">
+                  <div className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-500/30 rounded-full text-amber-400 text-sm font-medium mb-6">
                     <span className="w-2 h-2 bg-amber-500 rounded-full animate-pulse"></span>
                     FRAGMENT RESONANCE INITIALIZATION
                   </div>
-                  <h4 className="text-3xl font-bold text-zinc-100 mb-2 bg-gradient-to-r from-amber-400 to-orange-400 bg-clip-text text-transparent">{t.createNewRaffle}</h4>
-                  <p className="text-zinc-400 text-sm">Configure your fragment resonance parameters for optimal selection algorithms</p>
+                  <h4 className="text-4xl font-bold text-zinc-100 mb-3 bg-gradient-to-r from-amber-400 to-orange-400 bg-clip-text text-transparent">
+                    🎲 Create New Raffle
+                  </h4>
+                  <p className="text-zinc-400 text-base max-w-2xl mx-auto">
+                    Configure your fragment resonance parameters for optimal selection algorithms. 
+                    <span className="text-amber-400 font-semibold"> Every detail matters in the digital consciousness.</span>
+                  </p>
                 </div>
                 
-                <div className="space-y-6">
-                  <div className="group">
-                    <label className="flex text-sm font-medium text-zinc-300 mb-3 items-center gap-2">
-                      <span className="text-amber-400">📝</span>
-                      {t.raffleTitle} <span className="text-red-400">*</span>
+                <div className="space-y-8">
+                  <motion.div 
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.1 }}
+                    className="group"
+                  >
+                    <label className="flex text-sm font-medium text-zinc-300 mb-4 items-center gap-2">
+                      <span className="text-amber-400 text-lg">📝</span>
+                      Raffle Title <span className="text-red-400">*</span>
                     </label>
-                    <input
-                      type="text"
-                      value={newRaffleTitle}
-                      onChange={(e) => setNewRaffleTitle(e.target.value)}
-                      placeholder={t.raffleTitlePlaceholder}
-                      className="w-full px-4 py-3 bg-zinc-800/50 border border-amber-500/30 rounded-xl text-zinc-100 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all duration-200 placeholder-zinc-500"
-                    />
-                  </div>
+                    <div className="relative">
+                      <input
+                        type="text"
+                        value={newRaffleTitle}
+                        onChange={(e) => setNewRaffleTitle(e.target.value)}
+                        placeholder="Enter raffle title"
+                        className="w-full px-6 py-4 bg-zinc-800/50 border border-amber-500/30 rounded-xl text-zinc-100 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all duration-200 placeholder-zinc-500 text-lg"
+                      />
+                      {newRaffleTitle.trim() && (
+                        <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-green-400">
+                          ✓
+                        </div>
+                      )}
+                    </div>
+                  </motion.div>
                   
-                  <div className="group">
-                    <label className="flex text-sm font-medium text-zinc-300 mb-3 items-center gap-2">
-                      <span className="text-purple-400">📝</span>
-                      {t.description}
+                  <motion.div 
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.2 }}
+                    className="group"
+                  >
+                    <label className="flex text-sm font-medium text-zinc-300 mb-4 items-center gap-2">
+                      <span className="text-purple-400 text-lg">📝</span>
+                      Description
                     </label>
-                    <input
-                      type="text"
+                    <textarea
                       value={newRaffleDescription}
                       onChange={(e) => setNewRaffleDescription(e.target.value)}
-                      placeholder={t.descriptionPlaceholder}
-                      className="w-full px-4 py-3 bg-zinc-800/50 border border-zinc-600/50 rounded-xl text-zinc-100 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-200 placeholder-zinc-500"
+                      placeholder="Enter raffle description (optional)"
+                      rows={3}
+                      className="w-full px-6 py-4 bg-zinc-800/50 border border-zinc-600/50 rounded-xl text-zinc-100 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-200 placeholder-zinc-500 text-lg resize-none"
                     />
-                  </div>
+                  </motion.div>
                   
-                  <div className="group">
-                    <label className="flex text-sm font-medium text-zinc-300 mb-3 items-center gap-2">
-                      <span className="text-cyan-400">🖼️</span>
-                      {t.imageUrl}
+                  <motion.div 
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.3 }}
+                    className="group"
+                  >
+                    <label className="flex text-sm font-medium text-zinc-300 mb-4 items-center gap-2">
+                      <span className="text-cyan-400 text-lg">🖼️</span>
+                      Image URL
                     </label>
-                    <input
-                      type="url"
-                      value={newRaffleImage}
-                      onChange={(e) => setNewRaffleImage(e.target.value)}
-                      placeholder={t.imageUrlPlaceholder}
-                      className="w-full px-4 py-3 bg-zinc-800/50 border border-zinc-600/50 rounded-xl text-zinc-100 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all duration-200 placeholder-zinc-500"
-                    />
-                  </div>
+                    <div className="space-y-3">
+                      <input
+                        type="url"
+                        value={newRaffleImage}
+                        onChange={(e) => setNewRaffleImage(e.target.value)}
+                        placeholder="https://example.com/image.jpg"
+                        className="w-full px-6 py-4 bg-zinc-800/50 border border-zinc-600/50 rounded-xl text-zinc-100 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all duration-200 placeholder-zinc-500 text-lg"
+                      />
+                      {newRaffleImage.trim() && (
+                        <div className="bg-zinc-800/30 p-4 rounded-lg border border-zinc-700">
+                          <p className="text-zinc-400 text-sm mb-2">Preview:</p>
+                          <img 
+                            src={newRaffleImage} 
+                            alt="Raffle preview" 
+                            className="w-full h-32 object-cover rounded-lg"
+                            onError={(e) => {
+                              e.currentTarget.style.display = 'none'
+                            }}
+                          />
+                        </div>
+                      )}
+                    </div>
+                  </motion.div>
                   
-                  <div className="flex gap-4 pt-4">
-                    <button
+                  <motion.div 
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.4 }}
+                    className="flex gap-6 pt-6"
+                  >
+                    <motion.button
                       onClick={handleCreateRaffle}
                       disabled={!newRaffleTitle.trim() || creating}
-                      className="flex-1 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-semibold px-6 py-3 rounded-xl shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:scale-105 disabled:hover:scale-100"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      className="flex-1 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-black font-bold px-8 py-4 rounded-xl shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:shadow-amber-500/25 text-lg"
                     >
                       {creating ? (
-                        <span className="flex items-center justify-center gap-2">
-                          <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                          {t.creating}
+                        <span className="flex items-center justify-center gap-3">
+                          <div className="w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin"></div>
+                          Creating...
                         </span>
                       ) : (
-                        <span className="flex items-center justify-center gap-2">
-                          <span>⚡</span>
-                          {t.createRaffle}
+                        <span className="flex items-center justify-center gap-3">
+                          <span className="text-xl">⚡</span>
+                          Create Raffle
                         </span>
                       )}
-                    </button>
-                    <button
+                    </motion.button>
+                    <motion.button
                       onClick={() => setShowCreateForm(false)}
-                      className="px-6 py-3 border border-zinc-600/50 text-zinc-300 hover:bg-zinc-800/50 rounded-xl transition-all duration-200 hover:border-zinc-500"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      className="px-8 py-4 border border-zinc-600 text-zinc-300 hover:bg-zinc-800 hover:border-zinc-500 rounded-xl transition-all duration-200 text-lg flex items-center gap-2"
                     >
-                      {t.cancel}
-                    </button>
-                  </div>
+                      <span>✕</span>
+                      Cancel
+                    </motion.button>
+                  </motion.div>
                 </div>
               </motion.div>
             )}
@@ -672,7 +787,7 @@ const PunkableRaffleSystem = () => {
       <section className="mx-auto max-w-6xl px-4 pb-12 sm:px-6">
         <div className="border border-zinc-800 p-6 text-center">
           <div className="w-16 h-16 border-4 border-pink-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-zinc-400 text-lg">{t.loadingRaffle}</p>
+          <p className="text-zinc-400 text-lg">Loading raffle...</p>
         </div>
       </section>
     )
@@ -684,8 +799,8 @@ const PunkableRaffleSystem = () => {
   return (
     <section className="mx-auto max-w-6xl px-4 pb-12 sm:px-6">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold tracking-wide text-zinc-100">{t.raffleSystem}</h2>
-        <RaffleLanguageSelector />
+        <h2 className="text-2xl font-bold tracking-wide text-zinc-100">Punkable Ethereal Raffle System</h2>
+        {/* Language selector removed - using fixed English text */}
       </div>
       <div className="border border-zinc-800 p-6 text-sm leading-relaxed text-zinc-300">
         {/* Header */}
@@ -704,7 +819,7 @@ const PunkableRaffleSystem = () => {
               <h3 className="text-3xl font-black bg-gradient-to-r from-pink-500 via-rose-500 to-purple-600 bg-clip-text text-transparent">
                 {currentRaffle?.title}
               </h3>
-              <p className="text-zinc-400">{currentRaffle?.description || t.defaultDescription}</p>
+              <p className="text-zinc-400">{currentRaffle?.description || "A fair and transparent raffle system"}</p>
             </div>
           </div>
           <div className="flex items-center gap-3">
@@ -714,14 +829,14 @@ const PunkableRaffleSystem = () => {
                 className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-semibold px-4 py-2 rounded-lg shadow-md flex items-center gap-2"
               >
                 <span className="text-lg">🏆</span>
-                {t.resultsViewWinners}
+                View Winners
               </button>
             )}
             <button
               onClick={goBackToRaffles}
               className="border border-zinc-600 text-zinc-300 hover:bg-zinc-800 px-4 py-2 rounded-lg"
             >
-              ← {t.backToRaffles}
+              ← Back to Raffles
             </button>
           </div>
         </div>
@@ -747,7 +862,7 @@ const PunkableRaffleSystem = () => {
                   />
                 </div>
                 <div>
-                    <h4 className="text-xl font-bold text-pink-400">🎉 {latestWinner.participant.name} {t.wins}!</h4>
+                    <h4 className="text-xl font-bold text-pink-400">🎉 {latestWinner.participant.name} wins!</h4>
                     <p className="text-pink-200 font-semibold">{latestWinner.prize.name}</p>
                 </div>
               </div>
@@ -760,7 +875,7 @@ const PunkableRaffleSystem = () => {
           {/* Participants Column */}
           <div className="space-y-4">
             <h4 className="text-lg font-bold text-zinc-100 flex items-center gap-2">
-              <span className="text-pink-500">👥</span> {t.participants} ({participants.length})
+              <span className="text-pink-500">👥</span> Participants ({participants.length})
             </h4>
             <div className="space-y-2 lg:space-y-3 max-h-64 lg:max-h-96 overflow-y-auto border border-zinc-700 rounded-lg p-2 lg:p-3 bg-zinc-800/30">
               {participants.map((participant) => (
@@ -809,35 +924,35 @@ const PunkableRaffleSystem = () => {
             {/* Add Participant Form */}
             <div className="bg-zinc-800/30 p-4 rounded-lg border border-zinc-700">
               <div className="flex items-center justify-between mb-3">
-                <h5 className="text-sm font-semibold text-zinc-300">{t.addNewParticipant}</h5>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => setShowSavedUsers(true)}
-                    className="px-2 py-1 bg-zinc-700 hover:bg-zinc-600 text-zinc-300 text-xs rounded transition-colors"
-                  >
-                    {t.fromSaved}
-                  </button>
-                  <button
-                    onClick={() => setShowSaveUserDialog(true)}
-                    className="px-2 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded transition-colors"
-                  >
-                    {t.saveUser}
-                  </button>
-                </div>
+                <h5 className="text-sm font-semibold text-zinc-300">Add New Participant</h5>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => setShowSavedUsers(true)}
+                      className="px-2 py-1 bg-zinc-700 hover:bg-zinc-600 text-zinc-300 text-xs rounded transition-colors"
+                    >
+                      From Saved
+                    </button>
+                    <button
+                      onClick={() => setShowSaveUserDialog(true)}
+                      className="px-2 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded transition-colors"
+                    >
+                      Save User
+                    </button>
+                  </div>
               </div>
               <div className="space-y-3">
                 <input
                   type="text"
                   value={newParticipantName}
                   onChange={(e) => setNewParticipantName(e.target.value)}
-                  placeholder={t.enterName}
+                  placeholder="Enter name"
                   className="w-full px-3 py-2 bg-zinc-700 border border-zinc-600 rounded-md text-zinc-100 text-sm"
                 />
                 <input
                   type="number"
                   value={newParticipantTickets}
                   onChange={(e) => setNewParticipantTickets(e.target.value)}
-                  placeholder={t.numberOfTickets}
+                  placeholder="Number of tickets"
                   min="1"
                   className="w-full px-3 py-2 bg-zinc-700 border border-zinc-600 rounded-md text-zinc-100 text-sm"
                 />
@@ -845,7 +960,7 @@ const PunkableRaffleSystem = () => {
                   type="text"
                   value={newParticipantUpAddress}
                   onChange={(e) => setNewParticipantUpAddress(e.target.value)}
-                  placeholder={t.upAddressOptional}
+                  placeholder="UP Address (optional)"
                   className="w-full px-3 py-2 bg-zinc-700 border border-zinc-600 rounded-md text-zinc-100 text-sm"
                 />
                 {duplicateUpAddressError && (
@@ -856,15 +971,15 @@ const PunkableRaffleSystem = () => {
                   disabled={!!duplicateUpAddressError}
                   className="w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-semibold py-2 rounded-lg text-sm disabled:opacity-50"
                 >
-                  {t.addParticipant}
+                    Add Participant
                 </button>
                 {newParticipantName.trim() && newParticipantUpAddress.trim() && (
                   <button
                     onClick={handleQuickSaveUser}
                     className="w-full bg-green-600 hover:bg-green-700 text-white text-sm rounded-lg transition-colors py-2"
-                    title={t.saveUserDescription}
+                    title="Save user for quick access"
                   >
-                    💾 {t.saveUser}
+                    💾 Save User
                   </button>
                 )}
               </div>
@@ -906,8 +1021,8 @@ const PunkableRaffleSystem = () => {
                     <div className="w-24 h-24 rounded-full mx-auto mb-4 bg-gradient-to-br from-pink-500/20 to-purple-500/20 flex items-center justify-center">
                       <span className="text-3xl">🎲</span>
                     </div>
-                    <h3 className="text-xl font-bold text-zinc-400 mb-2">{t.readyToDraw}</h3>
-                    <p className="text-zinc-500">{t.clickToSelect}</p>
+                    <h3 className="text-xl font-bold text-zinc-400 mb-2">Ready to Draw!</h3>
+                    <p className="text-zinc-500">Click to select winner</p>
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -920,10 +1035,10 @@ const PunkableRaffleSystem = () => {
                 {selecting ? (
                   <span className="flex items-center gap-3">
                     <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    {t.selecting}
+                    Selecting...
                   </span>
                 ) : (
-                  t.selectWinner
+                  "Select Winner"
                 )}
               </button>
             </div>
@@ -934,7 +1049,7 @@ const PunkableRaffleSystem = () => {
             {/* Prizes */}
             <div>
               <h4 className="text-lg font-bold text-zinc-100 flex items-center gap-2 mb-4">
-                <span className="text-pink-500">🏆</span> {t.prizes} ({remainingPrizeCount})
+                <span className="text-pink-500">🏆</span> Prizes ({remainingPrizeCount})
               </h4>
               <div className="space-y-2 lg:space-y-3 max-h-40 lg:max-h-48 overflow-y-auto border border-zinc-700 rounded-lg p-2 lg:p-3 bg-zinc-800/30">
                 {prizes.map((prize) => (
@@ -963,19 +1078,19 @@ const PunkableRaffleSystem = () => {
               {/* Add Prize Form */}
               <div className="mt-4 bg-zinc-800/30 p-4 rounded-lg border border-zinc-700">
                 <div className="flex items-center justify-between mb-3">
-                  <h5 className="text-sm font-semibold text-zinc-300">{t.addNewPrize}</h5>
+                  <h5 className="text-sm font-semibold text-zinc-300">Add New Prize</h5>
                   <div className="flex gap-2">
                     <button
                       onClick={() => setShowSavedPrizes(true)}
                       className="px-2 py-1 bg-zinc-700 hover:bg-zinc-600 text-zinc-300 text-xs rounded transition-colors"
                     >
-                      {t.fromSavedPrizes}
+                      From Saved
                     </button>
                     <button
                       onClick={() => setShowSavePrizeDialog(true)}
                       className="px-2 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded transition-colors"
                     >
-                      {t.savePrize}
+                      Save Prize
                     </button>
                   </div>
                 </div>
@@ -984,14 +1099,14 @@ const PunkableRaffleSystem = () => {
                     type="text"
                     value={newPrizeName}
                     onChange={(e) => setNewPrizeName(e.target.value)}
-                    placeholder={t.prizeName}
+                    placeholder="Prize name"
                     className="w-full px-3 py-2 bg-zinc-700 border border-zinc-600 rounded-md text-zinc-100 text-sm"
                   />
                   <input
                     type="number"
                     value={newPrizeCount}
                     onChange={(e) => setNewPrizeCount(e.target.value)}
-                    placeholder={t.quantity}
+                    placeholder="Quantity"
                     min="1"
                     className="w-full px-3 py-2 bg-zinc-700 border border-zinc-600 rounded-md text-zinc-100 text-sm"
                   />
@@ -1000,7 +1115,7 @@ const PunkableRaffleSystem = () => {
                       onClick={addPrize}
                       className="flex-1 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-semibold py-2 rounded-lg text-sm"
                     >
-                      {t.addPrize}
+                      Add Prize
                     </button>
                     {newPrizeName.trim() && newPrizeCount.trim() && (
                       <button
@@ -1020,7 +1135,7 @@ const PunkableRaffleSystem = () => {
             <div>
               <div className="flex items-center justify-between mb-4">
                 <h4 className="text-lg font-bold text-zinc-100 flex items-center gap-2">
-                  <span className="text-pink-500">🎉</span> {t.winners} ({winners.length})
+                  <span className="text-pink-500">🎉</span> Winners ({winners.length})
                 </h4>
                 {winners.length > 0 && (
                   <div className="flex flex-col sm:flex-row gap-2">
@@ -1028,13 +1143,13 @@ const PunkableRaffleSystem = () => {
                       onClick={() => handleExportWinners('image')}
                       className="px-2 lg:px-3 py-1 bg-pink-600 hover:bg-pink-700 text-white text-xs rounded transition-colors"
                     >
-                      {t.exportAsImage}
+                      Export as Image
                     </button>
                     <button
                       onClick={() => handleExportWinners('json')}
                       className="px-2 lg:px-3 py-1 bg-zinc-600 hover:bg-zinc-700 text-white text-xs rounded transition-colors"
                     >
-                      {t.exportAsJSON}
+                      Export as JSON
                     </button>
                   </div>
                 )}
@@ -1043,7 +1158,7 @@ const PunkableRaffleSystem = () => {
                 {winners.length === 0 ? (
                   <div className="text-center text-zinc-500 py-8">
                     <span className="text-3xl mb-2 block">🏆</span>
-                    <p className="text-sm">{t.winnersWillAppear}</p>
+                    <p className="text-sm">Winners will appear here</p>
                   </div>
                 ) : (
                   winners.map((win) => (
@@ -1080,18 +1195,133 @@ const PunkableRaffleSystem = () => {
       </div>
 
       {/* Saved Users Manager */}
-      <SavedUsersManager
-        isOpen={showSavedUsers}
-        onSelectUser={handleSelectSavedUser}
-        onClose={() => setShowSavedUsers(false)}
-      />
+      <AnimatePresence>
+        {showSavedUsers && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50"
+            onClick={() => setShowSavedUsers(false)}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.8, y: 20 }}
+              className="bg-zinc-900 rounded-2xl p-6 shadow-2xl max-w-2xl w-full mx-4 max-h-[80vh] overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-xl font-bold text-zinc-100">Saved Users</h3>
+                <button
+                  onClick={() => setShowSavedUsers(false)}
+                  className="text-zinc-400 hover:text-zinc-200"
+                >
+                  ✕
+                </button>
+              </div>
+              
+              <div className="space-y-2 max-h-96 overflow-y-auto">
+                {userStorageService.getAllUsers().map((user) => (
+                  <div
+                    key={user.id}
+                    className="flex items-center justify-between p-3 bg-zinc-800 rounded-lg border border-zinc-700"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div
+                        className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold"
+                        style={{ backgroundColor: user.color }}
+                      >
+                        {user.name.charAt(0).toUpperCase()}
+                      </div>
+                      <div>
+                        <div className="text-zinc-100 font-medium">{user.name}</div>
+                        <div className="text-zinc-400 text-sm font-mono">
+                          {user.up_address.slice(0, 20)}...
+                        </div>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => handleSelectSavedUser(user)}
+                      className="px-3 py-1 bg-pink-600 hover:bg-pink-700 text-white text-sm rounded transition-colors"
+                    >
+                      Select
+                    </button>
+                  </div>
+                ))}
+                {userStorageService.getAllUsers().length === 0 && (
+                  <div className="text-center text-zinc-400 py-8">
+                    No saved users yet
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Saved Prizes Manager */}
-      <SavedPrizesManager
-        isOpen={showSavedPrizes}
-        onSelectPrize={handleSelectSavedPrize}
-        onClose={() => setShowSavedPrizes(false)}
-      />
+      <AnimatePresence>
+        {showSavedPrizes && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50"
+            onClick={() => setShowSavedPrizes(false)}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.8, y: 20 }}
+              className="bg-zinc-900 rounded-2xl p-6 shadow-2xl max-w-2xl w-full mx-4 max-h-[80vh] overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-xl font-bold text-zinc-100">Saved Prizes</h3>
+                <button
+                  onClick={() => setShowSavedPrizes(false)}
+                  className="text-zinc-400 hover:text-zinc-200"
+                >
+                  ✕
+                </button>
+              </div>
+              
+              <div className="space-y-2 max-h-96 overflow-y-auto">
+                {prizeStorageService.getAllPrizes().map((prize) => (
+                  <div
+                    key={prize.id}
+                    className="flex items-center justify-between p-3 bg-zinc-800 rounded-lg border border-zinc-700"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-full bg-purple-500 flex items-center justify-center text-white text-sm">
+                        🎁
+                      </div>
+                      <div>
+                        <div className="text-zinc-100 font-medium">{prize.name}</div>
+                        <div className="text-zinc-400 text-sm">
+                          Quantity: {prize.count}
+                        </div>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => handleSelectSavedPrize(prize)}
+                      className="px-3 py-1 bg-pink-600 hover:bg-pink-700 text-white text-sm rounded transition-colors"
+                    >
+                      Select
+                    </button>
+                  </div>
+                ))}
+                {prizeStorageService.getAllPrizes().length === 0 && (
+                  <div className="text-center text-zinc-400 py-8">
+                    No saved prizes yet
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Save User Dialog */}
       <AnimatePresence>
@@ -1111,28 +1341,28 @@ const PunkableRaffleSystem = () => {
               onClick={(e) => e.stopPropagation()}
             >
               <div className="text-center mb-6">
-                <h3 className="text-xl font-bold text-zinc-100 mb-2">{t.saveUser}</h3>
-                <p className="text-sm text-zinc-400">{t.saveUserDescription}</p>
+                <h3 className="text-xl font-bold text-zinc-100 mb-2">Save User</h3>
+                <p className="text-sm text-zinc-400">Save this user for quick access in future raffles</p>
               </div>
 
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-zinc-300 mb-2">{t.enterName}</label>
+                  <label className="block text-sm font-medium text-zinc-300 mb-2">Name</label>
                   <input
                     type="text"
                     value={saveUserName}
                     onChange={(e) => setSaveUserName(e.target.value)}
-                    placeholder={t.enterName}
+                    placeholder="Enter name"
                     className="w-full px-3 py-2 bg-zinc-800 border border-zinc-600 rounded-md text-zinc-100 focus:border-pink-500 focus:ring-pink-500"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-zinc-300 mb-2">{t.upAddress}</label>
+                  <label className="block text-sm font-medium text-zinc-300 mb-2">UP Address</label>
                   <input
                     type="text"
                     value={saveUserUpAddress}
                     onChange={(e) => setSaveUserUpAddress(e.target.value)}
-                    placeholder={t.upAddressOptional}
+                    placeholder="UP Address (optional)"
                     className="w-full px-3 py-2 bg-zinc-800 border border-zinc-600 rounded-md text-zinc-100 focus:border-pink-500 focus:ring-pink-500"
                   />
                 </div>
@@ -1144,13 +1374,13 @@ const PunkableRaffleSystem = () => {
                   disabled={!saveUserName.trim() || !saveUserUpAddress.trim()}
                   className="flex-1 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-semibold py-2 rounded-lg shadow-md disabled:opacity-50"
                 >
-                  {t.saveUser}
+                  Save User
                 </button>
                 <button
                   onClick={() => setShowSaveUserDialog(false)}
                   className="px-6 py-2 border border-zinc-600 text-zinc-300 hover:bg-zinc-800 rounded-lg"
                 >
-                  {t.cancel}
+                  Cancel
                 </button>
               </div>
             </motion.div>
@@ -1176,18 +1406,18 @@ const PunkableRaffleSystem = () => {
               onClick={(e) => e.stopPropagation()}
             >
               <div className="text-center mb-6">
-                <h3 className="text-xl font-bold text-zinc-100 mb-2">{t.savePrize}</h3>
+                <h3 className="text-xl font-bold text-zinc-100 mb-2">Save Prize</h3>
                 <p className="text-sm text-zinc-400">Save this prize for quick access in future raffles</p>
               </div>
 
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-zinc-300 mb-2">{t.prizeName}</label>
+                  <label className="block text-sm font-medium text-zinc-300 mb-2">Prize Name</label>
                   <input
                     type="text"
                     value={savePrizeName}
                     onChange={(e) => setSavePrizeName(e.target.value)}
-                    placeholder={t.prizeName}
+                    placeholder="Prize name"
                     className="w-full px-3 py-2 bg-zinc-800 border border-zinc-600 rounded-md text-zinc-100 focus:border-pink-500 focus:ring-pink-500"
                   />
                 </div>
@@ -1202,12 +1432,12 @@ const PunkableRaffleSystem = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-zinc-300 mb-2">{t.quantity}</label>
+                  <label className="block text-sm font-medium text-zinc-300 mb-2">Quantity</label>
                   <input
                     type="number"
                     value={savePrizeCount}
                     onChange={(e) => setSavePrizeCount(e.target.value)}
-                    placeholder={t.quantity}
+                    placeholder="Quantity"
                     min="1"
                     className="w-full px-3 py-2 bg-zinc-800 border border-zinc-600 rounded-md text-zinc-100 focus:border-pink-500 focus:ring-pink-500"
                   />
@@ -1230,13 +1460,13 @@ const PunkableRaffleSystem = () => {
                   disabled={!savePrizeName.trim() || !savePrizeCount.trim()}
                   className="flex-1 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-semibold py-2 rounded-lg shadow-md disabled:opacity-50"
                 >
-                  {t.savePrize}
+                  Save Prize
                 </button>
                 <button
                   onClick={() => setShowSavePrizeDialog(false)}
                   className="px-6 py-2 border border-zinc-600 text-zinc-300 hover:bg-zinc-800 rounded-lg"
                 >
-                  {t.cancel}
+                  Cancel
                 </button>
               </div>
             </motion.div>
