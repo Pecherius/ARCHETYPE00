@@ -2163,332 +2163,199 @@ export default function ArchetypeSite(){
             
             {matrixChatOpen && (
               <div className="space-y-4">
-                {/* Holographic Face */}
+                {/* Holographic Face - 3D Compatible */}
                 <div className="flex justify-center mb-4">
-                  <motion.div 
-                    className="relative w-40 h-40 border-2 border-cyan-400 rounded-full bg-gradient-to-br from-cyan-500/20 to-blue-500/20 flex items-center justify-center overflow-hidden"
-                    animate={{ 
-                      scale: [1, 1.05, 1],
-                      rotate: [0, 1, -1, 0],
-                      boxShadow: [
-                        "0 0 20px rgba(34, 211, 238, 0.3)",
-                        "0 0 40px rgba(34, 211, 238, 0.6)",
-                        "0 0 20px rgba(34, 211, 238, 0.3)"
-                      ]
-                    }}
-                    transition={{ 
-                      duration: 4, 
-                      repeat: Infinity, 
-                      ease: "easeInOut" 
+                  <div 
+                    className="relative w-48 h-48"
+                    style={{
+                      perspective: '1000px',
+                      transformStyle: 'preserve-3d'
                     }}
                   >
-                    {/* Holographic Woman Animation */}
                     <motion.div 
                       className="relative w-full h-full"
+                      style={{
+                        transformStyle: 'preserve-3d',
+                        transform: 'rotateX(15deg) rotateY(0deg)'
+                      }}
                       animate={{ 
-                        opacity: [0.7, 1, 0.7],
-                        scale: [0.95, 1, 0.95]
+                        rotateY: [0, 360],
+                        scale: [1, 1.05, 1]
                       }}
                       transition={{ 
-                        duration: 3, 
+                        duration: 8, 
                         repeat: Infinity, 
-                        ease: "easeInOut" 
+                        ease: "linear" 
                       }}
                     >
-                      {/* Face outline - more oval */}
-                      <motion.div 
-                        className="absolute inset-6 border-2 border-cyan-300 rounded-full opacity-60" 
-                        style={{borderRadius: '50% 50% 60% 40%'}}
-                        animate={{ 
-                          borderColor: ["#67e8f9", "#22d3ee", "#06b6d4", "#67e8f9"],
-                          opacity: [0.4, 0.8, 0.4]
+                      {/* Main Holographic Container */}
+                      <div 
+                        className="relative w-full h-full border-2 border-cyan-400 rounded-full bg-gradient-to-br from-cyan-500/20 to-blue-500/20 flex items-center justify-center overflow-hidden"
+                        style={{
+                          boxShadow: `
+                            0 0 30px rgba(34, 211, 238, 0.4),
+                            0 0 60px rgba(34, 211, 238, 0.2),
+                            inset 0 0 20px rgba(34, 211, 238, 0.1)
+                          `,
+                          transform: 'translateZ(20px)'
                         }}
-                        transition={{ 
-                          duration: 2, 
-                          repeat: Infinity, 
-                          ease: "easeInOut" 
-                        }}
-                      ></motion.div>
+                      >
+                        {/* Face Structure - 3D Layers */}
+                        <div className="relative w-full h-full">
+                          {/* Face outline - 3D depth */}
+                          <div 
+                            className="absolute inset-8 border-2 border-cyan-300 rounded-full opacity-70" 
+                            style={{
+                              borderRadius: '50% 50% 60% 40%',
+                              transform: 'translateZ(10px)',
+                              boxShadow: '0 0 15px rgba(103, 232, 249, 0.5)'
+                            }}
+                          ></div>
+                          
+                          {/* Hair - 3D positioned */}
+                          <div 
+                            className="absolute top-2 left-1/2 transform -translate-x-1/2 w-24 h-14 border-2 border-cyan-300 rounded-t-full opacity-60" 
+                            style={{
+                              borderRadius: '50% 50% 0% 0%',
+                              transform: 'translateZ(15px)',
+                              boxShadow: '0 -5px 10px rgba(103, 232, 249, 0.3)'
+                            }}
+                          ></div>
+                          
+                          {/* Eyes - 3D positioned */}
+                          <div 
+                            className="absolute top-10 left-10 w-4 h-4 bg-cyan-400 rounded-full"
+                            style={{
+                              transform: 'translateZ(20px)',
+                              boxShadow: '0 0 10px rgba(34, 211, 238, 0.8)'
+                            }}
+                          ></div>
+                          <div 
+                            className="absolute top-10 right-10 w-4 h-4 bg-cyan-400 rounded-full"
+                            style={{
+                              transform: 'translateZ(20px)',
+                              boxShadow: '0 0 10px rgba(34, 211, 238, 0.8)'
+                            }}
+                          ></div>
+                          
+                          {/* Eye highlights - 3D */}
+                          <div 
+                            className="absolute top-10 left-10 w-1.5 h-1.5 bg-white rounded-full"
+                            style={{ transform: 'translateZ(25px)' }}
+                          ></div>
+                          <div 
+                            className="absolute top-10 right-10 w-1.5 h-1.5 bg-white rounded-full"
+                            style={{ transform: 'translateZ(25px)' }}
+                          ></div>
+                          
+                          {/* Eyebrows - 3D */}
+                          <div 
+                            className="absolute top-7 left-8 w-5 h-1 border-t-2 border-cyan-300 rounded-full"
+                            style={{ transform: 'translateZ(18px)' }}
+                          ></div>
+                          <div 
+                            className="absolute top-7 right-8 w-5 h-1 border-t-2 border-cyan-300 rounded-full"
+                            style={{ transform: 'translateZ(18px)' }}
+                          ></div>
+                          
+                          {/* Nose - 3D depth */}
+                          <div 
+                            className="absolute top-14 left-1/2 transform -translate-x-1/2 w-3 h-4 border-2 border-cyan-300 rounded-full opacity-70"
+                            style={{ 
+                              transform: 'translateZ(12px)',
+                              boxShadow: '0 0 8px rgba(103, 232, 249, 0.4)'
+                            }}
+                          ></div>
+                          
+                          {/* Mouth - 3D */}
+                          <div 
+                            className="absolute top-20 left-1/2 transform -translate-x-1/2 w-8 h-2 border-b-2 border-cyan-400 rounded-full"
+                            style={{ 
+                              transform: 'translateZ(15px)',
+                              boxShadow: '0 0 8px rgba(34, 211, 238, 0.6)'
+                            }}
+                          ></div>
+                          
+                          {/* Cheeks - 3D */}
+                          <div 
+                            className="absolute top-16 left-5 w-3 h-3 border border-cyan-300 rounded-full opacity-40"
+                            style={{ transform: 'translateZ(8px)' }}
+                          ></div>
+                          <div 
+                            className="absolute top-16 right-5 w-3 h-3 border border-cyan-300 rounded-full opacity-40"
+                            style={{ transform: 'translateZ(8px)' }}
+                          ></div>
+                        </div>
+                        
+                        {/* Holographic Effects - 3D Layers */}
+                        <div 
+                          className="absolute inset-0 bg-gradient-to-b from-transparent via-cyan-400/15 to-transparent"
+                          style={{
+                            transform: 'translateZ(5px)',
+                            animation: 'holographicScan 3s linear infinite'
+                          }}
+                        ></div>
+                        
+                        {/* Data Streams - 3D positioned */}
+                        <div 
+                          className="absolute -top-3 left-1/2 transform -translate-x-1/2 w-1 h-8 bg-cyan-400"
+                          style={{
+                            transform: 'translateZ(30px)',
+                            boxShadow: '0 0 15px rgba(34, 211, 238, 0.8)'
+                          }}
+                        ></div>
+                        <div 
+                          className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 w-1 h-8 bg-cyan-400"
+                          style={{
+                            transform: 'translateZ(30px)',
+                            boxShadow: '0 0 15px rgba(34, 211, 238, 0.8)'
+                          }}
+                        ></div>
+                        <div 
+                          className="absolute top-1/2 -left-3 transform -translate-y-1/2 w-8 h-1 bg-cyan-400"
+                          style={{
+                            transform: 'translateZ(30px)',
+                            boxShadow: '0 0 15px rgba(34, 211, 238, 0.8)'
+                          }}
+                        ></div>
+                        <div 
+                          className="absolute top-1/2 -right-3 transform -translate-y-1/2 w-8 h-1 bg-cyan-400"
+                          style={{
+                            transform: 'translateZ(30px)',
+                            boxShadow: '0 0 15px rgba(34, 211, 238, 0.8)'
+                          }}
+                        ></div>
+                      </div>
                       
-                      {/* Hair - more defined */}
-                      <motion.div 
-                        className="absolute top-2 left-1/2 transform -translate-x-1/2 w-20 h-12 border-2 border-cyan-300 rounded-t-full opacity-50" 
-                        style={{borderRadius: '50% 50% 0% 0%'}}
-                        animate={{ 
-                          y: [0, -2, 0],
-                          opacity: [0.3, 0.7, 0.3]
+                      {/* Outer Glow Rings - 3D */}
+                      <div 
+                        className="absolute inset-0 border border-cyan-400 rounded-full"
+                        style={{
+                          transform: 'translateZ(-10px) scale(1.1)',
+                          boxShadow: '0 0 40px rgba(34, 211, 238, 0.3)'
                         }}
-                        transition={{ 
-                          duration: 2.5, 
-                          repeat: Infinity, 
-                          ease: "easeInOut" 
+                      ></div>
+                      <div 
+                        className="absolute inset-0 border border-cyan-300 rounded-full"
+                        style={{
+                          transform: 'translateZ(-20px) scale(1.2)',
+                          boxShadow: '0 0 60px rgba(34, 211, 238, 0.2)'
                         }}
-                      ></motion.div>
-                      
-                      {/* Eyes - better positioned */}
-                      <motion.div 
-                        className="absolute top-8 left-8 w-3 h-3 bg-cyan-400 rounded-full"
-                        animate={{ 
-                          scale: [1, 1.2, 1],
-                          opacity: [0.8, 1, 0.8]
-                        }}
-                        transition={{ 
-                          duration: 1.5, 
-                          repeat: Infinity, 
-                          ease: "easeInOut" 
-                        }}
-                      ></motion.div>
-                      <motion.div 
-                        className="absolute top-8 right-8 w-3 h-3 bg-cyan-400 rounded-full"
-                        animate={{ 
-                          scale: [1, 1.2, 1],
-                          opacity: [0.8, 1, 0.8]
-                        }}
-                        transition={{ 
-                          duration: 1.5, 
-                          repeat: Infinity, 
-                          ease: "easeInOut",
-                          delay: 0.5
-                        }}
-                      ></motion.div>
-                      {/* Eye highlights */}
-                      <div className="absolute top-8 left-8 w-1 h-1 bg-white rounded-full"></div>
-                      <div className="absolute top-8 right-8 w-1 h-1 bg-white rounded-full"></div>
-                      
-                      {/* Eyebrows */}
-                      <motion.div 
-                        className="absolute top-6 left-7 w-4 h-1 border-t-2 border-cyan-300 rounded-full"
-                        animate={{ 
-                          y: [0, -1, 0],
-                          opacity: [0.5, 1, 0.5]
-                        }}
-                        transition={{ 
-                          duration: 2, 
-                          repeat: Infinity, 
-                          ease: "easeInOut" 
-                        }}
-                      ></motion.div>
-                      <motion.div 
-                        className="absolute top-6 right-7 w-4 h-1 border-t-2 border-cyan-300 rounded-full"
-                        animate={{ 
-                          y: [0, -1, 0],
-                          opacity: [0.5, 1, 0.5]
-                        }}
-                        transition={{ 
-                          duration: 2, 
-                          repeat: Infinity, 
-                          ease: "easeInOut",
-                          delay: 0.3
-                        }}
-                      ></motion.div>
-                      
-                      {/* Nose - more defined */}
-                      <motion.div 
-                        className="absolute top-12 left-1/2 transform -translate-x-1/2 w-2 h-3 border-2 border-cyan-300 rounded-full opacity-60"
-                        animate={{ 
-                          scale: [1, 1.1, 1],
-                          opacity: [0.4, 0.8, 0.4]
-                        }}
-                        transition={{ 
-                          duration: 3, 
-                          repeat: Infinity, 
-                          ease: "easeInOut" 
-                        }}
-                      ></motion.div>
-                      
-                      {/* Mouth - more expressive */}
-                      <motion.div 
-                        className="absolute top-18 left-1/2 transform -translate-x-1/2 w-6 h-2 border-b-2 border-cyan-400 rounded-full"
-                        animate={{ 
-                          scaleX: [1, 1.1, 1],
-                          opacity: [0.7, 1, 0.7]
-                        }}
-                        transition={{ 
-                          duration: 2.5, 
-                          repeat: Infinity, 
-                          ease: "easeInOut" 
-                        }}
-                      ></motion.div>
-                      
-                      {/* Cheeks */}
-                      <motion.div 
-                        className="absolute top-14 left-4 w-2 h-2 border border-cyan-300 rounded-full opacity-30"
-                        animate={{ 
-                          scale: [1, 1.2, 1],
-                          opacity: [0.2, 0.5, 0.2]
-                        }}
-                        transition={{ 
-                          duration: 2.8, 
-                          repeat: Infinity, 
-                          ease: "easeInOut" 
-                        }}
-                      ></motion.div>
-                      <motion.div 
-                        className="absolute top-14 right-4 w-2 h-2 border border-cyan-300 rounded-full opacity-30"
-                        animate={{ 
-                          scale: [1, 1.2, 1],
-                          opacity: [0.2, 0.5, 0.2]
-                        }}
-                        transition={{ 
-                          duration: 2.8, 
-                          repeat: Infinity, 
-                          ease: "easeInOut",
-                          delay: 0.4
-                        }}
-                      ></motion.div>
-                      
-                      {/* Holographic scan lines */}
-                      <motion.div 
-                        className="absolute inset-0 bg-gradient-to-b from-transparent via-cyan-400/10 to-transparent"
-                        animate={{ 
-                          y: [-100, 200, -100],
-                          opacity: [0, 1, 0]
-                        }}
-                        transition={{ 
-                          duration: 2, 
-                          repeat: Infinity, 
-                          ease: "linear" 
-                        }}
-                      ></motion.div>
-                      <motion.div 
-                        className="absolute inset-0 bg-gradient-to-r from-transparent via-cyan-400/5 to-transparent"
-                        animate={{ 
-                          x: [-100, 200, -100],
-                          opacity: [0, 1, 0]
-                        }}
-                        transition={{ 
-                          duration: 3, 
-                          repeat: Infinity, 
-                          ease: "linear",
-                          delay: 1
-                        }}
-                      ></motion.div>
-                      
-                      {/* Data particles */}
-                      <motion.div 
-                        className="absolute top-4 left-4 w-1 h-1 bg-cyan-400 rounded-full"
-                        animate={{ 
-                          scale: [0, 1, 0],
-                          opacity: [0, 1, 0],
-                          y: [0, -20, 0]
-                        }}
-                        transition={{ 
-                          duration: 2, 
-                          repeat: Infinity, 
-                          ease: "easeInOut" 
-                        }}
-                      ></motion.div>
-                      <motion.div 
-                        className="absolute top-6 right-6 w-1 h-1 bg-cyan-400 rounded-full"
-                        animate={{ 
-                          scale: [0, 1, 0],
-                          opacity: [0, 1, 0],
-                          y: [0, -20, 0]
-                        }}
-                        transition={{ 
-                          duration: 2, 
-                          repeat: Infinity, 
-                          ease: "easeInOut",
-                          delay: 0.5
-                        }}
-                      ></motion.div>
-                      <motion.div 
-                        className="absolute bottom-6 left-6 w-1 h-1 bg-cyan-400 rounded-full"
-                        animate={{ 
-                          scale: [0, 1, 0],
-                          opacity: [0, 1, 0],
-                          y: [0, 20, 0]
-                        }}
-                        transition={{ 
-                          duration: 2, 
-                          repeat: Infinity, 
-                          ease: "easeInOut",
-                          delay: 1
-                        }}
-                      ></motion.div>
+                      ></div>
                     </motion.div>
-                    
-                    {/* Outer glow effect */}
-                    <motion.div 
-                      className="absolute inset-0 border border-cyan-400 rounded-full"
-                      animate={{ 
-                        scale: [1, 1.1, 1],
-                        opacity: [0.1, 0.3, 0.1]
-                      }}
-                      transition={{ 
-                        duration: 2, 
-                        repeat: Infinity, 
-                        ease: "easeInOut" 
-                      }}
-                    ></motion.div>
-                    <motion.div 
-                      className="absolute inset-0 border border-cyan-300 rounded-full"
-                      animate={{ 
-                        scale: [1, 1.2, 1],
-                        opacity: [0.05, 0.2, 0.05]
-                      }}
-                      transition={{ 
-                        duration: 2.5, 
-                        repeat: Infinity, 
-                        ease: "easeInOut",
-                        delay: 0.5
-                      }}
-                    ></motion.div>
-                    
-                    {/* Data streams */}
-                    <motion.div 
-                      className="absolute -top-2 left-1/2 transform -translate-x-1/2 w-1 h-6 bg-cyan-400"
-                      animate={{ 
-                        scaleY: [0, 1, 0],
-                        opacity: [0, 1, 0]
-                      }}
-                      transition={{ 
-                        duration: 1.5, 
-                        repeat: Infinity, 
-                        ease: "easeInOut" 
-                      }}
-                    ></motion.div>
-                    <motion.div 
-                      className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-1 h-6 bg-cyan-400"
-                      animate={{ 
-                        scaleY: [0, 1, 0],
-                        opacity: [0, 1, 0]
-                      }}
-                      transition={{ 
-                        duration: 1.5, 
-                        repeat: Infinity, 
-                        ease: "easeInOut",
-                        delay: 0.3
-                      }}
-                    ></motion.div>
-                    <motion.div 
-                      className="absolute top-1/2 -left-2 transform -translate-y-1/2 w-6 h-1 bg-cyan-400"
-                      animate={{ 
-                        scaleX: [0, 1, 0],
-                        opacity: [0, 1, 0]
-                      }}
-                      transition={{ 
-                        duration: 1.5, 
-                        repeat: Infinity, 
-                        ease: "easeInOut",
-                        delay: 0.6
-                      }}
-                    ></motion.div>
-                    <motion.div 
-                      className="absolute top-1/2 -right-2 transform -translate-y-1/2 w-6 h-1 bg-cyan-400"
-                      animate={{ 
-                        scaleX: [0, 1, 0],
-                        opacity: [0, 1, 0]
-                      }}
-                      transition={{ 
-                        duration: 1.5, 
-                        repeat: Infinity, 
-                        ease: "easeInOut",
-                        delay: 0.9
-                      }}
-                    ></motion.div>
-                  </motion.div>
+                  </div>
                 </div>
+                
+                {/* CSS Animation for Holographic Scan */}
+                <style dangerouslySetInnerHTML={{
+                  __html: `
+                    @keyframes holographicScan {
+                      0% { transform: translateY(-100%) translateZ(5px); opacity: 0; }
+                      50% { opacity: 1; }
+                      100% { transform: translateY(100%) translateZ(5px); opacity: 0; }
+                    }
+                  `
+                }} />
                 
                 {/* Chat History */}
                 <div className="h-48 overflow-y-auto border border-zinc-700 bg-zinc-900/50 p-4 space-y-2">
