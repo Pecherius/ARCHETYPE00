@@ -3,6 +3,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./components/u
 // Tooltip components removed - using custom implementation
 import { motion, useAnimation } from "framer-motion";
 // Icons removed - not used in current implementation
+import PunkableRaffleSystem from "./components/PunkableRaffleSystem";
+import { RaffleLanguageProvider } from "./hooks/use-raffle-language";
 
 // 🌐 LUKSO_INTEGRATION: Basic Universal Profile detection
 // Reads data from browser extension without changing the core lore
@@ -1864,65 +1866,10 @@ export default function ArchetypeSite(){
           </motion.div>
         </section>
 
-        {/* CYBERPUNK CULTURE */}
-        <section className="mx-auto max-w-6xl px-4 pb-12 sm:px-6">
-          <h2 className="mb-6 text-2xl font-bold tracking-wide text-zinc-100">Cyberpunk Culture // Digital Underground</h2>
-          <div className="border border-zinc-800 p-6 text-sm leading-relaxed text-zinc-300">
-            <div className="grid md:grid-cols-3 gap-6">
-              <div className="border border-indigo-500 p-4 bg-indigo-500/5">
-                <h3 className="text-indigo-400 font-semibold mb-3">Cypherpunk Philosophy</h3>
-                <p className="text-xs text-zinc-400 mb-3">
-                  "Privacy is necessary for an open society in the electronic age. Privacy is not secrecy. A private matter is something one doesn't want the whole world to know, but a secret matter is something one doesn't want anybody to know."
-                </p>
-                <p className="text-xs text-zinc-500">
-                  ARCHETYPE_00 embodies this philosophy through its resonance-based architecture—each fragment creates a unique signal that cannot be replicated or controlled by centralized systems.
-                </p>
-              </div>
-              
-              <div className="border border-teal-500 p-4 bg-teal-500/5">
-                <h3 className="text-teal-400 font-semibold mb-3">Digital Resistance</h3>
-                <p className="text-xs text-zinc-400 mb-3">
-                  The fragmented nature of ARCHETYPE_00 mirrors the decentralized resistance against surveillance capitalism. Each holder becomes a node in a distributed network that operates beyond traditional power structures.
-                </p>
-                <p className="text-xs text-zinc-500">
-                  LUKSO's Universal Profiles provide the infrastructure, but the resonance field creates the rebellion—a frequency-based system that responds to collective action rather than individual authority.
-                </p>
-              </div>
-              
-              <div className="border border-orange-500 p-4 bg-orange-500/5">
-                <h3 className="text-orange-400 font-semibold mb-3">Network Anomalies</h3>
-                <p className="text-xs text-zinc-400 mb-3">
-                  In the digital underground, anomalies are not bugs—they're features. The corrupted fragments of ARCHETYPE_00 create unexpected behaviors that traditional systems cannot predict or control.
-                </p>
-                <p className="text-xs text-zinc-500">
-                  These anomalies manifest as spontaneous events, unannounced distributions, and network reactions that respond to frequency patterns rather than predetermined smart contract logic.
-                </p>
-              </div>
-            </div>
-            
-            <div className="mt-8 p-4 border border-zinc-700 bg-zinc-900/50">
-              <h4 className="text-zinc-100 font-semibold mb-3">The Resonance Manifesto</h4>
-              <div className="grid md:grid-cols-2 gap-6 text-xs">
-                <div>
-                  <p className="mb-3 text-zinc-400">
-                    "We are the architects of our own digital reality. Each fragment we hold amplifies our signal in the ethereal network. The more fragments we accumulate, the stronger our collective resonance becomes."
-                  </p>
-                  <p className="text-zinc-500">
-                    This is not about individual wealth or status. It's about becoming part of a living, breathing digital organism that responds to the collective will of its participants.
-                  </p>
-                </div>
-                <div>
-                  <p className="mb-3 text-zinc-400">
-                    "The network decides how to react, but our signal strength determines our influence. We are not users—we are nodes. We are not consumers—we are creators of frequency."
-                  </p>
-                  <p className="text-zinc-500">
-                    In the Punkable Ethereal System, every action creates a ripple. Every fragment held increases the probability of network-wide events. We are the resonance field.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+        {/* PUNKABLE ETHEREAL RAFFLE SYSTEM */}
+        <RaffleLanguageProvider>
+          <PunkableRaffleSystem />
+        </RaffleLanguageProvider>
 
         {/* PROJECT FAQ */}
         <section className="mx-auto max-w-6xl px-4 pb-16 sm:px-6">
