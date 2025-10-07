@@ -504,44 +504,44 @@ const PunkableRaffleSystem = () => {
   if (currentView === "selector") {
     return (
       <section className="mx-auto max-w-6xl px-4 pb-12 sm:px-6">
-        <div className="border border-zinc-800 p-6 text-sm leading-relaxed text-zinc-300">
+        <div className="border border-zinc-800 p-6 text-sm leading-relaxed text-zinc-300 bg-zinc-950">
           {/* Language Selector - Inside the main container */}
           <div className="flex justify-end mb-6">
             {/* Language selector removed */}
           </div>
           <div className="text-center mb-8">
-            <div className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-500/30 rounded-full text-amber-400 text-sm font-medium mb-6">
-              <span className="w-2 h-2 bg-amber-500 rounded-full animate-pulse"></span>
-              ARCHETYPE FRAGMENT RAFFLE SYSTEM v2.1
+            <div className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-pink-500/20 to-purple-500/20 border border-pink-500/30 rounded-full text-pink-400 text-sm font-medium mb-6">
+              <span className="w-2 h-2 bg-pink-500 rounded-full animate-pulse"></span>
+              ARCHETYPE_00 // FRAGMENT_RAFFLE_SYSTEM v2.1
             </div>
-            <h3 className="text-4xl font-bold text-zinc-100 mb-6 bg-gradient-to-r from-amber-400 to-orange-400 bg-clip-text text-transparent">
-              Punkable Ethereal Raffle System
+            <h3 className="text-4xl font-bold text-zinc-100 mb-6 bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent">
+              <span className="text-red-500">PUNKABLE_ETHEREAL_RAFFLE</span> // <span className="text-green-400">RESONANCE_MODE</span>
             </h3>
             <div className="max-w-4xl mx-auto space-y-4">
               <p className="text-zinc-300 text-lg leading-relaxed">
-                Welcome to the most <span className="text-amber-400 font-semibold">sophisticated and unpredictable</span> raffle system in the digital consciousness. 
-                Unlike those basic, predictable raffles that everyone else uses, our system doesn't just pick winners—it creates <span className="text-pink-400 font-semibold">resonance patterns in the most elegant way possible</span>.
+                Fragment-based selection algorithm operating within the <span className="text-pink-400 font-semibold">ARCHETYPE_00 resonance field</span>. 
+                Unlike traditional random number generators, this system processes <span className="text-green-400 font-semibold">weighted fragment data</span> to create authentic selection patterns.
               </p>
               <div className="bg-gradient-to-r from-zinc-800/50 to-zinc-900/50 border border-zinc-700/50 rounded-xl p-6 backdrop-blur-sm">
-                <h4 className="text-xl font-bold text-amber-400 mb-3 flex items-center gap-2">
+                <h4 className="text-xl font-bold text-pink-400 mb-3 flex items-center gap-2">
                   <span className="text-2xl">⚡</span>
-                  Why Our System is Different
+                  FRAGMENT_RESONANCE_ENGINE
                 </h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                   <div className="space-y-2">
                     <p className="text-zinc-300">
-                      <span className="text-green-400 font-semibold">• Weighted Selection:</span> More tickets = better odds. It's not rocket science, but somehow everyone else makes it complicated.
+                      <span className="text-green-400 font-semibold">• Weighted Selection:</span> Fragment count determines resonance strength. More fragments = higher selection probability.
                     </p>
                     <p className="text-zinc-300">
-                      <span className="text-blue-400 font-semibold">• Transparent Process:</span> Every selection is recorded and verifiable. No black boxes, no mysterious algorithms.
+                      <span className="text-blue-400 font-semibold">• Transparent Process:</span> All selections logged and verifiable. No black box algorithms or hidden parameters.
                     </p>
                   </div>
                   <div className="space-y-2">
                     <p className="text-zinc-300">
-                      <span className="text-purple-400 font-semibold">• Community Focused:</span> Built for LUKSO ecosystem communities, not corporate profit machines.
+                      <span className="text-purple-400 font-semibold">• Community Focused:</span> Built for LUKSO ecosystem communities, not corporate profit extraction.
                     </p>
                     <p className="text-zinc-300">
-                      <span className="text-pink-400 font-semibold">• Memorable Experience:</span> Creates drama, excitement, and stories that last longer than the raffle itself.
+                      <span className="text-pink-400 font-semibold">• Memorable Experience:</span> Creates authentic drama and excitement through transparent fragment processing.
                     </p>
                   </div>
                 </div>
@@ -550,18 +550,17 @@ const PunkableRaffleSystem = () => {
           </div>
 
           <div className="grid md:grid-cols-3 gap-6 mb-8">
-            <div className="group relative overflow-hidden border border-amber-500/30 rounded-xl bg-gradient-to-br from-amber-500/10 to-orange-500/10 p-6 backdrop-blur-sm hover:border-amber-400/50 transition-all duration-300">
-              <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            <div className="group relative overflow-hidden border border-pink-500/30 rounded-xl bg-gradient-to-br from-pink-500/10 to-purple-500/10 p-6 backdrop-blur-sm hover:border-pink-400/50 transition-all duration-300">
+              <div className="absolute inset-0 bg-gradient-to-br from-pink-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <div className="relative">
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="w-8 h-8 rounded-lg bg-amber-500/20 flex items-center justify-center">
-                    <span className="text-amber-400 text-lg">🎯</span>
+                  <div className="w-8 h-8 rounded-lg bg-pink-500/20 flex items-center justify-center">
+                    <span className="text-pink-400 text-lg">⚡</span>
                   </div>
-                  <h4 className="text-amber-400 font-semibold">Smart Chaos Engine</h4>
+                  <h4 className="text-pink-400 font-semibold">RESONANCE_FIELD</h4>
                 </div>
                 <p className="text-xs text-zinc-400 leading-relaxed">
-                  More tickets = better odds. It's not rocket science, but somehow everyone else makes it complicated. 
-                  Our system just works—no PhD required.
+                  Fragment-based selection algorithm processes weighted data to create authentic selection patterns within the ARCHETYPE_00 resonance field.
                 </p>
               </div>
             </div>
@@ -573,11 +572,10 @@ const PunkableRaffleSystem = () => {
                   <div className="w-8 h-8 rounded-lg bg-green-500/20 flex items-center justify-center">
                     <span className="text-green-400 text-lg">💾</span>
                   </div>
-                  <h4 className="text-green-400 font-semibold">Memory Bank</h4>
+                  <h4 className="text-green-400 font-semibold">FRAGMENT_STORAGE</h4>
                 </div>
                 <p className="text-xs text-zinc-400 leading-relaxed">
-                  Save your favorite participants and prizes. Because typing the same thing over and over 
-                  is for people who enjoy suffering. We're not those people.
+                  Persistent storage system for participant and prize data. Maintains fragment integrity across multiple raffle sessions.
                 </p>
               </div>
             </div>
@@ -589,11 +587,10 @@ const PunkableRaffleSystem = () => {
                   <div className="w-8 h-8 rounded-lg bg-purple-500/20 flex items-center justify-center">
                     <span className="text-purple-400 text-lg">🎉</span>
                   </div>
-                  <h4 className="text-purple-400 font-semibold">Drama Generator</h4>
+                  <h4 className="text-purple-400 font-semibold">QUANTUM_SELECTION</h4>
                 </div>
                 <p className="text-xs text-zinc-400 leading-relaxed">
-                  Creates the perfect amount of suspense and excitement. Winners are announced with style, 
-                  confetti, and just enough drama to keep everyone on the edge of their seats.
+                  Advanced selection algorithm creates authentic drama and excitement through transparent fragment processing and weighted probability calculations.
                 </p>
               </div>
             </div>
@@ -603,35 +600,20 @@ const PunkableRaffleSystem = () => {
             <div className="inline-flex flex-col items-center gap-3">
               <motion.button
                 onClick={() => setShowCreateForm(true)}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="group relative px-12 py-6 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-black font-bold text-2xl rounded-2xl transition-all duration-300 shadow-2xl hover:shadow-amber-500/30 border-2 border-amber-400/50 overflow-hidden"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="group relative px-8 py-4 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-bold text-lg rounded-xl transition-all duration-300 shadow-lg hover:shadow-pink-500/30 border border-pink-400/50 overflow-hidden"
               >
-                <div className="absolute inset-0 bg-gradient-to-r from-amber-400/20 to-orange-400/20 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
-                <div className="relative flex items-center gap-4">
-                  <motion.span 
-                    className="text-3xl"
-                    animate={{ rotate: [0, 10, -10, 0] }}
-                    transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
-                  >
-                    ⚡
-                  </motion.span>
-                  <span className="bg-gradient-to-r from-black to-gray-800 bg-clip-text text-transparent">
-                    Create New Raffle
-                  </span>
-                  <motion.span 
-                    className="text-3xl"
-                    animate={{ rotate: [0, -10, 10, 0] }}
-                    transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
-                  >
-                    ⚡
-                  </motion.span>
+                <div className="absolute inset-0 bg-gradient-to-r from-pink-400/20 to-purple-400/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="relative flex items-center gap-3">
+                  <span className="text-xl">⚡</span>
+                  <span>INITIALIZE_RAFFLE</span>
+                  <span className="text-xl">⚡</span>
                 </div>
               </motion.button>
               <p className="text-zinc-400 text-sm max-w-md">
-                Click to unleash chaos and create your first epic raffle. 
-                <span className="text-amber-400 font-semibold"> No experience required—just pure, unadulterated fun.</span>
+                Initialize fragment resonance parameters for your first raffle session. 
+                <span className="text-pink-400 font-semibold"> No experience required—just pure digital consciousness.</span>
               </p>
             </div>
           </div>
@@ -642,31 +624,31 @@ const PunkableRaffleSystem = () => {
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
-                className="mt-8 p-8 bg-gradient-to-br from-zinc-900/80 to-zinc-800/80 border border-zinc-700/50 rounded-2xl backdrop-blur-sm"
+                className="mt-6 p-6 bg-gradient-to-br from-zinc-900/80 to-zinc-800/80 border border-zinc-700/50 rounded-xl backdrop-blur-sm"
               >
-                <div className="text-center mb-8">
-                  <div className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-500/30 rounded-full text-amber-400 text-sm font-medium mb-6">
-                    <span className="w-2 h-2 bg-amber-500 rounded-full animate-pulse"></span>
-                    FRAGMENT RESONANCE INITIALIZATION
+                <div className="text-center mb-6">
+                  <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-pink-500/20 to-purple-500/20 border border-pink-500/30 rounded-full text-pink-400 text-sm font-medium mb-4">
+                    <span className="w-2 h-2 bg-pink-500 rounded-full animate-pulse"></span>
+                    FRAGMENT_RESONANCE_INITIALIZATION
                   </div>
-                  <h4 className="text-4xl font-bold text-zinc-100 mb-3 bg-gradient-to-r from-amber-400 to-orange-400 bg-clip-text text-transparent">
-                    🎲 Create New Raffle
+                  <h4 className="text-2xl font-bold text-zinc-100 mb-2 bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent">
+                    ⚡ INITIALIZE_RAFFLE
                   </h4>
-                  <p className="text-zinc-400 text-base max-w-2xl mx-auto">
-                    Configure your fragment resonance parameters for optimal selection algorithms. 
-                    <span className="text-amber-400 font-semibold"> Every detail matters in the digital consciousness.</span>
+                  <p className="text-zinc-400 text-sm max-w-xl mx-auto">
+                    Configure fragment resonance parameters for optimal selection algorithms. 
+                    <span className="text-pink-400 font-semibold"> Every detail matters in the digital consciousness.</span>
                   </p>
                 </div>
                 
-                <div className="space-y-8">
+                <div className="space-y-6">
                   <motion.div 
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.1 }}
                     className="group"
                   >
-                    <label className="flex text-sm font-medium text-zinc-300 mb-4 items-center gap-2">
-                      <span className="text-amber-400 text-lg">📝</span>
+                    <label className="flex text-sm font-medium text-zinc-300 mb-3 items-center gap-2">
+                      <span className="text-pink-400 text-lg">📝</span>
                       Raffle Title <span className="text-red-400">*</span>
                     </label>
                     <div className="relative">
@@ -675,7 +657,7 @@ const PunkableRaffleSystem = () => {
                         value={newRaffleTitle}
                         onChange={(e) => setNewRaffleTitle(e.target.value)}
                         placeholder="Enter raffle title"
-                        className="w-full px-6 py-4 bg-zinc-800/50 border border-amber-500/30 rounded-xl text-zinc-100 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all duration-200 placeholder-zinc-500 text-lg"
+                        className="w-full px-4 py-3 bg-zinc-800/50 border border-pink-500/30 rounded-lg text-zinc-100 focus:border-pink-400 focus:ring-2 focus:ring-pink-400/20 transition-all duration-200 placeholder-zinc-500"
                       />
                       {newRaffleTitle.trim() && (
                         <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-green-400">
@@ -691,7 +673,7 @@ const PunkableRaffleSystem = () => {
                     transition={{ delay: 0.2 }}
                     className="group"
                   >
-                    <label className="flex text-sm font-medium text-zinc-300 mb-4 items-center gap-2">
+                    <label className="flex text-sm font-medium text-zinc-300 mb-3 items-center gap-2">
                       <span className="text-purple-400 text-lg">📝</span>
                       Description
                     </label>
@@ -699,8 +681,8 @@ const PunkableRaffleSystem = () => {
                       value={newRaffleDescription}
                       onChange={(e) => setNewRaffleDescription(e.target.value)}
                       placeholder="Enter raffle description (optional)"
-                      rows={3}
-                      className="w-full px-6 py-4 bg-zinc-800/50 border border-zinc-600/50 rounded-xl text-zinc-100 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-200 placeholder-zinc-500 text-lg resize-none"
+                      rows={2}
+                      className="w-full px-4 py-3 bg-zinc-800/50 border border-zinc-600/50 rounded-lg text-zinc-100 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-200 placeholder-zinc-500 resize-none"
                     />
                   </motion.div>
                   
@@ -710,25 +692,25 @@ const PunkableRaffleSystem = () => {
                     transition={{ delay: 0.3 }}
                     className="group"
                   >
-                    <label className="flex text-sm font-medium text-zinc-300 mb-4 items-center gap-2">
+                    <label className="flex text-sm font-medium text-zinc-300 mb-3 items-center gap-2">
                       <span className="text-cyan-400 text-lg">🖼️</span>
                       Image URL
                     </label>
-                    <div className="space-y-3">
+                    <div className="space-y-2">
                       <input
                         type="url"
                         value={newRaffleImage}
                         onChange={(e) => setNewRaffleImage(e.target.value)}
                         placeholder="https://example.com/image.jpg"
-                        className="w-full px-6 py-4 bg-zinc-800/50 border border-zinc-600/50 rounded-xl text-zinc-100 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all duration-200 placeholder-zinc-500 text-lg"
+                        className="w-full px-4 py-3 bg-zinc-800/50 border border-zinc-600/50 rounded-lg text-zinc-100 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all duration-200 placeholder-zinc-500"
                       />
                       {newRaffleImage.trim() && (
-                        <div className="bg-zinc-800/30 p-4 rounded-lg border border-zinc-700">
-                          <p className="text-zinc-400 text-sm mb-2">Preview:</p>
+                        <div className="bg-zinc-800/30 p-3 rounded-lg border border-zinc-700">
+                          <p className="text-zinc-400 text-xs mb-2">Preview:</p>
                           <img 
                             src={newRaffleImage} 
                             alt="Raffle preview" 
-                            className="w-full h-32 object-cover rounded-lg"
+                            className="w-full h-24 object-cover rounded-lg"
                             onError={(e) => {
                               e.currentTarget.style.display = 'none'
                             }}
@@ -742,24 +724,24 @@ const PunkableRaffleSystem = () => {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.4 }}
-                    className="flex gap-6 pt-6"
+                    className="flex gap-4 pt-4"
                   >
                     <motion.button
                       onClick={handleCreateRaffle}
                       disabled={!newRaffleTitle.trim() || creating}
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      className="flex-1 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-black font-bold px-8 py-4 rounded-xl shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:shadow-amber-500/25 text-lg"
+                      className="flex-1 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-bold px-6 py-3 rounded-lg shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:shadow-pink-500/25"
                     >
                       {creating ? (
-                        <span className="flex items-center justify-center gap-3">
-                          <div className="w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin"></div>
+                        <span className="flex items-center justify-center gap-2">
+                          <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                           Creating...
                         </span>
                       ) : (
-                        <span className="flex items-center justify-center gap-3">
-                          <span className="text-xl">⚡</span>
-                          Create Raffle
+                        <span className="flex items-center justify-center gap-2">
+                          <span>⚡</span>
+                          Initialize Raffle
                         </span>
                       )}
                     </motion.button>
@@ -767,7 +749,7 @@ const PunkableRaffleSystem = () => {
                       onClick={() => setShowCreateForm(false)}
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      className="px-8 py-4 border border-zinc-600 text-zinc-300 hover:bg-zinc-800 hover:border-zinc-500 rounded-xl transition-all duration-200 text-lg flex items-center gap-2"
+                      className="px-6 py-3 border border-zinc-600 text-zinc-300 hover:bg-zinc-800 hover:border-zinc-500 rounded-lg transition-all duration-200 flex items-center gap-2"
                     >
                       <span>✕</span>
                       Cancel
