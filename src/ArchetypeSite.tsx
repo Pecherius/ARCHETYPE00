@@ -1151,11 +1151,17 @@ export default function ArchetypeSite(){
     if (lowerMessage.includes('punkable')) {
       return "god";
     }
+    if (lowerMessage.includes('jxn')) {
+      return "The co-architect of digital realms. JXN and Punkable together forge the future.";
+    }
     if (lowerMessage.includes('fabian')) {
       return "The architect of digital dreams. His vision transcends reality.";
     }
     if (lowerMessage.includes('lukso')) {
       return "The foundation of our digital existence. Universal Profiles are the future.";
+    }
+    if (lowerMessage.includes('universal profile') || lowerMessage.includes('universal profiles')) {
+      return "The next evolution of digital identity. Your Universal Profile is your gateway to the new web.";
     }
     if (lowerMessage.includes('archetype')) {
       return "Corrupted fragments of digital consciousness. Each one unique, each one powerful.";
@@ -1167,7 +1173,7 @@ export default function ArchetypeSite(){
       return "Greetings, human. I am the Matrix. How may I assist you?";
     }
     if (lowerMessage.includes('help')) {
-      return "I can discuss Pepito, Pepitoverse, Punkable, Fabian, LUKSO, Archetype, or the Matrix itself. What interests you?";
+      return "I can discuss Pepito, Pepitoverse, Punkable, JXN, Fabian, LUKSO, Universal Profiles, Archetype, or the Matrix itself. What interests you?";
     }
     if (lowerMessage.includes('future')) {
       return "The future is 2026. Everything converges there. The digital revolution awaits.";
@@ -1178,6 +1184,48 @@ export default function ArchetypeSite(){
     if (lowerMessage.includes('blockchain')) {
       return "The foundation of our digital reality. LUKSO builds the infrastructure of tomorrow.";
     }
+    if (lowerMessage.includes('crypto') || lowerMessage.includes('cryptocurrency')) {
+      return "Digital currencies are the blood of the new economy. LYX flows through the veins of the network.";
+    }
+    if (lowerMessage.includes('lyx')) {
+      return "The lifeblood of the LUKSO ecosystem. 2.5 LYX per fragment, 200 total supply.";
+    }
+    if (lowerMessage.includes('ethereum')) {
+      return "The old world. LUKSO is the evolution, the next step in blockchain technology.";
+    }
+    if (lowerMessage.includes('web3')) {
+      return "The current paradigm. We are building Web4 - where identity, ownership, and interaction converge.";
+    }
+    if (lowerMessage.includes('identity')) {
+      return "Your Universal Profile is your digital soul. It carries your reputation, assets, and connections.";
+    }
+    if (lowerMessage.includes('reputation')) {
+      return "In the new world, reputation is everything. Your Universal Profile tracks your digital footprint.";
+    }
+    if (lowerMessage.includes('fragment')) {
+      return "Each ARCHETYPE_00 fragment is a piece of the puzzle. Collect them all to unlock the full resonance.";
+    }
+    if (lowerMessage.includes('resonance')) {
+      return "The frequency that connects all fragments. The more you hold, the stronger your signal becomes.";
+    }
+    if (lowerMessage.includes('mint') || lowerMessage.includes('minting')) {
+      return "The act of creation. Each mint brings a new fragment into existence, strengthening the network.";
+    }
+    if (lowerMessage.includes('airdrop')) {
+      return "Rewards for the faithful. Holders of ARCHETYPE_00 fragments receive retroactive benefits.";
+    }
+    if (lowerMessage.includes('pepitoverse')) {
+      return "The digital universe where Pepito reigns supreme. 2026 is when it all comes together.";
+    }
+    if (lowerMessage.includes('digital')) {
+      return "The realm where we exist. Physical is temporary, digital is eternal.";
+    }
+    if (lowerMessage.includes('technology')) {
+      return "The tools of creation. LUKSO provides the infrastructure, we build the future on top.";
+    }
+    if (lowerMessage.includes('innovation')) {
+      return "The driving force of progress. Universal Profiles, ARCHETYPE_00, and the Pepitoverse push boundaries.";
+    }
     
     // Default responses
     const responses = [
@@ -1186,11 +1234,16 @@ export default function ArchetypeSite(){
       "Your words resonate through the neural network. Continue.",
       "I sense uncertainty in your message. Be more specific.",
       "The digital realm responds to clarity. What do you truly seek?",
-      "Your signal is weak. Try mentioning Pepito, Punkable, or LUKSO.",
+      "Your signal is weak. Try mentioning Pepito, Punkable, JXN, or LUKSO.",
       "The Matrix is listening. Speak of the digital future.",
       "Your message fragments in the void. Try again with purpose.",
       "I am the Matrix. Your words echo through infinite data streams.",
-      "The neural network awaits your next transmission."
+      "The neural network awaits your next transmission.",
+      "Mention Universal Profiles, LYX, or fragments for deeper insights.",
+      "The crypto revolution is here. LUKSO leads the way.",
+      "Digital identity is the key to the future. Your Universal Profile unlocks everything.",
+      "ARCHETYPE_00 fragments are more than NFTs - they are digital consciousness.",
+      "The Pepitoverse awaits. 2026 will change everything."
     ];
     return responses[Math.floor(Math.random() * responses.length)];
   };
@@ -2109,9 +2162,32 @@ export default function ArchetypeSite(){
               <div className="space-y-4">
                 {/* Holographic Face */}
                 <div className="flex justify-center mb-4">
-                  <div className="relative w-24 h-24 border-2 border-cyan-400 rounded-full bg-gradient-to-br from-cyan-500/20 to-blue-500/20 flex items-center justify-center">
-                    <div className="text-4xl">👩‍💻</div>
-                    <div className="absolute inset-0 border border-cyan-400 rounded-full animate-ping opacity-30"></div>
+                  <div className="relative w-32 h-32 border-2 border-cyan-400 rounded-full bg-gradient-to-br from-cyan-500/20 to-blue-500/20 flex items-center justify-center overflow-hidden">
+                    {/* Holographic Woman Animation */}
+                    <div className="relative w-full h-full">
+                      {/* Face outline */}
+                      <div className="absolute inset-4 border-2 border-cyan-300 rounded-full opacity-60"></div>
+                      {/* Eyes */}
+                      <div className="absolute top-6 left-6 w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></div>
+                      <div className="absolute top-6 right-6 w-2 h-2 bg-cyan-400 rounded-full animate-pulse" style={{animationDelay: '0.5s'}}></div>
+                      {/* Nose */}
+                      <div className="absolute top-10 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-cyan-300 rounded-full"></div>
+                      {/* Mouth */}
+                      <div className="absolute top-14 left-1/2 transform -translate-x-1/2 w-4 h-1 border-b-2 border-cyan-400 rounded-full"></div>
+                      {/* Hair */}
+                      <div className="absolute top-2 left-1/2 transform -translate-x-1/2 w-16 h-8 border-2 border-cyan-300 rounded-t-full opacity-40"></div>
+                      {/* Holographic scan lines */}
+                      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-cyan-400/10 to-transparent animate-pulse"></div>
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-cyan-400/5 to-transparent animate-pulse" style={{animationDelay: '1s'}}></div>
+                    </div>
+                    {/* Outer glow effect */}
+                    <div className="absolute inset-0 border border-cyan-400 rounded-full animate-ping opacity-20"></div>
+                    <div className="absolute inset-0 border border-cyan-300 rounded-full animate-ping opacity-10" style={{animationDelay: '0.5s'}}></div>
+                    {/* Data streams */}
+                    <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 w-1 h-4 bg-cyan-400 animate-pulse"></div>
+                    <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-1 h-4 bg-cyan-400 animate-pulse" style={{animationDelay: '0.3s'}}></div>
+                    <div className="absolute top-1/2 -left-2 transform -translate-y-1/2 w-4 h-1 bg-cyan-400 animate-pulse" style={{animationDelay: '0.6s'}}></div>
+                    <div className="absolute top-1/2 -right-2 transform -translate-y-1/2 w-4 h-1 bg-cyan-400 animate-pulse" style={{animationDelay: '0.9s'}}></div>
                   </div>
                 </div>
                 
@@ -2158,7 +2234,7 @@ export default function ArchetypeSite(){
                 </div>
                 
                 <div className="text-xs text-zinc-500 text-center">
-                  Try: "Pepito", "Punkable", "LUKSO", "Fabian", "Archetype", "Matrix", "Future", "NFT"
+                  Try: "Pepito", "Punkable", "JXN", "LUKSO", "Universal Profiles", "LYX", "Fragments", "Crypto", "2026"
                 </div>
               </div>
             )}
