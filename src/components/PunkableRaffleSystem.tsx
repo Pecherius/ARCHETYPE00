@@ -465,7 +465,7 @@ const PunkableRaffleSystem = () => {
 
   // Update raffle history when participants, prizes, or winners change
   useEffect(() => {
-    if (currentRaffle && (participants.length > 0 || prizes.length > 0 || winners.length > 0)) {
+    if (currentRaffle) {
       const updatedRaffle = {
         ...currentRaffle,
         participants,
@@ -486,6 +486,12 @@ const PunkableRaffleSystem = () => {
         setSavedRaffles(updatedHistory)
         localStorage.setItem('savedRaffles', JSON.stringify(updatedHistory))
         console.log('Raffle history updated:', updatedRaffle)
+      } else {
+        // If raffle not in history yet, add it
+        const newHistory = [...savedRaffles, updatedRaffle]
+        setSavedRaffles(newHistory)
+        localStorage.setItem('savedRaffles', JSON.stringify(newHistory))
+        console.log('Raffle added to history:', updatedRaffle)
       }
     }
   }, [participants, prizes, winners, currentRaffle])

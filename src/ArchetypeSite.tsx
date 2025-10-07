@@ -796,8 +796,9 @@ function NeuralPingPong() {
              
              // No velocity limit - progressive difficulty only
              
-             // Update position with progressive speed - no limit
-             const currentSpeed = speed * difficultyMultiplier;
+             // Update position with constant base speed + progressive difficulty
+             const baseSpeed = 2; // Constant base speed
+             const currentSpeed = baseSpeed * difficultyMultiplier;
              newBall.x += newBall.vx * currentSpeed;
              newBall.y += newBall.vy * currentSpeed;
         
@@ -841,7 +842,7 @@ function NeuralPingPong() {
             }
             return newScore;
           });
-               setSpeed(prev => prev + 0.3); // Progressive speed increase - no limit
+               // Speed increase removed - game now uses constant base speed
           
           // Spawn floating message on successful hit
           if (Math.random() < 0.3) { // 30% chance
@@ -1146,10 +1147,10 @@ function NeuralPingPong() {
     setBall({ 
       x: 400, 
       y: 100, 
-      dx: initialVx, 
-      dy: initialVy,
-      vx: initialVx * 1.5, // Much stronger initial velocity for automatic movement
-      vy: initialVy * 1.5
+      dx: initialVx * 2, // Much stronger initial direction
+      dy: initialVy * 2, // Much stronger initial direction
+      vx: initialVx * 3, // Much stronger initial velocity for automatic movement
+      vy: initialVy * 3
     });
     setPaddle({ x: 350, y: 550, width: 150 }); // Bigger paddle
     setGlitchLines([]);
