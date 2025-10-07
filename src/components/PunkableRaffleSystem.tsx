@@ -331,8 +331,9 @@ const PunkableRaffleSystem = () => {
 
     // Save user
     const color = COLORS[userStorageService.getAllUsers().length % COLORS.length]
-    userStorageService.saveUser(newParticipantName, newParticipantUpAddress, color)
+    const savedUser = userStorageService.saveUser(newParticipantName, newParticipantUpAddress, color)
     
+    console.log('User saved successfully:', savedUser)
     alert("User saved successfully!")
   }
 
@@ -369,8 +370,9 @@ const PunkableRaffleSystem = () => {
     if (isNaN(count) || count <= 0) return
 
     // Save prize
-    prizeStorageService.savePrize(newPrizeName, "", count, "")
+    const savedPrize = prizeStorageService.savePrize(newPrizeName, "", count, "")
     
+    console.log('Prize saved successfully:', savedPrize)
     alert("Prize saved successfully!")
   }
 
@@ -413,28 +415,80 @@ const PunkableRaffleSystem = () => {
     }
   }
 
-  // Save raffle to localStorage
+  // Save raffle to localStorage with complete data
   const saveRaffleToHistory = (raffle: Raffle) => {
     try {
-      const updated = [...savedRaffles, raffle]
+      const completeRaffleData = {
+        ...raffle,
+        participants: participants,
+        prizes: prizes,
+        winners: winners,
+        saved_at: new Date().toISOString(),
+        participant_count: participants.length,
+        prize_count: prizes.length,
+        winner_count: winners.length
+      }
+      
+      const updated = [...savedRaffles, completeRaffleData]
       setSavedRaffles(updated)
       localStorage.setItem('savedRaffles', JSON.stringify(updated))
+      console.log('Raffle saved to history:', completeRaffleData)
     } catch (error) {
       console.error('Error saving raffle:', error)
     }
   }
 
   // Load a saved raffle
-  const loadSavedRaffle = (raffle: Raffle) => {
+  const loadSavedRaffle = (raffle: any) => {
     setCurrentRaffle(raffle)
+    
+    // Restore all data if available
+    if (raffle.participants) {
+      setParticipants(raffle.participants)
+    }
+    if (raffle.prizes) {
+      setPrizes(raffle.prizes)
+    }
+    if (raffle.winners) {
+      setWinners(raffle.winners)
+    }
+    
     setCurrentView("raffle")
     setShowRaffleHistory(false)
+    console.log('Raffle loaded from history:', raffle)
   }
 
   // Load raffle data on component mount
   useEffect(() => {
     loadSavedRaffles()
   }, [])
+
+  // Update raffle history when participants, prizes, or winners change
+  useEffect(() => {
+    if (currentRaffle && (participants.length > 0 || prizes.length > 0 || winners.length > 0)) {
+      const updatedRaffle = {
+        ...currentRaffle,
+        participants,
+        prizes,
+        winners,
+        saved_at: new Date().toISOString(),
+        participant_count: participants.length,
+        prize_count: prizes.length,
+        winner_count: winners.length
+      }
+      
+      // Update the raffle in history
+      const updatedHistory = savedRaffles.map(raffle => 
+        raffle.id === currentRaffle.id ? updatedRaffle : raffle
+      )
+      
+      if (updatedHistory.length > 0) {
+        setSavedRaffles(updatedHistory)
+        localStorage.setItem('savedRaffles', JSON.stringify(updatedHistory))
+        console.log('Raffle history updated:', updatedRaffle)
+      }
+    }
+  }, [participants, prizes, winners, currentRaffle])
 
   useEffect(() => {
     return () => {
