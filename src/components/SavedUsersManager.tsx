@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion } from "framer-motion"
 import { useRaffleLanguage } from "../hooks/use-raffle-language"
 import { userStorageService, type SavedUser } from "../lib/user-storage"
 import { ParticipantIcon } from "../lib/participant-icons"
@@ -12,10 +12,6 @@ interface SavedUsersManagerProps {
   isOpen: boolean
 }
 
-const COLORS = [
-  "#FF69B4", "#FFB6C1", "#FF1493", "#FFC0CB", "#FF91A4", "#FF6B9D", "#C71585", 
-  "#FF20B2", "#FF007F", "#FF69B4", "#DA70D6", "#DDA0DD", "#EE82EE", "#FF1493", "#FFB6C1"
-]
 
 export default function SavedUsersManager({ onSelectUser, onClose, isOpen }: SavedUsersManagerProps) {
   const { t } = useRaffleLanguage()
@@ -191,7 +187,7 @@ export default function SavedUsersManager({ onSelectUser, onClose, isOpen }: Sav
                     onClick={() => handleDeleteUser(user.id)}
                     className="px-3 py-1 text-red-400 hover:text-red-300 text-sm font-medium rounded-lg transition-colors"
                   >
-                    {t.delete || "Eliminar"}
+                    Eliminar
                   </button>
                 </div>
               </motion.div>
