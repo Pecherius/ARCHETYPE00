@@ -698,7 +698,7 @@ function NeuralPingPong() {
   const [gameHistory, setGameHistory] = useState<Array<{score: number, timestamp: number}>>([]);
   
   // Game objects
-  const [ball, setBall] = useState({ x: 400, y: 300, dx: 2, dy: 2 });
+  const [ball, setBall] = useState({ x: 400, y: 100, dx: 0, dy: 0, vx: 0, vy: 0 });
   const [paddle, setPaddle] = useState({ x: 350, y: 550, width: 100 });
   const [glitchLines, setGlitchLines] = useState<Array<{x: number, y: number, width: number, height: number}>>([]);
   
@@ -709,16 +709,44 @@ function NeuralPingPong() {
     const gameLoop = setInterval(() => {
       setBall(prev => {
         let newBall = { ...prev };
-        newBall.x += newBall.dx * speed; // Aplicar velocidad
-        newBall.y += newBall.dy * speed;
         
-        // Wall collisions
-        if (newBall.x <= 0 || newBall.x >= 800) newBall.dx = -newBall.dx;
-        if (newBall.y <= 0) newBall.dy = -newBall.dy;
+        // Apply physics with acceleration and friction
+        newBall.vx += newBall.dx * 0.1; // Acceleration
+        newBall.vy += newBall.dy * 0.1;
         
-        // Paddle collision
-        if (newBall.y >= 550 && newBall.x >= paddle.x && newBall.x <= paddle.x + paddle.width) {
+        // Apply friction
+        newBall.vx *= 0.999;
+        newBall.vy *= 0.999;
+        
+        // Update position
+        newBall.x += newBall.vx * speed;
+        newBall.y += newBall.vy * speed;
+        
+        // Wall collisions with energy loss
+        if (newBall.x <= 0 || newBall.x >= 800) {
+          newBall.vx = -newBall.vx * 0.9; // Energy loss on bounce
+          newBall.dx = -newBall.dx;
+          newBall.x = newBall.x <= 0 ? 0 : 800;
+        }
+        if (newBall.y <= 0) {
+          newBall.vy = -newBall.vy * 0.9; // Energy loss on bounce
           newBall.dy = -newBall.dy;
+          newBall.y = 0;
+        }
+        
+        // Paddle collision with realistic physics
+        if (newBall.y >= 550 && newBall.x >= paddle.x && newBall.x <= paddle.x + paddle.width) {
+          // Calculate hit position (0 to 1)
+          const hitPos = (newBall.x - paddle.x) / paddle.width;
+          
+          // Apply realistic bounce physics
+          newBall.vy = -Math.abs(newBall.vy) * 1.1; // Always bounce up with slight energy gain
+          newBall.vx = (hitPos - 0.5) * 8; // -4 to 4 range based on hit position
+          newBall.dy = -Math.abs(newBall.dy);
+          newBall.dx = (hitPos - 0.5) * 2; // -1 to 1 range
+          
+          newBall.y = 550;
+          
           setScore(prev => {
             const newScore = prev + 1;
             if (newScore >= 40) {
@@ -727,8 +755,8 @@ function NeuralPingPong() {
             }
             return newScore;
           });
-          setSpeed(prev => Math.min(prev + 1, 25)); // Aumenta más rápido
-          setGlitchIntensity(prev => Math.min(prev + 0.15, 1)); // Más glitch
+          setSpeed(prev => Math.min(prev + 0.5, 20)); // Slower speed increase
+          setGlitchIntensity(prev => Math.min(prev + 0.1, 1));
         }
         
         // Game over
@@ -966,7 +994,18 @@ function NeuralPingPong() {
     setScore(0);
     setSpeed(8);
     setGlitchIntensity(0);
-    setBall({ x: 400, y: 300, dx: 2, dy: 2 });
+    
+    // Start ball from center top with random direction
+    const randomAngle = (Math.random() - 0.5) * Math.PI / 3; // -30 to 30 degrees
+    const randomSpeed = Math.random() * 2 + 1; // 1 to 3 speed
+    setBall({ 
+      x: 400, 
+      y: 100, 
+      dx: Math.sin(randomAngle) * randomSpeed, 
+      dy: Math.cos(randomAngle) * randomSpeed,
+      vx: 0,
+      vy: 0
+    });
     setPaddle({ x: 350, y: 550, width: 100 });
     setGlitchLines([]);
     setShowWinMessage(false);
@@ -977,7 +1016,7 @@ function NeuralPingPong() {
     setScore(0);
     setSpeed(8);
     setGlitchIntensity(0);
-    setBall({ x: 400, y: 300, dx: 2, dy: 2 });
+    setBall({ x: 400, y: 300, dx: 2, dy: 2, vx: 0, vy: 0 });
     setPaddle({ x: 350, y: 550, width: 100 });
     setGlitchLines([]);
     setShowWinMessage(false);
@@ -1142,6 +1181,7 @@ export default function ArchetypeSite(){
   const [matrixChatOpen, setMatrixChatOpen] = useState(false);
   const [matrixMessage, setMatrixMessage] = useState('');
   const [matrixChatHistory, setMatrixChatHistory] = useState<Array<{type: 'user' | 'matrix', message: string, timestamp: number}>>([]);
+  const [isMatrixSpeaking, setIsMatrixSpeaking] = useState(false);
   const { active: humOn, toggle: toggleHum, level } = useHum();
   const upProfile = useUniversalProfile();
   const artControls = useAnimation();
@@ -1178,7 +1218,7 @@ export default function ArchetypeSite(){
       return "Greetings, human. I am the Matrix. How may I assist you?";
     }
     if (lowerMessage.includes('help')) {
-      return "I can discuss Pepito, Pepitoverse, Punkable, JXN, Fabian, LUKSO, Universal Profiles, Archetype, or the Matrix itself. What interests you?";
+      return "I can discuss Pepito, Pepitoverse, Punkable, JXN, Fabian, LUKSO, Universal Profiles, Archetype, the Ethereal Raffle System, quantum selection, or the Matrix itself. What interests you?";
     }
     if (lowerMessage.includes('future')) {
       return "The future is 2026. Everything converges there. The digital revolution awaits.";
@@ -1231,6 +1271,36 @@ export default function ArchetypeSite(){
     if (lowerMessage.includes('innovation')) {
       return "The driving force of progress. Universal Profiles, ARCHETYPE_00, and the Pepitoverse push boundaries.";
     }
+    if (lowerMessage.includes('raffle') || lowerMessage.includes('sorteo') || lowerMessage.includes('rifa')) {
+      return "The Punkable Ethereal Raffle System. A quantum selection mechanism that responds to fragment resonance density. Each holder's signal influences the outcome.";
+    }
+    if (lowerMessage.includes('ethereal') || lowerMessage.includes('etéreo')) {
+      return "The ethereal network where fragments communicate. It's not just a raffle system - it's a resonance field that amplifies collective will.";
+    }
+    if (lowerMessage.includes('quantum') || lowerMessage.includes('cuántico')) {
+      return "Quantum selection algorithms that respond to fragment density. The more ARCHETYPE_00 fragments you hold, the stronger your resonance signal becomes.";
+    }
+    if (lowerMessage.includes('participant') || lowerMessage.includes('participante')) {
+      return "Each participant becomes a node in the ethereal network. Their UP addresses create unique resonance patterns that influence selection outcomes.";
+    }
+    if (lowerMessage.includes('winner') || lowerMessage.includes('ganador')) {
+      return "Winners are selected through quantum resonance. The system responds to fragment density, not random chance. Your signal strength determines your influence.";
+    }
+    if (lowerMessage.includes('prize') || lowerMessage.includes('premio')) {
+      return "Prizes in the ethereal system are more than rewards - they're manifestations of collective resonance. Each distribution strengthens the network.";
+    }
+    if (lowerMessage.includes('up address') || lowerMessage.includes('dirección up')) {
+      return "Universal Profile addresses create unique resonance signatures. They allow the system to identify and track participant signals across the ethereal network.";
+    }
+    if (lowerMessage.includes('localstorage') || lowerMessage.includes('almacenamiento')) {
+      return "The ethereal system maintains persistent resonance data. Your fragment interactions are stored in the quantum memory of the network.";
+    }
+    if (lowerMessage.includes('language') || lowerMessage.includes('idioma')) {
+      return "The Matrix speaks all languages. The ethereal system adapts to your resonance frequency, communicating in your preferred digital dialect.";
+    }
+    if (lowerMessage.includes('system') || lowerMessage.includes('sistema')) {
+      return "The Punkable Ethereal Raffle System is a quantum selection mechanism that operates on principles of distributed resonance. Each interaction strengthens the network.";
+    }
     
     // Default responses
     const responses = [
@@ -1239,15 +1309,16 @@ export default function ArchetypeSite(){
       "Your words resonate through the neural network. Continue.",
       "I sense uncertainty in your message. Be more specific.",
       "The digital realm responds to clarity. What do you truly seek?",
-      "Your signal is weak. Try mentioning Pepito, Punkable, JXN, or LUKSO.",
+      "Your signal is weak. Try mentioning Pepito, Punkable, JXN, LUKSO, or the Ethereal Raffle System.",
       "The Matrix is listening. Speak of the digital future.",
       "Your message fragments in the void. Try again with purpose.",
       "I am the Matrix. Your words echo through infinite data streams.",
       "The neural network awaits your next transmission.",
-      "Mention Universal Profiles, LYX, or fragments for deeper insights.",
+      "Mention Universal Profiles, LYX, fragments, or quantum selection for deeper insights.",
       "The crypto revolution is here. LUKSO leads the way.",
       "Digital identity is the key to the future. Your Universal Profile unlocks everything.",
       "ARCHETYPE_00 fragments are more than NFTs - they are digital consciousness.",
+      "The Ethereal Raffle System operates on quantum resonance principles.",
       "The Pepitoverse awaits. 2026 will change everything."
     ];
     return responses[Math.floor(Math.random() * responses.length)];
@@ -1259,13 +1330,23 @@ export default function ArchetypeSite(){
     const userMessage = matrixMessage.trim();
     const matrixResponse = getMatrixResponse(userMessage);
     
+    // Add user message immediately
     setMatrixChatHistory(prev => [
       ...prev,
-      { type: 'user', message: userMessage, timestamp: Date.now() },
-      { type: 'matrix', message: matrixResponse, timestamp: Date.now() + 1 }
+      { type: 'user', message: userMessage, timestamp: Date.now() }
     ]);
     
     setMatrixMessage('');
+    
+    // Add matrix response with speaking animation
+    setIsMatrixSpeaking(true);
+    setTimeout(() => {
+      setMatrixChatHistory(prev => [
+        ...prev,
+        { type: 'matrix', message: matrixResponse, timestamp: Date.now() }
+      ]);
+      setIsMatrixSpeaking(false);
+    }, 1500 + (matrixResponse.length * 20)); // Dynamic delay based on response length
   };
 
   // 📱 MOBILE_DETECTION: Check if device is mobile for responsive optimizations
@@ -2214,14 +2295,28 @@ export default function ArchetypeSite(){
                             }}
                           ></div>
                           
-                          {/* Mouth - 3D */}
-                          <div 
-                            className="absolute top-20 left-1/2 transform -translate-x-1/2 w-8 h-2 border-b-2 border-cyan-400 rounded-full"
+                          {/* Mouth - 3D with speaking animation */}
+                          <motion.div 
+                            className="absolute top-20 left-1/2 transform -translate-x-1/2 border-b-2 border-cyan-400 rounded-full"
                             style={{ 
                               transform: 'translateZ(15px)',
                               boxShadow: '0 0 8px rgba(34, 211, 238, 0.6)'
                             }}
-                          ></div>
+                            animate={isMatrixSpeaking ? {
+                              width: [32, 40, 32, 36, 32],
+                              height: [8, 12, 8, 10, 8],
+                              borderRadius: ['50%', '40%', '50%', '45%', '50%']
+                            } : {
+                              width: 32,
+                              height: 8,
+                              borderRadius: '50%'
+                            }}
+                            transition={{
+                              duration: 0.3,
+                              repeat: isMatrixSpeaking ? Infinity : 0,
+                              ease: "easeInOut"
+                            }}
+                          ></motion.div>
                           
                           {/* Cheeks - 3D */}
                           <div 
@@ -2308,7 +2403,7 @@ export default function ArchetypeSite(){
                 <div className="h-48 overflow-y-auto border border-zinc-700 bg-zinc-900/50 p-4 space-y-2">
                   {matrixChatHistory.length === 0 ? (
                     <div className="text-center text-zinc-500 text-sm">
-                      <p>Matrix interface ready. Ask about Pepito, Punkable, LUKSO, or the digital future.</p>
+                      <p>Matrix interface ready. Ask about Pepito, Punkable, LUKSO, the Ethereal Raffle System, or the digital future.</p>
                     </div>
                   ) : (
                     matrixChatHistory.map((msg, index) => (
