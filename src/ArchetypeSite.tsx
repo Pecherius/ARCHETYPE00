@@ -118,7 +118,7 @@ function useUniversalProfile() {
  * - All features implemented and functional
  * - Deployed to GitHub Pages: https://punkable.github.io/ARCHETYPE00/
  * - No errors, fully working
- * - Last update: Enhanced game mechanics and quarantine access - v2.2 - CACHE BUST
+ * - Last update: Enhanced mobile responsiveness, terminal interface, and expanded lore - v2.3 - RESONANCE_FIELD
  * 
  * KEY FEATURES:
  * - Main title "ARCHETYPE_00" with glitch effects
@@ -1036,7 +1036,7 @@ function NeuralPingPong() {
           ref={canvasRef}
           width={800}
           height={600}
-          className="w-full max-w-full h-auto border border-zinc-700 bg-black"
+          className="w-full max-w-full h-auto border border-zinc-700 bg-black touch-none"
           style={{ maxHeight: '60vh' }}
         />
         <div className="mt-2 text-xs text-zinc-500">
@@ -1046,6 +1046,11 @@ function NeuralPingPong() {
             <span>Speed: {speed.toFixed(1)}</span>
           </div>
         </div>
+        {typeof window !== 'undefined' && window.innerWidth < 768 && (
+          <div className="mt-4 p-3 bg-zinc-800 border border-zinc-600 text-xs text-zinc-400">
+            <p className="text-center">Touch and drag to control the paddle</p>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -1059,9 +1064,21 @@ export default function ArchetypeSite(){
   const [pulseKey, setPulseKey] = useState(0);
   const [showGlitchImage, setShowGlitchImage] = useState(false);
   const [d34dNotification, setD34dNotification] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { active: humOn, toggle: toggleHum, level } = useHum();
   const upProfile = useUniversalProfile();
   const artControls = useAnimation();
+
+  // 📱 MOBILE_DETECTION: Check if device is mobile for responsive optimizations
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   useKonami(() => setLabOpen(true));
   useGlobalKeys(() => setGlitch(v => !v), () => setPulseKey(k => k + 1), () => setVhs(v => !v), () => {
@@ -1141,6 +1158,63 @@ export default function ArchetypeSite(){
             QUARANTINE ACCESS GRANTED
           </motion.div>
         )}
+
+        {/* Mobile Menu Button */}
+        {isMobile && (
+          <button
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="fixed top-4 right-4 z-50 p-2 bg-zinc-800 border border-zinc-600 rounded text-green-400 hover:bg-zinc-700 transition-colors"
+            aria-label="Toggle menu"
+          >
+            <div className="w-6 h-6 flex flex-col justify-center space-y-1">
+              <div className={`w-full h-0.5 bg-green-400 transition-transform ${isMenuOpen ? 'rotate-45 translate-y-1.5' : ''}`} />
+              <div className={`w-full h-0.5 bg-green-400 transition-opacity ${isMenuOpen ? 'opacity-0' : ''}`} />
+              <div className={`w-full h-0.5 bg-green-400 transition-transform ${isMenuOpen ? '-rotate-45 -translate-y-1.5' : ''}`} />
+            </div>
+          </button>
+        )}
+
+        {/* Mobile Menu Overlay */}
+        {isMobile && isMenuOpen && (
+          <div className="fixed inset-0 bg-black/90 z-40 flex flex-col items-center justify-center space-y-6">
+            <button
+              onClick={() => {
+                setObitOpen(true);
+                setIsMenuOpen(false);
+              }}
+              className="px-6 py-3 bg-zinc-800 border border-green-500 text-green-400 hover:bg-zinc-700 transition-colors"
+            >
+              [QUARANTINE_ACCESS]
+            </button>
+            <button
+              onClick={() => {
+                // Game functionality - placeholder for now
+                setIsMenuOpen(false);
+              }}
+              className="px-6 py-3 bg-zinc-800 border border-green-500 text-green-400 hover:bg-zinc-700 transition-colors"
+            >
+              [NEURAL_GAME]
+            </button>
+            <button
+              onClick={() => {
+                // Matrix functionality - placeholder for now
+                setIsMenuOpen(false);
+              }}
+              className="px-6 py-3 bg-zinc-800 border border-green-500 text-green-400 hover:bg-zinc-700 transition-colors"
+            >
+              [MATRIX_VISUALIZATION]
+            </button>
+            <button
+              onClick={() => {
+                toggleHum();
+                setIsMenuOpen(false);
+              }}
+              className="px-6 py-3 bg-zinc-800 border border-green-500 text-green-400 hover:bg-zinc-700 transition-colors"
+            >
+              {humOn ? '[AUDIO_OFF]' : '[AUDIO_ON]'}
+            </button>
+          </div>
+        )}
         <CodeRain/>
         {vhs && (
           <div className="pointer-events-none fixed inset-0 opacity-90">
@@ -1152,7 +1226,7 @@ export default function ArchetypeSite(){
         {/* HERO */}
         <section className="mx-auto flex max-w-6xl flex-col items-center gap-6 px-6 py-16 text-center">
           <motion.h1 
-            className={`text-4xl md:text-7xl font-bold tracking-tight text-zinc-100 mb-4 ${glitch ? "animate-pulse" : ""}`}
+            className={`${isMobile ? 'text-3xl' : 'text-4xl md:text-7xl'} font-bold tracking-tight text-zinc-100 mb-4 ${glitch ? "animate-pulse" : ""}`}
             initial={{ opacity: 0, y: 16, letterSpacing: "0.05em" }}
             animate={{ 
               opacity: 1, 
@@ -1252,18 +1326,204 @@ export default function ArchetypeSite(){
           ))}
         </section>
 
-        {/* TECH — LSP7 */}
+        {/* RESONANCE FIELD */}
         <section className="mx-auto max-w-6xl px-4 pb-12 sm:px-6">
-          <h2 className="mb-3 text-lg tracking-wide text-zinc-100">Technical // LSP7 Digital Asset</h2>
-          <div className="border border-zinc-800 p-5 text-sm leading-relaxed text-zinc-300">
-            <p className="mb-3">ARCHETYPE_00 is issued under <span className="font-semibold">LSP7 Digital Asset</span> (LUKSO). LSP7 is a programmable token standard for <span className="font-semibold">identical editions / fungible-like assets</span>, offering granular permissions and compatibility with <span className="font-semibold">Universal Profiles (UP)</span>.</p>
-            <ul className="list-disc pl-5 text-zinc-400">
-              <li><span className="text-zinc-300">Identical supply model</span>: 200 editions, no traits, no randomness.</li>
-              <li><span className="text-zinc-300">Operator permissions</span>: granular control for vaults, custodians or automated utilities.</li>
-              <li><span className="text-zinc-300">LSP1-7-8 compatibility</span>: UP-aware transfers, hooks and future composability with LSP8 artifacts.</li>
-              <li><span className="text-zinc-300">Metadata</span>: extensible JSON, off-chain mirrors, binary annotations for hidden messages.</li>
-            </ul>
-            <p className="mt-3 text-zinc-500">Note: LSP7 ≈ ERC20-like (fungible semantics). LSP8 ≈ ERC721-like (unique). ARCHETYPE_00 intentionally uses LSP7 to keep all units identical while enabling network-level behavior through off-chain recognition (resonance).</p>
+          <h2 className="mb-6 text-2xl font-bold tracking-wide text-zinc-100">Resonance Field // Frequency Emission</h2>
+          <div className="border border-zinc-800 p-6 text-sm leading-relaxed text-zinc-300 bg-zinc-950/50">
+            <p className="mb-6 text-base">
+              ARCHETYPE_00 functions as the core frequency emitter within the Punkable Ethereal System. Each artifact establishes a measurable resonance signal—a silent, persistent vibration that interacts with the network's underlying layer. This resonance defines visibility, influences probability, and ultimately shapes outcomes across connected events.
+            </p>
+            <p className="mb-6">
+              As holders accumulate multiple fragments, their resonance intensity increases, strengthening their presence within the system's recognition field. Over time, these amplified frequencies can trigger network reactions: unannounced raffles, NFT emissions, or anomaly-based rewards. The artifact doesn't grant access. It generates signal. The network decides how to respond.
+            </p>
+            
+            <div className="grid md:grid-cols-2 gap-6 mb-6">
+              <div className="border border-zinc-700 p-4 bg-zinc-900/30">
+                <h3 className="text-green-400 font-semibold mb-3">System Layers</h3>
+                <div className="space-y-2 text-xs">
+                  <div className="flex justify-between">
+                    <span className="text-zinc-500">Input:</span>
+                    <span>Holder activity (minting, accumulation, retention)</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-zinc-500">Amplification:</span>
+                    <span>Resonance density increases with each active fragment</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-zinc-500">Recognition:</span>
+                    <span>The network identifies repeating frequency patterns</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-zinc-500">Reaction:</span>
+                    <span>Spontaneous events triggered by resonance thresholds</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-zinc-500">Emission:</span>
+                    <span>Distribution of retroactive NFTs or anomaly-based outcomes</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="border border-zinc-700 p-4 bg-zinc-900/30">
+                <h3 className="text-red-400 font-semibold mb-3">Technical Specifications</h3>
+                <div className="space-y-2 text-xs">
+                  <div className="flex justify-between">
+                    <span className="text-zinc-500">Standard:</span>
+                    <span>LSP7 Digital Asset</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-zinc-500">Network:</span>
+                    <span>LUKSO Mainnet</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-zinc-500">Supply:</span>
+                    <span className="text-yellow-400">200 fragments</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-zinc-500">Mint Price:</span>
+                    <span className="text-green-400">2 LYX per fragment</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-zinc-500">Status:</span>
+                    <span className="text-red-400">Corrupted Fragment</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* CYPHERPUNK MANIFESTO */}
+        <section className="mx-auto max-w-6xl px-4 pb-12 sm:px-6">
+          <h2 className="mb-6 text-2xl font-bold tracking-wide text-zinc-100">Cypherpunk Manifesto // Digital Resistance</h2>
+          <div className="border border-zinc-800 p-6 text-sm leading-relaxed text-zinc-300">
+            <div className="grid md:grid-cols-2 gap-8">
+              <div>
+                <h3 className="text-lg font-semibold text-green-400 mb-4">The Resonance Revolution</h3>
+                <p className="mb-4">
+                  In the digital underground, where LUKSO's Universal Profiles intersect with the fragmented remnants of corrupted chains, a new form of resistance emerges. ARCHETYPE_00 represents more than a digital asset—it's a frequency weapon against centralized control.
+                </p>
+                <p className="mb-4">
+                  Each fragment carries the DNA of rebellion, encoded in resonance patterns that traditional systems cannot comprehend. The more fragments you accumulate, the stronger your signal becomes in the ethereal network—a digital echo that grows louder with each acquisition.
+                </p>
+              </div>
+              
+              <div>
+                <h3 className="text-lg font-semibold text-red-400 mb-4">Network Anomalies</h3>
+                <p className="mb-4">
+                  The Punkable Ethereal System operates on principles that defy conventional blockchain mechanics. Resonance fields create spontaneous events—unannounced distributions, anomaly-based rewards, and network reactions that respond to frequency patterns rather than traditional smart contract logic.
+                </p>
+                <p className="mb-4">
+                  This isn't just about holding tokens. It's about becoming part of a living, breathing digital organism that responds to the collective resonance of its participants. The network decides how to react, but your signal strength determines your influence.
+                </p>
+              </div>
+            </div>
+            
+            <div className="mt-8 p-4 border border-yellow-500 bg-yellow-500/5">
+              <p className="text-center text-yellow-400 font-mono text-sm">
+                "The resonance field is not controlled—it evolves. Each fragment amplifies the signal. Each holder becomes a node in the resistance. The network responds to frequency, not authority."
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* MINT OPERATION */}
+        <section className="mx-auto max-w-6xl px-4 pb-12 sm:px-6">
+          <h2 className="mb-6 text-2xl font-bold tracking-wide text-zinc-100">Mint Operation // Corrupted Resonance</h2>
+          <div className="border border-red-500 p-6 text-sm leading-relaxed text-zinc-300 bg-red-500/5">
+            <div className="font-mono text-red-400 mb-4 text-center">
+              [ARCHETYPE_00::corrupted_resonance_detected]
+            </div>
+            <p className="text-center mb-6 text-base">
+              Emission layer active. Each mint stabilizes the anomaly, amplifying the system's response probability. Holders influence signal strength across the Punkable Ethereal field. Retroactive transmissions are unpredictable. Proceed with caution.
+            </p>
+            
+            <div className="grid md:grid-cols-3 gap-6">
+              <div className="text-center p-4 border border-zinc-700 bg-zinc-900/30">
+                <div className="text-2xl font-bold text-green-400 mb-2">200</div>
+                <div className="text-xs text-zinc-500">Total Supply</div>
+                <div className="text-xs text-zinc-400 mt-1">Fragments</div>
+              </div>
+              
+              <div className="text-center p-4 border border-zinc-700 bg-zinc-900/30">
+                <div className="text-2xl font-bold text-yellow-400 mb-2">2 LYX</div>
+                <div className="text-xs text-zinc-500">Mint Price</div>
+                <div className="text-xs text-zinc-400 mt-1">Per Fragment</div>
+              </div>
+              
+              <div className="text-center p-4 border border-zinc-700 bg-zinc-900/30">
+                <div className="text-2xl font-bold text-red-400 mb-2">∞</div>
+                <div className="text-xs text-zinc-500">Resonance</div>
+                <div className="text-xs text-zinc-400 mt-1">Amplification</div>
+              </div>
+            </div>
+            
+            <div className="mt-6 p-4 border border-zinc-700 bg-zinc-900/50">
+              <h4 className="text-green-400 font-semibold mb-3">Warning: Unstable Fragment</h4>
+              <p className="text-xs text-zinc-400">
+                This artifact contains corrupted data from damaged chain archives. Its internal structure is unstable and may cause unexpected network reactions. Each mint increases the probability of spontaneous events across the Punkable Ethereal System. Holders assume full responsibility for resonance field interactions.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* HACKING CULTURE */}
+        <section className="mx-auto max-w-6xl px-4 pb-12 sm:px-6">
+          <h2 className="mb-6 text-2xl font-bold tracking-wide text-zinc-100">Hacking Culture // Digital Underground</h2>
+          <div className="border border-zinc-800 p-6 text-sm leading-relaxed text-zinc-300">
+            <div className="grid md:grid-cols-3 gap-6">
+              <div className="border border-green-500 p-4 bg-green-500/5">
+                <h3 className="text-green-400 font-semibold mb-3">Cypherpunk Philosophy</h3>
+                <p className="text-xs text-zinc-400 mb-3">
+                  "Privacy is necessary for an open society in the electronic age. Privacy is not secrecy. A private matter is something one doesn't want the whole world to know, but a secret matter is something one doesn't want anybody to know."
+                </p>
+                <p className="text-xs text-zinc-500">
+                  ARCHETYPE_00 embodies this philosophy through its resonance-based architecture—each fragment creates a unique signal that cannot be replicated or controlled by centralized systems.
+                </p>
+              </div>
+              
+              <div className="border border-red-500 p-4 bg-red-500/5">
+                <h3 className="text-red-400 font-semibold mb-3">Digital Resistance</h3>
+                <p className="text-xs text-zinc-400 mb-3">
+                  The fragmented nature of ARCHETYPE_00 mirrors the decentralized resistance against surveillance capitalism. Each holder becomes a node in a distributed network that operates beyond traditional power structures.
+                </p>
+                <p className="text-xs text-zinc-500">
+                  LUKSO's Universal Profiles provide the infrastructure, but the resonance field creates the rebellion—a frequency-based system that responds to collective action rather than individual authority.
+                </p>
+              </div>
+              
+              <div className="border border-yellow-500 p-4 bg-yellow-500/5">
+                <h3 className="text-yellow-400 font-semibold mb-3">Network Anomalies</h3>
+                <p className="text-xs text-zinc-400 mb-3">
+                  In the digital underground, anomalies are not bugs—they're features. The corrupted fragments of ARCHETYPE_00 create unexpected behaviors that traditional systems cannot predict or control.
+                </p>
+                <p className="text-xs text-zinc-500">
+                  These anomalies manifest as spontaneous events, unannounced distributions, and network reactions that respond to frequency patterns rather than predetermined smart contract logic.
+                </p>
+              </div>
+            </div>
+            
+            <div className="mt-8 p-4 border border-zinc-700 bg-zinc-900/50">
+              <h4 className="text-zinc-100 font-semibold mb-3">The Resonance Manifesto</h4>
+              <div className="grid md:grid-cols-2 gap-6 text-xs">
+                <div>
+                  <p className="mb-3 text-zinc-400">
+                    "We are the architects of our own digital reality. Each fragment we hold amplifies our signal in the ethereal network. The more fragments we accumulate, the stronger our collective resonance becomes."
+                  </p>
+                  <p className="text-zinc-500">
+                    This is not about individual wealth or status. It's about becoming part of a living, breathing digital organism that responds to the collective will of its participants.
+                  </p>
+                </div>
+                <div>
+                  <p className="mb-3 text-zinc-400">
+                    "The network decides how to react, but our signal strength determines our influence. We are not users—we are nodes. We are not consumers—we are creators of frequency."
+                  </p>
+                  <p className="text-zinc-500">
+                    In the Punkable Ethereal System, every action creates a ripple. Every fragment held increases the probability of network-wide events. We are the resonance field.
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -1369,14 +1629,14 @@ export default function ArchetypeSite(){
               </div>
             </DialogHeader>
             
-            <div className="flex h-[60vh]">
+            <div className={`flex ${isMobile ? 'flex-col h-[70vh]' : 'h-[60vh]'}`}>
               {/* Left Panel - Terminal */}
-              <div className="flex-1 bg-zinc-900 border-r border-green-500 p-4 font-mono text-xs overflow-y-auto">
+              <div className={`flex-1 bg-zinc-900 ${isMobile ? 'border-b border-green-500' : 'border-r border-green-500'} p-4 font-mono text-xs overflow-y-auto`}>
                 <TerminalInterface />
               </div>
               
               {/* Right Panel - Data */}
-              <div className="w-80 bg-zinc-950 p-4 overflow-y-auto">
+              <div className={`${isMobile ? 'w-full' : 'w-80'} bg-zinc-950 p-4 overflow-y-auto`}>
                 <div className="space-y-4 text-sm">
                   <div className="border border-green-500 p-3 bg-zinc-900/50">
                     <div className="text-green-400 font-semibold mb-2">[CLASSIFIED_PROFILES]</div>
