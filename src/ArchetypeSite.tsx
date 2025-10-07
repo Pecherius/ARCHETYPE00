@@ -1373,15 +1373,18 @@ export default function ArchetypeSite(){
                     <div className="text-xs text-yellow-300 font-mono">[ACTIVE]</div>
                   </div>
                   <p className="text-xs text-yellow-200 mb-3">
-                    Reach 50 points and claim your fragment reward
+                    Reach 50 points and unlock the mystery reward
                   </p>
                   <div className="flex items-center justify-between">
                     <div className="text-xs text-zinc-400">
-                      Prize: <span className="text-yellow-400 font-bold">1 ARCHETYPE_00</span>
+                      Prize: <span className="text-yellow-400 font-bold">[CLASSIFIED]</span>
                     </div>
                     <div className="text-xs text-green-400 font-mono">
                       [CONFIRMED]
                     </div>
+                  </div>
+                  <div className="mt-2 text-xs text-zinc-500 font-mono">
+                    // Reward details encrypted - claim to decrypt
                   </div>
                 </div>
                 
