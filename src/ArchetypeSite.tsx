@@ -1310,7 +1310,20 @@ export default function ArchetypeSite(){
           </div>
 
           <div className="flex flex-wrap items-center justify-center gap-3">
-            <a href="https://universal.page/drops/archetype_00" target="_blank" rel="noreferrer" className="border border-zinc-700 px-4 py-2 text-zinc-100 hover:bg-zinc-900/60">Access drop →</a>
+            <a 
+              href="https://universal.page/drops/archetype_00" 
+              target="_blank" 
+              rel="noreferrer" 
+              className="group relative overflow-hidden border-2 border-green-500 bg-gradient-to-r from-green-900/30 to-emerald-900/30 px-6 py-3 text-green-400 hover:from-green-800/40 hover:to-emerald-800/40 transition-all duration-300 hover:scale-105"
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 to-emerald-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <div className="relative flex items-center gap-2">
+                <span className="text-xs font-mono">[FRAGMENT_ACCESS]</span>
+                <span className="font-bold">MINT_NODE</span>
+                <span className="text-green-300 group-hover:translate-x-1 transition-transform duration-300">→</span>
+              </div>
+              <div className="absolute -top-1 -right-1 w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+            </a>
           </div>
 
           <div className="text-xs text-zinc-600">Keys: <kbd className="bg-zinc-800 px-1">R</kbd> pulse · <kbd className="bg-zinc-800 px-1">G</kbd> glitch · <kbd className="bg-zinc-800 px-1">:</kbd> VHS · Konami → Lab · <span className="text-zinc-500">hidden sequence</span></div>
@@ -1352,6 +1365,26 @@ export default function ArchetypeSite(){
                   <p>• Resonance glitch effects intensify over time</p>
                   <p>• Survive as long as possible in the neural network</p>
                 </div>
+                
+                {/* Casino Prize Button */}
+                <div className="mt-6 p-4 border-2 border-yellow-500 bg-gradient-to-r from-yellow-900/20 to-orange-900/20 rounded-lg">
+                  <div className="flex items-center justify-between mb-2">
+                    <h4 className="text-yellow-400 font-bold text-sm">🎰 NEURAL_CASINO</h4>
+                    <div className="text-xs text-yellow-300 font-mono">[ACTIVE]</div>
+                  </div>
+                  <p className="text-xs text-yellow-200 mb-3">
+                    Reach 50 points and claim your fragment reward
+                  </p>
+                  <div className="flex items-center justify-between">
+                    <div className="text-xs text-zinc-400">
+                      Prize: <span className="text-yellow-400 font-bold">1 ARCHETYPE_00</span>
+                    </div>
+                    <div className="text-xs text-green-400 font-mono">
+                      [CONFIRMED]
+                    </div>
+                  </div>
+                </div>
+                
                 <div className="mt-4 p-3 border border-red-500 bg-red-500/10">
                   <p className="text-xs text-red-400 font-mono">
                     WARNING: High-frequency gameplay may cause visual distortion
@@ -1936,7 +1969,21 @@ export default function ArchetypeSite(){
           )}
           
           <div className="mb-4">
-            <a id="drop" href="https://universal.page/drops/archetype_00" target="_blank" rel="noreferrer" className="inline-block border border-zinc-700 px-3 py-1 text-zinc-100 hover:bg-zinc-900">Access drop →</a>
+            <a 
+              id="drop" 
+              href="https://universal.page/drops/archetype_00" 
+              target="_blank" 
+              rel="noreferrer" 
+              className="group relative inline-block overflow-hidden border-2 border-cyan-500 bg-gradient-to-r from-cyan-900/20 to-blue-900/20 px-4 py-2 text-cyan-400 hover:from-cyan-800/30 hover:to-blue-800/30 transition-all duration-300 hover:scale-105"
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <div className="relative flex items-center gap-2">
+                <span className="text-xs font-mono">[NODE_ACCESS]</span>
+                <span className="font-bold">UNIVERSAL_PROFILE</span>
+                <span className="text-cyan-300 group-hover:translate-x-1 transition-transform duration-300">→</span>
+              </div>
+              <div className="absolute -top-1 -right-1 w-1.5 h-1.5 bg-cyan-400 rounded-full animate-pulse"></div>
+            </a>
           </div>
           
           {/* Real Information - Out of Character */}
