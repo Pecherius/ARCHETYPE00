@@ -771,35 +771,33 @@ function NeuralPingPong() {
       setBall(prev => {
         let newBall = { ...prev };
         
-             // Progressive difficulty - MUCH easier for first 10 seconds
+             // Progressive difficulty - balanced and unlimited
              const currentTime = Date.now();
              const gameDuration = (currentTime - gameStartTime) / 1000; // seconds
              let difficultyMultiplier = 1;
              if (gameDuration < 10) {
-               difficultyMultiplier = 0.2; // 80% easier for first 10 seconds
+               difficultyMultiplier = 0.5; // 50% easier for first 10 seconds
              } else if (gameDuration < 20) {
-               difficultyMultiplier = 0.4; // 60% easier for next 10 seconds
+               difficultyMultiplier = 0.7; // 30% easier for next 10 seconds
              } else if (gameDuration < 30) {
-               difficultyMultiplier = 0.6; // 40% easier for next 10 seconds
+               difficultyMultiplier = 0.85; // 15% easier for next 10 seconds
              } else {
-               difficultyMultiplier = Math.min(0.8 + (gameDuration - 30) * 0.02, 1.0); // Very gradual increase
+               // Progressive increase without limit - gets harder over time
+               difficultyMultiplier = 1.0 + (gameDuration - 30) * 0.05; // 5% increase per second after 30s
              }
         
-             // Apply physics with progressive difficulty - MUCH easier
-             newBall.vx += newBall.dx * 0.015 * difficultyMultiplier; // MUCH slower acceleration
-             newBall.vy += newBall.dy * 0.015 * difficultyMultiplier;
+             // Apply physics with progressive difficulty - balanced
+             newBall.vx += newBall.dx * 0.04 * difficultyMultiplier; // Balanced acceleration
+             newBall.vy += newBall.dy * 0.04 * difficultyMultiplier;
              
              // Apply friction (more aggressive to prevent runaway speeds)
              newBall.vx *= 0.98; // More friction
              newBall.vy *= 0.98;
              
-             // Limit maximum velocity to prevent impossible situations
-             const maxVelocity = 2; // MUCH slower max speed
-             newBall.vx = Math.max(-maxVelocity, Math.min(maxVelocity, newBall.vx));
-             newBall.vy = Math.max(-maxVelocity, Math.min(maxVelocity, newBall.vy));
+             // No velocity limit - progressive difficulty only
              
-             // Update position with progressive speed
-             const currentSpeed = Math.min(speed * difficultyMultiplier, 2); // MUCH slower overall
+             // Update position with progressive speed - no limit
+             const currentSpeed = speed * difficultyMultiplier;
              newBall.x += newBall.vx * currentSpeed;
              newBall.y += newBall.vy * currentSpeed;
         
@@ -843,7 +841,7 @@ function NeuralPingPong() {
             }
             return newScore;
           });
-               setSpeed(prev => Math.min(prev + 0.1, 6)); // MUCH slower speed increase
+               setSpeed(prev => prev + 0.3); // Progressive speed increase - no limit
           
           // Spawn floating message on successful hit
           if (Math.random() < 0.3) { // 30% chance
@@ -1141,7 +1139,7 @@ function NeuralPingPong() {
     
     // Start ball from center top with more random direction
     const randomAngle = (Math.random() - 0.5) * Math.PI / 2; // -45 to 45 degrees for more variety
-    const randomSpeed = Math.random() * 0.3 + 0.2; // 0.2 to 0.5 speed range - MUCH slower
+    const randomSpeed = Math.random() * 1.0 + 0.8; // 0.8 to 1.8 speed range - stronger initial movement
     const initialVx = Math.sin(randomAngle) * randomSpeed;
     const initialVy = Math.abs(Math.cos(randomAngle)) * randomSpeed; // Always downward
     
@@ -1150,8 +1148,8 @@ function NeuralPingPong() {
       y: 100, 
       dx: initialVx, 
       dy: initialVy,
-      vx: initialVx * 0.02, // MUCH smaller initial velocity
-      vy: initialVy * 0.02
+      vx: initialVx * 0.5, // Stronger initial velocity for automatic movement
+      vy: initialVy * 0.5
     });
     setPaddle({ x: 350, y: 550, width: 150 }); // Bigger paddle
     setGlitchLines([]);
