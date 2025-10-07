@@ -692,6 +692,8 @@ function NeuralPingPong() {
   const [glitchIntensity, setGlitchIntensity] = useState(0);
   const [showWinMessage, setShowWinMessage] = useState(false);
   const [geometricObstacles, setGeometricObstacles] = useState<Array<{x: number, y: number, size: number, rotation: number, speed: number}>>([]);
+  const [lossCount, setLossCount] = useState(0);
+  const [gameHistory, setGameHistory] = useState<Array<{score: number, timestamp: number}>>([]);
   
   // Game objects
   const [ball, setBall] = useState({ x: 400, y: 300, dx: 2, dy: 2 });
@@ -717,7 +719,7 @@ function NeuralPingPong() {
           newBall.dy = -newBall.dy;
           setScore(prev => {
             const newScore = prev + 1;
-            if (newScore >= 50) {
+            if (newScore >= 40) {
               setGameState('won');
               setShowWinMessage(true);
             }
@@ -730,6 +732,8 @@ function NeuralPingPong() {
         // Game over
         if (newBall.y >= 600) {
           setGameState('gameOver');
+          setLossCount(prev => prev + 1);
+          setGameHistory(prev => [...prev, { score, timestamp: Date.now() }]);
           return prev;
         }
         
@@ -958,17 +962,51 @@ function NeuralPingPong() {
   const startGame = () => {
     setGameState('playing');
     setScore(0);
-    setSpeed(2);
+    setSpeed(8);
     setGlitchIntensity(0);
     setBall({ x: 400, y: 300, dx: 2, dy: 2 });
     setPaddle({ x: 350, y: 550, width: 100 });
     setGlitchLines([]);
-  };
-  
-  const resetGame = () => {
-    setGameState('menu');
     setShowWinMessage(false);
   };
+
+  const resetGame = () => {
+    setGameState('menu');
+    setScore(0);
+    setSpeed(8);
+    setGlitchIntensity(0);
+    setBall({ x: 400, y: 300, dx: 2, dy: 2 });
+    setPaddle({ x: 350, y: 550, width: 100 });
+    setGlitchLines([]);
+    setShowWinMessage(false);
+  };
+
+  const captureScore = () => {
+    if (canvasRef.current) {
+      const canvas = canvasRef.current;
+      const link = document.createElement('a');
+      link.download = `neural-ping-pong-score-${score}-${Date.now()}.png`;
+      link.href = canvas.toDataURL();
+      link.click();
+    }
+  };
+
+  const getLossMessage = () => {
+    const messages = [
+      "Neural network overload detected. Try again, human.",
+      "Resonance frequency disrupted. Your signal is weak.",
+      "The matrix has rejected your attempt. Pathetic.",
+      "Even a corrupted fragment performs better than this.",
+      "Your neural pathways need recalibration. Try harder.",
+      "The system laughs at your feeble attempt.",
+      "Error 404: Skill not found. Please try again.",
+      "Your resonance field is too weak. Get stronger.",
+      "The archetype fragments mock your performance.",
+      "System status: Disappointed. Try again."
+    ];
+    return messages[lossCount % messages.length];
+  };
+  
   
   if (showWinMessage) {
     return (
@@ -979,12 +1017,20 @@ function NeuralPingPong() {
         <div className="text-xl text-zinc-300 mb-4">
           DM PUNKABLE
         </div>
-        <button 
-          onClick={resetGame}
-          className="px-4 py-2 border border-green-400 bg-green-400/20 text-green-400 hover:bg-green-400/30"
-        >
-          PLAY AGAIN
-        </button>
+        <div className="mb-4">
+          <button 
+            onClick={captureScore}
+            className="px-4 py-2 border border-cyan-500 bg-cyan-500/20 text-cyan-400 hover:bg-cyan-500/30 mr-2"
+          >
+            📸 CAPTURE SCORE
+          </button>
+          <button 
+            onClick={resetGame}
+            className="px-4 py-2 border border-green-400 bg-green-400/20 text-green-400 hover:bg-green-400/30"
+          >
+            PLAY AGAIN
+          </button>
+        </div>
       </div>
     );
   }
@@ -1011,16 +1057,41 @@ function NeuralPingPong() {
   }
   
   if (gameState === 'gameOver') {
+    const bestScore = Math.max(...gameHistory.map(g => g.score), score);
+    const averageScore = gameHistory.length > 0 ? Math.round(gameHistory.reduce((sum, g) => sum + g.score, 0) / gameHistory.length) : score;
+    
     return (
       <div className="border border-zinc-800 p-4 bg-zinc-950 text-center">
         <h3 className="text-lg font-semibold text-red-400 mb-4">NEURAL_LINK_LOST</h3>
-        <p className="text-sm text-zinc-400 mb-4">Score: {score}</p>
-        <button 
-          onClick={resetGame}
-          className="px-4 py-2 border border-zinc-700 bg-zinc-800 text-zinc-100 hover:bg-zinc-700"
-        >
-          RECONNECT_NEURAL_LINK
-        </button>
+        <div className="text-sm text-zinc-400 mb-4">
+          <p>Score: {score}</p>
+          <p className="text-xs text-zinc-500 mt-2">{getLossMessage()}</p>
+        </div>
+        
+        <div className="mb-4 p-3 border border-zinc-700 bg-zinc-900/50 rounded">
+          <h4 className="text-xs text-zinc-300 mb-2">SYSTEM_STATISTICS</h4>
+          <div className="text-xs text-zinc-400 space-y-1">
+            <p>Losses: {lossCount}</p>
+            <p>Best Score: {bestScore}</p>
+            <p>Average: {averageScore}</p>
+            <p>Games Played: {gameHistory.length + 1}</p>
+          </div>
+        </div>
+        
+        <div className="mb-4">
+          <button 
+            onClick={captureScore}
+            className="px-3 py-1 border border-cyan-500 bg-cyan-500/20 text-cyan-400 hover:bg-cyan-500/30 mr-2 text-xs"
+          >
+            📸 SAVE SCORE
+          </button>
+          <button 
+            onClick={resetGame}
+            className="px-3 py-1 border border-zinc-700 bg-zinc-800 text-zinc-100 hover:bg-zinc-700 text-xs"
+          >
+            TRY AGAIN
+          </button>
+        </div>
       </div>
     );
   }
@@ -1373,7 +1444,7 @@ export default function ArchetypeSite(){
                     <div className="text-xs text-yellow-300 font-mono">[ACTIVE]</div>
                   </div>
                   <p className="text-xs text-yellow-200 mb-3">
-                    Reach 50 points and unlock the mystery reward
+                    Reach 40 points and unlock the mystery reward
                   </p>
                   <div className="flex items-center justify-between">
                     <div className="text-xs text-zinc-400">
