@@ -1,5 +1,8 @@
 "use client"
 
+// Welcome to the most over-engineered raffle system in the digital wasteland
+// If you're reading this on GitHub, congratulations! You found the source code.
+// Now you can see exactly how we make random selection look complicated and mysterious.
 import { useState, useEffect, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import confetti from "canvas-confetti"
@@ -14,6 +17,8 @@ import RaffleResultsScreen from "./RaffleResultsScreen"
 import SavedUsersManager from "./SavedUsersManager"
 import SavedPrizesManager from "./SavedPrizesManager"
 
+// The sacred color palette - because apparently we need 15 different shades of pink
+// to make a raffle system look "professional" and "cyberpunk"
 const COLORS = [
   "#FF69B4", "#FFB6C1", "#FF1493", "#FFC0CB", "#FF91A4", "#FF6B9D", "#C71585", 
   "#FF20B2", "#FF007F", "#FF69B4", "#DA70D6", "#DDA0DD", "#EE82EE", "#FF1493", "#FFB6C1"
@@ -22,7 +27,8 @@ const COLORS = [
 const PunkableRaffleSystem = () => {
   const { t } = useRaffleLanguage()
   
-  // Current raffle state
+  // Current raffle state - because apparently we need 47 different state variables
+  // to manage what could have been done with a simple array and Math.random()
   const [currentRaffle, setCurrentRaffle] = useState<Raffle | null>(null)
   const [participants, setParticipants] = useState<Participant[]>([])
   const [prizes, setPrizes] = useState<Prize[]>([])
@@ -47,7 +53,8 @@ const PunkableRaffleSystem = () => {
   const [newPrizeName, setNewPrizeName] = useState("")
   const [newPrizeCount, setNewPrizeCount] = useState("")
 
-  // Raffle creation states
+  // Raffle creation states - because apparently we need 5 different state variables
+  // to store what could have been a single object. But hey, at least it's "reactive"!
   const [showCreateForm, setShowCreateForm] = useState(false)
   const [newRaffleTitle, setNewRaffleTitle] = useState("")
   const [newRaffleDescription, setNewRaffleDescription] = useState("")
@@ -71,7 +78,8 @@ const PunkableRaffleSystem = () => {
   const [savePrizeCount, setSavePrizeCount] = useState("")
   const [savePrizeImage, setSavePrizeImage] = useState("")
 
-  // Load raffle data
+  // Load raffle data - because apparently we need 4 different API calls
+  // to load what could have been a single JSON object. But hey, at least it's "microservices"!
   const loadRaffleData = async (raffleId: string) => {
     setLoading(true)
     try {
@@ -147,6 +155,9 @@ const PunkableRaffleSystem = () => {
     return availablePrizes[randomIndex]
   }
 
+  // The most over-engineered random selection function in the history of web development
+  // Because apparently we need 47 lines of code to do what Math.random() could do in 1 line
+  // But hey, at least it has "dramatic shuffling" and "weighted selection"!
   const selectWinner = async () => {
     if (selecting || participants.length === 0 || !currentRaffle) return
 
@@ -157,11 +168,15 @@ const PunkableRaffleSystem = () => {
     const selectedWinner = getRandomWeightedParticipant()
     if (!selectedWinner) return
 
+    // Create a weighted array - because apparently we need to duplicate participants
+    // based on their ticket count instead of just using Math.random() with weights
     const weightedArray = participants.flatMap((p) => Array(p.tickets).fill(p))
 
     let shuffleCount = 0
-    const totalShuffles = 15
+    const totalShuffles = 15 // Because 15 shuffles makes it look more "dramatic"
 
+    // The dramatic shuffling effect - because apparently we need to show
+    // random participants for 15 iterations before revealing the winner
     const shuffle = () => {
       if (shuffleCount < totalShuffles) {
         const randomIndex = Math.floor(Math.random() * weightedArray.length)
@@ -465,7 +480,7 @@ const PunkableRaffleSystem = () => {
           <div className="text-center mb-8">
             <div className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-500/30 rounded-full text-amber-400 text-sm font-medium mb-6">
               <span className="w-2 h-2 bg-amber-500 rounded-full animate-pulse"></span>
-              VAULT-TEC CERTIFIED RAFFLE SYSTEM v2.1
+              WASTELAND CERTIFIED RAFFLE SYSTEM v2.1
             </div>
             <h3 className="text-4xl font-bold text-zinc-100 mb-6 bg-gradient-to-r from-amber-400 to-orange-400 bg-clip-text text-transparent">
               {t.raffleSystem}
@@ -583,7 +598,7 @@ const PunkableRaffleSystem = () => {
                 <div className="text-center mb-6">
                   <div className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-500/30 rounded-full text-amber-400 text-sm font-medium mb-4">
                     <span className="w-2 h-2 bg-amber-500 rounded-full animate-pulse"></span>
-                    VAULT-TEC RAFFLE INITIALIZATION
+                    WASTELAND RAFFLE INITIALIZATION
                   </div>
                   <h4 className="text-3xl font-bold text-zinc-100 mb-2 bg-gradient-to-r from-amber-400 to-orange-400 bg-clip-text text-transparent">{t.createNewRaffle}</h4>
                   <p className="text-zinc-400 text-sm">Configure your wasteland selection parameters</p>
@@ -687,7 +702,8 @@ const PunkableRaffleSystem = () => {
         <RaffleLanguageSelector />
       </div>
       <div className="border border-zinc-800 p-6 text-sm leading-relaxed text-zinc-300">
-        {/* Header */}
+        {/* Header - because apparently we need a whole section to explain
+            what a raffle system does, instead of just calling it "Raffle System" */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-4">
             {currentRaffle?.image_url && (
