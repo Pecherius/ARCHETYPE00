@@ -1654,11 +1654,11 @@ function ArchetypeExclusivePrizesMuseum() {
   return (
     <div className="relative w-full">
       {/* Premium Header */}
-      <div className="text-center mb-6">
-        <h2 className="text-2xl font-bold text-orange-400 font-mono mb-2">
+      <div className="text-center mb-4">
+        <h2 className="text-xl font-bold text-orange-400 font-mono mb-2">
           ARCHETYPE_00_EXCLUSIVE_PRIZES
         </h2>
-        <p className="text-sm text-zinc-400 font-mono">
+        <p className="text-xs text-zinc-400 font-mono">
           FLUFFY_DYNASTY_REWARDS_MUSEUM • ARCHETYPE_00 HOLDERS ONLY
         </p>
       </div>
@@ -1706,7 +1706,7 @@ function ArchetypeExclusivePrizesMuseum() {
         {/* Main Display Area */}
         <div 
           ref={containerRef}
-          className="relative w-full h-[400px] md:h-[500px] bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950 border border-zinc-800 rounded-xl overflow-hidden cursor-grab active:cursor-grabbing select-none"
+          className="relative w-full h-[300px] md:h-[400px] bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950 border border-zinc-800 rounded-xl overflow-hidden cursor-grab active:cursor-grabbing select-none"
           onMouseDown={handleDragStart}
           onMouseMove={isDragging ? handleDragMove : undefined}
           onMouseUp={handleDragEnd}
@@ -1743,7 +1743,7 @@ function ArchetypeExclusivePrizesMuseum() {
                 <img
                   src={currentImage.url}
                   alt={currentImage.title}
-                  className="max-w-full max-h-[300px] md:max-h-[400px] object-contain drop-shadow-lg"
+                  className="max-w-full max-h-[200px] md:max-h-[300px] object-contain drop-shadow-lg"
                   style={{ 
                     filter: 'contrast(1.05) saturate(1.1) brightness(1.02)',
                     imageRendering: 'auto'
@@ -1764,12 +1764,12 @@ function ArchetypeExclusivePrizesMuseum() {
           </div>
 
           {/* Image Info Overlay */}
-          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
+          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
             <div className="text-center">
-              <h3 className="text-xl font-bold text-orange-400 font-mono mb-2">
+              <h3 className="text-lg font-bold text-orange-400 font-mono mb-1">
                 #{currentImage.id} {currentImage.title}
               </h3>
-              <p className="text-sm text-zinc-300 font-mono max-w-2xl mx-auto">
+              <p className="text-xs text-zinc-300 font-mono max-w-2xl mx-auto">
                 {currentImage.description}
               </p>
             </div>

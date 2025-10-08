@@ -688,17 +688,18 @@ const PunkableRaffleSystem = () => {
               <span className="w-2 h-2 bg-pink-500 rounded-full animate-pulse"></span>
               PUNKABLE_ETHEREAL_RAFFLE_SYSTEM v2.1
             </div>
-            <h3 className="text-2xl md:text-4xl font-bold text-zinc-100 mb-4 md:mb-6 bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent text-center">
+            <h3 className="text-xl md:text-2xl font-bold text-zinc-100 mb-4 bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent text-center">
               <span className="text-red-500">P.E.R.S.</span>
             </h3>
+            <p className="text-sm text-zinc-400 font-mono mb-4">Punkable Ethereal Raffle System</p>
             <div className="max-w-4xl mx-auto space-y-4">
-              <p className="text-zinc-300 text-sm md:text-lg leading-relaxed px-2 md:px-0">
+              <p className="text-zinc-300 text-sm leading-relaxed px-2 md:px-0">
                 A transparent raffle system that uses <span className="text-green-400 font-semibold">weighted selection</span> based on participant data. 
                 Unlike simple random generators, P.E.R.S. considers <span className="text-pink-400 font-semibold">ticket counts and participation history</span> to ensure fair distribution.
               </p>
               <div className="bg-gradient-to-r from-zinc-800/50 to-zinc-900/50 border border-zinc-700/50 rounded-xl p-6 backdrop-blur-sm">
-                <h4 className="text-lg md:text-xl font-bold text-pink-400 mb-3 flex items-center gap-2">
-                  <span className="text-xl md:text-2xl">⚡</span>
+                <h4 className="text-base font-bold text-pink-400 mb-3 flex items-center gap-2">
+                  <span className="text-lg">⚡</span>
                   HOW_P.E.R.S._WORKS
                 </h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs md:text-sm">
