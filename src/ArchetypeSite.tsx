@@ -1595,9 +1595,9 @@ function NeuralPingPong() {
                   >
                     {isCapturing ? "📸 CAPTURING PROOF..." : "📸 CAPTURE ACHIEVEMENT PROOF"}
                   </button>
-                  <p className="text-xs text-yellow-400 font-mono mt-2">
-                    TOMALE CAPTURA A ESTO O SI NO NO TE CREERE QUE LLEGASTE HASTA AQUI
-                  </p>
+            <p className="text-xs text-yellow-400 font-mono mt-2">
+              TAKE A SCREENSHOT OF THIS OR I WON'T BELIEVE YOU REACHED THIS FAR
+            </p>
                 </div>
               )}
             </motion.div>
