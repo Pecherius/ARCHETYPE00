@@ -170,6 +170,46 @@ const QUARANTINE_IMAGES = {
   hoshino: "https://bafybeicvhutbdtysa6657tsjwd3k6xx72wn6drkzaygz4tik2jcx6wfn24.ipfs.dweb.link?filename=Kai%20N.%20Hoshino.png"
 };
 
+// 🎨 FLUFFY_DYNASTIES: Digital museum showcase for ARCHETYPE_00 holders
+const FLUFFY_DYNASTIES_IMAGES = [
+  {
+    id: 1,
+    title: "Medieval Monk",
+    url: "https://bafybeigut6z4cwsjy7jaj7axlagcjqkl2aofejs5v4bvkbj4pszehssr3q.ipfs.dweb.link/10.%20Medieval%20Monk.png",
+    description: "Digital immortality preserved in the matrix"
+  },
+  {
+    id: 2,
+    title: "Gothic Darkness",
+    url: "https://bafybeigut6z4cwsjy7jaj7axlagcjqkl2aofejs5v4bvkbj4pszehssr3q.ipfs.dweb.link/20.%20Gothic%20Darkness.png",
+    description: "Eternal consciousness in the digital realm"
+  },
+  {
+    id: 3,
+    title: "Futurist Motion",
+    url: "https://bafybeigut6z4cwsjy7jaj7axlagcjqkl2aofejs5v4bvkbj4pszehssr3q.ipfs.dweb.link/22.%20Futurist%20Motion.png",
+    description: "Matrix persistence across dimensions"
+  },
+  {
+    id: 4,
+    title: "Cyberpunk Emperor",
+    url: "https://bafybeigut6z4cwsjy7jaj7axlagcjqkl2aofejs5v4bvkbj4pszehssr3q.ipfs.dweb.link/27.%20Cyberpunk%20Emperor.png",
+    description: "Digital sovereignty in the new world"
+  },
+  {
+    id: 5,
+    title: "Eternal Relic",
+    url: "https://bafybeigut6z4cwsjy7jaj7axlagcjqkl2aofejs5v4bvkbj4pszehssr3q.ipfs.dweb.link/31.%20Eternal%20Relic.png",
+    description: "Timeless artifact of digital consciousness"
+  },
+  {
+    id: 6,
+    title: "Dutch Merchant",
+    url: "https://bafybeigut6z4cwsjy7jaj7axlagcjqkl2aofejs5v4bvkbj4pszehssr3q.ipfs.dweb.link/7.%20Dutch%20Merchant.png",
+    description: "Trading in the digital marketplace of ideas"
+  }
+];
+
 // Debug function for image loading
 const debugImageLoad = (url: string, name: string) => {
   console.log(`%c[IMAGE_DEBUG] Loading ${name}: ${url}`, "color:#00ff88; font-family: monospace;");
@@ -1468,6 +1508,135 @@ function NeuralPingPong() {
   );
 }
 
+// 🏛️ FLUFFY_DYNASTIES_MUSEUM: Digital showcase for ARCHETYPE_00 holders
+function FluffyDynastiesMuseum() {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+
+  // Auto-rotate every 3 seconds when not hovered
+  useEffect(() => {
+    if (!isHovered && isAutoPlaying) {
+      const interval = setInterval(() => {
+        setCurrentIndex((prev) => (prev + 1) % FLUFFY_DYNASTIES_IMAGES.length);
+      }, 3000);
+      return () => clearInterval(interval);
+    }
+  }, [isHovered, isAutoPlaying]);
+
+  const currentImage = FLUFFY_DYNASTIES_IMAGES[currentIndex];
+
+  return (
+    <div className="border border-zinc-800 p-6 bg-zinc-950">
+      <div className="text-center mb-6">
+        <h3 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-amber-400 mb-2">
+          FLUFFY_DYNASTIES // DIGITAL_MUSEUM
+        </h3>
+        <p className="text-sm text-zinc-400">
+          Premium rewards for ARCHETYPE_00 holders • Digital immortality in the matrix
+        </p>
+      </div>
+
+      {/* Museum Display */}
+      <div 
+        className="relative bg-gradient-to-br from-zinc-900 to-zinc-950 rounded-lg p-6 border border-orange-500/20"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
+        {/* Current Artwork */}
+        <div className="relative mb-4">
+          <motion.div
+            key={currentIndex}
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+            className="relative"
+          >
+            <img
+              src={currentImage.url}
+              alt={currentImage.title}
+              className="w-full max-w-md mx-auto rounded-lg shadow-2xl border border-orange-500/30"
+              style={{ maxHeight: '400px', objectFit: 'contain' }}
+              onError={(e) => {
+                console.log(`%c[MUSEUM_ERROR] Failed to load ${currentImage.title}`, "color:#ff4444; font-family: monospace;");
+                e.currentTarget.src = `data:image/svg+xml;base64,${btoa(`
+                  <svg width="400" height="400" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="100%" height="100%" fill="#1a1a1a"/>
+                    <text x="50%" y="50%" font-family="monospace" font-size="16" fill="#ff6600" text-anchor="middle" dy=".3em">
+                      ${currentImage.title}
+                    </text>
+                  </svg>
+                `)}`;
+              }}
+            />
+            
+            {/* Hover overlay */}
+            <motion.div
+              className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent rounded-lg flex items-end justify-center p-4"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: isHovered ? 1 : 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <div className="text-center">
+                <h4 className="text-lg font-bold text-orange-400 mb-1">{currentImage.title}</h4>
+                <p className="text-sm text-zinc-300">{currentImage.description}</p>
+              </div>
+            </motion.div>
+          </motion.div>
+        </div>
+
+        {/* Navigation Dots */}
+        <div className="flex justify-center space-x-2 mb-4">
+          {FLUFFY_DYNASTIES_IMAGES.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentIndex(index)}
+              className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                index === currentIndex 
+                  ? 'bg-orange-400 scale-125' 
+                  : 'bg-zinc-600 hover:bg-zinc-500'
+              }`}
+            />
+          ))}
+        </div>
+
+        {/* Controls */}
+        <div className="flex justify-center space-x-4">
+          <button
+            onClick={() => setCurrentIndex((prev) => prev === 0 ? FLUFFY_DYNASTIES_IMAGES.length - 1 : prev - 1)}
+            className="px-4 py-2 bg-zinc-800 border border-zinc-600 text-zinc-300 hover:bg-zinc-700 rounded text-sm font-mono"
+          >
+            ← PREV
+          </button>
+          <button
+            onClick={() => setIsAutoPlaying(!isAutoPlaying)}
+            className={`px-4 py-2 border rounded text-sm font-mono ${
+              isAutoPlaying 
+                ? 'bg-orange-500/20 border-orange-500 text-orange-400' 
+                : 'bg-zinc-800 border-zinc-600 text-zinc-300 hover:bg-zinc-700'
+            }`}
+          >
+            {isAutoPlaying ? '⏸ PAUSE' : '▶ PLAY'}
+          </button>
+          <button
+            onClick={() => setCurrentIndex((prev) => (prev + 1) % FLUFFY_DYNASTIES_IMAGES.length)}
+            className="px-4 py-2 bg-zinc-800 border border-zinc-600 text-zinc-300 hover:bg-zinc-700 rounded text-sm font-mono"
+          >
+            NEXT →
+          </button>
+        </div>
+
+        {/* Museum Info */}
+        <div className="mt-6 text-center">
+          <p className="text-xs text-zinc-500 font-mono">
+            {currentIndex + 1} of {FLUFFY_DYNASTIES_IMAGES.length} • Hold ARCHETYPE_00 fragments to qualify
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function ArchetypeSite(){
   const [labOpen, setLabOpen] = useState(false);
   const [obitOpen, setObitOpen] = useState(false);
@@ -1931,9 +2100,9 @@ export default function ArchetypeSite(){
             <div className="space-y-4">
               {/* Loading NFTs - More cryptic, no background */}
               <motion.div
-                className="opacity-40"
+                className="opacity-20"
                 initial={{ opacity: 0, x: -30 }}
-                animate={{ opacity: 0.4, x: 0 }}
+                animate={{ opacity: 0.2, x: 0 }}
                 transition={{ duration: 0.8, delay: 0.5 }}
               >
                 <div className="text-xs text-pink-400 font-mono mb-1">FRAGMENT_SYNC</div>
@@ -1946,9 +2115,9 @@ export default function ArchetypeSite(){
 
               {/* Universal Profiles - More mysterious */}
               <motion.div
-                className="opacity-40"
+                className="opacity-20"
                 initial={{ opacity: 0, x: -30 }}
-                animate={{ opacity: 0.4, x: 0 }}
+                animate={{ opacity: 0.2, x: 0 }}
                 transition={{ duration: 0.8, delay: 0.8 }}
               >
                 <div className="text-xs text-cyan-400 font-mono mb-1">IDENTITY_MATRIX</div>
@@ -1961,9 +2130,9 @@ export default function ArchetypeSite(){
 
               {/* Pepitoverse 2026 - Corrected */}
               <motion.div
-                className="opacity-40"
+                className="opacity-20"
                 initial={{ opacity: 0, x: -30 }}
-                animate={{ opacity: 0.4, x: 0 }}
+                animate={{ opacity: 0.2, x: 0 }}
                 transition={{ duration: 0.8, delay: 1.1 }}
               >
                 <div className="text-xs text-purple-400 font-mono mb-1">PEPITOVERSE_2026</div>
@@ -1981,9 +2150,9 @@ export default function ArchetypeSite(){
             <div className="space-y-4">
               {/* Fluffy Dynasties - Digital Immortality in Matrix, no background */}
               <motion.div
-                className="opacity-40"
+                className="opacity-20"
                 initial={{ opacity: 0, x: 30 }}
-                animate={{ opacity: 0.4, x: 0 }}
+                animate={{ opacity: 0.2, x: 0 }}
                 transition={{ duration: 0.8, delay: 0.4 }}
               >
                 <div className="text-xs text-orange-400 font-mono mb-1">FLUFFY_DYNASTIES</div>
@@ -1995,9 +2164,9 @@ export default function ArchetypeSite(){
               </motion.div>
               {/* Calculating Benefits - Moved down to avoid collision, no background */}
               <motion.div
-                className="opacity-40"
+                className="opacity-20"
                 initial={{ opacity: 0, x: 30 }}
-                animate={{ opacity: 0.4, x: 0 }}
+                animate={{ opacity: 0.2, x: 0 }}
                 transition={{ duration: 0.8, delay: 0.6 }}
               >
                 <div className="text-xs text-green-400 font-mono mb-1">BENEFIT_CALC</div>
@@ -2010,9 +2179,9 @@ export default function ArchetypeSite(){
 
               {/* Neural Network - More subtle */}
               <motion.div
-                className="opacity-40"
+                className="opacity-20"
                 initial={{ opacity: 0, x: 30 }}
-                animate={{ opacity: 0.4, x: 0 }}
+                animate={{ opacity: 0.2, x: 0 }}
                 transition={{ duration: 0.8, delay: 0.9 }}
               >
                 <div className="text-xs text-yellow-400 font-mono mb-1">NEURAL_SYNC</div>
@@ -2025,9 +2194,9 @@ export default function ArchetypeSite(){
 
               {/* Quantum Selection - More mysterious */}
               <motion.div
-                className="opacity-40"
+                className="opacity-20"
                 initial={{ opacity: 0, x: 30 }}
-                animate={{ opacity: 0.4, x: 0 }}
+                animate={{ opacity: 0.2, x: 0 }}
                 transition={{ duration: 0.8, delay: 1.2 }}
               >
                 <div className="text-xs text-rose-400 font-mono mb-1">QUANTUM_MATRIX</div>
@@ -2229,9 +2398,18 @@ export default function ArchetypeSite(){
             <div className="text-zinc-400">Corrupted Fragment // Status: ACTIVE</div>
           </motion.div>
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.9 }} className="text-[10px] uppercase tracking-[0.3em] text-zinc-500">origin · anomaly · resonance</motion.div>
-          <p className="max-w-3xl text-zinc-400 leading-relaxed">
-            ARCHETYPE_00 is a corrupted fragment, a residual anomaly recovered from damaged chain archives. Its internal structure is unstable, yet it continues to emit measurable resonance throughout the Punkable Ethereal System. Each fragment is identical in form, but the signal of every holder resonates differently. The more fragments you hold, the stronger your echo becomes. Some fragments contain traces of data from the quarantine zone, where certain entities were marked as d34d.
-          </p>
+          
+          {/* Description Card */}
+          <motion.div 
+            className="max-w-4xl bg-zinc-900/80 border border-zinc-700/50 rounded-lg p-6 backdrop-blur-sm shadow-2xl"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.1 }}
+          >
+            <p className="text-zinc-300 leading-relaxed text-lg">
+              ARCHETYPE_00 is a corrupted fragment, a residual anomaly recovered from damaged chain archives. Its internal structure is unstable, yet it continues to emit measurable resonance throughout the Punkable Ethereal System. Each fragment is identical in form, but the signal of every holder resonates differently. The more fragments you hold, the stronger your echo becomes. Some fragments contain traces of data from the quarantine zone, where certain entities were marked as d34d.
+            </p>
+          </motion.div>
           
           {/* Criptic hint for d34d */}
           <div className="mt-4 p-3 border border-zinc-800 bg-zinc-950/50 rounded">
@@ -2321,6 +2499,40 @@ export default function ArchetypeSite(){
               </div>
             </div>
           ))}
+        </section>
+
+        {/* FLUFFY DYNASTIES DIGITAL MUSEUM */}
+        <section data-section="museum" className="mx-auto max-w-6xl px-4 pb-12 sm:px-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            <h2 className="mb-6 text-2xl font-bold tracking-wide text-zinc-100 text-center">
+              <span className="text-orange-400">FLUFFY_DYNASTIES</span> // <span className="text-amber-400">DIGITAL_MUSEUM</span>
+            </h2>
+            <div className="grid gap-6 md:grid-cols-2">
+              <FluffyDynastiesMuseum />
+              <div className="border border-zinc-800 p-4 bg-zinc-950">
+                <h3 className="text-lg font-semibold text-zinc-100 mb-4">HOLDER_BENEFITS</h3>
+                <div className="space-y-3 text-sm text-zinc-400">
+                  <p>• Exclusive access to Fluffy Dynasties collection</p>
+                  <p>• Digital immortality preserved in the matrix</p>
+                  <p>• Premium rewards for ARCHETYPE_00 fragment holders</p>
+                  <p>• Retroactive benefits based on fragment density</p>
+                  <p>• Eternal consciousness in the digital realm</p>
+                </div>
+                
+                <div className="mt-6 p-4 bg-gradient-to-r from-orange-500/10 to-amber-500/10 border border-orange-500/20 rounded">
+                  <h4 className="text-orange-400 font-bold mb-2">DIGITAL_IMMORTALITY</h4>
+                  <p className="text-xs text-zinc-300">
+                    Your Fluffy Dynasty lives forever in the matrix. Each holder's consciousness is preserved 
+                    as a digital artifact, ensuring eternal existence in the cyberpunk realm.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </motion.div>
         </section>
 
         {/* MINT OPERATION - MOVED BEFORE PING PONG */}
