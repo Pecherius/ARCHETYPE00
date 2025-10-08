@@ -1492,6 +1492,9 @@ export default function ArchetypeSite(){
     if (lowerMessage.includes('pepito') || lowerMessage.includes('pepitoverse')) {
       return "2026";
     }
+    if (lowerMessage.includes('pebubu')) {
+      return "The legendary collection that started it all. Pebubu holders received Fluffy Dynasties as retroactive rewards - a perfect example of how the ecosystem rewards early believers.";
+    }
     if (lowerMessage.includes('punkable')) {
       return "Just another digital architect trying to build the future. Nothing special, really.";
     }
@@ -1935,9 +1938,9 @@ export default function ArchetypeSite(){
                   <span className="text-cyan-400 text-xs font-mono">IDENTITY_MATRIX</span>
                 </div>
                 <div className="text-xs text-zinc-500 font-mono">
-                  <div>• Quantum verification</div>
-                  <div>• LUKSO protocol active</div>
-                  <div>• Digital signature: [CLASSIFIED]</div>
+                  <div>• Universal Profiles detected</div>
+                  <div>• LUKSO network sync active</div>
+                  <div>• Pebubu ecosystem: [CONNECTED]</div>
                 </div>
                 <motion.div
                   className="mt-1 h-0.5 bg-zinc-700 rounded-full overflow-hidden"
@@ -1965,9 +1968,9 @@ export default function ArchetypeSite(){
                   <span className="text-purple-400 text-xs font-mono">PEPITOVERSE_2026</span>
                 </div>
                 <div className="text-xs text-zinc-500 font-mono">
-                  <div>• Convergence point: 2026</div>
-                  <div>• Reality matrix: [UNSTABLE]</div>
-                  <div>• Quantum leap: [PENDING]</div>
+                  <div>• Collection exists: [VERIFIED]</div>
+                  <div>• Major updates: 2026</div>
+                  <div>• Ecosystem expansion: [ACTIVE]</div>
                 </div>
                 <motion.div
                   className="mt-1 h-0.5 bg-zinc-700 rounded-full overflow-hidden"
@@ -1988,6 +1991,35 @@ export default function ArchetypeSite(){
           {/* Right Side Processing Elements - Better positioned to avoid collision */}
           <div className="absolute right-4 top-1/2 transform -translate-y-1/2 hidden lg:block">
             <div className="space-y-6">
+              {/* Fluffy Dynasties - Digital Immortality in Matrix */}
+              <motion.div
+                className="bg-zinc-900/60 border border-orange-500/20 rounded-lg p-3 backdrop-blur-sm"
+                initial={{ opacity: 0, x: 30 }}
+                animate={{ opacity: 0.7, x: 0 }}
+                transition={{ duration: 0.8, delay: 0.4 }}
+              >
+                <div className="flex items-center gap-2 mb-1">
+                  <div className="w-1.5 h-1.5 bg-orange-500 rounded-full animate-pulse"></div>
+                  <span className="text-orange-400 text-xs font-mono">FLUFFY_DYNASTIES</span>
+                </div>
+                <div className="text-xs text-zinc-500 font-mono">
+                  <div>• Digital immortality: [ACTIVE]</div>
+                  <div>• Matrix persistence: [ETERNAL]</div>
+                  <div>• Holder consciousness: [PRESERVED]</div>
+                </div>
+                <motion.div
+                  className="mt-1 h-0.5 bg-zinc-700 rounded-full overflow-hidden"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.9 }}
+                >
+                  <motion.div
+                    className="h-full bg-gradient-to-r from-orange-500 to-amber-500"
+                    animate={{ width: ["0%", "60%", "0%"] }}
+                    transition={{ duration: 4.2, repeat: Infinity, ease: "easeInOut", delay: 0.1 }}
+                  />
+                </motion.div>
+              </motion.div>
               {/* Calculating Benefits - Moved down to avoid collision */}
               <motion.div
                 className="bg-zinc-900/60 border border-green-500/20 rounded-lg p-3 backdrop-blur-sm"
@@ -2635,7 +2667,7 @@ export default function ArchetypeSite(){
             </div>
             <div className="border border-zinc-800 p-5">
               <h3 className="mb-2 text-zinc-100">How do reactions work?</h3>
-              <p className="text-sm text-zinc-400">Holding fragments increases your resonance density. The system may react with unannounced raffles and retroactive NFTs (e.g., similar to how Pebubu holders later received Fluffy Dynasties).</p>
+              <p className="text-sm text-zinc-400">Holding fragments increases your resonance density. The system may react with unannounced raffles and retroactive NFTs (e.g., similar to how Pebubu holders later received Fluffy Dynasties). Your Universal Profile on LUKSO enables seamless integration across the ecosystem.</p>
             </div>
             <div className="border border-zinc-800 p-5">
               <h3 className="mb-2 text-zinc-100">Do I need a Universal Profile?</h3>
@@ -3072,7 +3104,7 @@ export default function ArchetypeSite(){
                 <div className="h-48 overflow-y-auto border border-zinc-700 bg-zinc-900/50 p-4 space-y-2">
                   {matrixChatHistory.length === 0 ? (
                     <div className="text-center text-zinc-500 text-sm">
-                      <p>Matrix interface ready. Ask about Pepito, Punkable, LUKSO, the Ethereal Raffle System, or the digital future.</p>
+                      <p>Matrix interface ready. Ask about Pepito, Pebubu, Punkable, LUKSO, Universal Profiles, the Ethereal Raffle System, or the digital future.</p>
                     </div>
                   ) : (
                     matrixChatHistory.map((msg, index) => (
@@ -3111,7 +3143,7 @@ export default function ArchetypeSite(){
                 </div>
                 
                 <div className="text-xs text-zinc-500 text-center">
-                  Try: "Pepito", "Punkable", "JXN", "LUKSO", "Universal Profiles", "LYX", "Fragments", "Crypto", "2026"
+                  Try: "Pepito", "Pebubu", "Punkable", "JXN", "LUKSO", "Universal Profiles", "LYX", "Fragments", "Crypto", "2026"
                 </div>
               </div>
             )}
