@@ -1515,13 +1515,13 @@ function NeuralPingPong() {
   return (
     <div className="border border-zinc-800 p-4 bg-zinc-950">
       <h3 className="text-lg font-semibold text-zinc-100 mb-4">NEURAL_PING_PONG // ACTIVE</h3>
-      <div className="relative w-full" style={{ height: '60vh', minHeight: '400px' }}>
+      <div className="relative w-full" style={{ height: '500px' }}>
         <canvas
           ref={canvasRef}
           width={800}
           height={600}
           onMouseMove={handleMouseMove}
-          className="w-full h-full border border-zinc-700 bg-black cursor-none"
+          className="w-full h-full border border-zinc-700 bg-black cursor-none object-contain"
           style={{ imageRendering: 'pixelated' }}
         />
       </div>
@@ -1663,12 +1663,12 @@ function ArchetypeExclusivePrizesMuseum() {
         </p>
       </div>
 
-      {/* Two Column Layout */}
-      <div className="grid md:grid-cols-2 gap-6 items-start">
+      {/* Two Column Layout - Equal Height */}
+      <div className="grid md:grid-cols-2 gap-6 items-stretch">
         {/* Left Column - Prize Description */}
-        <div className="space-y-4">
+        <div className="flex flex-col">
           {/* Museum Description Section - Optimized for Prize Concept */}
-          <div className="bg-gradient-to-r from-zinc-900/50 to-zinc-800/30 border border-zinc-700/50 rounded-lg p-4 backdrop-blur-sm h-full">
+          <div className="bg-gradient-to-r from-zinc-900/50 to-zinc-800/30 border border-zinc-700/50 rounded-lg p-4 backdrop-blur-sm flex-1 flex flex-col">
             <div className="text-center mb-4">
               <h3 className="text-base font-bold text-orange-400 font-mono mb-2">PRIZE_SAMPLE_EXHIBITION</h3>
               <p className="text-xs text-zinc-400 font-mono">
@@ -1677,7 +1677,7 @@ function ArchetypeExclusivePrizesMuseum() {
             </div>
             
             {/* Prize Info Grid - Compact */}
-            <div className="grid grid-cols-2 gap-3 mt-4">
+            <div className="grid grid-cols-2 gap-3 mt-4 flex-1">
               <div className="text-center p-2 bg-zinc-800/30 rounded border border-zinc-700/30">
                 <div className="text-orange-400 font-bold text-xs mb-1">SAMPLE_SIZE</div>
                 <div className="text-lg font-mono text-zinc-300">6</div>
@@ -1706,7 +1706,7 @@ function ArchetypeExclusivePrizesMuseum() {
               </div>
             </div>
 
-            {/* Additional Info */}
+            {/* Additional Info - Pushed to bottom */}
             <div className="mt-4 p-3 bg-zinc-800/20 rounded border border-zinc-700/20">
               <p className="text-xs text-zinc-400 font-mono text-center">
                 This is just a sample of the exclusive rewards. ARCHETYPE_00 holders receive continuous retroactive benefits beyond these Fluffy Dynasty pieces. The quantum raffle system distributes rewards based on fragment density and resonance frequency.
@@ -1716,7 +1716,7 @@ function ArchetypeExclusivePrizesMuseum() {
         </div>
 
         {/* Right Column - Museum Gallery */}
-        <div className="relative w-full">
+        <div className="relative w-full flex flex-col">
           {/* Navigation Controls - Compact */}
           <div className="flex items-center justify-between mb-3">
             <button
@@ -2614,7 +2614,7 @@ export default function ArchetypeSite(){
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.1 }}
           >
-            <p className="text-zinc-300 leading-relaxed text-sm md:text-lg px-2 md:px-0">
+            <p className="text-zinc-300 leading-relaxed text-sm px-2 md:px-0">
             ARCHETYPE_00 is a corrupted fragment, a residual anomaly recovered from damaged chain archives. Its internal structure is unstable, yet it continues to emit measurable resonance throughout the Punkable Ethereal System. Each fragment is identical in form, but the signal of every holder resonates differently. The more fragments you hold, the stronger your echo becomes. Some fragments contain traces of data from the quarantine zone, where certain entities were marked as d34d.
           </p>
           </motion.div>
