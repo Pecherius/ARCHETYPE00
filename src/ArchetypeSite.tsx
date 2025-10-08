@@ -1577,10 +1577,11 @@ function ArchetypeExclusivePrizesMuseum() {
   // Handle drag move - Optimized with useCallback and limits
   const handleDragMove = useCallback((e: React.MouseEvent) => {
     if (isDragging) {
+      e.preventDefault(); // Prevent text selection
       const deltaX = e.clientX - dragStart;
-      const newPosition = dragOffset + (deltaX / 8); // Scale down for smoother feel
-      // Limit drag to prevent infinite scrolling
-      const limitedPosition = Math.max(-20, Math.min(80, newPosition));
+      const newPosition = dragOffset + (deltaX / 6); // Smoother feel
+      // Better limits for natural scrolling
+      const limitedPosition = Math.max(-30, Math.min(100, newPosition));
       setScrollPosition(limitedPosition);
     }
   }, [isDragging, dragStart, dragOffset]);
@@ -1599,10 +1600,11 @@ function ArchetypeExclusivePrizesMuseum() {
 
   const handleTouchMove = useCallback((e: React.TouchEvent) => {
     if (isDragging) {
+      e.preventDefault(); // Prevent scrolling
       const deltaX = e.touches[0].clientX - dragStart;
-      const newPosition = dragOffset + (deltaX / 8);
-      // Limit drag to prevent infinite scrolling
-      const limitedPosition = Math.max(-20, Math.min(80, newPosition));
+      const newPosition = dragOffset + (deltaX / 6);
+      // Better limits for natural scrolling
+      const limitedPosition = Math.max(-30, Math.min(100, newPosition));
       setScrollPosition(limitedPosition);
     }
   }, [isDragging, dragStart, dragOffset]);
@@ -1635,10 +1637,10 @@ function ArchetypeExclusivePrizesMuseum() {
           className="absolute top-0 left-0 h-full flex items-center cursor-grab active:cursor-grabbing select-none"
           onMouseLeave={handleDragEnd}
           onMouseDown={handleDragStart}
-          onMouseMove={handleDragMove}
+          onMouseMove={isDragging ? handleDragMove : undefined}
           onMouseUp={handleDragEnd}
           onTouchStart={handleTouchStart}
-          onTouchMove={handleTouchMove}
+          onTouchMove={isDragging ? handleTouchMove : undefined}
           onTouchEnd={handleTouchEnd}
           style={{
             transform: `translateX(-${scrollPosition}%)`,
@@ -1722,9 +1724,9 @@ function ArchetypeExclusivePrizesMuseum() {
               {/* Name and Rarity Button - Mobile Responsive */}
               <div className="mt-2 md:mt-4 w-full">
                 <button className="w-full bg-gradient-to-r from-zinc-800/80 to-zinc-700/60 border border-zinc-600/50 hover:border-orange-500/60 p-2 md:p-3 rounded-lg backdrop-blur-sm transition-all duration-300 hover:scale-105 group">
-                  <div className="flex flex-col md:flex-row items-center justify-between gap-1 md:gap-0">
-                    <div className="text-center md:text-left">
-                      <div className="text-orange-400 font-bold text-xs md:text-sm font-mono truncate">#{image.id} {image.title}</div>
+                  <div className="flex flex-col items-center gap-2">
+                    <div className="text-center">
+                      <div className="text-orange-400 font-bold text-xs font-mono truncate max-w-full">#{image.id} {image.title}</div>
                       <div className="text-xs text-zinc-400 font-mono">Exclusive Prize</div>
                     </div>
                     <div className={`px-2 py-1 rounded text-xs font-mono font-bold ${getRarityColor(image.rarity)} bg-black/50 border border-current/30`}>

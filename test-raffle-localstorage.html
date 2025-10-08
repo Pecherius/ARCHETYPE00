@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Raffle localStorage</title>
+    <style>
+        body { font-family: monospace; padding: 20px; background: #1a1a1a; color: #fff; }
+        .test { margin: 10px 0; padding: 10px; border: 1px solid #333; }
+        .success { border-color: #0f0; }
+        .error { border-color: #f00; }
+        button { padding: 10px; margin: 5px; background: #333; color: #fff; border: none; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>Test Raffle localStorage</h1>
+    
+    <div class="test" id="basic-test">
+        <h3>Basic localStorage Test</h3>
+        <button onclick="testBasic()">Test Basic</button>
+        <div id="basic-result"></div>
+    </div>
+    
+    <div class="test" id="raffle-test">
+        <h3>Raffle Data Test</h3>
+        <button onclick="testRaffle()">Test Raffle</button>
+        <div id="raffle-result"></div>
+    </div>
+    
+    <div class="test" id="participant-test">
+        <h3>Participant Test</h3>
+        <button onclick="testParticipant()">Test Participant</button>
+        <div id="participant-result"></div>
+    </div>
+    
+    <div class="test" id="prize-test">
+        <h3>Prize Test</h3>
+        <button onclick="testPrize()">Test Prize</button>
+        <div id="prize-result"></div>
+    </div>
+    
+    <script>
+        function testBasic() {
+            try {
+                localStorage.setItem('test', 'working');
+                const value = localStorage.getItem('test');
+                document.getElementById('basic-result').innerHTML = `✅ Basic localStorage: ${value}`;
+                document.getElementById('basic-test').className = 'test success';
+            } catch (error) {
+                document.getElementById('basic-result').innerHTML = `❌ Error: ${error.message}`;
+                document.getElementById('basic-test').className = 'test error';
+            }
+        }
+        
+        function testRaffle() {
+            try {
+                const testRaffle = {
+                    id: 'test-123',
+                    title: 'Test Raffle',
+                    description: 'Test Description',
+                    createdAt: new Date().toISOString(),
+                    participants: [],
+                    prizes: [],
+                    winners: []
+                };
+                
+                localStorage.setItem('savedRaffles', JSON.stringify([testRaffle]));
+                const savedRaffles = JSON.parse(localStorage.getItem('savedRaffles') || '[]');
+                
+                document.getElementById('raffle-result').innerHTML = `
+                    ✅ Raffle data: ${savedRaffles.length} raffles saved<br>
+                    Title: ${savedRaffles[0].title}<br>
+                    ID: ${savedRaffles[0].id}
+                `;
+                document.getElementById('raffle-test').className = 'test success';
+            } catch (error) {
+                document.getElementById('raffle-result').innerHTML = `❌ Error: ${error.message}`;
+                document.getElementById('raffle-test').className = 'test error';
+            }
+        }
+        
+        function testParticipant() {
+            try {
+                const testParticipant = {
+                    id: 'participant-123',
+                    name: 'Test User',
+                    tickets: 5,
+                    upAddress: '0x123...',
+                    color: '#FF69B4'
+                };
+                
+                localStorage.setItem('savedUsers', JSON.stringify([testParticipant]));
+                const savedUsers = JSON.parse(localStorage.getItem('savedUsers') || '[]');
+                
+                document.getElementById('participant-result').innerHTML = `
+                    ✅ Participant data: ${savedUsers.length} users saved<br>
+                    Name: ${savedUsers[0].name}<br>
+                    Tickets: ${savedUsers[0].tickets}
+                `;
+                document.getElementById('participant-test').className = 'test success';
+            } catch (error) {
+                document.getElementById('participant-result').innerHTML = `❌ Error: ${error.message}`;
+                document.getElementById('participant-test').className = 'test error';
+            }
+        }
+        
+        function testPrize() {
+            try {
+                const testPrize = {
+                    id: 'prize-123',
+                    name: 'Test Prize',
+                    count: 1,
+                    remaining: 1
+                };
+                
+                localStorage.setItem('savedPrizes', JSON.stringify([testPrize]));
+                const savedPrizes = JSON.parse(localStorage.getItem('savedPrizes') || '[]');
+                
+                document.getElementById('prize-result').innerHTML = `
+                    ✅ Prize data: ${savedPrizes.length} prizes saved<br>
+                    Name: ${savedPrizes[0].name}<br>
+                    Count: ${savedPrizes[0].count}
+                `;
+                document.getElementById('prize-test').className = 'test success';
+            } catch (error) {
+                document.getElementById('prize-result').innerHTML = `❌ Error: ${error.message}`;
+                document.getElementById('prize-test').className = 'test error';
+            }
+        }
+    </script>
+</body>
+</html>
