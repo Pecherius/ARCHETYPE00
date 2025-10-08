@@ -697,7 +697,7 @@ const PunkableRaffleSystem = () => {
                 A transparent raffle system that uses <span className="text-green-400 font-semibold">weighted selection</span> based on participant data. 
                 Unlike simple random generators, P.E.R.S. considers <span className="text-pink-400 font-semibold">ticket counts and participation history</span> to ensure fair distribution.
               </p>
-              <div className="bg-gradient-to-r from-zinc-800/50 to-zinc-900/50 border border-zinc-700/50 rounded-xl p-6 backdrop-blur-sm">
+              <div className="bg-gradient-to-r from-zinc-800/50 to-zinc-900/50 border border-zinc-700/50 rounded-lg p-6 backdrop-blur-sm">
                 <h4 className="text-base font-bold text-pink-400 mb-3 flex items-center gap-2">
                   <span className="text-lg">⚡</span>
                   HOW_P.E.R.S._WORKS
@@ -725,7 +725,7 @@ const PunkableRaffleSystem = () => {
           </div>
 
           <div className="grid md:grid-cols-3 gap-4 md:gap-6 mb-8">
-            <div className="group relative overflow-hidden border border-pink-500/30 rounded-xl bg-gradient-to-br from-pink-500/10 to-purple-500/10 p-4 md:p-6 backdrop-blur-sm hover:border-pink-400/50 transition-all duration-300">
+            <div className="group relative overflow-hidden border border-pink-500/30 rounded-lg bg-gradient-to-br from-pink-500/10 to-purple-500/10 p-4 md:p-6 backdrop-blur-sm hover:border-pink-400/50 transition-all duration-300">
               <div className="absolute inset-0 bg-gradient-to-br from-pink-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <div className="relative">
                 <div className="flex items-center gap-3 mb-3">
@@ -740,7 +740,7 @@ const PunkableRaffleSystem = () => {
               </div>
             </div>
             
-            <div className="group relative overflow-hidden border border-green-500/30 rounded-xl bg-gradient-to-br from-green-500/10 to-emerald-500/10 p-4 md:p-6 backdrop-blur-sm hover:border-green-400/50 transition-all duration-300">
+            <div className="group relative overflow-hidden border border-green-500/30 rounded-lg bg-gradient-to-br from-green-500/10 to-emerald-500/10 p-4 md:p-6 backdrop-blur-sm hover:border-green-400/50 transition-all duration-300">
               <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <div className="relative">
                 <div className="flex items-center gap-3 mb-3">
@@ -755,7 +755,7 @@ const PunkableRaffleSystem = () => {
               </div>
             </div>
             
-            <div className="group relative overflow-hidden border border-purple-500/30 rounded-xl bg-gradient-to-br from-purple-500/10 to-pink-500/10 p-4 md:p-6 backdrop-blur-sm hover:border-purple-400/50 transition-all duration-300">
+            <div className="group relative overflow-hidden border border-purple-500/30 rounded-lg bg-gradient-to-br from-purple-500/10 to-pink-500/10 p-4 md:p-6 backdrop-blur-sm hover:border-purple-400/50 transition-all duration-300">
               <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <div className="relative">
                 <div className="flex items-center gap-3 mb-3">
@@ -773,7 +773,7 @@ const PunkableRaffleSystem = () => {
 
           <div className="text-center">
             <div className="inline-flex flex-col items-center gap-4">
-              <div className="flex flex-col md:flex-row gap-3 md:gap-4 w-full max-w-md md:max-w-none">
+              <div className={`flex flex-col gap-3 md:gap-4 w-full ${savedRaffles.length === 0 ? 'max-w-md justify-center' : 'max-w-md md:max-w-none'}`}>
                 <motion.button
                   onClick={() => setShowCreateForm(true)}
                   whileHover={{ scale: 1.02 }}
