@@ -893,7 +893,7 @@ const PunkableRaffleSystem = () => {
                   <h4 className="text-green-400 font-semibold text-sm">DATA_STORAGE</h4>
                 </div>
                 <p className="text-xs text-zinc-400 leading-relaxed">
-                  Saves all participant and prize data. Your raffles are stored locally and can be accessed anytime.
+                  <span className="text-yellow-400 font-semibold">⚠️ WARNING:</span> All data is stored ONLY in your browser's localStorage. We do NOT store your data anywhere else. If you clear cookies, use a different browser, or lose your device, your raffles will be permanently lost. Always export your data as backup!
                 </p>
               </div>
             </div>
