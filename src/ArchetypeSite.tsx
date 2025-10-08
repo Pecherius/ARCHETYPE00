@@ -1537,7 +1537,7 @@ function ArchetypeExclusivePrizesMuseum() {
   const [dragOffset, setDragOffset] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
   const [isAutoPlaying, setIsAutoPlaying] = useState(false);
-  const autoPlayRef = useRef<NodeJS.Timeout | null>(null);
+  const autoPlayRef = useRef<number | null>(null);
 
   // Optimized color functions with useMemo
   const rarityColors = useMemo(() => ({
@@ -1558,10 +1558,6 @@ function ArchetypeExclusivePrizesMuseum() {
       'default': 'bg-zinc-400/20 border-zinc-400/40'
     }
   }), []);
-
-  const getRarityColor = useCallback((rarity: string) => {
-    return rarityColors.text[rarity as keyof typeof rarityColors.text] || rarityColors.text.default;
-  }, [rarityColors]);
 
   const getRarityStyle = useCallback((rarity: string) => {
     return rarityColors.bg[rarity as keyof typeof rarityColors.bg] || rarityColors.bg.default;
