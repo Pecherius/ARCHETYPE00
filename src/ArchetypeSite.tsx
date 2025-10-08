@@ -684,26 +684,58 @@ function CodeRain(){
   );
 }
 
-// 🎮 NEURAL_PING_PONG: Cypherpunk ping pong with resonance glitch effects
+// 🎮 NEURAL_PING_PONG: Simple and reliable cypherpunk ping pong
 // ARCHETYPE_00 themed - gets progressively faster until impossible
 function NeuralPingPong() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const animationFrameRef = useRef<number>();
+  
+  // Game state
   const [gameState, setGameState] = useState<'menu' | 'playing' | 'gameOver' | 'won'>('menu');
   const [score, setScore] = useState(0);
-  const [speed, setSpeed] = useState(2);
+  const [speed, setSpeed] = useState(1);
   const [glitchIntensity, setGlitchIntensity] = useState(0);
   const [showWinMessage, setShowWinMessage] = useState(false);
   const [lossCount, setLossCount] = useState(0);
   const [gameHistory, setGameHistory] = useState<Array<{score: number, timestamp: number}>>([]);
   const [lastHitTime, setLastHitTime] = useState(0);
   
-  // Game objects
-  const [ball, setBall] = useState({ x: 400, y: 100, dx: 0, dy: 0, vx: 0, vy: 0 });
-  const [paddle, setPaddle] = useState({ x: 350, y: 550, width: 120 });
-  const [glitchLines, setGlitchLines] = useState<Array<{x: number, y: number, width: number, height: number}>>([]);
+  // Game objects - simplified
+  const [ball, setBall] = useState({ 
+    x: 400, 
+    y: 100, 
+    vx: 0, 
+    vy: 0,
+    radius: 8
+  });
+  const [paddle, setPaddle] = useState({ 
+    x: 350, 
+    y: 550, 
+    width: 120, 
+    height: 20
+  });
+  
+  // Effects
+  const [floatingMessages, setFloatingMessages] = useState<Array<{
+    id: number, 
+    text: string, 
+    x: number, 
+    y: number, 
+    vx: number, 
+    vy: number, 
+    life: number,
+    alpha: number
+  }>>([]);
+  const [particles, setParticles] = useState<Array<{
+    id: number,
+    x: number,
+    y: number,
+    vx: number,
+    vy: number,
+    life: number,
+    color: string
+  }>>([]);
   const [gameStartTime, setGameStartTime] = useState<number>(0);
-  const [floatingMessages, setFloatingMessages] = useState<Array<{id: number, text: string, x: number, y: number, vx: number, vy: number, life: number}>>([]);
-  const [geometricObstacles, setGeometricObstacles] = useState<Array<{x: number, y: number, size: number, rotation: number, speed: number}>>([]);
   
   // Meme messages for floating text
   const memeMessages = [
@@ -725,7 +757,7 @@ function NeuralPingPong() {
     "Punkable: 'Working as intended'"
   ];
   
-  // Function to spawn floating message
+  // Spawn floating message
   const spawnFloatingMessage = (x: number, y: number) => {
     const message = memeMessages[Math.floor(Math.random() * memeMessages.length)];
     const newMessage = {
@@ -733,122 +765,149 @@ function NeuralPingPong() {
       text: message,
       x: x,
       y: y,
-      vx: (Math.random() - 0.5) * 2,
-      vy: -Math.random() * 2 - 1,
-      life: 120 // frames
+      vx: (Math.random() - 0.5) * 1,
+      vy: -Math.random() * 1 - 0.5,
+      life: 120,
+      alpha: 1
     };
     setFloatingMessages(prev => [...prev, newMessage]);
   };
 
-  // Game loop - optimized for better performance
+  // Spawn particle effect
+  const spawnParticles = (x: number, y: number, color: string = '#ff69b4') => {
+    const newParticles = Array.from({ length: 5 }, (_, i) => ({
+      id: Date.now() + Math.random() + i,
+      x: x,
+      y: y,
+      vx: (Math.random() - 0.5) * 4,
+      vy: (Math.random() - 0.5) * 4,
+      life: 30,
+      color: color
+    }));
+    setParticles(prev => [...prev, ...newParticles]);
+  };
+
+  // Start game function
+  const startGame = () => {
+    setGameState('playing');
+    setScore(0);
+    setSpeed(1);
+    setGlitchIntensity(0);
+    setShowWinMessage(false);
+    setGameStartTime(Date.now());
+    setLastHitTime(0);
+    
+    // Set initial ball position and velocity
+    const angle = (Math.random() - 0.5) * Math.PI / 3; // -30 to 30 degrees
+    const initialSpeed = 3;
+    
+    setBall({
+      x: 400,
+      y: 100,
+      vx: Math.sin(angle) * initialSpeed,
+      vy: Math.abs(Math.cos(angle)) * initialSpeed,
+      radius: 8
+    });
+    
+    // Reset paddle position
+    setPaddle({ x: 350, y: 550, width: 120, height: 20 });
+    
+    // Clear effects
+    setFloatingMessages([]);
+    setParticles([]);
+  };
+
+  // Mouse movement handler
+  const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    if (gameState !== 'playing') return;
+    
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    
+    const rect = canvas.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    const canvasWidth = canvas.width;
+    
+    const newX = (mouseX / rect.width) * canvasWidth - paddle.width / 2;
+    const clampedX = Math.max(0, Math.min(newX, canvasWidth - paddle.width));
+    
+    setPaddle(prev => ({ ...prev, x: clampedX }));
+  };
+
+  // Simple and reliable game loop
   useEffect(() => {
     if (gameState !== 'playing') return;
     
-    let lastTime = 0;
-    const targetFPS = 60;
-    const frameTime = 1000 / targetFPS;
-    
-    const gameLoop = (currentTime: number) => {
-      if (currentTime - lastTime < frameTime) {
-        requestAnimationFrame(gameLoop);
-        return;
-      }
-      lastTime = currentTime;
+    const gameLoop = () => {
+      // Update ball position
       setBall(prev => {
-        let newBall = { ...prev };
+        const newBall = { ...prev };
         
-             // Progressive difficulty - balanced and unlimited
-             const currentTime = Date.now();
-             const gameDuration = (currentTime - gameStartTime) / 1000; // seconds
-             let difficultyMultiplier = 1;
-             if (gameDuration < 10) {
-               difficultyMultiplier = 0.5; // 50% easier for first 10 seconds
-             } else if (gameDuration < 20) {
-               difficultyMultiplier = 0.7; // 30% easier for next 10 seconds
-             } else if (gameDuration < 30) {
-               difficultyMultiplier = 0.85; // 15% easier for next 10 seconds
-             } else {
-               // Progressive increase without limit - gets harder over time
-               difficultyMultiplier = 1.0 + (gameDuration - 30) * 0.05; // 5% increase per second after 30s
-             }
-        
-             // Apply constant movement - no acceleration needed
-             // The ball should move at constant speed based on initial velocity
-             // Remove the acceleration and friction that was causing issues
-             
-             // No velocity limit - progressive difficulty only
-             
-             // Update position with constant movement
-             const baseSpeed = 1.5; // Slower base speed
-             const currentSpeed = baseSpeed * difficultyMultiplier;
-             
-             // Debug: Log ball movement every 60 frames (1 second at 60fps)
-             if (Math.random() < 0.016) {
-               console.log('Ball moving:', { x: newBall.x, y: newBall.y, vx: newBall.vx, vy: newBall.vy, currentSpeed });
-             }
-             
-             // Direct movement based on initial velocity
-             newBall.x += newBall.vx * currentSpeed;
-             newBall.y += newBall.vy * currentSpeed;
-       
-        // Wall collisions with better physics
-        if (newBall.x <= 5 || newBall.x >= 795) {
-          newBall.vx = -newBall.vx; // Simple bounce
-          newBall.x = newBall.x <= 5 ? 5 : 795; // Keep ball in bounds
-        }
-        if (newBall.y <= 5) {
-          newBall.vy = -newBall.vy; // Simple bounce
-          newBall.y = 5; // Keep ball in bounds
+        // Progressive difficulty
+        const gameDuration = (Date.now() - gameStartTime) / 1000;
+        let speedMultiplier = 1;
+        if (gameDuration < 10) {
+          speedMultiplier = 0.6; // 40% slower for first 10 seconds
+        } else if (gameDuration < 20) {
+          speedMultiplier = 0.8; // 20% slower for next 10 seconds
+        } else {
+          speedMultiplier = 1.0 + (gameDuration - 20) * 0.02; // Gradually increase
         }
         
-             // Paddle collision with simple physics
-             const paddleTop = paddle.y;
-             const paddleBottom = paddle.y + 25;
-             const paddleLeft = paddle.x;
-             const paddleRight = paddle.x + paddle.width;
-             
-             // Better collision detection with cooldown
-             if (newBall.y >= paddleTop - 15 && newBall.y <= paddleBottom + 5 && 
-                 newBall.x >= paddleLeft - 10 && newBall.x <= paddleRight + 10) {
-               
-               // Prevent rapid score increases - only count hit if enough time has passed
-               const now = Date.now();
-               if (now - lastHitTime > 800) { // 800ms cooldown between hits
-                 setLastHitTime(now);
-                 
-                 // Calculate hit position (0 to 1)
-                 const hitPos = Math.max(0, Math.min(1, (newBall.x - paddleLeft) / paddle.width));
-                 
-                 // Improved bounce physics
-                 newBall.vy = -Math.abs(newBall.vy) * 0.9; // Slightly reduce vertical speed
-                 newBall.vx = (hitPos - 0.5) * 3; // -1.5 to 1.5 range
-                 
-                 newBall.y = paddleTop - 10; // Position above paddle
-                 
-          setScore(prev => {
-            const newScore = prev + 1;
-                   if (newScore >= 50) { // Increased win condition
-              setGameState('won');
-              setShowWinMessage(true);
+        // Move ball
+        newBall.x += newBall.vx * speedMultiplier;
+        newBall.y += newBall.vy * speedMultiplier;
+        
+        // Wall collisions
+        if (newBall.x - newBall.radius <= 0 || newBall.x + newBall.radius >= 800) {
+          newBall.vx = -newBall.vx;
+          newBall.x = newBall.x - newBall.radius <= 0 ? newBall.radius : 800 - newBall.radius;
+        }
+        if (newBall.y - newBall.radius <= 0) {
+          newBall.vy = -newBall.vy;
+          newBall.y = newBall.radius;
+        }
+        
+        // Paddle collision
+        if (newBall.y + newBall.radius >= paddle.y && 
+            newBall.y - newBall.radius <= paddle.y + paddle.height &&
+            newBall.x + newBall.radius >= paddle.x && 
+            newBall.x - newBall.radius <= paddle.x + paddle.width) {
+          
+          const now = Date.now();
+          if (now - lastHitTime > 500) { // 500ms cooldown
+            setLastHitTime(now);
+            
+            // Calculate hit position (0 to 1)
+            const hitPos = (newBall.x - paddle.x) / paddle.width;
+            
+            // Bounce with angle based on hit position
+            newBall.vy = -Math.abs(newBall.vy) * 0.9;
+            newBall.vx = (hitPos - 0.5) * 6; // -3 to 3 range
+            newBall.y = paddle.y - newBall.radius;
+            
+            // Update score
+            setScore(prev => {
+              const newScore = prev + 1;
+              if (newScore >= 30) { // Win at 30 points
+                setGameState('won');
+                setShowWinMessage(true);
+              }
+              return newScore;
+            });
+            
+            // Spawn effects
+            spawnParticles(newBall.x, newBall.y, '#00ff88');
+            if (Math.random() < 0.3) {
+              spawnFloatingMessage(newBall.x, newBall.y);
             }
-            return newScore;
-          });
-                 
-                 // Spawn floating message on successful hit
-                 if (Math.random() < 0.2) { // 20% chance
-                   spawnFloatingMessage(newBall.x, newBall.y);
-                 }
-                 setGlitchIntensity(prev => Math.min(prev + 0.05, 1));
-               } else {
-                 // Still bounce but don't count score
-                 newBall.vy = -Math.abs(newBall.vy) * 0.8;
-                 newBall.vx = (Math.max(0, Math.min(1, (newBall.x - paddleLeft) / paddle.width)) - 0.5) * 2;
-                 newBall.y = paddleTop - 10;
-               }
+            
+            setGlitchIntensity(prev => Math.min(prev + 0.02, 1));
+          }
         }
         
         // Game over
-        if (newBall.y >= 600) {
+        if (newBall.y > 600) {
           setGameState('gameOver');
           setLossCount(prev => prev + 1);
           setGameHistory(prev => [...prev, { score, timestamp: Date.now() }]);
@@ -863,101 +922,35 @@ function NeuralPingPong() {
         ...msg,
         x: msg.x + msg.vx,
         y: msg.y + msg.vy,
-        life: msg.life - 1
+        life: msg.life - 1,
+        alpha: msg.life / 120
       })).filter(msg => msg.life > 0 && msg.y > -50));
       
-      // Update geometric obstacles (reduced frequency for performance)
-      setGeometricObstacles(prev => prev.map(obstacle => ({
-        ...obstacle,
-        x: obstacle.x + Math.cos(obstacle.rotation) * obstacle.speed,
-        y: obstacle.y + Math.sin(obstacle.rotation) * obstacle.speed,
-        rotation: obstacle.rotation + 0.05
-      })).filter(obstacle => 
-        obstacle.x > -50 && obstacle.x < 850 && 
-        obstacle.y > -50 && obstacle.y < 650
-      ));
+      // Update particles
+      setParticles(prev => prev.map(particle => ({
+        ...particle,
+        x: particle.x + particle.vx,
+        y: particle.y + particle.vy,
+        life: particle.life - 1
+      })).filter(particle => particle.life > 0));
       
-      // Add new geometric obstacles (reduced frequency)
-      if (Math.random() < 0.015) {
-        setGeometricObstacles(prev => [...prev, {
-          x: Math.random() * 800,
-          y: Math.random() * 600,
-          size: Math.random() * 40 + 20,
-          rotation: Math.random() * Math.PI * 2,
-          speed: Math.random() * 3 + 1
-        }]);
-      }
-      
-      // Generate glitch lines (reduced frequency)
-      if (Math.random() < glitchIntensity * 1) {
-        setGlitchLines(prev => [...prev.slice(-8), {
-          x: Math.random() * 800,
-          y: Math.random() * 600,
-          width: Math.random() * 300 + 100,
-          height: Math.random() * 30 + 10
-        }]);
-      }
-      
-      // Spawn random floating messages occasionally
-      if (Math.random() < 0.02) {
+      // Spawn random floating messages
+      if (Math.random() < 0.01) {
         spawnFloatingMessage(Math.random() * 800, Math.random() * 400 + 100);
       }
+      
+      // Continue game loop
+      animationFrameRef.current = requestAnimationFrame(gameLoop);
     };
     
-    requestAnimationFrame(gameLoop);
+    animationFrameRef.current = requestAnimationFrame(gameLoop);
     
     return () => {
-      // Cleanup handled by requestAnimationFrame
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
     };
-  }, [gameState, paddle.x, score, glitchIntensity, speed]);
-  
-  // Start game function
-  const startGame = () => {
-    setGameState('playing');
-    setScore(0);
-    setSpeed(2);
-    setGlitchIntensity(0);
-    setShowWinMessage(false);
-    setGameStartTime(Date.now());
-    setLastHitTime(0);
-    
-    // Set initial ball position and velocity
-    const initialVx = (Math.random() - 0.5) * 3; // -1.5 to 1.5
-    const initialVy = Math.random() * 2 + 1; // 1 to 3 (downward)
-    
-    setBall({
-      x: 400,
-      y: 100,
-      dx: initialVx,
-      dy: initialVy,
-      vx: initialVx,
-      vy: initialVy
-    });
-    
-    // Reset paddle position
-    setPaddle(prev => ({ ...prev, x: 350 }));
-    
-    // Clear effects
-    setFloatingMessages([]);
-    setGlitchLines([]);
-    setGeometricObstacles([]);
-  };
-
-  // Mouse movement handler
-  const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    if (gameState !== 'playing') return;
-    
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    
-    const rect = canvas.getBoundingClientRect();
-    const mouseX = e.clientX - rect.left;
-    
-    setPaddle(prev => ({
-      ...prev,
-      x: Math.max(0, Math.min(800 - prev.width, mouseX - prev.width / 2))
-    }));
-  };
+  }, [gameState, paddle, gameStartTime, lastHitTime]);
 
   // Render function
   const render = () => {
@@ -971,29 +964,13 @@ function NeuralPingPong() {
     ctx.fillStyle = '#0a0a0a';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Draw glitch lines
-    glitchLines.forEach(line => {
-      ctx.fillStyle = `rgba(255, 0, 0, ${Math.random() * 0.5 + 0.1})`;
-      ctx.fillRect(line.x, line.y, line.width, line.height);
-    });
-    
-    // Draw geometric obstacles
-    geometricObstacles.forEach(obstacle => {
-      ctx.save();
-      ctx.translate(obstacle.x, obstacle.y);
-      ctx.rotate(obstacle.rotation);
-      ctx.fillStyle = `rgba(255, 69, 180, ${Math.random() * 0.3 + 0.1})`;
-      ctx.fillRect(-obstacle.size / 2, -obstacle.size / 2, obstacle.size, obstacle.size);
-      ctx.restore();
-    });
-
     // Draw ball
     ctx.shadowColor = '#00ff88';
     ctx.shadowBlur = 20;
     ctx.fillStyle = '#00ff88';
-        ctx.beginPath();
-    ctx.arc(ball.x, ball.y, 12, 0, Math.PI * 2);
-        ctx.fill();
+    ctx.beginPath();
+    ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+    ctx.fill();
     ctx.shadowBlur = 0;
 
     // Draw paddle (sombrero mexicano)
@@ -1002,9 +979,9 @@ function NeuralPingPong() {
     
     // Sombrero brim (base)
     ctx.fillStyle = '#ff69b4';
-        ctx.beginPath();
+    ctx.beginPath();
     ctx.ellipse(paddle.x + paddle.width/2, paddle.y + 18, paddle.width/2 + 15, 12, 0, 0, 2 * Math.PI);
-        ctx.fill();
+    ctx.fill();
     
     // Sombrero crown (top part)
     ctx.fillStyle = '#ff1493';
@@ -1017,7 +994,7 @@ function NeuralPingPong() {
     ctx.lineWidth = 3;
     ctx.beginPath();
     ctx.ellipse(paddle.x + paddle.width/2, paddle.y + 18, paddle.width/2 + 15, 12, 0, 0, 2 * Math.PI);
-        ctx.stroke();
+    ctx.stroke();
     
     // Decorative pattern
     ctx.strokeStyle = '#ffc0cb';
@@ -1032,11 +1009,29 @@ function NeuralPingPong() {
 
     // Draw floating messages
     floatingMessages.forEach(message => {
-      const alpha = message.life / 120;
-      ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
+      ctx.save();
+      ctx.globalAlpha = message.alpha;
+      ctx.fillStyle = '#ff69b4';
       ctx.font = 'bold 16px monospace';
       ctx.textAlign = 'center';
+      ctx.shadowColor = '#ff69b4';
+      ctx.shadowBlur = 5;
       ctx.fillText(message.text, message.x, message.y);
+      ctx.restore();
+    });
+
+    // Draw particles
+    particles.forEach(particle => {
+      const alpha = particle.life / 30;
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      ctx.fillStyle = particle.color;
+      ctx.shadowColor = particle.color;
+      ctx.shadowBlur = 10;
+      ctx.beginPath();
+      ctx.arc(particle.x, particle.y, 3, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
     });
 
     // Draw UI
@@ -1064,169 +1059,7 @@ function NeuralPingPong() {
   // Render effect
   useEffect(() => {
     render();
-  }, [ball, paddle, score, speed, glitchIntensity, floatingMessages, glitchLines, geometricObstacles]);
-
-  // Auto-center paddle after 3 seconds of no input
-  useEffect(() => {
-    if (gameState !== 'playing') return;
-    
-    const timer = setTimeout(() => {
-      setPaddle(prev => ({ ...prev, x: 350 }));
-    }, 3000);
-    
-    return () => clearTimeout(timer);
-  }, [gameState, paddle.x]);
-  
-  // Game loop
-  useEffect(() => {
-    if (gameState !== 'playing') return;
-    
-    let lastTime = 0;
-    const targetFPS = 60;
-    const frameTime = 1000 / targetFPS;
-    
-    const gameLoop = (currentTime: number) => {
-      if (currentTime - lastTime < frameTime) {
-        requestAnimationFrame(gameLoop);
-        return;
-      }
-      lastTime = currentTime;
-      
-      setBall(prev => {
-        let newBall = { ...prev };
-        
-        // Progressive difficulty
-        const currentTime = Date.now();
-        const gameDuration = (currentTime - gameStartTime) / 1000;
-        let difficultyMultiplier = 1;
-        if (gameDuration < 10) {
-          difficultyMultiplier = 0.5;
-        } else if (gameDuration < 20) {
-          difficultyMultiplier = 0.7;
-        } else if (gameDuration < 30) {
-          difficultyMultiplier = 0.85;
-        } else {
-          difficultyMultiplier = 1.0 + (gameDuration - 30) * 0.05;
-        }
-        
-        const baseSpeed = 1.5;
-        const currentSpeed = baseSpeed * difficultyMultiplier;
-        
-        // Move ball
-        newBall.x += newBall.vx * currentSpeed;
-        newBall.y += newBall.vy * currentSpeed;
-        
-        // Wall collisions
-        if (newBall.x <= 5 || newBall.x >= 795) {
-          newBall.vx = -newBall.vx;
-          newBall.x = newBall.x <= 5 ? 5 : 795;
-        }
-        if (newBall.y <= 5) {
-          newBall.vy = -newBall.vy;
-          newBall.y = 5;
-        }
-        
-        // Paddle collision
-        const paddleTop = paddle.y;
-        const paddleBottom = paddle.y + 25;
-        const paddleLeft = paddle.x;
-        const paddleRight = paddle.x + paddle.width;
-        
-        if (newBall.y >= paddleTop - 15 && newBall.y <= paddleBottom + 5 && 
-            newBall.x >= paddleLeft - 10 && newBall.x <= paddleRight + 10) {
-          
-          const now = Date.now();
-          if (now - lastHitTime > 800) {
-            setLastHitTime(now);
-            
-            const hitPos = Math.max(0, Math.min(1, (newBall.x - paddleLeft) / paddle.width));
-            newBall.vy = -Math.abs(newBall.vy) * 0.9;
-            newBall.vx = (hitPos - 0.5) * 3;
-            newBall.y = paddleTop - 10;
-            
-            setScore(prev => {
-              const newScore = prev + 1;
-              if (newScore >= 50) {
-                setGameState('won');
-                setShowWinMessage(true);
-              }
-              return newScore;
-            });
-            
-            if (Math.random() < 0.2) {
-              spawnFloatingMessage(newBall.x, newBall.y);
-            }
-            setGlitchIntensity(prev => Math.min(prev + 0.05, 1));
-          } else {
-            newBall.vy = -Math.abs(newBall.vy) * 0.8;
-            newBall.vx = (Math.max(0, Math.min(1, (newBall.x - paddleLeft) / paddle.width)) - 0.5) * 2;
-            newBall.y = paddleTop - 10;
-          }
-        }
-        
-        // Game over
-        if (newBall.y >= 600) {
-          setGameState('gameOver');
-          setLossCount(prev => prev + 1);
-          setGameHistory(prev => [...prev, { score, timestamp: Date.now() }]);
-          return prev;
-        }
-        
-        return newBall;
-      });
-      
-      // Update floating messages
-      setFloatingMessages(prev => prev.map(msg => ({
-        ...msg,
-        x: msg.x + msg.vx,
-        y: msg.y + msg.vy,
-        life: msg.life - 1
-      })).filter(msg => msg.life > 0 && msg.y > -50));
-      
-      // Update geometric obstacles
-      setGeometricObstacles(prev => prev.map(obstacle => ({
-        ...obstacle,
-        x: obstacle.x + Math.cos(obstacle.rotation) * obstacle.speed,
-        y: obstacle.y + Math.sin(obstacle.rotation) * obstacle.speed,
-        rotation: obstacle.rotation + 0.05
-      })).filter(obstacle => 
-        obstacle.x > -50 && obstacle.x < 850 && 
-        obstacle.y > -50 && obstacle.y < 650
-      ));
-      
-      // Add new obstacles
-      if (Math.random() < 0.015) {
-        setGeometricObstacles(prev => [...prev, {
-          x: Math.random() * 800,
-          y: Math.random() * 600,
-          size: Math.random() * 40 + 20,
-          rotation: Math.random() * Math.PI * 2,
-          speed: Math.random() * 3 + 1
-        }]);
-      }
-      
-      // Generate glitch lines
-      if (Math.random() < glitchIntensity * 1) {
-        setGlitchLines(prev => [...prev.slice(-8), {
-          x: Math.random() * 800,
-          y: Math.random() * 600,
-          width: Math.random() * 300 + 100,
-          height: Math.random() * 30 + 10
-        }]);
-      }
-      
-      // Spawn floating messages
-      if (Math.random() < 0.02) {
-        spawnFloatingMessage(Math.random() * 800, Math.random() * 400 + 100);
-      }
-    };
-    
-    requestAnimationFrame(gameLoop);
-    
-    return () => {
-      // Cleanup
-    };
-  }, [gameState, paddle.x, score, glitchIntensity, speed, gameStartTime, lastHitTime]);
+  }, [ball, paddle, score, speed, glitchIntensity, floatingMessages, particles]);
 
   // Keyboard controls
   useEffect(() => {
@@ -1264,8 +1097,8 @@ function NeuralPingPong() {
       
       setPaddle(prev => ({ ...prev, x: clampedX }));
     };
-      
-      const canvas = canvasRef.current;
+    
+    const canvas = canvasRef.current;
     if (canvas) {
       canvas.addEventListener('touchmove', handleTouch, { passive: false });
       return () => canvas.removeEventListener('touchmove', handleTouch);
@@ -1287,7 +1120,7 @@ function NeuralPingPong() {
     ];
     return messages[lossCount % messages.length];
   };
-  
+
   if (showWinMessage) {
     return (
       <div className="border border-zinc-800 p-4 bg-zinc-950 text-center">
@@ -1319,8 +1152,7 @@ function NeuralPingPong() {
         <div className="space-y-4">
           <p className="text-sm text-zinc-400">
             Use ← → arrow keys, mouse movement, or touch to control the paddle. 
-            Ball gets faster with each hit. Geometric obstacles will appear and move around.
-            Warning: Neural overload effects at high speeds.
+            Ball gets faster with each hit. Warning: Neural overload effects at high speeds.
           </p>
           <button 
             onClick={startGame}
@@ -1342,68 +1174,68 @@ function NeuralPingPong() {
         <h3 className="text-lg font-semibold text-zinc-100 mb-4">NEURAL_PING_PONG // CONNECTION_LOST</h3>
         <div className="relative w-full" style={{ height: '60vh', minHeight: '400px' }}>
           <div className="absolute inset-0 border-2 border-red-500 bg-gradient-to-br from-red-900/20 to-zinc-950 text-center flex items-center justify-center">
-        <motion.div
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.5 }}
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.5 }}
               className="w-full max-w-md"
-        >
-          <h3 className="text-2xl font-bold text-red-400 mb-4 animate-pulse">NEURAL_LINK_LOST</h3>
-          
-          <div className="mb-6 p-4 border border-red-500/30 bg-red-500/10 rounded-lg">
-            <div className="text-4xl font-bold text-red-300 mb-2">SCORE: {score}</div>
-            <div className="text-lg text-red-400 mb-2">ARCHETYPE_00 FRAGMENT</div>
-            <div className="text-sm text-red-500 italic">{getLossMessage()}</div>
-          </div>
-          
-          <div className="mb-6 p-4 border border-zinc-600 bg-zinc-900/70 rounded-lg">
-            <h4 className="text-lg font-semibold text-zinc-300 mb-3">SYSTEM_STATISTICS</h4>
-            <div className="grid grid-cols-2 gap-4 text-sm">
-              <div className="text-zinc-400">
-                <div className="text-xs text-zinc-500">Losses</div>
-                <div className="text-xl font-bold text-red-400">{lossCount}</div>
+            >
+              <h3 className="text-2xl font-bold text-red-400 mb-4 animate-pulse">NEURAL_LINK_LOST</h3>
+              
+              <div className="mb-6 p-4 border border-red-500/30 bg-red-500/10 rounded-lg">
+                <div className="text-4xl font-bold text-red-300 mb-2">SCORE: {score}</div>
+                <div className="text-lg text-red-400 mb-2">ARCHETYPE_00 FRAGMENT</div>
+                <div className="text-sm text-red-500 italic">{getLossMessage()}</div>
               </div>
-              <div className="text-zinc-400">
-                <div className="text-xs text-zinc-500">Best Score</div>
-                <div className="text-xl font-bold text-green-400">{bestScore}</div>
+              
+              <div className="mb-6 p-4 border border-zinc-600 bg-zinc-900/70 rounded-lg">
+                <h4 className="text-lg font-semibold text-zinc-300 mb-3">SYSTEM_STATISTICS</h4>
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div className="text-zinc-400">
+                    <div className="text-xs text-zinc-500">Losses</div>
+                    <div className="text-xl font-bold text-red-400">{lossCount}</div>
+                  </div>
+                  <div className="text-zinc-400">
+                    <div className="text-xs text-zinc-500">Best Score</div>
+                    <div className="text-xl font-bold text-green-400">{bestScore}</div>
+                  </div>
+                  <div className="text-zinc-400">
+                    <div className="text-xs text-zinc-500">Average</div>
+                    <div className="text-xl font-bold text-blue-400">{averageScore}</div>
+                  </div>
+                  <div className="text-zinc-400">
+                    <div className="text-xs text-zinc-500">Games Played</div>
+                    <div className="text-xl font-bold text-purple-400">{gameHistory.length + 1}</div>
+                  </div>
+                </div>
               </div>
-              <div className="text-zinc-400">
-                <div className="text-xs text-zinc-500">Average</div>
-                <div className="text-xl font-bold text-blue-400">{averageScore}</div>
-              </div>
-              <div className="text-zinc-400">
-                <div className="text-xs text-zinc-500">Games Played</div>
-                <div className="text-xl font-bold text-purple-400">{gameHistory.length + 1}</div>
-              </div>
-            </div>
-          </div>
-          
+              
               <div className="flex gap-4">
-            <button 
+                <button 
                   onClick={startGame}
                   className="flex-1 px-4 py-3 border border-red-500 bg-red-500/20 text-red-400 hover:bg-red-500/30 font-bold"
-            >
-              TRY AGAIN
-            </button>
+                >
+                  TRY AGAIN
+                </button>
                 <button 
                   onClick={() => setGameState('menu')}
                   className="flex-1 px-4 py-3 border border-zinc-600 bg-zinc-800 text-zinc-300 hover:bg-zinc-700"
                 >
                   MAIN MENU
                 </button>
-          </div>
-        </motion.div>
+              </div>
+            </motion.div>
           </div>
         </div>
       </div>
     );
   }
-  
+
   return (
     <div className="border border-zinc-800 p-4 bg-zinc-950">
       <h3 className="text-lg font-semibold text-zinc-100 mb-4">NEURAL_PING_PONG // ACTIVE</h3>
       <div className="relative w-full" style={{ height: '60vh', minHeight: '400px' }}>
-        <canvas 
+        <canvas
           ref={canvasRef}
           width={800}
           height={600}
