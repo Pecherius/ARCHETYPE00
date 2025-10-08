@@ -684,13 +684,10 @@ function CodeRain(){
   );
 }
 
-// 🎮 NEURAL_PING_PONG: Modern semi-3D cypherpunk ping pong with WebGL effects
+// 🎮 NEURAL_PING_PONG: Cypherpunk ping pong with resonance glitch effects
 // ARCHETYPE_00 themed - gets progressively faster until impossible
 function NeuralPingPong() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const glRef = useRef<WebGLRenderingContext | null>(null);
-  const animationRef = useRef<number | null>(null);
-  
   const [gameState, setGameState] = useState<'menu' | 'playing' | 'gameOver' | 'won'>('menu');
   const [score, setScore] = useState(0);
   const [speed, setSpeed] = useState(2);
@@ -700,38 +697,15 @@ function NeuralPingPong() {
   const [gameHistory, setGameHistory] = useState<Array<{score: number, timestamp: number}>>([]);
   const [lastHitTime, setLastHitTime] = useState(0);
   
-  // Modern semi-3D game objects with enhanced effects
-  const [ball, setBall] = useState({ 
-    x: 400, y: 100, z: 0, 
-    vx: 0, vy: 0, vz: 0,
-    rotation: 0, scale: 1,
-    trail: [] as Array<{x: number, y: number, z: number, life: number, size: number}>,
-    glowIntensity: 1
-  });
-  const [paddle, setPaddle] = useState({ 
-    x: 350, y: 550, z: 0, 
-    width: 120, height: 20, depth: 10,
-    rotation: 0, scale: 1,
-    glowIntensity: 1
-  });
-  
-  // Modern effects
-  const [particles, setParticles] = useState<Array<{
-    id: number, x: number, y: number, z: number,
-    vx: number, vy: number, vz: number,
-    life: number, maxLife: number, size: number,
-    color: string, type: 'hit' | 'glitch' | 'trail'
-  }>>([]);
-  const [floatingMessages, setFloatingMessages] = useState<Array<{
-    id: number, text: string, x: number, y: number, z: number,
-    vx: number, vy: number, vz: number, life: number,
-    rotation: number, scale: number
-  }>>([]);
+  // Game objects
+  const [ball, setBall] = useState({ x: 400, y: 100, dx: 0, dy: 0, vx: 0, vy: 0 });
+  const [paddle, setPaddle] = useState({ x: 350, y: 550, width: 120 });
+  const [glitchLines, setGlitchLines] = useState<Array<{x: number, y: number, width: number, height: number}>>([]);
   const [gameStartTime, setGameStartTime] = useState<number>(0);
-  const [camera, setCamera] = useState({ x: 0, y: 0, z: 0, rotation: 0 });
-  const [lighting, setLighting] = useState({ intensity: 1, color: '#ff69b4' });
+  const [floatingMessages, setFloatingMessages] = useState<Array<{id: number, text: string, x: number, y: number, vx: number, vy: number, life: number}>>([]);
+  const [geometricObstacles, setGeometricObstacles] = useState<Array<{x: number, y: number, size: number, rotation: number, speed: number}>>([]);
   
-  // Modern meme messages with 3D positioning
+  // Meme messages for floating text
   const memeMessages = [
     "PEPITO CAN'T PLAY PING PONG 😂",
     "Pebubu lost internet connection",
@@ -750,446 +724,22 @@ function NeuralPingPong() {
     "Pebubu: 'This is impossible'",
     "Punkable: 'Working as intended'"
   ];
-
-  // WebGL shader programs
-  const vertexShaderSource = `
-    attribute vec3 position;
-    attribute vec3 color;
-    attribute float size;
-    uniform mat4 modelViewMatrix;
-    uniform mat4 projectionMatrix;
-    varying vec3 vColor;
-    varying float vSize;
-    
-    void main() {
-      vColor = color;
-      vSize = size;
-      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-      gl_PointSize = size;
-    }
-  `;
-
-  const fragmentShaderSource = `
-    precision mediump float;
-    varying vec3 vColor;
-    varying float vSize;
-    
-    void main() {
-      vec2 center = gl_PointCoord - vec2(0.5);
-      float dist = length(center);
-      float alpha = 1.0 - smoothstep(0.0, 0.5, dist);
-      gl_FragColor = vec4(vColor, alpha);
-    }
-  `;
-
-  // Initialize WebGL
-  const initWebGL = () => {
-    const canvas = canvasRef.current;
-    if (!canvas) return false;
-
-    const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-    if (!gl) return false;
-
-    glRef.current = gl as WebGLRenderingContext;
-    
-    // Create shader program
-    const vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
-    const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
-    const program = createProgram(gl, vertexShader, fragmentShader);
-    
-    gl.useProgram(program);
-    gl.enable(gl.BLEND);
-    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-    
-    return true;
-  };
-
-  const createShader = (gl: WebGLRenderingContext, type: number, source: string) => {
-    const shader = gl.createShader(type);
-    if (!shader) return null;
-    
-    gl.shaderSource(shader, source);
-    gl.compileShader(shader);
-    
-    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-      console.error('Shader compilation error:', gl.getShaderInfoLog(shader));
-      gl.deleteShader(shader);
-      return null;
-    }
-    
-    return shader;
-  };
-
-  const createProgram = (gl: WebGLRenderingContext, vertexShader: WebGLShader | null, fragmentShader: WebGLShader | null) => {
-    if (!vertexShader || !fragmentShader) return null;
-    
-    const program = gl.createProgram();
-    if (!program) return null;
-    
-    gl.attachShader(program, vertexShader);
-    gl.attachShader(program, fragmentShader);
-    gl.linkProgram(program);
-    
-    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-      console.error('Program linking error:', gl.getProgramInfoLog(program));
-      gl.deleteProgram(program);
-      return null;
-    }
-    
-    return program;
-  };
   
-  // Modern particle system
-  const createParticle = (x: number, y: number, z: number, type: 'hit' | 'glitch' | 'trail') => {
-    const colors = {
-      hit: ['#ff69b4', '#ff1493', '#ffc0cb'],
-      glitch: ['#00ff88', '#00ffff', '#0088ff'],
-      trail: ['#ff69b4', '#ff1493', '#ffc0cb']
-    };
-    
-    return {
-      id: Date.now() + Math.random(),
-      x, y, z,
-      vx: (Math.random() - 0.5) * 4,
-      vy: (Math.random() - 0.5) * 4,
-      vz: (Math.random() - 0.5) * 2,
-      life: type === 'trail' ? 30 : 60,
-      maxLife: type === 'trail' ? 30 : 60,
-      size: Math.random() * 8 + 2,
-      color: colors[type][Math.floor(Math.random() * colors[type].length)],
-      type
-    };
-  };
-
-  // Modern floating message system
-  const spawnFloatingMessage = (x: number, y: number, z: number = 0) => {
+  // Function to spawn floating message
+  const spawnFloatingMessage = (x: number, y: number) => {
     const message = memeMessages[Math.floor(Math.random() * memeMessages.length)];
     const newMessage = {
       id: Date.now() + Math.random(),
       text: message,
-      x, y, z,
-      vx: (Math.random() - 0.5) * 1,
-      vy: -Math.random() * 1 - 0.5,
-      vz: (Math.random() - 0.5) * 0.5,
-      life: 180,
-      rotation: (Math.random() - 0.5) * 0.2,
-      scale: Math.random() * 0.5 + 0.8
+      x: x,
+      y: y,
+      vx: (Math.random() - 0.5) * 2,
+      vy: -Math.random() * 2 - 1,
+      life: 120 // frames
     };
     setFloatingMessages(prev => [...prev, newMessage]);
   };
 
-  // Modern semi-3D rendering system using Canvas 2D with advanced effects
-  const renderModern = () => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    // Clear canvas with animated background
-    const gradient = ctx.createRadialGradient(400, 300, 0, 400, 300, 500);
-    gradient.addColorStop(0, '#0a0a0a');
-    gradient.addColorStop(0.5, '#1a1a2e');
-    gradient.addColorStop(1, '#16213e');
-    ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    // Add animated grid background
-    ctx.strokeStyle = '#ff69b4';
-    ctx.lineWidth = 0.5;
-    ctx.globalAlpha = 0.1;
-    for (let i = 0; i < canvas.width; i += 50) {
-      ctx.beginPath();
-      ctx.moveTo(i, 0);
-      ctx.lineTo(i, canvas.height);
-      ctx.stroke();
-    }
-    for (let i = 0; i < canvas.height; i += 50) {
-      ctx.beginPath();
-      ctx.moveTo(0, i);
-      ctx.lineTo(canvas.width, i);
-      ctx.stroke();
-    }
-    ctx.globalAlpha = 1;
-
-    // Render ball with modern effects
-    renderModernBall(ctx, ball);
-    
-    // Render paddle with 3D sombrero effect
-    renderModernPaddle(ctx, paddle);
-    
-    // Render particles
-    renderModernParticles(ctx, particles);
-    
-    // Render floating messages
-    renderModernMessages(ctx, floatingMessages);
-    
-    // Render UI overlay
-    renderUI(ctx);
-  };
-
-  const renderModernBall = (ctx: CanvasRenderingContext2D, ball: any) => {
-    // Render ball trail with depth effect
-    ball.trail.forEach((trailPoint: any, index: number) => {
-      const alpha = trailPoint.life / 30;
-      const size = trailPoint.size * alpha;
-      const zOffset = trailPoint.z * 0.5;
-      
-      // Create glow effect
-      ctx.shadowColor = '#00ff88';
-      ctx.shadowBlur = 20 * alpha;
-      ctx.fillStyle = `rgba(0, 255, 136, ${alpha * 0.8})`;
-      ctx.beginPath();
-      ctx.arc(trailPoint.x + zOffset, trailPoint.y - zOffset, size, 0, Math.PI * 2);
-      ctx.fill();
-    });
-    
-    // Render main ball with 3D effect
-    const zOffset = ball.z * 0.5;
-    const ballX = ball.x + zOffset;
-    const ballY = ball.y - zOffset;
-    
-    // Outer glow
-    ctx.shadowColor = '#00ff88';
-    ctx.shadowBlur = 30;
-    ctx.fillStyle = '#00ff88';
-    ctx.beginPath();
-    ctx.arc(ballX, ballY, 15, 0, Math.PI * 2);
-    ctx.fill();
-    
-    // Inner ball
-    ctx.shadowBlur = 0;
-    const gradient = ctx.createRadialGradient(ballX - 3, ballY - 3, 0, ballX, ballY, 12);
-    gradient.addColorStop(0, '#ffffff');
-    gradient.addColorStop(0.5, '#00ff88');
-    gradient.addColorStop(1, '#00aa55');
-    ctx.fillStyle = gradient;
-    ctx.beginPath();
-    ctx.arc(ballX, ballY, 12, 0, Math.PI * 2);
-    ctx.fill();
-    
-    // Highlight
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-    ctx.beginPath();
-    ctx.arc(ballX - 3, ballY - 3, 4, 0, Math.PI * 2);
-    ctx.fill();
-  };
-
-  const renderModernPaddle = (ctx: CanvasRenderingContext2D, paddle: any) => {
-    const zOffset = paddle.z * 0.3;
-    const paddleX = paddle.x + zOffset;
-    const paddleY = paddle.y - zOffset;
-    
-    // Sombrero mexicano 3D effect
-    ctx.shadowColor = '#ff69b4';
-    ctx.shadowBlur = 25;
-    
-    // Sombrero brim (base) with 3D effect
-    ctx.fillStyle = '#ff69b4';
-    ctx.beginPath();
-    ctx.ellipse(paddleX + paddle.width/2, paddleY + 18, paddle.width/2 + 15, 12, 0, 0, 2 * Math.PI);
-    ctx.fill();
-    
-    // Sombrero crown (top part) with depth
-    ctx.fillStyle = '#ff1493';
-    ctx.beginPath();
-    ctx.ellipse(paddleX + paddle.width/2, paddleY + 8, paddle.width/2 - 8, 15, 0, 0, 2 * Math.PI);
-    ctx.fill();
-    
-    // 3D shadow effect
-    ctx.shadowBlur = 0;
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
-    ctx.beginPath();
-    ctx.ellipse(paddleX + paddle.width/2 + 2, paddleY + 20, paddle.width/2 + 15, 12, 0, 0, 2 * Math.PI);
-    ctx.fill();
-    
-    // Neon border
-    ctx.strokeStyle = '#ff69b4';
-    ctx.lineWidth = 3;
-    ctx.shadowColor = '#ff69b4';
-    ctx.shadowBlur = 15;
-    ctx.beginPath();
-    ctx.ellipse(paddleX + paddle.width/2, paddleY + 18, paddle.width/2 + 15, 12, 0, 0, 2 * Math.PI);
-    ctx.stroke();
-    
-    // Decorative pattern
-    ctx.strokeStyle = '#ffc0cb';
-    ctx.lineWidth = 1;
-    ctx.shadowBlur = 5;
-    for (let i = 0; i < 3; i++) {
-      ctx.beginPath();
-      ctx.ellipse(paddleX + paddle.width/2, paddleY + 18, paddle.width/2 + 10 - i*2, 10 - i*2, 0, 0, 2 * Math.PI);
-      ctx.stroke();
-    }
-    
-    ctx.shadowBlur = 0;
-  };
-
-  const renderModernParticles = (ctx: CanvasRenderingContext2D, particles: any[]) => {
-    particles.forEach(particle => {
-      const alpha = particle.life / particle.maxLife;
-      const zOffset = particle.z * 0.5;
-      const particleX = particle.x + zOffset;
-      const particleY = particle.y - zOffset;
-      
-      ctx.shadowColor = particle.color;
-      ctx.shadowBlur = 15 * alpha;
-      ctx.fillStyle = particle.color + Math.floor(alpha * 255).toString(16).padStart(2, '0');
-      ctx.beginPath();
-      ctx.arc(particleX, particleY, particle.size * alpha, 0, Math.PI * 2);
-      ctx.fill();
-    });
-  };
-
-  const renderModernMessages = (ctx: CanvasRenderingContext2D, messages: any[]) => {
-    messages.forEach(message => {
-      const alpha = message.life / 180;
-      const zOffset = message.z * 0.3;
-      const messageX = message.x + zOffset;
-      const messageY = message.y - zOffset;
-      
-      ctx.save();
-      ctx.translate(messageX, messageY);
-      ctx.rotate(message.rotation);
-      ctx.scale(message.scale, message.scale);
-      
-      ctx.shadowColor = '#ffffff';
-      ctx.shadowBlur = 10;
-      ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
-      ctx.font = 'bold 16px monospace';
-      ctx.textAlign = 'center';
-      ctx.fillText(message.text, 0, 0);
-      
-      ctx.restore();
-    });
-  };
-
-  const renderUI = (ctx: CanvasRenderingContext2D) => {
-    // Score display with modern styling
-    ctx.fillStyle = '#ff69b4';
-    ctx.font = 'bold 24px monospace';
-    ctx.textAlign = 'left';
-    ctx.fillText(`Score: ${score}`, 20, 40);
-    
-    // Speed indicator
-    ctx.fillStyle = '#00ff88';
-    ctx.font = 'bold 18px monospace';
-    ctx.fillText(`Speed: ${speed.toFixed(1)}`, 20, 70);
-    
-    // Glitch intensity bar
-    if (glitchIntensity > 0) {
-      ctx.fillStyle = '#ff0000';
-      ctx.font = 'bold 14px monospace';
-      ctx.fillText('WARNING: NEURAL OVERLOAD', 20, 100);
-      
-      // Progress bar
-      ctx.fillStyle = 'rgba(255, 0, 0, 0.3)';
-      ctx.fillRect(20, 110, 200, 10);
-      ctx.fillStyle = '#ff0000';
-      ctx.fillRect(20, 110, 200 * glitchIntensity, 10);
-    }
-  };
-
-  // Matrix creation functions
-  const createPerspectiveMatrix = (fov: number, aspect: number, near: number, far: number) => {
-    const f = Math.tan(Math.PI * 0.5 - 0.5 * fov);
-    const rangeInv = 1.0 / (near - far);
-    
-    return [
-      f / aspect, 0, 0, 0,
-      0, f, 0, 0,
-      0, 0, (near + far) * rangeInv, -1,
-      0, 0, near * far * rangeInv * 2, 0
-    ];
-  };
-
-  const createModelViewMatrix = (camera: {x: number, y: number, z: number, rotation: number}) => {
-    const cos = Math.cos(camera.rotation);
-    const sin = Math.sin(camera.rotation);
-    
-    return [
-      cos, 0, sin, 0,
-      0, 1, 0, 0,
-      -sin, 0, cos, 0,
-      -camera.x, -camera.y, -camera.z, 1
-    ];
-  };
-
-  // Rendering functions
-  const renderBall = (gl: WebGLRenderingContext, ball: any, projectionMatrix: number[], modelViewMatrix: number[]) => {
-    // Render ball trail
-    ball.trail.forEach((trailPoint: any, index: number) => {
-      const alpha = trailPoint.life / 30;
-      const size = 8 * alpha;
-      
-      // Create ball geometry
-      const positions = [trailPoint.x, trailPoint.y, trailPoint.z];
-      const colors = [1, 0.4, 0.8, alpha]; // Pink with alpha
-      
-      // Render using WebGL
-      renderPoint(gl, positions, colors, size, projectionMatrix, modelViewMatrix);
-    });
-    
-    // Render main ball
-    const positions = [ball.x, ball.y, ball.z];
-    const colors = [0, 1, 0.5, 1]; // Green
-    renderPoint(gl, positions, colors, 12, projectionMatrix, modelViewMatrix);
-  };
-
-  const renderPaddle = (gl: WebGLRenderingContext, paddle: any, projectionMatrix: number[], modelViewMatrix: number[]) => {
-    // Render sombrero mexicano in 3D
-    const positions = [
-      paddle.x, paddle.y, paddle.z,
-      paddle.x + paddle.width, paddle.y, paddle.z,
-      paddle.x + paddle.width, paddle.y + paddle.height, paddle.z,
-      paddle.x, paddle.y + paddle.height, paddle.z
-    ];
-    
-    const colors = [1, 0.4, 0.8, 1]; // Pink
-    renderQuad(gl, positions, colors, projectionMatrix, modelViewMatrix);
-  };
-
-  const renderParticles = (gl: WebGLRenderingContext, particles: any[], projectionMatrix: number[], modelViewMatrix: number[]) => {
-    particles.forEach(particle => {
-      const alpha = particle.life / particle.maxLife;
-      const positions = [particle.x, particle.y, particle.z];
-      const colors = hexToRgb(particle.color).concat(alpha);
-      
-      renderPoint(gl, positions, colors, particle.size * alpha, projectionMatrix, modelViewMatrix);
-    });
-  };
-
-  const renderFloatingMessages = (gl: WebGLRenderingContext, messages: any[], projectionMatrix: number[], modelViewMatrix: number[]) => {
-    // For now, render as particles - in a full implementation, you'd use text rendering
-    messages.forEach(message => {
-      const alpha = message.life / 180;
-      const positions = [message.x, message.y, message.z];
-      const colors = [1, 1, 1, alpha]; // White with alpha
-      
-      renderPoint(gl, positions, colors, 6 * message.scale, projectionMatrix, modelViewMatrix);
-    });
-  };
-
-  // Helper functions
-  const renderPoint = (gl: WebGLRenderingContext, position: number[], color: number[], size: number, projectionMatrix: number[], modelViewMatrix: number[]) => {
-    // Simplified point rendering - in a full implementation, you'd use proper buffers
-    gl.enable(gl.POINT_SPRITES);
-    gl.enable(gl.VERTEX_PROGRAM_POINT_SIZE);
-  };
-
-  const renderQuad = (gl: WebGLRenderingContext, positions: number[], color: number[], projectionMatrix: number[], modelViewMatrix: number[]) => {
-    // Simplified quad rendering
-  };
-
-  const hexToRgb = (hex: string) => {
-    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return result ? [
-      parseInt(result[1], 16) / 255,
-      parseInt(result[2], 16) / 255,
-      parseInt(result[3], 16) / 255
-    ] : [1, 1, 1];
-  };
-  
   // Game loop - optimized for better performance
   useEffect(() => {
     if (gameState !== 'playing') return;
@@ -1240,7 +790,7 @@ function NeuralPingPong() {
              // Direct movement based on initial velocity
              newBall.x += newBall.vx * currentSpeed;
              newBall.y += newBall.vy * currentSpeed;
-        
+       
         // Wall collisions with better physics
         if (newBall.x <= 5 || newBall.x >= 795) {
           newBall.vx = -newBall.vx; // Simple bounce
@@ -1275,14 +825,14 @@ function NeuralPingPong() {
                  
                  newBall.y = paddleTop - 10; // Position above paddle
                  
-                 setScore(prev => {
-                   const newScore = prev + 1;
+          setScore(prev => {
+            const newScore = prev + 1;
                    if (newScore >= 50) { // Increased win condition
-                     setGameState('won');
-                     setShowWinMessage(true);
-                   }
-                   return newScore;
-                 });
+              setGameState('won');
+              setShowWinMessage(true);
+            }
+            return newScore;
+          });
                  
                  // Spawn floating message on successful hit
                  if (Math.random() < 0.2) { // 20% chance
@@ -1295,7 +845,7 @@ function NeuralPingPong() {
                  newBall.vx = (Math.max(0, Math.min(1, (newBall.x - paddleLeft) / paddle.width)) - 0.5) * 2;
                  newBall.y = paddleTop - 10;
                }
-             }
+        }
         
         // Game over
         if (newBall.y >= 600) {
@@ -1361,137 +911,117 @@ function NeuralPingPong() {
     };
   }, [gameState, paddle.x, score, glitchIntensity, speed]);
   
-  // Draw function with cypherpunk background
-  useEffect(() => {
+  // Start game function
+  const startGame = () => {
+    setGameState('playing');
+    setScore(0);
+    setSpeed(2);
+    setGlitchIntensity(0);
+    setShowWinMessage(false);
+    setGameStartTime(Date.now());
+    setLastHitTime(0);
+    
+    // Set initial ball position and velocity
+    const initialVx = (Math.random() - 0.5) * 3; // -1.5 to 1.5
+    const initialVy = Math.random() * 2 + 1; // 1 to 3 (downward)
+    
+    setBall({
+      x: 400,
+      y: 100,
+      dx: initialVx,
+      dy: initialVy,
+      vx: initialVx,
+      vy: initialVy
+    });
+    
+    // Reset paddle position
+    setPaddle(prev => ({ ...prev, x: 350 }));
+    
+    // Clear effects
+    setFloatingMessages([]);
+    setGlitchLines([]);
+    setGeometricObstacles([]);
+  };
+
+  // Mouse movement handler
+  const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
     if (gameState !== 'playing') return;
     
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    
+    const rect = canvas.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    
+    setPaddle(prev => ({
+      ...prev,
+      x: Math.max(0, Math.min(800 - prev.width, mouseX - prev.width / 2))
+    }));
+  };
+
+  // Render function
+  const render = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
     
-    const canvasWidth = canvas.width;
-    const canvasHeight = canvas.height;
-    
-    // Clear canvas with animated background
-    const time = Date.now() * 0.001;
-    const hue = (time * 50) % 360;
-    ctx.fillStyle = `hsl(${hue}, 20%, 5%)`;
-    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
-    
-    // Draw geometric patterns
-    ctx.strokeStyle = `hsla(${hue + 120}, 70%, 50%, 0.3)`;
-    ctx.lineWidth = 2;
-    for (let i = 0; i < 20; i++) {
-      const x = (Math.sin(time + i) * canvasWidth / 2) + canvasWidth / 2;
-      const y = (Math.cos(time * 0.5 + i) * canvasHeight / 2) + canvasHeight / 2;
-      ctx.beginPath();
-      ctx.arc(x, y, 30 + Math.sin(time + i) * 20, 0, Math.PI * 2);
-      ctx.stroke();
-    }
+    // Clear canvas
+    ctx.fillStyle = '#0a0a0a';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Draw glitch lines
+    glitchLines.forEach(line => {
+      ctx.fillStyle = `rgba(255, 0, 0, ${Math.random() * 0.5 + 0.1})`;
+      ctx.fillRect(line.x, line.y, line.width, line.height);
+    });
     
     // Draw geometric obstacles
     geometricObstacles.forEach(obstacle => {
       ctx.save();
       ctx.translate(obstacle.x, obstacle.y);
       ctx.rotate(obstacle.rotation);
-      ctx.strokeStyle = `hsla(${hue + 180}, 80%, 60%, 0.6)`;
-      ctx.fillStyle = `hsla(${hue + 180}, 60%, 40%, 0.3)`;
-      ctx.lineWidth = 3;
-      
-      // Draw different shapes
-      const shapeType = Math.floor(obstacle.rotation * 3) % 3;
-      if (shapeType === 0) {
-        // Triangle
-        ctx.beginPath();
-        ctx.moveTo(0, -obstacle.size);
-        ctx.lineTo(-obstacle.size, obstacle.size);
-        ctx.lineTo(obstacle.size, obstacle.size);
-        ctx.closePath();
-        ctx.fill();
-        ctx.stroke();
-      } else if (shapeType === 1) {
-        // Square
-        ctx.fillRect(-obstacle.size/2, -obstacle.size/2, obstacle.size, obstacle.size);
-        ctx.strokeRect(-obstacle.size/2, -obstacle.size/2, obstacle.size, obstacle.size);
-      } else {
-        // Hexagon
-        ctx.beginPath();
-        for (let i = 0; i < 6; i++) {
-          const angle = (i * Math.PI) / 3;
-          const x = Math.cos(angle) * obstacle.size;
-          const y = Math.sin(angle) * obstacle.size;
-          if (i === 0) ctx.moveTo(x, y);
-          else ctx.lineTo(x, y);
-        }
-        ctx.closePath();
-        ctx.fill();
-        ctx.stroke();
-      }
+      ctx.fillStyle = `rgba(255, 69, 180, ${Math.random() * 0.3 + 0.1})`;
+      ctx.fillRect(-obstacle.size / 2, -obstacle.size / 2, obstacle.size, obstacle.size);
       ctx.restore();
     });
-    
-    // Draw grid lines
-    ctx.strokeStyle = `hsla(${hue + 240}, 50%, 30%, 0.2)`;
-    ctx.lineWidth = 1;
-    for (let i = 0; i < canvasWidth; i += 50) {
-      ctx.beginPath();
-      ctx.moveTo(i, 0);
-      ctx.lineTo(i, canvasHeight);
-      ctx.stroke();
-    }
-    for (let i = 0; i < canvasHeight; i += 50) {
-      ctx.beginPath();
-      ctx.moveTo(0, i);
-      ctx.lineTo(canvasWidth, i);
-      ctx.stroke();
-    }
-    
-    // Glitch effect
-    if (glitchIntensity > 0) {
-      ctx.fillStyle = `rgba(255, 0, 180, ${glitchIntensity * 0.3})`;
-      glitchLines.forEach(line => {
-        ctx.fillRect(line.x, line.y, line.width, line.height);
-      });
-    }
-    
-    // Draw ball with glow effect
+
+    // Draw ball
     ctx.shadowColor = '#00ff88';
     ctx.shadowBlur = 20;
     ctx.fillStyle = '#00ff88';
-    ctx.fillRect(ball.x - 5, ball.y - 5, 10, 10);
+        ctx.beginPath();
+    ctx.arc(ball.x, ball.y, 12, 0, Math.PI * 2);
+        ctx.fill();
     ctx.shadowBlur = 0;
-    
-    // Draw sombrero mexicano paddle with neon effect
+
+    // Draw paddle (sombrero mexicano)
     ctx.shadowColor = '#ff69b4';
-    ctx.shadowBlur = 25;
+    ctx.shadowBlur = 15;
     
-    // Sombrero brim (base) - larger and more prominent
+    // Sombrero brim (base)
     ctx.fillStyle = '#ff69b4';
-    ctx.beginPath();
+        ctx.beginPath();
     ctx.ellipse(paddle.x + paddle.width/2, paddle.y + 18, paddle.width/2 + 15, 12, 0, 0, 2 * Math.PI);
-    ctx.fill();
+        ctx.fill();
     
-    // Sombrero crown (top part) - more conical
+    // Sombrero crown (top part)
     ctx.fillStyle = '#ff1493';
     ctx.beginPath();
     ctx.ellipse(paddle.x + paddle.width/2, paddle.y + 8, paddle.width/2 - 8, 15, 0, 0, 2 * Math.PI);
     ctx.fill();
     
-    // Sombrero decoration (neon border) - more detailed
+    // Neon border
     ctx.strokeStyle = '#ff69b4';
     ctx.lineWidth = 3;
-    ctx.shadowColor = '#ff69b4';
-    ctx.shadowBlur = 15;
     ctx.beginPath();
     ctx.ellipse(paddle.x + paddle.width/2, paddle.y + 18, paddle.width/2 + 15, 12, 0, 0, 2 * Math.PI);
-    ctx.stroke();
+        ctx.stroke();
     
-    // Sombrero pattern (decorative lines)
+    // Decorative pattern
     ctx.strokeStyle = '#ffc0cb';
     ctx.lineWidth = 1;
-    ctx.shadowBlur = 5;
     for (let i = 0; i < 3; i++) {
       ctx.beginPath();
       ctx.ellipse(paddle.x + paddle.width/2, paddle.y + 18, paddle.width/2 + 10 - i*2, 10 - i*2, 0, 0, 2 * Math.PI);
@@ -1499,35 +1029,206 @@ function NeuralPingPong() {
     }
     
     ctx.shadowBlur = 0;
-    
+
     // Draw floating messages
-    floatingMessages.forEach(msg => {
-      ctx.save();
-      ctx.globalAlpha = Math.min(msg.life / 60, 1); // Fade out
-      ctx.fillStyle = '#ff69b4';
-      ctx.font = 'bold 14px monospace';
+    floatingMessages.forEach(message => {
+      const alpha = message.life / 120;
+      ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
+      ctx.font = 'bold 16px monospace';
       ctx.textAlign = 'center';
-      ctx.shadowColor = '#ff69b4';
-      ctx.shadowBlur = 5;
-      ctx.fillText(msg.text, msg.x, msg.y);
-      ctx.restore();
+      ctx.fillText(message.text, message.x, message.y);
     });
+
+    // Draw UI
+    ctx.fillStyle = '#ff69b4';
+    ctx.font = 'bold 24px monospace';
+    ctx.textAlign = 'left';
+    ctx.fillText(`Score: ${score}`, 20, 40);
     
-    // Draw score with cypherpunk style
-    ctx.fillStyle = '#ffffff';
-    ctx.font = 'bold 16px monospace';
-    ctx.fillText(`SCORE: ${score}`, 20, 30);
-    ctx.fillText(`SPEED: ${speed.toFixed(1)}`, 20, 55);
+    ctx.fillStyle = '#00ff88';
+    ctx.font = 'bold 18px monospace';
+    ctx.fillText(`Speed: ${speed.toFixed(1)}`, 20, 70);
     
-    // Draw glitch warning
-    if (glitchIntensity > 0.5) {
+    if (glitchIntensity > 0) {
       ctx.fillStyle = '#ff0000';
       ctx.font = 'bold 14px monospace';
-      ctx.fillText('WARNING: NEURAL OVERLOAD', 20, 80);
+      ctx.fillText('WARNING: NEURAL OVERLOAD', 20, 100);
+      
+      ctx.fillStyle = 'rgba(255, 0, 0, 0.3)';
+      ctx.fillRect(20, 110, 200, 10);
+      ctx.fillStyle = '#ff0000';
+      ctx.fillRect(20, 110, 200 * glitchIntensity, 10);
     }
-  }, [ball, paddle, score, speed, glitchIntensity, glitchLines, gameState, geometricObstacles]);
+  };
+
+  // Render effect
+  useEffect(() => {
+    render();
+  }, [ball, paddle, score, speed, glitchIntensity, floatingMessages, glitchLines, geometricObstacles]);
+
+  // Auto-center paddle after 3 seconds of no input
+  useEffect(() => {
+    if (gameState !== 'playing') return;
+    
+    const timer = setTimeout(() => {
+      setPaddle(prev => ({ ...prev, x: 350 }));
+    }, 3000);
+    
+    return () => clearTimeout(timer);
+  }, [gameState, paddle.x]);
   
-  // Keyboard and touch controls
+  // Game loop
+  useEffect(() => {
+    if (gameState !== 'playing') return;
+    
+    let lastTime = 0;
+    const targetFPS = 60;
+    const frameTime = 1000 / targetFPS;
+    
+    const gameLoop = (currentTime: number) => {
+      if (currentTime - lastTime < frameTime) {
+        requestAnimationFrame(gameLoop);
+        return;
+      }
+      lastTime = currentTime;
+      
+      setBall(prev => {
+        let newBall = { ...prev };
+        
+        // Progressive difficulty
+        const currentTime = Date.now();
+        const gameDuration = (currentTime - gameStartTime) / 1000;
+        let difficultyMultiplier = 1;
+        if (gameDuration < 10) {
+          difficultyMultiplier = 0.5;
+        } else if (gameDuration < 20) {
+          difficultyMultiplier = 0.7;
+        } else if (gameDuration < 30) {
+          difficultyMultiplier = 0.85;
+        } else {
+          difficultyMultiplier = 1.0 + (gameDuration - 30) * 0.05;
+        }
+        
+        const baseSpeed = 1.5;
+        const currentSpeed = baseSpeed * difficultyMultiplier;
+        
+        // Move ball
+        newBall.x += newBall.vx * currentSpeed;
+        newBall.y += newBall.vy * currentSpeed;
+        
+        // Wall collisions
+        if (newBall.x <= 5 || newBall.x >= 795) {
+          newBall.vx = -newBall.vx;
+          newBall.x = newBall.x <= 5 ? 5 : 795;
+        }
+        if (newBall.y <= 5) {
+          newBall.vy = -newBall.vy;
+          newBall.y = 5;
+        }
+        
+        // Paddle collision
+        const paddleTop = paddle.y;
+        const paddleBottom = paddle.y + 25;
+        const paddleLeft = paddle.x;
+        const paddleRight = paddle.x + paddle.width;
+        
+        if (newBall.y >= paddleTop - 15 && newBall.y <= paddleBottom + 5 && 
+            newBall.x >= paddleLeft - 10 && newBall.x <= paddleRight + 10) {
+          
+          const now = Date.now();
+          if (now - lastHitTime > 800) {
+            setLastHitTime(now);
+            
+            const hitPos = Math.max(0, Math.min(1, (newBall.x - paddleLeft) / paddle.width));
+            newBall.vy = -Math.abs(newBall.vy) * 0.9;
+            newBall.vx = (hitPos - 0.5) * 3;
+            newBall.y = paddleTop - 10;
+            
+            setScore(prev => {
+              const newScore = prev + 1;
+              if (newScore >= 50) {
+                setGameState('won');
+                setShowWinMessage(true);
+              }
+              return newScore;
+            });
+            
+            if (Math.random() < 0.2) {
+              spawnFloatingMessage(newBall.x, newBall.y);
+            }
+            setGlitchIntensity(prev => Math.min(prev + 0.05, 1));
+          } else {
+            newBall.vy = -Math.abs(newBall.vy) * 0.8;
+            newBall.vx = (Math.max(0, Math.min(1, (newBall.x - paddleLeft) / paddle.width)) - 0.5) * 2;
+            newBall.y = paddleTop - 10;
+          }
+        }
+        
+        // Game over
+        if (newBall.y >= 600) {
+          setGameState('gameOver');
+          setLossCount(prev => prev + 1);
+          setGameHistory(prev => [...prev, { score, timestamp: Date.now() }]);
+          return prev;
+        }
+        
+        return newBall;
+      });
+      
+      // Update floating messages
+      setFloatingMessages(prev => prev.map(msg => ({
+        ...msg,
+        x: msg.x + msg.vx,
+        y: msg.y + msg.vy,
+        life: msg.life - 1
+      })).filter(msg => msg.life > 0 && msg.y > -50));
+      
+      // Update geometric obstacles
+      setGeometricObstacles(prev => prev.map(obstacle => ({
+        ...obstacle,
+        x: obstacle.x + Math.cos(obstacle.rotation) * obstacle.speed,
+        y: obstacle.y + Math.sin(obstacle.rotation) * obstacle.speed,
+        rotation: obstacle.rotation + 0.05
+      })).filter(obstacle => 
+        obstacle.x > -50 && obstacle.x < 850 && 
+        obstacle.y > -50 && obstacle.y < 650
+      ));
+      
+      // Add new obstacles
+      if (Math.random() < 0.015) {
+        setGeometricObstacles(prev => [...prev, {
+          x: Math.random() * 800,
+          y: Math.random() * 600,
+          size: Math.random() * 40 + 20,
+          rotation: Math.random() * Math.PI * 2,
+          speed: Math.random() * 3 + 1
+        }]);
+      }
+      
+      // Generate glitch lines
+      if (Math.random() < glitchIntensity * 1) {
+        setGlitchLines(prev => [...prev.slice(-8), {
+          x: Math.random() * 800,
+          y: Math.random() * 600,
+          width: Math.random() * 300 + 100,
+          height: Math.random() * 30 + 10
+        }]);
+      }
+      
+      // Spawn floating messages
+      if (Math.random() < 0.02) {
+        spawnFloatingMessage(Math.random() * 800, Math.random() * 400 + 100);
+      }
+    };
+    
+    requestAnimationFrame(gameLoop);
+    
+    return () => {
+      // Cleanup
+    };
+  }, [gameState, paddle.x, score, glitchIntensity, speed, gameStartTime, lastHitTime]);
+
+  // Keyboard controls
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
       if (gameState !== 'playing') return;
@@ -1540,6 +1241,12 @@ function NeuralPingPong() {
       }
     };
     
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, [gameState, paddle.x]);
+
+  // Touch controls
+  useEffect(() => {
     const handleTouch = (e: TouchEvent) => {
       if (gameState !== 'playing') return;
       e.preventDefault();
@@ -1552,92 +1259,18 @@ function NeuralPingPong() {
       const x = touch.clientX - rect.left;
       const canvasWidth = canvas.width;
       
-      // Convert touch position to paddle position
       const newX = (x / rect.width) * canvasWidth - paddle.width / 2;
       const clampedX = Math.max(0, Math.min(newX, canvasWidth - paddle.width));
       
       setPaddle(prev => ({ ...prev, x: clampedX }));
     };
-    
-    const handleMouseMove = (e: MouseEvent) => {
-      if (gameState !== 'playing') return;
       
       const canvas = canvasRef.current;
-      if (!canvas) return;
-      
-      const rect = canvas.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const canvasWidth = canvas.width;
-      
-      // Convert mouse position to paddle position
-      const newX = (x / rect.width) * canvasWidth - paddle.width / 2;
-      const clampedX = Math.max(0, Math.min(newX, canvasWidth - paddle.width));
-      
-      setPaddle(prev => ({ ...prev, x: clampedX }));
-    };
-    
-    window.addEventListener('keydown', handleKeyPress);
-    window.addEventListener('touchmove', handleTouch, { passive: false });
-    window.addEventListener('mousemove', handleMouseMove);
-    
-    return () => {
-      window.removeEventListener('keydown', handleKeyPress);
-      window.removeEventListener('touchmove', handleTouch);
-      window.removeEventListener('mousemove', handleMouseMove);
-    };
+    if (canvas) {
+      canvas.addEventListener('touchmove', handleTouch, { passive: false });
+      return () => canvas.removeEventListener('touchmove', handleTouch);
+    }
   }, [gameState, paddle.width]);
-
-  // Auto-center paddle if no input for 3 seconds
-  useEffect(() => {
-    if (gameState !== 'playing') return;
-    
-    const autoCenterTimer = setTimeout(() => {
-      setPaddle(prev => ({ ...prev, x: 350 })); // Center the paddle
-    }, 3000);
-    
-    return () => clearTimeout(autoCenterTimer);
-  }, [gameState, paddle.x]);
-  
-  const startGame = () => {
-    setGameState('playing');
-    setScore(0);
-    setSpeed(2);
-    setGlitchIntensity(0);
-    setGameStartTime(Date.now());
-    setLastHitTime(0); // Reset hit cooldown
-    
-    // Start ball from center top with stronger initial movement
-    const randomAngle = (Math.random() - 0.5) * Math.PI / 4; // -45 to 45 degrees
-    const initialVx = Math.sin(randomAngle) * 3; // Stronger horizontal movement
-    const initialVy = Math.abs(Math.cos(randomAngle)) * 3; // Always downward, stronger
-    
-    const ballData = { 
-      x: 400, 
-      y: 100, 
-      dx: initialVx, // Simple direction
-      dy: initialVy, // Simple direction
-      vx: initialVx, // Simple velocity
-      vy: initialVy
-    };
-    
-    console.log('Starting game with ball data:', ballData);
-    setBall(ballData);
-    setPaddle({ x: 350, y: 550, width: 120 });
-    setGlitchLines([]);
-    setShowWinMessage(false);
-  };
-
-  const resetGame = () => {
-    setGameState('menu');
-    setScore(0);
-    setSpeed(8);
-    setGlitchIntensity(0);
-    setBall({ x: 400, y: 300, dx: 2, dy: 2, vx: 0, vy: 0 });
-    setPaddle({ x: 350, y: 550, width: 100 });
-    setGlitchLines([]);
-    setShowWinMessage(false);
-  };
-
 
   const getLossMessage = () => {
     const messages = [
@@ -1655,7 +1288,6 @@ function NeuralPingPong() {
     return messages[lossCount % messages.length];
   };
   
-  
   if (showWinMessage) {
     return (
       <div className="border border-zinc-800 p-4 bg-zinc-950 text-center">
@@ -1667,7 +1299,10 @@ function NeuralPingPong() {
         </div>
         <div className="mb-4">
           <button 
-            onClick={resetGame}
+            onClick={() => {
+              setShowWinMessage(false);
+              setGameState('menu');
+            }}
             className="px-6 py-3 border border-green-400 bg-green-400/20 text-green-400 hover:bg-green-400/30 font-bold text-lg"
           >
             PLAY AGAIN
@@ -1707,69 +1342,59 @@ function NeuralPingPong() {
         <h3 className="text-lg font-semibold text-zinc-100 mb-4">NEURAL_PING_PONG // CONNECTION_LOST</h3>
         <div className="relative w-full" style={{ height: '60vh', minHeight: '400px' }}>
           <div className="absolute inset-0 border-2 border-red-500 bg-gradient-to-br from-red-900/20 to-zinc-950 text-center flex items-center justify-center">
-            <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 0.5 }}
+        <motion.div
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.5 }}
               className="w-full max-w-md"
-            >
-              <h3 className="text-2xl font-bold text-red-400 mb-4 animate-pulse">NEURAL_LINK_LOST</h3>
-              
-              <div className="mb-6 p-4 border border-red-500/30 bg-red-500/10 rounded-lg">
-                <div className="text-4xl font-bold text-red-300 mb-2">SCORE: {score}</div>
-                <div className="text-lg text-red-400 mb-2">ARCHETYPE_00 FRAGMENT</div>
-                <div className="text-sm text-red-500 italic">{getLossMessage()}</div>
+        >
+          <h3 className="text-2xl font-bold text-red-400 mb-4 animate-pulse">NEURAL_LINK_LOST</h3>
+          
+          <div className="mb-6 p-4 border border-red-500/30 bg-red-500/10 rounded-lg">
+            <div className="text-4xl font-bold text-red-300 mb-2">SCORE: {score}</div>
+            <div className="text-lg text-red-400 mb-2">ARCHETYPE_00 FRAGMENT</div>
+            <div className="text-sm text-red-500 italic">{getLossMessage()}</div>
+          </div>
+          
+          <div className="mb-6 p-4 border border-zinc-600 bg-zinc-900/70 rounded-lg">
+            <h4 className="text-lg font-semibold text-zinc-300 mb-3">SYSTEM_STATISTICS</h4>
+            <div className="grid grid-cols-2 gap-4 text-sm">
+              <div className="text-zinc-400">
+                <div className="text-xs text-zinc-500">Losses</div>
+                <div className="text-xl font-bold text-red-400">{lossCount}</div>
               </div>
-              
-              <div className="mb-6 p-4 border border-zinc-600 bg-zinc-900/70 rounded-lg">
-                <h4 className="text-lg font-semibold text-zinc-300 mb-3">SYSTEM_STATISTICS</h4>
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div className="text-zinc-400">
-                    <div className="text-xs text-zinc-500">Losses</div>
-                    <div className="text-xl font-bold text-red-400">{lossCount}</div>
-                  </div>
-                  <div className="text-zinc-400">
-                    <div className="text-xs text-zinc-500">Best Score</div>
-                    <div className="text-xl font-bold text-green-400">{bestScore}</div>
-                  </div>
-                  <div className="text-zinc-400">
-                    <div className="text-xs text-zinc-500">Average</div>
-                    <div className="text-xl font-bold text-blue-400">{averageScore}</div>
-                  </div>
-                  <div className="text-zinc-400">
-                    <div className="text-xs text-zinc-500">Games Played</div>
-                    <div className="text-xl font-bold text-purple-400">{gameHistory.length + 1}</div>
-                  </div>
-                </div>
+              <div className="text-zinc-400">
+                <div className="text-xs text-zinc-500">Best Score</div>
+                <div className="text-xl font-bold text-green-400">{bestScore}</div>
               </div>
-              
-              <div className="mb-4">
-                <button 
+              <div className="text-zinc-400">
+                <div className="text-xs text-zinc-500">Average</div>
+                <div className="text-xl font-bold text-blue-400">{averageScore}</div>
+              </div>
+              <div className="text-zinc-400">
+                <div className="text-xs text-zinc-500">Games Played</div>
+                <div className="text-xl font-bold text-purple-400">{gameHistory.length + 1}</div>
+              </div>
+            </div>
+          </div>
+          
+              <div className="flex gap-4">
+            <button 
                   onClick={startGame}
-                  className="px-8 py-3 border-2 border-red-500 bg-red-500/20 text-red-400 hover:bg-red-500/30 font-bold text-lg transition-all duration-300 hover:scale-105"
+                  className="flex-1 px-4 py-3 border border-red-500 bg-red-500/20 text-red-400 hover:bg-red-500/30 font-bold"
+            >
+              TRY AGAIN
+            </button>
+                <button 
+                  onClick={() => setGameState('menu')}
+                  className="flex-1 px-4 py-3 border border-zinc-600 bg-zinc-800 text-zinc-300 hover:bg-zinc-700"
                 >
-                  TRY AGAIN
+                  MAIN MENU
                 </button>
-              </div>
-              
-              <div className="text-xs text-zinc-600 mt-4">
-                Take a screenshot to share your score!
-              </div>
-            </motion.div>
+          </div>
+        </motion.div>
           </div>
         </div>
-        <div className="mt-2 text-xs text-zinc-500">
-          <div className="flex flex-wrap gap-4">
-            <span>Controls: ← → keys, mouse, touch</span>
-            <span>Score: {score}</span>
-            <span>Speed: {speed.toFixed(1)}</span>
-          </div>
-        </div>
-        {typeof window !== 'undefined' && window.innerWidth < 768 && (
-          <div className="mt-4 p-3 bg-zinc-800 border border-zinc-600 text-xs text-zinc-400">
-            <p className="text-center">Touch and drag to control the paddle</p>
-          </div>
-        )}
       </div>
     );
   }
@@ -1778,27 +1403,15 @@ function NeuralPingPong() {
     <div className="border border-zinc-800 p-4 bg-zinc-950">
       <h3 className="text-lg font-semibold text-zinc-100 mb-4">NEURAL_PING_PONG // ACTIVE</h3>
       <div className="relative w-full" style={{ height: '60vh', minHeight: '400px' }}>
-        <div className="absolute inset-0 border-2 border-red-500 bg-gradient-to-br from-red-900/20 to-zinc-950">
-          <canvas 
-            ref={canvasRef}
-            width={800}
-            height={600}
-            className="w-full h-full touch-none"
-          />
-        </div>
+        <canvas 
+          ref={canvasRef}
+          width={800}
+          height={600}
+          onMouseMove={handleMouseMove}
+          className="w-full h-full border border-zinc-700 bg-black cursor-none"
+          style={{ imageRendering: 'pixelated' }}
+        />
       </div>
-      <div className="mt-2 text-xs text-zinc-500">
-        <div className="flex flex-wrap gap-4">
-          <span>Controls: ← → keys, mouse, touch</span>
-          <span>Score: {score}</span>
-          <span>Speed: {speed.toFixed(1)}</span>
-        </div>
-      </div>
-      {typeof window !== 'undefined' && window.innerWidth < 768 && (
-        <div className="mt-4 p-3 bg-zinc-800 border border-zinc-600 text-xs text-zinc-400">
-          <p className="text-center">Touch and drag to control the paddle</p>
-        </div>
-      )}
     </div>
   );
 }
@@ -2109,11 +1722,11 @@ export default function ArchetypeSite(){
             
             {/* Menu Items */}
             <div className="flex-1 overflow-y-auto p-4 space-y-4">
-              <button
-                onClick={() => {
-                  setObitOpen(true);
-                  setIsMenuOpen(false);
-                }}
+            <button
+              onClick={() => {
+                setObitOpen(true);
+                setIsMenuOpen(false);
+              }}
                 className="w-full px-6 py-4 bg-zinc-800 border border-green-500 text-green-400 hover:bg-zinc-700 transition-colors rounded-lg text-left"
               >
                 <div className="flex items-center gap-3">
@@ -2123,16 +1736,16 @@ export default function ArchetypeSite(){
                     <div className="text-sm text-zinc-400">Terminal interface</div>
                   </div>
                 </div>
-              </button>
+            </button>
               
-              <button
-                onClick={() => {
-                  const gameSection = document.querySelector('[data-section="game"]');
-                  if (gameSection) {
-                    gameSection.scrollIntoView({ behavior: 'smooth' });
-                  }
-                  setIsMenuOpen(false);
-                }}
+            <button
+              onClick={() => {
+                const gameSection = document.querySelector('[data-section="game"]');
+                if (gameSection) {
+                  gameSection.scrollIntoView({ behavior: 'smooth' });
+                }
+                setIsMenuOpen(false);
+              }}
                 className="w-full px-6 py-4 bg-zinc-800 border border-pink-500 text-pink-400 hover:bg-zinc-700 transition-colors rounded-lg text-left"
               >
                 <div className="flex items-center gap-3">
@@ -2142,16 +1755,16 @@ export default function ArchetypeSite(){
                     <div className="text-sm text-zinc-400">Ping pong simulation</div>
                   </div>
                 </div>
-              </button>
+            </button>
               
-              <button
-                onClick={() => {
-                  const matrixSection = document.querySelector('[data-section="matrix"]');
-                  if (matrixSection) {
-                    matrixSection.scrollIntoView({ behavior: 'smooth' });
-                  }
-                  setIsMenuOpen(false);
-                }}
+            <button
+              onClick={() => {
+                const matrixSection = document.querySelector('[data-section="matrix"]');
+                if (matrixSection) {
+                  matrixSection.scrollIntoView({ behavior: 'smooth' });
+                }
+                setIsMenuOpen(false);
+              }}
                 className="w-full px-6 py-4 bg-zinc-800 border border-cyan-500 text-cyan-400 hover:bg-zinc-700 transition-colors rounded-lg text-left"
               >
                 <div className="flex items-center gap-3">
@@ -2161,7 +1774,7 @@ export default function ArchetypeSite(){
                     <div className="text-sm text-zinc-400">Interactive chat</div>
                   </div>
                 </div>
-              </button>
+            </button>
               
               <button
                 onClick={() => {
@@ -2182,11 +1795,11 @@ export default function ArchetypeSite(){
                 </div>
               </button>
               
-              <button
-                onClick={() => {
-                  toggleHum();
-                  setIsMenuOpen(false);
-                }}
+            <button
+              onClick={() => {
+                toggleHum();
+                setIsMenuOpen(false);
+              }}
                 className="w-full px-6 py-4 bg-zinc-800 border border-yellow-500 text-yellow-400 hover:bg-zinc-700 transition-colors rounded-lg text-left"
               >
                 <div className="flex items-center gap-3">
@@ -2196,7 +1809,7 @@ export default function ArchetypeSite(){
                     <div className="text-sm text-zinc-400">Toggle sound</div>
                   </div>
                 </div>
-              </button>
+            </button>
               
               <button
                 onClick={() => {
@@ -2210,7 +1823,7 @@ export default function ArchetypeSite(){
                   <div>
                     <div className="font-bold">{glitch ? 'GLITCH_OFF' : 'GLITCH_ON'}</div>
                     <div className="text-sm text-zinc-400">Visual effects</div>
-                  </div>
+          </div>
                 </div>
               </button>
             </div>
