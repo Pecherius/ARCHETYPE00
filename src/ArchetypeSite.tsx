@@ -2679,15 +2679,20 @@ export default function ArchetypeSite(){
               href="https://universal.page/drops/archetype_00" 
               target="_blank" 
               rel="noreferrer" 
-              className="group relative overflow-hidden border-2 border-green-500 bg-gradient-to-r from-green-900/30 to-emerald-900/30 px-6 py-3 text-green-400 hover:from-green-800/40 hover:to-emerald-800/40 transition-all duration-300 hover:scale-105"
+              className="group relative overflow-hidden border-2 border-purple-500 bg-gradient-to-r from-purple-900/30 to-violet-900/30 px-6 py-3 text-purple-400 hover:from-purple-800/40 hover:to-violet-800/40 transition-all duration-300 hover:scale-105"
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 to-emerald-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              <div className="relative flex items-center gap-2">
-                <span className="text-xs font-mono">[FRAGMENT_ACCESS]</span>
-                <span className="font-bold">MINT_NODE</span>
-                <span className="text-green-300 group-hover:translate-x-1 transition-transform duration-300">→</span>
+              <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-violet-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <div className="relative flex flex-col items-center gap-1">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-mono">[RELIQUARY_ACCESS]</span>
+                  <span className="font-bold">MINT NODE IN UNIVERSAL PAGE</span>
+                  <span className="text-purple-300 group-hover:translate-x-1 transition-transform duration-300">→</span>
+                </div>
+                <div className="text-xs text-purple-300 font-mono">
+                  STILL AVAILABLE!
+                </div>
               </div>
-              <div className="absolute -top-1 -right-1 w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+              <div className="absolute -top-1 -right-1 w-2 h-2 bg-purple-400 rounded-full animate-pulse"></div>
             </a>
           </div>
 
