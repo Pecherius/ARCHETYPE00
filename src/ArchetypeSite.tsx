@@ -1641,8 +1641,8 @@ function ArchetypeExclusivePrizesMuseum() {
         </p>
       </div>
 
-      {/* Museum Wall - Responsive */}
-      <div className="relative w-full h-[400px] md:h-[500px] bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950 border border-zinc-800 overflow-hidden rounded-lg">
+      {/* Museum Wall - Optimized Space */}
+      <div className="relative w-full h-[320px] md:h-[400px] bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950 border border-zinc-800 overflow-hidden rounded-lg">
         {/* Museum Wall Pattern - Responsive */}
         <div className="absolute inset-0 bg-[repeating-linear-gradient(90deg,transparent,transparent_48px,rgba(255,165,0,0.03)_48px,rgba(255,165,0,0.03)_50px)] md:bg-[repeating-linear-gradient(90deg,transparent,transparent_98px,rgba(255,165,0,0.03)_98px,rgba(255,165,0,0.03)_100px)]"></div>
         <div className="absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_48px,rgba(255,165,0,0.02)_48px,rgba(255,165,0,0.02)_50px)] md:bg-[repeating-linear-gradient(0deg,transparent,transparent_98px,rgba(255,165,0,0.02)_98px,rgba(255,165,0,0.02)_100px)]"></div>
@@ -1680,8 +1680,8 @@ function ArchetypeExclusivePrizesMuseum() {
               }}
               transition={{ duration: 0.4, ease: "easeOut" }}
             >
-              {/* Elegant Museum Frame - Responsive */}
-              <div className="relative w-full h-[280px] md:h-[380px] bg-gradient-to-br from-zinc-900/80 to-zinc-800/60 backdrop-blur-sm border border-zinc-700/50 shadow-2xl overflow-hidden group-hover:border-orange-500/40 transition-all duration-500">
+              {/* Elegant Museum Frame - Optimized Space */}
+              <div className="relative w-full h-[200px] md:h-[280px] bg-gradient-to-br from-zinc-900/80 to-zinc-800/60 backdrop-blur-sm border border-zinc-700/50 shadow-2xl overflow-hidden group-hover:border-orange-500/40 transition-all duration-500">
                 {/* ARCHETYPE Twist - Subtle Glitch Effect */}
                 <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 via-transparent to-amber-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                 
@@ -1696,7 +1696,7 @@ function ArchetypeExclusivePrizesMuseum() {
                 </div>
 
                 {/* Image Container */}
-                <div className="relative w-full h-full flex items-center justify-center p-6">
+                <div className="relative w-full h-full flex items-center justify-center p-2 md:p-4">
                   <img
                     src={image.url}
                     alt={image.title}
@@ -1785,25 +1785,25 @@ function ArchetypeExclusivePrizesMuseum() {
         </div>
       </div>
 
-      {/* Museum Description Section - Below the Gallery */}
-      <div className="mt-8 bg-gradient-to-r from-zinc-900/50 to-zinc-800/30 border border-zinc-700/50 rounded-lg p-6 backdrop-blur-sm">
+      {/* Museum Description Section - Optimized for Prize Concept */}
+      <div className="mt-6 bg-gradient-to-r from-zinc-900/50 to-zinc-800/30 border border-zinc-700/50 rounded-lg p-4 md:p-6 backdrop-blur-sm">
         <div className="text-center mb-4">
-          <h3 className="text-lg font-bold text-orange-400 font-mono mb-2">CURRENT_EXHIBITION</h3>
+          <h3 className="text-lg font-bold text-orange-400 font-mono mb-2">PRIZE_SAMPLE_EXHIBITION</h3>
           <p className="text-sm text-zinc-400 font-mono">
-            Hover over any artwork to pause and examine • Each piece represents exclusive rewards for ARCHETYPE_00 holders
+            Sample of exclusive Fluffy Dynasty rewards • ARCHETYPE_00 holders receive retroactive benefits through quantum raffle system
           </p>
         </div>
         
-        {/* Exhibition Info Grid */}
-        <div className="grid md:grid-cols-3 gap-4 mt-6">
-          <div className="text-center p-4 bg-zinc-800/30 rounded border border-zinc-700/30">
-            <div className="text-orange-400 font-bold text-sm mb-2">COLLECTION_SIZE</div>
-            <div className="text-2xl font-mono text-zinc-300">6</div>
-            <div className="text-xs text-zinc-500">Exclusive Artworks</div>
+        {/* Prize Info Grid - Optimized */}
+        <div className="grid md:grid-cols-4 gap-3 md:gap-4 mt-4">
+          <div className="text-center p-3 bg-zinc-800/30 rounded border border-zinc-700/30">
+            <div className="text-orange-400 font-bold text-xs mb-1">SAMPLE_SIZE</div>
+            <div className="text-xl font-mono text-zinc-300">6</div>
+            <div className="text-xs text-zinc-500">Fluffy Dynasty</div>
           </div>
           
-          <div className="text-center p-4 bg-zinc-800/30 rounded border border-zinc-700/30">
-            <div className="text-orange-400 font-bold text-sm mb-2">RARITY_DISTRIBUTION</div>
+          <div className="text-center p-3 bg-zinc-800/30 rounded border border-zinc-700/30">
+            <div className="text-orange-400 font-bold text-xs mb-1">RARITY_LEVELS</div>
             <div className="text-xs text-zinc-300 space-y-1">
               <div className="flex justify-between"><span className="text-green-400">COMMON:</span> <span>2</span></div>
               <div className="flex justify-between"><span className="text-blue-400">RARE:</span> <span>2</span></div>
@@ -1811,10 +1811,25 @@ function ArchetypeExclusivePrizesMuseum() {
             </div>
           </div>
           
-          <div className="text-center p-4 bg-zinc-800/30 rounded border border-zinc-700/30">
-            <div className="text-orange-400 font-bold text-sm mb-2">ACCESS_LEVEL</div>
-            <div className="text-sm font-mono text-zinc-300">ARCHETYPE_00</div>
-            <div className="text-xs text-zinc-500">Holders Only</div>
+          <div className="text-center p-3 bg-zinc-800/30 rounded border border-zinc-700/30">
+            <div className="text-orange-400 font-bold text-xs mb-1">BENEFIT_TYPE</div>
+            <div className="text-xs font-mono text-zinc-300">RETROACTIVE</div>
+            <div className="text-xs text-zinc-500">Fragment Holders</div>
+          </div>
+
+          <div className="text-center p-3 bg-zinc-800/30 rounded border border-zinc-700/30">
+            <div className="text-orange-400 font-bold text-xs mb-1">MORE_REWARDS</div>
+            <div className="text-xs font-mono text-zinc-300">∞</div>
+            <div className="text-xs text-zinc-500">Additional Benefits</div>
+          </div>
+        </div>
+
+        {/* Additional Info */}
+        <div className="mt-4 p-3 bg-zinc-800/20 rounded border border-zinc-700/30">
+          <div className="text-xs text-zinc-400 font-mono text-center">
+            <span className="text-orange-400">[ARCHETYPE_00_BENEFITS]</span> This is just a sample of the exclusive rewards. 
+            ARCHETYPE_00 holders receive continuous retroactive benefits beyond these Fluffy Dynasty pieces. 
+            The quantum raffle system distributes rewards based on fragment density and resonance frequency.
           </div>
         </div>
       </div>
