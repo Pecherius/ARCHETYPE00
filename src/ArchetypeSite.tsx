@@ -700,13 +700,14 @@ function NeuralPingPong() {
   const [gameHistory, setGameHistory] = useState<Array<{score: number, timestamp: number}>>([]);
   const [lastHitTime, setLastHitTime] = useState(0);
   
-  // Game objects - simplified
+  // Game objects - enhanced
   const [ball, setBall] = useState({ 
     x: 400, 
     y: 100, 
     vx: 0, 
     vy: 0,
-    radius: 8
+    radius: 8,
+    trail: [] as Array<{x: number, y: number, life: number}>
   });
   const [paddle, setPaddle] = useState({ 
     x: 350, 
@@ -715,7 +716,7 @@ function NeuralPingPong() {
     height: 20
   });
   
-  // Effects
+  // Enhanced effects
   const [floatingMessages, setFloatingMessages] = useState<Array<{
     id: number, 
     text: string, 
@@ -724,7 +725,9 @@ function NeuralPingPong() {
     vx: number, 
     vy: number, 
     life: number,
-    alpha: number
+    alpha: number,
+    color: string,
+    size: number
   }>>([]);
   const [particles, setParticles] = useState<Array<{
     id: number,
@@ -733,59 +736,102 @@ function NeuralPingPong() {
     vx: number,
     vy: number,
     life: number,
-    color: string
+    color: string,
+    size: number,
+    type: 'sparkle' | 'star' | 'heart' | 'diamond'
   }>>([]);
+  const [backgroundEffects, setBackgroundEffects] = useState<Array<{
+    id: number,
+    x: number,
+    y: number,
+    vx: number,
+    vy: number,
+    life: number,
+    type: 'wave' | 'pulse' | 'glitch' | 'scanline',
+    intensity: number
+  }>>([]);
+  const [screenShake, setScreenShake] = useState({ intensity: 0, duration: 0 });
   const [gameStartTime, setGameStartTime] = useState<number>(0);
   
-  // Meme messages for floating text
+  // Enhanced meme messages with colors and sizes
   const memeMessages = [
-    "PEPITO CAN'T PLAY PING PONG 😂",
-    "Pebubu lost internet connection",
-    "Punkable is in maintenance mode",
-    "ERROR 404: Skill not found",
-    "PEPITO: 'Where is the ball?'",
-    "Pebubu: 'This is harder than coding'",
-    "Punkable: 'Hold my beer'",
-    "PEPITO lost neural connection",
-    "Pebubu: 'Why isn't this working?'",
-    "Punkable: 'It's not a bug, it's a feature'",
-    "PEPITO: 'What is a paddle?'",
-    "Pebubu: 'I need more coffee'",
-    "Punkable: 'Deploying fix...'",
-    "PEPITO: 'Why is it moving by itself?'",
-    "Pebubu: 'This is impossible'",
-    "Punkable: 'Working as intended'"
+    { text: "PEPITO CAN'T PLAY PING PONG 😂", color: "#FF69B4", size: 16 },
+    { text: "Pebubu lost internet connection", color: "#00FF88", size: 14 },
+    { text: "Punkable is in maintenance mode", color: "#FF1493", size: 15 },
+    { text: "ERROR 404: Skill not found", color: "#FF0000", size: 18 },
+    { text: "PEPITO: 'Where is the ball?'", color: "#FFB6C1", size: 14 },
+    { text: "Pebubu: 'This is harder than coding'", color: "#00FFFF", size: 13 },
+    { text: "Punkable: 'Hold my beer'", color: "#FFD700", size: 16 },
+    { text: "PEPITO lost neural connection", color: "#FF69B4", size: 15 },
+    { text: "Pebubu: 'Why isn't this working?'", color: "#32CD32", size: 13 },
+    { text: "Punkable: 'It's not a bug, it's a feature'", color: "#FF4500", size: 12 },
+    { text: "PEPITO: 'What is a paddle?'", color: "#FF69B4", size: 14 },
+    { text: "Pebubu: 'I need more coffee'", color: "#8A2BE2", size: 15 },
+    { text: "Punkable: 'Deploying fix...'", color: "#00CED1", size: 16 },
+    { text: "PEPITO: 'Why is it moving by itself?'", color: "#FF69B4", size: 13 },
+    { text: "Pebubu: 'This is impossible'", color: "#FF6347", size: 17 },
+    { text: "Punkable: 'Working as intended'", color: "#20B2AA", size: 14 },
+    { text: "NEURAL OVERLOAD DETECTED!", color: "#FF0000", size: 20 },
+    { text: "RESONANCE FREQUENCY CRITICAL", color: "#FF4500", size: 18 },
+    { text: "SYSTEM MALFUNCTION", color: "#DC143C", size: 19 },
+    { text: "ARCHETYPE FRAGMENT CORRUPTED", color: "#8B0000", size: 16 }
   ];
   
-  // Spawn floating message
+  // Spawn enhanced floating message
   const spawnFloatingMessage = (x: number, y: number) => {
     const message = memeMessages[Math.floor(Math.random() * memeMessages.length)];
     const newMessage = {
       id: Date.now() + Math.random(),
-      text: message,
+      text: message.text,
       x: x,
       y: y,
-      vx: (Math.random() - 0.5) * 1,
-      vy: -Math.random() * 1 - 0.5,
-      life: 120,
-      alpha: 1
+      vx: (Math.random() - 0.5) * 2,
+      vy: -Math.random() * 2 - 1,
+      life: 180,
+      alpha: 1,
+      color: message.color,
+      size: message.size
     };
     setFloatingMessages(prev => [...prev, newMessage]);
   };
 
-  // Spawn particle effect
-  const spawnParticles = (x: number, y: number, color: string = '#ff69b4') => {
-    const newParticles = Array.from({ length: 5 }, (_, i) => ({
+  // Spawn enhanced particles
+  const spawnParticles = (x: number, y: number, color: string = '#ff69b4', count: number = 8) => {
+    const particleTypes: Array<'sparkle' | 'star' | 'heart' | 'diamond'> = ['sparkle', 'star', 'heart', 'diamond'];
+    const newParticles = Array.from({ length: count }, (_, i) => ({
       id: Date.now() + Math.random() + i,
       x: x,
       y: y,
-      vx: (Math.random() - 0.5) * 4,
-      vy: (Math.random() - 0.5) * 4,
-      life: 30,
-      color: color
+      vx: (Math.random() - 0.5) * 6,
+      vy: (Math.random() - 0.5) * 6,
+      life: 60,
+      color: color,
+      size: Math.random() * 4 + 2,
+      type: particleTypes[Math.floor(Math.random() * particleTypes.length)]
     }));
     setParticles(prev => [...prev, ...newParticles]);
   };
+
+  // Spawn background effects
+  const spawnBackgroundEffect = (type: 'wave' | 'pulse' | 'glitch' | 'scanline', intensity: number = 1) => {
+    const newEffect = {
+      id: Date.now() + Math.random(),
+      x: Math.random() * 800,
+      y: Math.random() * 600,
+      vx: (Math.random() - 0.5) * 2,
+      vy: (Math.random() - 0.5) * 2,
+      life: 120,
+      type: type,
+      intensity: intensity
+    };
+    setBackgroundEffects(prev => [...prev, newEffect]);
+  };
+
+  // Screen shake effect
+  const triggerScreenShake = (intensity: number, duration: number) => {
+    setScreenShake({ intensity, duration });
+  };
+
 
   // Start game function
   const startGame = () => {
@@ -806,7 +852,8 @@ function NeuralPingPong() {
       y: 100,
       vx: Math.sin(angle) * initialSpeed,
       vy: Math.abs(Math.cos(angle)) * initialSpeed,
-      radius: 8
+      radius: 8,
+      trail: []
     });
     
     // Reset paddle position
@@ -815,6 +862,8 @@ function NeuralPingPong() {
     // Clear effects
     setFloatingMessages([]);
     setParticles([]);
+    setBackgroundEffects([]);
+    setScreenShake({ intensity: 0, duration: 0 });
   };
 
   // Mouse movement handler
@@ -834,7 +883,7 @@ function NeuralPingPong() {
     setPaddle(prev => ({ ...prev, x: clampedX }));
   };
 
-  // Simple and reliable game loop
+  // Enhanced game loop with progressive difficulty and effects
   useEffect(() => {
     if (gameState !== 'playing') return;
     
@@ -843,15 +892,26 @@ function NeuralPingPong() {
       setBall(prev => {
         const newBall = { ...prev };
         
-        // Progressive difficulty
+        // Enhanced progressive difficulty - much harder
         const gameDuration = (Date.now() - gameStartTime) / 1000;
         let speedMultiplier = 1;
-        if (gameDuration < 10) {
-          speedMultiplier = 0.6; // 40% slower for first 10 seconds
+        if (gameDuration < 5) {
+          speedMultiplier = 0.4; // 60% slower for first 5 seconds
+        } else if (gameDuration < 10) {
+          speedMultiplier = 0.6; // 40% slower for next 5 seconds
         } else if (gameDuration < 20) {
           speedMultiplier = 0.8; // 20% slower for next 10 seconds
+        } else if (gameDuration < 35) {
+          speedMultiplier = 1.0 + (gameDuration - 20) * 0.1; // Rapid increase
         } else {
-          speedMultiplier = 1.0 + (gameDuration - 20) * 0.02; // Gradually increase
+          // After 35 seconds, make it almost impossible
+          speedMultiplier = 2.5 + (gameDuration - 35) * 0.2; // Extremely fast
+        }
+        
+        // Add ball trail
+        newBall.trail.push({ x: newBall.x, y: newBall.y, life: 20 });
+        if (newBall.trail.length > 10) {
+          newBall.trail.shift();
         }
         
         // Move ball
@@ -875,34 +935,48 @@ function NeuralPingPong() {
             newBall.x - newBall.radius <= paddle.x + paddle.width) {
           
           const now = Date.now();
-          if (now - lastHitTime > 500) { // 500ms cooldown
+          if (now - lastHitTime > 300) { // Reduced cooldown for faster gameplay
             setLastHitTime(now);
             
             // Calculate hit position (0 to 1)
             const hitPos = (newBall.x - paddle.x) / paddle.width;
             
-            // Bounce with angle based on hit position
-            newBall.vy = -Math.abs(newBall.vy) * 0.9;
-            newBall.vx = (hitPos - 0.5) * 6; // -3 to 3 range
+            // Enhanced bounce with angle based on hit position
+            newBall.vy = -Math.abs(newBall.vy) * 0.95; // Slightly less energy loss
+            newBall.vx = (hitPos - 0.5) * 8; // Increased range for more dynamic gameplay
             newBall.y = paddle.y - newBall.radius;
             
-            // Update score
-            setScore(prev => {
-              const newScore = prev + 1;
-              if (newScore >= 30) { // Win at 30 points
-                setGameState('won');
-                setShowWinMessage(true);
-              }
-              return newScore;
-            });
+            // Update score - NO WIN LIMIT
+            setScore(prev => prev + 1);
             
-            // Spawn effects
-            spawnParticles(newBall.x, newBall.y, '#00ff88');
-            if (Math.random() < 0.3) {
+            // Enhanced effects based on score
+            const particleCount = Math.min(8 + Math.floor(score / 5), 20);
+            const colors = ['#00ff88', '#ff69b4', '#ffd700', '#ff4500', '#8a2be2'];
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            
+            spawnParticles(newBall.x, newBall.y, color, particleCount);
+            
+            // More frequent floating messages as score increases
+            const messageChance = Math.min(0.3 + (score * 0.01), 0.8);
+            if (Math.random() < messageChance) {
               spawnFloatingMessage(newBall.x, newBall.y);
             }
             
-            setGlitchIntensity(prev => Math.min(prev + 0.02, 1));
+            // Screen shake on hit
+            triggerScreenShake(2 + (score * 0.1), 10);
+            
+            // Background effects based on score
+            if (score > 10 && Math.random() < 0.3) {
+              spawnBackgroundEffect('pulse', 1 + (score * 0.05));
+            }
+            if (score > 20 && Math.random() < 0.2) {
+              spawnBackgroundEffect('glitch', 1 + (score * 0.03));
+            }
+            if (score > 30 && Math.random() < 0.1) {
+              spawnBackgroundEffect('scanline', 1 + (score * 0.02));
+            }
+            
+            setGlitchIntensity(prev => Math.min(prev + 0.03, 1));
           }
         }
         
@@ -917,13 +991,19 @@ function NeuralPingPong() {
         return newBall;
       });
       
+      // Update ball trail
+      setBall(prev => ({
+        ...prev,
+        trail: prev.trail.map(trail => ({ ...trail, life: trail.life - 1 })).filter(trail => trail.life > 0)
+      }));
+      
       // Update floating messages
       setFloatingMessages(prev => prev.map(msg => ({
         ...msg,
         x: msg.x + msg.vx,
         y: msg.y + msg.vy,
         life: msg.life - 1,
-        alpha: msg.life / 120
+        alpha: msg.life / 180
       })).filter(msg => msg.life > 0 && msg.y > -50));
       
       // Update particles
@@ -934,9 +1014,31 @@ function NeuralPingPong() {
         life: particle.life - 1
       })).filter(particle => particle.life > 0));
       
-      // Spawn random floating messages
-      if (Math.random() < 0.01) {
+      // Update background effects
+      setBackgroundEffects(prev => prev.map(effect => ({
+        ...effect,
+        x: effect.x + effect.vx,
+        y: effect.y + effect.vy,
+        life: effect.life - 1
+      })).filter(effect => effect.life > 0));
+      
+      // Update screen shake
+      setScreenShake(prev => ({
+        intensity: Math.max(0, prev.intensity - 0.5),
+        duration: Math.max(0, prev.duration - 1)
+      }));
+      
+      // Spawn random floating messages based on score
+      const randomMessageChance = Math.min(0.01 + (score * 0.001), 0.05);
+      if (Math.random() < randomMessageChance) {
         spawnFloatingMessage(Math.random() * 800, Math.random() * 400 + 100);
+      }
+      
+      // Spawn random background effects based on score
+      if (score > 15 && Math.random() < 0.02) {
+        const effectTypes: Array<'wave' | 'pulse' | 'glitch' | 'scanline'> = ['wave', 'pulse', 'glitch', 'scanline'];
+        const effectType = effectTypes[Math.floor(Math.random() * effectTypes.length)];
+        spawnBackgroundEffect(effectType, 1 + (score * 0.02));
       }
       
       // Continue game loop
@@ -952,7 +1054,7 @@ function NeuralPingPong() {
     };
   }, [gameState, paddle, gameStartTime, lastHitTime]);
 
-  // Render function
+  // Enhanced render function
   const render = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -960,13 +1062,77 @@ function NeuralPingPong() {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
     
-    // Clear canvas
-    ctx.fillStyle = '#0a0a0a';
+    // Apply screen shake
+    const shakeX = screenShake.intensity > 0 ? (Math.random() - 0.5) * screenShake.intensity : 0;
+    const shakeY = screenShake.intensity > 0 ? (Math.random() - 0.5) * screenShake.intensity : 0;
+    ctx.save();
+    ctx.translate(shakeX, shakeY);
+    
+    // Clear canvas with gradient background
+    const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+    gradient.addColorStop(0, '#0a0a0a');
+    gradient.addColorStop(1, '#1a1a2e');
+    ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Draw ball
+    // Draw background effects
+    backgroundEffects.forEach(effect => {
+      const alpha = effect.life / 120;
+      ctx.save();
+      ctx.globalAlpha = alpha * 0.3;
+      
+      switch (effect.type) {
+        case 'wave':
+          ctx.strokeStyle = '#ff69b4';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          for (let i = 0; i < 800; i += 10) {
+            const y = effect.y + Math.sin((i + effect.x) * 0.01) * 20 * effect.intensity;
+            if (i === 0) ctx.moveTo(i, y);
+            else ctx.lineTo(i, y);
+          }
+          ctx.stroke();
+          break;
+        case 'pulse':
+          ctx.fillStyle = '#00ff88';
+          ctx.beginPath();
+          ctx.arc(effect.x, effect.y, 30 * effect.intensity, 0, Math.PI * 2);
+          ctx.fill();
+          break;
+        case 'glitch':
+          ctx.fillStyle = '#ff0000';
+          ctx.fillRect(effect.x, effect.y, 100 * effect.intensity, 2);
+          break;
+        case 'scanline':
+          ctx.strokeStyle = '#00ffff';
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(0, effect.y);
+          ctx.lineTo(800, effect.y);
+          ctx.stroke();
+          break;
+      }
+      ctx.restore();
+    });
+
+    // Draw ball trail
+    ball.trail.forEach((trailPoint) => {
+      const alpha = trailPoint.life / 20;
+      const size = ball.radius * (alpha * 0.5);
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      ctx.fillStyle = '#00ff88';
+      ctx.shadowColor = '#00ff88';
+      ctx.shadowBlur = 10;
+      ctx.beginPath();
+      ctx.arc(trailPoint.x, trailPoint.y, size, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    });
+
+    // Draw ball with enhanced effects
     ctx.shadowColor = '#00ff88';
-    ctx.shadowBlur = 20;
+    ctx.shadowBlur = 20 + (score * 0.5);
     ctx.fillStyle = '#00ff88';
     ctx.beginPath();
     ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
@@ -1007,59 +1173,128 @@ function NeuralPingPong() {
     
     ctx.shadowBlur = 0;
 
-    // Draw floating messages
+    // Draw enhanced floating messages
     floatingMessages.forEach(message => {
       ctx.save();
       ctx.globalAlpha = message.alpha;
-      ctx.fillStyle = '#ff69b4';
-      ctx.font = 'bold 16px monospace';
+      ctx.fillStyle = message.color;
+      ctx.font = `bold ${message.size}px monospace`;
       ctx.textAlign = 'center';
-      ctx.shadowColor = '#ff69b4';
-      ctx.shadowBlur = 5;
+      ctx.shadowColor = message.color;
+      ctx.shadowBlur = 8;
       ctx.fillText(message.text, message.x, message.y);
       ctx.restore();
     });
 
-    // Draw particles
+    // Draw enhanced particles
     particles.forEach(particle => {
-      const alpha = particle.life / 30;
+      const alpha = particle.life / 60;
       ctx.save();
       ctx.globalAlpha = alpha;
       ctx.fillStyle = particle.color;
       ctx.shadowColor = particle.color;
-      ctx.shadowBlur = 10;
-      ctx.beginPath();
-      ctx.arc(particle.x, particle.y, 3, 0, Math.PI * 2);
-      ctx.fill();
+      ctx.shadowBlur = 15;
+      
+      switch (particle.type) {
+        case 'sparkle':
+          ctx.beginPath();
+          ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+          ctx.fill();
+          break;
+        case 'star':
+          ctx.beginPath();
+          for (let i = 0; i < 5; i++) {
+            const angle = (i * 4 * Math.PI) / 5;
+            const x = particle.x + Math.cos(angle) * particle.size;
+            const y = particle.y + Math.sin(angle) * particle.size;
+            if (i === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+          }
+          ctx.closePath();
+          ctx.fill();
+          break;
+        case 'heart':
+          ctx.beginPath();
+          const heartSize = particle.size;
+          ctx.moveTo(particle.x, particle.y + heartSize * 0.3);
+          ctx.bezierCurveTo(particle.x, particle.y, particle.x - heartSize * 0.5, particle.y, particle.x - heartSize * 0.5, particle.y + heartSize * 0.3);
+          ctx.bezierCurveTo(particle.x - heartSize * 0.5, particle.y + heartSize * 0.7, particle.x, particle.y + heartSize * 0.7, particle.x, particle.y + heartSize);
+          ctx.bezierCurveTo(particle.x, particle.y + heartSize * 0.7, particle.x + heartSize * 0.5, particle.y + heartSize * 0.7, particle.x + heartSize * 0.5, particle.y + heartSize * 0.3);
+          ctx.bezierCurveTo(particle.x + heartSize * 0.5, particle.y, particle.x, particle.y, particle.x, particle.y + heartSize * 0.3);
+          ctx.fill();
+          break;
+        case 'diamond':
+          ctx.beginPath();
+          ctx.moveTo(particle.x, particle.y - particle.size);
+          ctx.lineTo(particle.x + particle.size, particle.y);
+          ctx.lineTo(particle.x, particle.y + particle.size);
+          ctx.lineTo(particle.x - particle.size, particle.y);
+          ctx.closePath();
+          ctx.fill();
+          break;
+      }
       ctx.restore();
     });
 
-    // Draw UI
+    // Draw enhanced UI
     ctx.fillStyle = '#ff69b4';
-    ctx.font = 'bold 24px monospace';
+    ctx.font = 'bold 28px monospace';
     ctx.textAlign = 'left';
+    ctx.shadowColor = '#ff69b4';
+    ctx.shadowBlur = 5;
     ctx.fillText(`Score: ${score}`, 20, 40);
     
     ctx.fillStyle = '#00ff88';
-    ctx.font = 'bold 18px monospace';
-    ctx.fillText(`Speed: ${speed.toFixed(1)}`, 20, 70);
+    ctx.font = 'bold 20px monospace';
+    ctx.shadowColor = '#00ff88';
+    ctx.shadowBlur = 5;
+    ctx.fillText(`Speed: ${speed.toFixed(1)}`, 20, 75);
     
+    // Enhanced neural overload warning
     if (glitchIntensity > 0) {
       ctx.fillStyle = '#ff0000';
-      ctx.font = 'bold 14px monospace';
-      ctx.fillText('WARNING: NEURAL OVERLOAD', 20, 100);
+      ctx.font = 'bold 16px monospace';
+      ctx.shadowColor = '#ff0000';
+      ctx.shadowBlur = 8;
+      ctx.fillText('WARNING: NEURAL OVERLOAD', 20, 110);
       
-      ctx.fillStyle = 'rgba(255, 0, 0, 0.3)';
-      ctx.fillRect(20, 110, 200, 10);
+      // Enhanced progress bar
+      ctx.fillStyle = 'rgba(255, 0, 0, 0.2)';
+      ctx.fillRect(20, 120, 250, 15);
       ctx.fillStyle = '#ff0000';
-      ctx.fillRect(20, 110, 200 * glitchIntensity, 10);
+      ctx.fillRect(20, 120, 250 * glitchIntensity, 15);
+      
+      // Glitch effect on text
+      if (Math.random() < 0.1) {
+        ctx.fillStyle = '#00ffff';
+        ctx.fillText('WARNING: NEURAL OVERLOAD', 20 + (Math.random() - 0.5) * 4, 110 + (Math.random() - 0.5) * 4);
+      }
     }
+    
+    // Difficulty indicator
+    const gameDuration = (Date.now() - gameStartTime) / 1000;
+    if (gameDuration > 35) {
+      ctx.fillStyle = '#ff4500';
+      ctx.font = 'bold 18px monospace';
+      ctx.shadowColor = '#ff4500';
+      ctx.shadowBlur = 10;
+      ctx.fillText('CRITICAL DIFFICULTY', 20, 150);
+    } else if (gameDuration > 20) {
+      ctx.fillStyle = '#ffd700';
+      ctx.font = 'bold 16px monospace';
+      ctx.shadowColor = '#ffd700';
+      ctx.shadowBlur = 8;
+      ctx.fillText('HIGH DIFFICULTY', 20, 150);
+    }
+    
+    // Restore canvas transform
+    ctx.restore();
   };
 
   // Render effect
   useEffect(() => {
     render();
-  }, [ball, paddle, score, speed, glitchIntensity, floatingMessages, particles]);
+  }, [ball, paddle, score, speed, glitchIntensity, floatingMessages, particles, backgroundEffects, screenShake, gameStartTime]);
 
   // Keyboard controls
   useEffect(() => {

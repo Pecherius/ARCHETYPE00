@@ -9,6 +9,8 @@ import { ParticipantIcon } from "../lib/participant-icons"
 import { userStorageService, type SavedUser } from "../lib/user-storage"
 import { prizeStorageService, type SavedPrize } from "../lib/prize-storage"
 import { exportWinnersAsImage, exportWinnersAsJSON, type WinnerExport } from "../lib/export-winners"
+import SavedUsersManager from "./SavedUsersManager"
+import SavedPrizesManager from "./SavedPrizesManager"
 // Removed language selector import
 // Removed language-dependent components - using fixed English text
 
@@ -355,14 +357,6 @@ const PunkableRaffleSystem = () => {
     setCurrentView("selector")
   }
 
-  // Removed unused handleSelectSavedUser function
-
-  // Handle saved user selection
-  const handleSelectSavedUser = (user: SavedUser) => {
-    setNewParticipantName(user.name)
-    setNewParticipantUpAddress(user.up_address)
-    setShowSavedUsers(false)
-  }
 
   // Handle saving user
   const handleSaveUser = () => {
@@ -404,12 +398,6 @@ const PunkableRaffleSystem = () => {
     alert("User saved successfully!")
   }
 
-  // Handle saved prize selection
-  const handleSelectSavedPrize = (prize: SavedPrize) => {
-    setNewPrizeName(prize.name)
-    setNewPrizeCount(prize.count.toString())
-    setShowSavedPrizes(false)
-  }
 
   // Handle saving prize
   const handleSavePrize = () => {
@@ -566,6 +554,22 @@ const PunkableRaffleSystem = () => {
       }
     }
   }, [participants, prizes, winners, currentRaffle])
+
+  // Handle selecting saved user
+  const handleSelectSavedUser = (user: SavedUser) => {
+    setNewParticipantName(user.name)
+    setNewParticipantUpAddress(user.up_address)
+    setShowSavedUsers(false)
+    userStorageService.updateUserUsage(user.id)
+  }
+
+  // Handle selecting saved prize
+  const handleSelectSavedPrize = (prize: SavedPrize) => {
+    setNewPrizeName(prize.name)
+    setNewPrizeCount(prize.count.toString())
+    setShowSavedPrizes(false)
+    prizeStorageService.updatePrizeUsage(prize.id)
+  }
 
   useEffect(() => {
     return () => {
@@ -1810,6 +1814,20 @@ const PunkableRaffleSystem = () => {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Saved Users Manager */}
+      <SavedUsersManager
+        onSelectUser={handleSelectSavedUser}
+        onClose={() => setShowSavedUsers(false)}
+        isOpen={showSavedUsers}
+      />
+
+      {/* Saved Prizes Manager */}
+      <SavedPrizesManager
+        onSelectPrize={handleSelectSavedPrize}
+        onClose={() => setShowSavedPrizes(false)}
+        isOpen={showSavedPrizes}
+      />
     </section>
   )
 }
