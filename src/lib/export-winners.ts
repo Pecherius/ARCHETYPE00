@@ -27,10 +27,10 @@ export function exportWinnersAsImage(winnerData: WinnerExport): void {
   }
   
   if (!resultsSection) {
-    // Try finding by text content - look for "Raffle Results"
+    // Try finding by text content - look for "RAFFLE_RESULTS"
     const sections = document.querySelectorAll('div')
     for (const section of sections) {
-      if (section.textContent?.includes('Raffle Results') && section.textContent?.includes('Export as Image')) {
+      if (section.textContent?.includes('RAFFLE_RESULTS') && section.textContent?.includes('EXPORT_WINNERS_IMAGE')) {
         resultsSection = section as HTMLElement
         break
       }

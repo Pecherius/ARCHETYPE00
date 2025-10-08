@@ -786,7 +786,7 @@ const PunkableRaffleSystem = () => {
                 <div className="absolute inset-0 bg-gradient-to-r from-pink-500/10 to-rose-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 <div className="relative flex items-center gap-2">
                   <span>📸</span>
-                  <span>EXPORT_IMAGE</span>
+                  <span>EXPORT_WINNERS_IMAGE</span>
                 </div>
               </button>
               <button
@@ -843,7 +843,7 @@ const PunkableRaffleSystem = () => {
               <span className="w-2 h-2 bg-pink-500 rounded-full animate-pulse"></span>
               PUNKABLE_ETHEREAL_RAFFLE_SYSTEM v2.1
             </div>
-            <h3 className="text-xl md:text-2xl font-bold text-zinc-100 mb-4 bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent text-center">
+            <h3 className="text-2xl font-bold text-zinc-100 mb-4 font-mono text-center">
               <span className="text-red-500">P.E.R.S.</span>
             </h3>
             <p className="text-sm text-zinc-400 font-mono mb-4">Punkable Ethereal Raffle System</p>
@@ -853,7 +853,7 @@ const PunkableRaffleSystem = () => {
                 Unlike simple random generators, P.E.R.S. considers <span className="text-pink-400 font-semibold">ticket counts and participation history</span> to ensure fair distribution.
               </p>
               <div className="bg-gradient-to-r from-zinc-800/50 to-zinc-900/50 border border-zinc-700/50 rounded-lg p-6 backdrop-blur-sm">
-                <h4 className="text-base font-bold text-pink-400 mb-3 flex items-center gap-2">
+                  <h4 className="text-sm font-bold text-pink-400 mb-3 flex items-center gap-2 font-mono">
                   <span className="text-lg">⚡</span>
                   HOW_P.E.R.S._WORKS
                 </h4>
@@ -1007,7 +1007,7 @@ const PunkableRaffleSystem = () => {
                         <span className="w-2 h-2 bg-pink-500 rounded-full animate-pulse"></span>
                         FRAGMENT_RESONANCE_INITIALIZATION
                       </div>
-                      <h4 className="text-2xl font-bold text-zinc-100 mb-2 bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent">
+                      <h4 className="text-2xl font-bold text-zinc-100 mb-2 font-mono">
                         ⚡ INITIALIZE_RAFFLE
                       </h4>
                       <p className="text-zinc-400 text-sm max-w-xl mx-auto">
@@ -1193,7 +1193,7 @@ const PunkableRaffleSystem = () => {
                   {/* Terminal Content */}
                   <div className="p-6 overflow-y-auto max-h-[calc(90vh-80px)]">
                     <div className="text-center mb-6">
-                      <h3 className="text-2xl font-bold text-zinc-100 mb-2 bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">
+                      <h3 className="text-2xl font-bold text-zinc-100 mb-2 font-mono">
                         📁 RAFFLE_HISTORY
                       </h3>
                       <p className="text-zinc-400 text-sm">
@@ -1204,7 +1204,7 @@ const PunkableRaffleSystem = () => {
                     {savedRaffles.length === 0 ? (
                       <div className="text-center py-12">
                         <div className="text-6xl mb-4">📁</div>
-                        <h4 className="text-xl font-semibold text-zinc-300 mb-2">No Raffles Found</h4>
+                        <h4 className="text-lg font-semibold text-zinc-300 mb-2 font-mono">NO_RAFFLES_FOUND</h4>
                         <p className="text-zinc-400">Create your first raffle to see it here</p>
                       </div>
                     ) : (
@@ -1269,7 +1269,7 @@ const PunkableRaffleSystem = () => {
     <section className="mx-auto max-w-6xl px-4 pb-12 sm:px-6">
       <div className="flex flex-col md:flex-row items-center justify-between mb-4 md:mb-6 gap-2">
         <div className="text-center md:text-left">
-          <h2 className="text-lg md:text-2xl font-bold tracking-wide text-zinc-100">P.E.R.S.</h2>
+          <h2 className="text-2xl font-bold text-zinc-100 font-mono">P.E.R.S.</h2>
           <div className="text-xs md:text-sm text-zinc-400 font-mono">Punkable Ethereal Raffle System</div>
         </div>
         <div className="text-xs text-zinc-500 font-mono">v2.1</div>
@@ -1288,7 +1288,7 @@ const PunkableRaffleSystem = () => {
               </div>
             )}
             <div>
-              <h3 className="text-3xl font-black bg-gradient-to-r from-pink-500 via-rose-500 to-purple-600 bg-clip-text text-transparent">
+              <h3 className="text-2xl font-bold text-zinc-100 font-mono">
                 {currentRaffle?.title}
               </h3>
               <p className="text-zinc-400">{currentRaffle?.description || "A fair and transparent raffle system"}</p>
@@ -1334,7 +1334,7 @@ const PunkableRaffleSystem = () => {
                   />
                 </div>
                 <div>
-                    <h4 className="text-xl font-bold text-pink-400">🎉 {latestWinner.participant.name} wins!</h4>
+                    <h4 className="text-lg font-bold text-pink-400 font-mono">🎉 {latestWinner.participant.name} WINS!</h4>
                     <p className="text-pink-200 font-semibold">{latestWinner.prize.name}</p>
                 </div>
               </div>
@@ -1541,7 +1541,7 @@ const PunkableRaffleSystem = () => {
                         className="w-12 h-12 text-white"
                       />
                     </div>
-                    <h3 className="text-2xl font-bold text-zinc-100 mb-2">{currentParticipant.name}</h3>
+                    <h3 className="text-xl font-bold text-zinc-100 mb-2 font-mono">{currentParticipant.name}</h3>
                     <p className="text-lg text-pink-400 bg-pink-500/20 px-4 py-2 rounded-full">
                       {currentParticipant.tickets} tickets
                     </p>
@@ -1551,7 +1551,7 @@ const PunkableRaffleSystem = () => {
                     <div className="w-24 h-24 rounded-full mx-auto mb-4 bg-gradient-to-br from-pink-500/20 to-purple-500/20 flex items-center justify-center">
                       <span className="text-3xl">🎲</span>
                     </div>
-                    <h3 className="text-xl font-bold text-zinc-400 mb-2">Ready to Draw!</h3>
+                    <h3 className="text-lg font-bold text-zinc-400 mb-2 font-mono">READY_TO_DRAW</h3>
                     <p className="text-zinc-500">Click to select winner</p>
                   </motion.div>
                 )}
@@ -1706,7 +1706,7 @@ const PunkableRaffleSystem = () => {
                       onClick={() => handleExportWinners('image')}
                       className="px-2 lg:px-3 py-1 bg-pink-600 hover:bg-pink-700 text-white text-xs rounded transition-colors"
                     >
-                      Export as Image
+                      Export Winners
                     </button>
                     <button
                       onClick={() => handleExportWinners('json')}
@@ -1775,7 +1775,7 @@ const PunkableRaffleSystem = () => {
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-bold text-zinc-100">Saved Users</h3>
+                <h3 className="text-xl font-bold text-zinc-100 font-mono">SAVED_USERS</h3>
                 <button
                   onClick={() => setShowSavedUsers(false)}
                   className="text-zinc-400 hover:text-zinc-200"
@@ -1841,7 +1841,7 @@ const PunkableRaffleSystem = () => {
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-bold text-zinc-100">Saved Prizes</h3>
+                <h3 className="text-xl font-bold text-zinc-100 font-mono">SAVED_PRIZES</h3>
                 <button
                   onClick={() => setShowSavedPrizes(false)}
                   className="text-zinc-400 hover:text-zinc-200"
@@ -1904,7 +1904,7 @@ const PunkableRaffleSystem = () => {
               onClick={(e) => e.stopPropagation()}
             >
               <div className="text-center mb-6">
-                <h3 className="text-xl font-bold text-zinc-100 mb-2">Save User</h3>
+                <h3 className="text-xl font-bold text-zinc-100 mb-2 font-mono">SAVE_USER</h3>
                 <p className="text-sm text-zinc-400">Save this user for quick access in future raffles</p>
               </div>
 
@@ -1969,7 +1969,7 @@ const PunkableRaffleSystem = () => {
               onClick={(e) => e.stopPropagation()}
             >
               <div className="text-center mb-6">
-                <h3 className="text-xl font-bold text-zinc-100 mb-2">Save Prize</h3>
+                <h3 className="text-xl font-bold text-zinc-100 mb-2 font-mono">SAVE_PRIZE</h3>
                 <p className="text-sm text-zinc-400">Save this prize for quick access in future raffles</p>
               </div>
 
