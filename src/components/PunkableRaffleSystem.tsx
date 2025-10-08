@@ -838,26 +838,26 @@ const PunkableRaffleSystem = () => {
           <div className="flex justify-end mb-6">
             {/* Language selector removed */}
           </div>
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-pink-500/20 to-purple-500/20 border border-pink-500/30 rounded-full text-pink-400 text-sm font-medium mb-6">
-              <span className="w-2 h-2 bg-pink-500 rounded-full animate-pulse"></span>
+          <div className="text-center mb-6">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-pink-500/20 to-purple-500/20 border border-pink-500/30 rounded-full text-pink-400 text-xs font-medium mb-3">
+              <span className="w-1.5 h-1.5 bg-pink-500 rounded-full animate-pulse"></span>
               PUNKABLE_ETHEREAL_RAFFLE_SYSTEM v2.1
             </div>
-            <h3 className="text-2xl font-bold text-zinc-100 mb-4 font-mono text-center">
+            <h3 className="text-xl font-bold text-zinc-100 mb-2 font-mono text-center">
               <span className="text-red-500">P.E.R.S.</span>
             </h3>
-            <p className="text-sm text-zinc-400 font-mono mb-4">Punkable Ethereal Raffle System</p>
-            <div className="max-w-4xl mx-auto space-y-4">
+            <p className="text-xs text-zinc-400 font-mono mb-3">Punkable Ethereal Raffle System</p>
+            <div className="max-w-3xl mx-auto space-y-3">
               <p className="text-zinc-300 text-sm leading-relaxed px-2 md:px-0">
                 A transparent raffle system that uses <span className="text-green-400 font-semibold">weighted selection</span> based on participant data. 
                 Unlike simple random generators, P.E.R.S. considers <span className="text-pink-400 font-semibold">ticket counts and participation history</span> to ensure fair distribution.
               </p>
-              <div className="bg-gradient-to-r from-zinc-800/50 to-zinc-900/50 border border-zinc-700/50 rounded-lg p-6 backdrop-blur-sm">
-                  <h4 className="text-sm font-bold text-pink-400 mb-3 flex items-center gap-2 font-mono">
-                  <span className="text-lg">⚡</span>
+              <div className="bg-gradient-to-r from-zinc-800/50 to-zinc-900/50 border border-zinc-700/50 rounded-lg p-4 backdrop-blur-sm">
+                  <h4 className="text-xs font-bold text-pink-400 mb-2 flex items-center gap-2 font-mono">
+                  <span className="text-sm">⚡</span>
                   HOW_P.E.R.S._WORKS
                 </h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs md:text-sm">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
                   <div className="space-y-2">
                     <p className="text-zinc-300">
                       <span className="text-green-400 font-semibold">• Weighted Selection:</span> More tickets = higher chance to win. Each participant's probability is calculated based on their ticket count.
@@ -879,48 +879,48 @@ const PunkableRaffleSystem = () => {
             </div>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-4 md:gap-6 mb-8">
-            <div className="group relative overflow-hidden border border-pink-500/30 rounded-lg bg-gradient-to-br from-pink-500/10 to-purple-500/10 p-4 md:p-6 backdrop-blur-sm hover:border-pink-400/50 transition-all duration-300">
+          <div className="grid md:grid-cols-3 gap-3 mb-6">
+            <div className="group relative overflow-hidden border border-pink-500/30 rounded-lg bg-gradient-to-br from-pink-500/10 to-purple-500/10 p-3 backdrop-blur-sm hover:border-pink-400/50 transition-all duration-300">
               <div className="absolute inset-0 bg-gradient-to-br from-pink-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <div className="relative">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="w-8 h-8 rounded-lg bg-pink-500/20 flex items-center justify-center">
-                    <span className="text-pink-400 text-lg">⚡</span>
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-6 h-6 rounded-lg bg-pink-500/20 flex items-center justify-center">
+                    <span className="text-pink-400 text-sm">⚡</span>
                   </div>
-                  <h4 className="text-pink-400 font-semibold text-sm">WEIGHTED_SELECTION</h4>
+                  <h4 className="text-pink-400 font-semibold text-xs">WEIGHTED_SELECTION</h4>
                 </div>
                 <p className="text-xs text-zinc-400 leading-relaxed">
-                  Each participant's chance to win is based on their ticket count. More tickets = higher probability of winning.
+                  More tickets = higher probability of winning.
                 </p>
               </div>
             </div>
             
-            <div className="group relative overflow-hidden border border-green-500/30 rounded-lg bg-gradient-to-br from-green-500/10 to-emerald-500/10 p-4 md:p-6 backdrop-blur-sm hover:border-green-400/50 transition-all duration-300">
+            <div className="group relative overflow-hidden border border-green-500/30 rounded-lg bg-gradient-to-br from-green-500/10 to-emerald-500/10 p-3 backdrop-blur-sm hover:border-green-400/50 transition-all duration-300">
               <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <div className="relative">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="w-8 h-8 rounded-lg bg-green-500/20 flex items-center justify-center">
-                    <span className="text-green-400 text-lg">💾</span>
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-6 h-6 rounded-lg bg-green-500/20 flex items-center justify-center">
+                    <span className="text-green-400 text-sm">💾</span>
                   </div>
-                  <h4 className="text-green-400 font-semibold text-sm">DATA_STORAGE</h4>
+                  <h4 className="text-green-400 font-semibold text-xs">DATA_STORAGE</h4>
                 </div>
                 <p className="text-xs text-zinc-400 leading-relaxed">
-                  <span className="text-yellow-400 font-semibold">⚠️ WARNING:</span> All data is stored ONLY in your browser's localStorage. We do NOT store your data anywhere else. If you clear cookies, use a different browser, or lose your device, your raffles will be permanently lost. Always export your data as backup!
+                  <span className="text-yellow-400 font-semibold">⚠️</span> Stored locally only. Export as backup!
                 </p>
               </div>
             </div>
             
-            <div className="group relative overflow-hidden border border-purple-500/30 rounded-lg bg-gradient-to-br from-purple-500/10 to-pink-500/10 p-4 md:p-6 backdrop-blur-sm hover:border-purple-400/50 transition-all duration-300">
+            <div className="group relative overflow-hidden border border-purple-500/30 rounded-lg bg-gradient-to-br from-purple-500/10 to-pink-500/10 p-3 backdrop-blur-sm hover:border-purple-400/50 transition-all duration-300">
               <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <div className="relative">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="w-8 h-8 rounded-lg bg-purple-500/20 flex items-center justify-center">
-                    <span className="text-purple-400 text-lg">🎉</span>
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-6 h-6 rounded-lg bg-purple-500/20 flex items-center justify-center">
+                    <span className="text-purple-400 text-sm">🎉</span>
                   </div>
-                  <h4 className="text-purple-400 font-semibold text-sm">FAIR_SELECTION</h4>
+                  <h4 className="text-purple-400 font-semibold text-xs">FAIR_SELECTION</h4>
                 </div>
                 <p className="text-xs text-zinc-400 leading-relaxed">
-                  Transparent winner selection process. All results are logged and verifiable for complete fairness.
+                  Transparent algorithms for community raffles.
                 </p>
               </div>
             </div>
