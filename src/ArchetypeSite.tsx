@@ -1668,7 +1668,7 @@ function ArchetypeExclusivePrizesMuseum() {
         {/* Left Column - Prize Description */}
         <div className="space-y-4">
           {/* Museum Description Section - Optimized for Prize Concept */}
-          <div className="bg-gradient-to-r from-zinc-900/50 to-zinc-800/30 border border-zinc-700/50 rounded-lg p-4 backdrop-blur-sm">
+          <div className="bg-gradient-to-r from-zinc-900/50 to-zinc-800/30 border border-zinc-700/50 rounded-lg p-4 backdrop-blur-sm h-full">
             <div className="text-center mb-4">
               <h3 className="text-base font-bold text-orange-400 font-mono mb-2">PRIZE_SAMPLE_EXHIBITION</h3>
               <p className="text-xs text-zinc-400 font-mono">
@@ -1780,7 +1780,16 @@ function ArchetypeExclusivePrizesMuseum() {
                 className="relative max-w-full max-h-full"
               >
                 {/* Image Frame - Compact */}
-                <div className="relative bg-gradient-to-br from-zinc-900/90 to-zinc-800/70 backdrop-blur-sm border border-zinc-700/50 rounded-lg p-3 shadow-2xl">
+                <div className={`relative bg-gradient-to-br from-zinc-900/90 to-zinc-800/70 backdrop-blur-sm border rounded-lg p-3 shadow-2xl ${
+                  currentImage.rarity === 'LEGENDARY' 
+                    ? 'border-yellow-500/50 shadow-yellow-500/20' 
+                    : 'border-zinc-700/50'
+                }`}>
+                  {/* Legendary Glow Effect */}
+                  {currentImage.rarity === 'LEGENDARY' && (
+                    <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/10 via-transparent to-amber-500/10 rounded-lg animate-pulse"></div>
+                  )}
+                  
                   {/* Number Badge */}
                   <div className="absolute -top-1 -left-1 bg-orange-500 text-black font-bold text-xs px-2 py-1 rounded-full font-mono z-20">
                     #{currentImage.id}
@@ -1795,9 +1804,15 @@ function ArchetypeExclusivePrizesMuseum() {
                   <img
                     src={currentImage.url}
                     alt={currentImage.title}
-                    className="max-w-full max-h-[150px] object-contain drop-shadow-lg"
+                    className={`max-w-full max-h-[150px] object-contain drop-shadow-lg ${
+                      currentImage.rarity === 'LEGENDARY' 
+                        ? 'animate-pulse' 
+                        : ''
+                    }`}
                     style={{ 
-                      filter: 'contrast(1.05) saturate(1.1) brightness(1.02)',
+                      filter: currentImage.rarity === 'LEGENDARY' 
+                        ? 'contrast(1.1) saturate(1.2) brightness(1.1) drop-shadow(0 0 10px rgba(255, 215, 0, 0.3))' 
+                        : 'contrast(1.05) saturate(1.1) brightness(1.02)',
                       imageRendering: 'auto'
                     }}
                     onError={(e) => {
@@ -1828,35 +1843,54 @@ function ArchetypeExclusivePrizesMuseum() {
             </div>
           </div>
 
-          {/* Thumbnail Navigation - Compact */}
-          <div className="mt-4 flex justify-center gap-1 overflow-x-auto pb-2">
-            {ARCHETYPE_EXCLUSIVE_PRIZES.map((image, index) => (
-              <button
-                key={image.id}
-                onClick={() => goToSlide(index)}
-                className={`flex-shrink-0 w-12 h-12 rounded-lg border-2 transition-all duration-300 ${
-                  index === currentIndex
-                    ? 'border-orange-500 scale-110'
-                    : 'border-zinc-600 hover:border-zinc-500'
-                }`}
-              >
-                <img
-                  src={image.url}
-                  alt={image.title}
-                  className="w-full h-full object-cover rounded-md"
-                  onError={(e) => {
-                    e.currentTarget.src = `data:image/svg+xml;base64,${btoa(`
-                      <svg width="48" height="48" xmlns="http://www.w3.org/2000/svg">
-                        <rect width="100%" height="100%" fill="#1a1a1a"/>
-                        <text x="50%" y="50%" font-family="monospace" font-size="6" fill="#ff6600" text-anchor="middle" dy=".3em">
-                          ${image.id}
-                        </text>
-                      </svg>
-                    `)}`;
-                  }}
-                />
-              </button>
-            ))}
+          {/* Thumbnail Navigation - Compact with Background */}
+          <div className="mt-4 bg-gradient-to-r from-zinc-900/50 to-zinc-800/30 border border-zinc-700/50 rounded-lg p-3 backdrop-blur-sm">
+            <div className="flex justify-center gap-1 overflow-x-auto pb-1">
+              {ARCHETYPE_EXCLUSIVE_PRIZES.map((image, index) => (
+                <button
+                  key={image.id}
+                  onClick={() => goToSlide(index)}
+                  className={`flex-shrink-0 w-12 h-12 rounded-lg border-2 transition-all duration-300 relative ${
+                    index === currentIndex
+                      ? 'border-orange-500 scale-110'
+                      : 'border-zinc-600 hover:border-zinc-500'
+                  } ${
+                    image.rarity === 'LEGENDARY' 
+                      ? 'shadow-lg shadow-yellow-500/20' 
+                      : ''
+                  }`}
+                >
+                  {/* Legendary Thumbnail Glow */}
+                  {image.rarity === 'LEGENDARY' && (
+                    <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/20 via-transparent to-amber-500/20 rounded-md animate-pulse"></div>
+                  )}
+                  <img
+                    src={image.url}
+                    alt={image.title}
+                    className={`w-full h-full object-cover rounded-md ${
+                      image.rarity === 'LEGENDARY' 
+                        ? 'animate-pulse' 
+                        : ''
+                    }`}
+                    style={{
+                      filter: image.rarity === 'LEGENDARY' 
+                        ? 'contrast(1.1) saturate(1.2) brightness(1.1)' 
+                        : 'none'
+                    }}
+                    onError={(e) => {
+                      e.currentTarget.src = `data:image/svg+xml;base64,${btoa(`
+                        <svg width="48" height="48" xmlns="http://www.w3.org/2000/svg">
+                          <rect width="100%" height="100%" fill="#1a1a1a"/>
+                          <text x="50%" y="50%" font-family="monospace" font-size="6" fill="#ff6600" text-anchor="middle" dy=".3em">
+                            ${image.id}
+                          </text>
+                        </svg>
+                      `)}`;
+                    }}
+                  />
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </div>
