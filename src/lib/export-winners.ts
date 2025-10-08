@@ -23,7 +23,7 @@ export function exportWinnersAsImage(winnerData: WinnerExport): void {
 }
 
 function createManualCanvas(winnerData: WinnerExport): void {
-  // Group winners by participant to avoid duplicates
+  // Group winners by participant and consolidate duplicate prizes
   const groupedWinners = winnerData.winners.reduce((acc: any, winner) => {
     const key = `${winner.participantName}-${winner.participantUpAddress}`
     if (!acc[key]) {
@@ -31,16 +31,28 @@ function createManualCanvas(winnerData: WinnerExport): void {
         participantName: winner.participantName,
         participantUpAddress: winner.participantUpAddress,
         totalTickets: winner.totalTickets || 0,
-        prizes: []
+        prizes: {}
       }
     }
-    acc[key].prizes.push({
-      name: winner.prizeName,
-      count: winner.prizeCount || 1,
-      selectedAt: winner.selectedAt
-    })
+    
+    // Consolidate duplicate prizes by name
+    const prizeKey = winner.prizeName
+    if (!acc[key].prizes[prizeKey]) {
+      acc[key].prizes[prizeKey] = {
+        name: winner.prizeName,
+        count: 0,
+        selectedAt: winner.selectedAt
+      }
+    }
+    acc[key].prizes[prizeKey].count += (winner.prizeCount || 1)
+    
     return acc
   }, {})
+
+  // Convert prizes objects to arrays
+  Object.keys(groupedWinners).forEach(key => {
+    groupedWinners[key].prizes = Object.values(groupedWinners[key].prizes)
+  })
 
   const groupedWinnersArray = Object.values(groupedWinners)
 
@@ -147,11 +159,25 @@ function createManualCanvas(winnerData: WinnerExport): void {
     ctx.textAlign = 'center'
     ctx.fillText(`${index + 1}`, 75, yPosition - 18)
 
-    // Winner name with better styling
+    // Winner name with UP address inline
     ctx.fillStyle = '#ffffff'
     ctx.font = 'bold 20px monospace'
     ctx.textAlign = 'left'
+    
+    // Calculate name width to position UP address
+    const nameWidth = ctx.measureText(group.participantName).width
+    const upStartX = 100 + nameWidth + 10 // 10px space after name
+    
+    // Draw name
     ctx.fillText(group.participantName, 100, yPosition - 10)
+    
+    // Draw UP address inline
+    const truncatedUp = group.participantUpAddress.length > 20 
+      ? group.participantUpAddress.substring(0, 20) + '...'
+      : group.participantUpAddress
+    ctx.fillStyle = '#71717a'
+    ctx.font = '12px monospace'
+    ctx.fillText(`📍 ${truncatedUp}`, upStartX, yPosition - 10)
 
     // Ticket count badge
     ctx.fillStyle = '#a1a1aa'
@@ -193,16 +219,7 @@ function createManualCanvas(winnerData: WinnerExport): void {
       }
     })
 
-    // UP Address with background - position it below the prizes
-    const finalPrizeY = currentPrizeY + 20
-    const truncatedUp = group.participantUpAddress.length > 25 
-      ? group.participantUpAddress.substring(0, 25) + '...'
-      : group.participantUpAddress
-    ctx.fillStyle = '#2a2a2a'
-    ctx.fillRect(100, finalPrizeY + 10, 300, 18)
-    ctx.fillStyle = '#71717a'
-    ctx.font = '12px monospace'
-    ctx.fillText(`📍 UP: ${truncatedUp}`, 105, finalPrizeY + 22)
+    // UP address is now inline with the name, no need for separate section
 
     yPosition += cardHeight + 20 // Use dynamic card height plus spacing
   })

@@ -838,26 +838,26 @@ const PunkableRaffleSystem = () => {
           <div className="flex justify-end mb-6">
             {/* Language selector removed */}
           </div>
-          <div className="text-center mb-6">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-pink-500/20 to-purple-500/20 border border-pink-500/30 rounded-full text-pink-400 text-xs font-medium mb-3">
-              <span className="w-1.5 h-1.5 bg-pink-500 rounded-full animate-pulse"></span>
+          <div className="text-center mb-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-pink-500/20 to-purple-500/20 border border-pink-500/30 rounded-full text-pink-400 text-xs font-medium mb-2">
+              <span className="w-1 h-1 bg-pink-500 rounded-full animate-pulse"></span>
               PUNKABLE_ETHEREAL_RAFFLE_SYSTEM v2.1
             </div>
-            <h3 className="text-xl font-bold text-zinc-100 mb-2 font-mono text-center">
+            <h3 className="text-lg font-bold text-zinc-100 mb-1 font-mono text-center">
               <span className="text-red-500">P.E.R.S.</span>
             </h3>
-            <p className="text-xs text-zinc-400 font-mono mb-3">Punkable Ethereal Raffle System</p>
-            <div className="max-w-3xl mx-auto space-y-3">
+            <p className="text-xs text-zinc-400 font-mono mb-2">Punkable Ethereal Raffle System</p>
+            <div className="max-w-2xl mx-auto space-y-2">
               <p className="text-zinc-300 text-sm leading-relaxed px-2 md:px-0">
                 A transparent raffle system that uses <span className="text-green-400 font-semibold">weighted selection</span> based on participant data. 
                 Unlike simple random generators, P.E.R.S. considers <span className="text-pink-400 font-semibold">ticket counts and participation history</span> to ensure fair distribution.
               </p>
-              <div className="bg-gradient-to-r from-zinc-800/50 to-zinc-900/50 border border-zinc-700/50 rounded-lg p-4 backdrop-blur-sm">
-                  <h4 className="text-xs font-bold text-pink-400 mb-2 flex items-center gap-2 font-mono">
-                  <span className="text-sm">⚡</span>
+              <div className="bg-gradient-to-r from-zinc-800/50 to-zinc-900/50 border border-zinc-700/50 rounded-lg p-3 backdrop-blur-sm">
+                  <h4 className="text-xs font-bold text-pink-400 mb-1 flex items-center gap-1 font-mono">
+                  <span className="text-xs">⚡</span>
                   HOW_P.E.R.S._WORKS
                 </h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
                   <div className="space-y-2">
                     <p className="text-zinc-300">
                       <span className="text-green-400 font-semibold">• Weighted Selection:</span> More tickets = higher chance to win. Each participant's probability is calculated based on their ticket count.
@@ -879,47 +879,47 @@ const PunkableRaffleSystem = () => {
             </div>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-3 mb-6">
-            <div className="group relative overflow-hidden border border-pink-500/30 rounded-lg bg-gradient-to-br from-pink-500/10 to-purple-500/10 p-3 backdrop-blur-sm hover:border-pink-400/50 transition-all duration-300">
+          <div className="grid md:grid-cols-3 gap-2 mb-4">
+            <div className="group relative overflow-hidden border border-pink-500/30 rounded-lg bg-gradient-to-br from-pink-500/10 to-purple-500/10 p-2 backdrop-blur-sm hover:border-pink-400/50 transition-all duration-300">
               <div className="absolute inset-0 bg-gradient-to-br from-pink-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <div className="relative">
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="w-6 h-6 rounded-lg bg-pink-500/20 flex items-center justify-center">
-                    <span className="text-pink-400 text-sm">⚡</span>
+                <div className="flex items-center gap-1 mb-1">
+                  <div className="w-4 h-4 rounded bg-pink-500/20 flex items-center justify-center">
+                    <span className="text-pink-400 text-xs">⚡</span>
                   </div>
                   <h4 className="text-pink-400 font-semibold text-xs">WEIGHTED_SELECTION</h4>
                 </div>
-                <p className="text-xs text-zinc-400 leading-relaxed">
+                <p className="text-xs text-zinc-400 leading-tight">
                   More tickets = higher probability of winning.
                 </p>
               </div>
             </div>
             
-            <div className="group relative overflow-hidden border border-green-500/30 rounded-lg bg-gradient-to-br from-green-500/10 to-emerald-500/10 p-3 backdrop-blur-sm hover:border-green-400/50 transition-all duration-300">
+            <div className="group relative overflow-hidden border border-green-500/30 rounded-lg bg-gradient-to-br from-green-500/10 to-emerald-500/10 p-2 backdrop-blur-sm hover:border-green-400/50 transition-all duration-300">
               <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <div className="relative">
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="w-6 h-6 rounded-lg bg-green-500/20 flex items-center justify-center">
-                    <span className="text-green-400 text-sm">💾</span>
+                <div className="flex items-center gap-1 mb-1">
+                  <div className="w-4 h-4 rounded bg-green-500/20 flex items-center justify-center">
+                    <span className="text-green-400 text-xs">💾</span>
                   </div>
                   <h4 className="text-green-400 font-semibold text-xs">DATA_STORAGE</h4>
                 </div>
-                <p className="text-xs text-zinc-400 leading-relaxed">
+                <p className="text-xs text-zinc-400 leading-tight">
                   <span className="text-yellow-400 font-semibold">⚠️</span> Stored locally only. Export as backup!
                 </p>
               </div>
             </div>
             
-            <div className="group relative overflow-hidden border border-purple-500/30 rounded-lg bg-gradient-to-br from-purple-500/10 to-pink-500/10 p-3 backdrop-blur-sm hover:border-purple-400/50 transition-all duration-300">
+            <div className="group relative overflow-hidden border border-purple-500/30 rounded-lg bg-gradient-to-br from-purple-500/10 to-pink-500/10 p-2 backdrop-blur-sm hover:border-purple-400/50 transition-all duration-300">
               <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <div className="relative">
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="w-6 h-6 rounded-lg bg-purple-500/20 flex items-center justify-center">
-                    <span className="text-purple-400 text-sm">🎉</span>
+                <div className="flex items-center gap-1 mb-1">
+                  <div className="w-4 h-4 rounded bg-purple-500/20 flex items-center justify-center">
+                    <span className="text-purple-400 text-xs">🎉</span>
                   </div>
                   <h4 className="text-purple-400 font-semibold text-xs">FAIR_SELECTION</h4>
                 </div>
-                <p className="text-xs text-zinc-400 leading-relaxed">
+                <p className="text-xs text-zinc-400 leading-tight">
                   Transparent algorithms for community raffles.
                 </p>
               </div>
@@ -927,13 +927,13 @@ const PunkableRaffleSystem = () => {
           </div>
 
           <div className="text-center">
-            <div className="inline-flex flex-col items-center gap-4">
-              <div className={`flex gap-3 w-full ${savedRaffles.length === 0 ? 'max-w-md justify-center' : 'max-w-md md:max-w-none'}`}>
+            <div className="inline-flex flex-col items-center gap-3">
+              <div className={`flex gap-2 w-full ${savedRaffles.length === 0 ? 'max-w-md justify-center' : 'max-w-md md:max-w-none'}`}>
                 <motion.button
                   onClick={() => setShowCreateForm(true)}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="group relative overflow-hidden border-2 border-pink-500 bg-gradient-to-r from-pink-900/30 to-purple-900/30 px-6 py-3 text-pink-400 hover:from-pink-800/40 hover:to-purple-800/40 transition-all duration-300 hover:scale-105 font-mono font-bold text-sm rounded-lg flex-1"
+                  className="group relative overflow-hidden border-2 border-pink-500 bg-gradient-to-r from-pink-900/30 to-purple-900/30 px-4 py-2 text-pink-400 hover:from-pink-800/40 hover:to-purple-800/40 transition-all duration-300 hover:scale-105 font-mono font-bold text-xs rounded-lg flex-1"
                 >
                   <div className="absolute inset-0 bg-gradient-to-r from-pink-400/20 to-purple-400/20 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   <div className="relative flex items-center justify-center gap-2">
@@ -948,7 +948,7 @@ const PunkableRaffleSystem = () => {
                     onClick={() => setShowRaffleHistory(true)}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    className="group relative overflow-hidden border-2 border-green-500 bg-gradient-to-r from-green-900/30 to-emerald-900/30 px-6 py-3 text-green-400 hover:from-green-800/40 hover:to-emerald-800/40 transition-all duration-300 hover:scale-105 font-mono font-bold text-sm rounded-lg flex-1"
+                    className="group relative overflow-hidden border-2 border-green-500 bg-gradient-to-r from-green-900/30 to-emerald-900/30 px-4 py-2 text-green-400 hover:from-green-800/40 hover:to-emerald-800/40 transition-all duration-300 hover:scale-105 font-mono font-bold text-xs rounded-lg flex-1"
                   >
                     <div className="absolute inset-0 bg-gradient-to-r from-green-400/20 to-emerald-400/20 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     <div className="relative flex items-center justify-center gap-2">
@@ -959,7 +959,7 @@ const PunkableRaffleSystem = () => {
                   </motion.button>
                 )}
               </div>
-              <p className="text-zinc-400 text-xs md:text-sm max-w-md px-2 md:px-0">
+              <p className="text-zinc-400 text-xs max-w-md px-2 md:px-0">
                 Create your first raffle with P.E.R.S. 
                 <span className="text-pink-400 font-semibold"> Simple, fair, and transparent.</span>
               </p>
