@@ -592,7 +592,7 @@ const TerminalInterface = () => {
 // UI atoms
 // ----------------------
 const Binary = ({ text, label }: { text: string; label?: string }) => {
-  const bin = useMemo(() => text.split("").map(c => c.charCodeAt(0).toString(2).padStart(8,"0")).join(" "), [text]);
+  const bin = text.split("").map(c => c.charCodeAt(0).toString(2).padStart(8,"0")).join(" ");
   const [showTooltip, setShowTooltip] = useState(false);
   const timeoutRef = useRef<number | null>(null);
   
