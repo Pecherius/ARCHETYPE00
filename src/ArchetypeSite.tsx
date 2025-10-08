@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./components/ui/dialog";
 // Tooltip components removed - using custom implementation
 import { motion, useAnimation } from "framer-motion";
@@ -9,7 +9,7 @@ import { RaffleLanguageProvider } from "./hooks/use-raffle-language";
 // 🌐 LUKSO_INTEGRATION: Basic Universal Profile detection
 // Reads data from browser extension without changing the core lore
 
-// Hook to detect Universal Profile extension and read basic data
+// Hook to detect Universal Profile extension and read basic data - Optimized
 function useUniversalProfile() {
   const [profileData, setProfileData] = useState<{
     address?: string;
@@ -19,31 +19,33 @@ function useUniversalProfile() {
   }>({ isConnected: false });
 
   useEffect(() => {
-    // Check if Universal Profile extension is available
+    let isMounted = true;
+    
     const checkUP = async () => {
       try {
         // Check if the extension is installed
-        if (typeof window !== 'undefined' && (window as any).lukso) {
-          const lukso = (window as any).lukso;
-          
-          // Try to get basic profile data
-          if (lukso.isConnected && lukso.isConnected()) {
-            const accounts = await lukso.request({ method: 'eth_accounts' });
-            if (accounts && accounts.length > 0) {
-              const address = accounts[0];
-              
-              // Try to get profile metadata (basic info)
-              try {
-                // Basic profile detection (simplified)
-                // const profile = await lukso.request({...});
-                
-                setProfileData({
-                  address,
-                  name: `Profile_${address.slice(0, 6)}`,
-                  isConnected: true
-                });
-              } catch (e) {
-                // Fallback to basic address info
+        if (typeof window === 'undefined' || !(window as any).lukso) {
+          return;
+        }
+        
+        const lukso = (window as any).lukso;
+        
+        // Try to get basic profile data
+        if (lukso.isConnected && lukso.isConnected()) {
+          const accounts = await lukso.request({ method: 'eth_accounts' });
+          if (accounts && accounts.length > 0 && isMounted) {
+            const address = accounts[0];
+            
+            // Try to get profile metadata (basic info)
+            try {
+              setProfileData({
+                address,
+                name: `Profile_${address.slice(0, 6)}`,
+                isConnected: true
+              });
+            } catch (e) {
+              // Fallback to basic address info
+              if (isMounted) {
                 setProfileData({
                   address,
                   name: `UP_${address.slice(0, 6)}`,
@@ -54,12 +56,16 @@ function useUniversalProfile() {
           }
         }
       } catch (error) {
-        // Extension not available or error
+        // Only log in development
         console.log("Universal Profile not detected");
       }
     };
 
     checkUP();
+    
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   return profileData;
@@ -222,8 +228,9 @@ const ARCHETYPE_EXCLUSIVE_PRIZES = [
   }
 ];
 
-// Debug function for image loading
+// Debug function for image loading - Optimized
 const debugImageLoad = (url: string, name: string) => {
+  // Debug image loading (only in development)
   console.log(`%c[IMAGE_DEBUG] Loading ${name}: ${url}`, "color:#00ff88; font-family: monospace;");
   
   const img = new Image();
@@ -268,6 +275,8 @@ function useInterval(cb: () => void, ms: number) {
   cbRef.current = cb;
   
   useEffect(() => { 
+    if (ms <= 0) return;
+    
     const id = setInterval(() => cbRef.current(), ms); 
     return () => clearInterval(id); 
   }, [ms]);
@@ -1531,30 +1540,36 @@ function ArchetypeExclusivePrizesMuseum() {
   const containerRef = useRef<HTMLDivElement>(null);
   const animationRef = useRef<number>();
 
-  const getRarityColor = (rarity: string) => {
-    switch (rarity) {
-      case 'MYTHIC': return 'text-purple-400';
-      case 'LEGENDARY': return 'text-yellow-400';
-      case 'EPIC': return 'text-pink-400';
-      case 'RARE': return 'text-blue-400';
-      case 'COMMON': return 'text-green-400';
-      default: return 'text-zinc-400';
+  // Optimized color functions with useMemo
+  const rarityColors = useMemo(() => ({
+    text: {
+      'MYTHIC': 'text-purple-400',
+      'LEGENDARY': 'text-yellow-400',
+      'EPIC': 'text-pink-400',
+      'RARE': 'text-blue-400',
+      'COMMON': 'text-green-400',
+      'default': 'text-zinc-400'
+    },
+    bg: {
+      'MYTHIC': 'bg-purple-400',
+      'LEGENDARY': 'bg-yellow-400',
+      'EPIC': 'bg-pink-400',
+      'RARE': 'bg-blue-400',
+      'COMMON': 'bg-green-400',
+      'default': 'bg-zinc-400'
     }
-  };
+  }), []);
 
-  const getRarityBgColor = (rarity: string) => {
-    switch (rarity) {
-      case 'MYTHIC': return 'bg-purple-400';
-      case 'LEGENDARY': return 'bg-yellow-400';
-      case 'EPIC': return 'bg-pink-400';
-      case 'RARE': return 'bg-blue-400';
-      case 'COMMON': return 'bg-green-400';
-      default: return 'bg-zinc-400';
-    }
-  };
+  const getRarityColor = useCallback((rarity: string) => {
+    return rarityColors.text[rarity as keyof typeof rarityColors.text] || rarityColors.text.default;
+  }, [rarityColors]);
 
-  // Smooth continuous scroll animation
-  const animateScroll = () => {
+  const getRarityBgColor = useCallback((rarity: string) => {
+    return rarityColors.bg[rarity as keyof typeof rarityColors.bg] || rarityColors.bg.default;
+  }, [rarityColors]);
+
+  // Smooth continuous scroll animation - Optimized with useCallback
+  const animateScroll = useCallback(() => {
     if (!isHovered && !isPaused && !isDragging && containerRef.current) {
       setScrollPosition(prev => {
         const newPos = prev + 0.5; // Slower, smoother movement
@@ -1562,7 +1577,7 @@ function ArchetypeExclusivePrizesMuseum() {
       });
       animationRef.current = requestAnimationFrame(animateScroll);
     }
-  };
+  }, [isHovered, isPaused, isDragging]);
 
   // Start animation
   useEffect(() => {
@@ -1574,45 +1589,45 @@ function ArchetypeExclusivePrizesMuseum() {
     };
   }, [isHovered, isPaused, isDragging]);
 
-  // Handle drag start
-  const handleDragStart = (e: React.MouseEvent) => {
+  // Handle drag start - Optimized with useCallback
+  const handleDragStart = useCallback((e: React.MouseEvent) => {
     setIsDragging(true);
     setDragStart(e.clientX);
     setDragOffset(scrollPosition);
-  };
+  }, [scrollPosition]);
 
-  // Handle drag move
-  const handleDragMove = (e: React.MouseEvent) => {
+  // Handle drag move - Optimized with useCallback
+  const handleDragMove = useCallback((e: React.MouseEvent) => {
     if (isDragging) {
       const deltaX = e.clientX - dragStart;
       const newPosition = dragOffset + (deltaX / 10); // Scale down for smoother feel
       setScrollPosition(Math.max(0, Math.min(100, newPosition)));
     }
-  };
+  }, [isDragging, dragStart, dragOffset]);
 
-  // Handle drag end
-  const handleDragEnd = () => {
+  // Handle drag end - Optimized with useCallback
+  const handleDragEnd = useCallback(() => {
     setIsDragging(false);
-  };
+  }, []);
 
-  // Touch support
-  const handleTouchStart = (e: React.TouchEvent) => {
+  // Touch support - Optimized with useCallback
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
     setIsDragging(true);
     setDragStart(e.touches[0].clientX);
     setDragOffset(scrollPosition);
-  };
+  }, [scrollPosition]);
 
-  const handleTouchMove = (e: React.TouchEvent) => {
+  const handleTouchMove = useCallback((e: React.TouchEvent) => {
     if (isDragging) {
       const deltaX = e.touches[0].clientX - dragStart;
       const newPosition = dragOffset + (deltaX / 10);
       setScrollPosition(Math.max(0, Math.min(100, newPosition)));
     }
-  };
+  }, [isDragging, dragStart, dragOffset]);
 
-  const handleTouchEnd = () => {
+  const handleTouchEnd = useCallback(() => {
     setIsDragging(false);
-  };
+  }, []);
 
   return (
     <div className="relative w-full">
@@ -1826,7 +1841,7 @@ export default function ArchetypeSite(){
   const artControls = useAnimation();
 
   // 🧠 MATRIX_CHAT: Interactive AI responses based on keywords
-  const getMatrixResponse = (message: string): string => {
+  const getMatrixResponse = useCallback((message: string): string => {
     const lowerMessage = message.toLowerCase();
     
     if (lowerMessage.includes('pepito') || lowerMessage.includes('pepitoverse')) {
@@ -1997,9 +2012,9 @@ export default function ArchetypeSite(){
       "The Pepitoverse awaits. 2026 will change everything."
     ];
     return responses[Math.floor(Math.random() * responses.length)];
-  };
+  }, []);
 
-  const sendMatrixMessage = () => {
+  const sendMatrixMessage = useCallback(() => {
     if (!matrixMessage.trim()) return;
     
     const userMessage = matrixMessage.trim();
@@ -2022,7 +2037,7 @@ export default function ArchetypeSite(){
       ]);
       setIsMatrixSpeaking(false);
     }, 1500 + (matrixResponse.length * 20)); // Dynamic delay based on response length
-  };
+  }, [matrixMessage, getMatrixResponse]);
 
   // 📱 MOBILE_DETECTION: Check if device is mobile for responsive optimizations
   useEffect(() => {
