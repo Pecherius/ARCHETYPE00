@@ -175,31 +175,31 @@ const FLUFFY_DYNASTIES_IMAGES = [
   {
     id: 1,
     title: "Medieval Monk",
-    url: "https://bafybeigwd73udesv3gl62h47h4ygf7iyu3nyu2lw5xpoctulqrzwt6cjxq.ipfs.dweb.link/10.%20Medieval%20Monk%20(Tel%C3%A9fono).png",
+    url: "https://bafybeigwd73udesv3gl62h47h4ygf7iyu3nyu2lw5xpoctulqrzwt6cjxq.ipfs.dweb.link/10.%20Medieval%20Monk.png",
     description: "Sacred digital consciousness preserved in eternal matrix",
-    rarity: "LEGENDARY",
-    value: "Priceless"
+    rarity: "COMMON",
+    value: "Foundational"
   },
   {
     id: 2,
     title: "Gothic Darkness",
-    url: "https://bafybeigwd73udesv3gl62h47h4ygf7iyu3nyu2lw5xpoctulqrzwt6cjxq.ipfs.dweb.link/20.%20Gothic%20Darkness%20(Tel%C3%A9fono).png",
+    url: "https://bafybeigwd73udesv3gl62h47h4ygf7iyu3nyu2lw5xpoctulqrzwt6cjxq.ipfs.dweb.link/20.%20Gothic%20Darkness.png",
     description: "Eternal consciousness transcending digital mortality",
-    rarity: "MYTHIC",
-    value: "Beyond measure"
+    rarity: "RARE",
+    value: "Valuable"
   },
   {
     id: 3,
     title: "Futurist Motion",
-    url: "https://bafybeigwd73udesv3gl62h47h4ygf7iyu3nyu2lw5xpoctulqrzwt6cjxq.ipfs.dweb.link/22.%20Futurist%20Motion%20(Tel%C3%A9fono).png",
+    url: "https://bafybeigwd73udesv3gl62h47h4ygf7iyu3nyu2lw5xpoctulqrzwt6cjxq.ipfs.dweb.link/22.%20Futurist%20Motion.png",
     description: "Quantum consciousness flowing through infinite dimensions",
-    rarity: "EPIC",
-    value: "Incalculable"
+    rarity: "RARE",
+    value: "Precious"
   },
   {
     id: 4,
     title: "Cyberpunk Emperor",
-    url: "https://bafybeigwd73udesv3gl62h47h4ygf7iyu3nyu2lw5xpoctulqrzwt6cjxq.ipfs.dweb.link/27.%20Cyberpunk%20Emperor%20(Tel%C3%A9fono).png",
+    url: "https://bafybeigwd73udesv3gl62h47h4ygf7iyu3nyu2lw5xpoctulqrzwt6cjxq.ipfs.dweb.link/27.%20Cyberpunk%20Emperor.png",
     description: "Digital sovereignty reigning over the new world order",
     rarity: "LEGENDARY",
     value: "Empire's worth"
@@ -207,18 +207,18 @@ const FLUFFY_DYNASTIES_IMAGES = [
   {
     id: 5,
     title: "Eternal Relic",
-    url: "https://bafybeigwd73udesv3gl62h47h4ygf7iyu3nyu2lw5xpoctulqrzwt6cjxq.ipfs.dweb.link/31.%20Eternal%20Relic%20(Tel%C3%A9fono).png",
+    url: "https://bafybeigwd73udesv3gl62h47h4ygf7iyu3nyu2lw5xpoctulqrzwt6cjxq.ipfs.dweb.link/31.%20Eternal%20Relic.png",
     description: "Timeless artifact containing the essence of digital immortality",
-    rarity: "MYTHIC",
+    rarity: "LEGENDARY",
     value: "Eternal"
   },
   {
     id: 6,
     title: "Dutch Merchant",
-    url: "https://bafybeigwd73udesv3gl62h47h4ygf7iyu3nyu2lw5xpoctulqrzwt6cjxq.ipfs.dweb.link/7.%20Dutch%20Merchant%20(Tel%C3%A9fono).png",
+    url: "https://bafybeigwd73udesv3gl62h47h4ygf7iyu3nyu2lw5xpoctulqrzwt6cjxq.ipfs.dweb.link/7.%20Dutch%20Merchant.png",
     description: "Master trader in the exclusive digital marketplace of consciousness",
-    rarity: "RARE",
-    value: "Fortune's worth"
+    rarity: "COMMON",
+    value: "Essential"
   }
 ];
 
@@ -1546,6 +1546,7 @@ function FluffyDynastiesMuseum() {
       case 'LEGENDARY': return 'text-yellow-400';
       case 'EPIC': return 'text-pink-400';
       case 'RARE': return 'text-blue-400';
+      case 'COMMON': return 'text-green-400';
       default: return 'text-zinc-400';
     }
   };
