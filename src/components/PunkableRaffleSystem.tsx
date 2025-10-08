@@ -455,23 +455,31 @@ const PunkableRaffleSystem = () => {
   const handleExportWinners = (format: 'image' | 'json') => {
     if (!currentRaffle || winners.length === 0) return
 
-    // Group winners by participant (name + address)
+    // Group winners by participant (name + address) - same logic as display
     const groupedWinners = winners.reduce((acc, winner) => {
       const key = `${winner.participant_name}-${winner.up_address}`
       if (!acc[key]) {
         acc[key] = {
           participantName: winner.participant_name,
           participantUpAddress: winner.up_address || '',
-          prizes: [],
+          prizes: {},
           totalTickets: 0
         }
       }
-      acc[key].prizes.push({
-        prizeName: winner.prize_name,
-        prizeDescription: '',
-        prizeImage: '',
-        selectedAt: new Date(winner.won_at).toLocaleString()
-      })
+      
+      // Consolidate duplicate prizes by name (same as display logic)
+      const prizeKey = winner.prize_name
+      if (!acc[key].prizes[prizeKey]) {
+        acc[key].prizes[prizeKey] = {
+          prizeName: winner.prize_name,
+          prizeDescription: '',
+          prizeImage: '',
+          selectedAt: new Date(winner.won_at).toLocaleString(),
+          count: 0
+        }
+      }
+      acc[key].prizes[prizeKey].count += 1
+      
       return acc
     }, {} as Record<string, any>)
 
@@ -481,20 +489,25 @@ const PunkableRaffleSystem = () => {
         p.name === group.participantName && p.up_address === group.participantUpAddress
       )
       group.totalTickets = participant?.tickets || 0
+      
+      // Convert prizes object to array
+      group.prizes = Object.values(group.prizes)
     })
 
-    // Convert to flat array for export
+    // Convert to flat array for export - each prize entry represents one instance
     const exportWinners = Object.values(groupedWinners).flatMap((group: any) => 
-      group.prizes.map((prize: any) => ({
-        participantName: group.participantName,
-        participantUpAddress: group.participantUpAddress,
-        prizeName: prize.prizeName,
-        prizeDescription: prize.prizeDescription,
-        prizeImage: prize.prizeImage,
-        selectedAt: prize.selectedAt,
-        totalTickets: group.totalTickets,
-        prizeCount: group.prizes.length
-      }))
+      group.prizes.flatMap((prize: any) => 
+        Array(prize.count).fill(null).map(() => ({
+          participantName: group.participantName,
+          participantUpAddress: group.participantUpAddress,
+          prizeName: prize.prizeName,
+          prizeDescription: prize.prizeDescription,
+          prizeImage: prize.prizeImage,
+          selectedAt: prize.selectedAt,
+          totalTickets: group.totalTickets,
+          prizeCount: prize.count
+        }))
+      )
     )
 
     const winnerData: WinnerExport = {
@@ -647,22 +660,22 @@ const PunkableRaffleSystem = () => {
   // Show results screen
   if (currentView === "results" && currentRaffle) {
     return (
-      <div className="mx-auto max-w-6xl px-4 pb-12 sm:px-6">
-        <div className="border border-zinc-800 p-6 rounded-xl bg-gradient-to-br from-zinc-900/50 to-zinc-800/30">
+      <div className="mx-auto max-w-4xl px-4 pb-8 sm:px-6">
+        <div className="border border-zinc-800 p-4 rounded-lg bg-gradient-to-br from-zinc-900/50 to-zinc-800/30">
           {/* Header */}
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-green-500/20 to-emerald-500/20 border border-green-500/30 rounded-full text-green-400 text-sm font-medium mb-4">
-              <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+          <div className="text-center mb-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-green-500/20 to-emerald-500/20 border border-green-500/30 rounded-full text-green-400 text-xs font-medium mb-2">
+              <span className="w-1 h-1 bg-green-500 rounded-full animate-pulse"></span>
               RAFFLE COMPLETED
             </div>
-            <h2 className="text-2xl font-bold text-zinc-100 mb-2 font-mono">
+            <h2 className="text-lg font-bold text-zinc-100 mb-1 font-mono">
               🏆 RAFFLE_RESULTS
             </h2>
-            <p className="text-zinc-400 text-sm font-mono">{currentRaffle.title}</p>
+            <p className="text-zinc-400 text-xs font-mono">{currentRaffle.title}</p>
           </div>
 
           {/* Winners Grid - Grouped by Participant */}
-          <div data-section="winners" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+          <div data-section="winners" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mb-4">
             {(() => {
               // Group winners by participant and consolidate duplicate prizes
               const groupedWinners = winners.reduce((acc, winner) => {
@@ -716,9 +729,9 @@ const PunkableRaffleSystem = () => {
 
                 // Calculate dynamic height based on number of prizes
                 const getCardHeight = () => {
-                  const baseHeight = 200; // Base height for name and basic info
-                  const prizeHeight = 60; // Height per prize
-                  const maxHeight = 500; // Maximum height to prevent too tall cards
+                  const baseHeight = 120; // Base height for name and basic info
+                  const prizeHeight = 40; // Height per prize
+                  const maxHeight = 300; // Maximum height to prevent too tall cards
                   return Math.min(baseHeight + (prizeList.length * prizeHeight), maxHeight);
                 };
 
@@ -728,32 +741,32 @@ const PunkableRaffleSystem = () => {
                     initial={{ opacity: 0, y: 20, scale: 0.9 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     transition={{ delay: index * 0.1, duration: 0.5 }}
-                    className={`bg-gradient-to-br ${getColorClass()} p-6 rounded-xl border relative overflow-hidden`}
+                    className={`bg-gradient-to-br ${getColorClass()} p-3 rounded-lg border relative overflow-hidden`}
                     style={{ minHeight: `${getCardHeight()}px` }}
                   >
-                    <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-pink-500/20 to-purple-500/20 rounded-full -translate-y-10 translate-x-10"></div>
+                    <div className="absolute top-0 right-0 w-12 h-12 bg-gradient-to-br from-pink-500/20 to-purple-500/20 rounded-full -translate-y-6 translate-x-6"></div>
                     <div className="relative z-10 h-full flex flex-col">
-                      <div className="flex items-center gap-3 mb-4">
+                      <div className="flex items-center gap-2 mb-2">
                         <div 
-                          className="w-12 h-12 rounded-full flex items-center justify-center text-white text-xl font-bold"
+                          className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold"
                           style={{ backgroundColor: participant?.color || '#8B5CF6' }}
                         >
                           {getEmoji()}
                         </div>
                         <div>
-                          <h3 className="text-lg font-bold text-pink-400 font-mono">{group.participantName}</h3>
-                          <p className="text-zinc-400 text-sm font-mono">
+                          <h3 className="text-sm font-bold text-pink-400 font-mono">{group.participantName}</h3>
+                          <p className="text-zinc-400 text-xs font-mono">
                             {totalPrizes} prize{totalPrizes > 1 ? 's' : ''} • {ticketCount} tickets
                           </p>
                         </div>
                       </div>
-                      <div className="space-y-2 flex-1">
+                      <div className="space-y-1 flex-1">
                         {prizeList.map((prize: any, prizeIndex: number) => (
-                          <div key={prizeIndex} className="bg-zinc-800/50 p-3 rounded-lg border border-zinc-700">
-                            <p className="text-zinc-300 font-medium">
+                          <div key={prizeIndex} className="bg-zinc-800/50 p-2 rounded border border-zinc-700">
+                            <p className="text-zinc-300 text-xs font-medium">
                               🎁 {prize.name}
                               {prize.count > 1 && (
-                                <span className="ml-2 px-2 py-1 bg-pink-500/20 text-pink-400 text-xs rounded-full">
+                                <span className="ml-1 px-1.5 py-0.5 bg-pink-500/20 text-pink-400 text-xs rounded-full">
                                   x{prize.count}
                                 </span>
                               )}
@@ -764,7 +777,7 @@ const PunkableRaffleSystem = () => {
                           </div>
                         ))}
                         {group.upAddress && (
-                          <p className="text-zinc-500 text-sm font-mono mt-2">
+                          <p className="text-zinc-500 text-xs font-mono mt-1">
                             UP: {group.upAddress.slice(0, 20)}...
                           </p>
                         )}
@@ -777,47 +790,47 @@ const PunkableRaffleSystem = () => {
           </div>
 
           {/* Export and Actions */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <div className="flex gap-3">
+          <div className="flex flex-col sm:flex-row gap-2 justify-center items-center">
+            <div className="flex gap-2">
               <button
                 onClick={() => handleExportWinners('image')}
-                className="group relative overflow-hidden border-2 border-pink-500 bg-gradient-to-r from-pink-900/30 to-rose-900/30 px-6 py-3 text-pink-400 hover:from-pink-800/40 hover:to-rose-800/40 transition-all duration-300 hover:scale-105 font-mono font-bold text-sm rounded-lg"
+                className="group relative overflow-hidden border-2 border-pink-500 bg-gradient-to-r from-pink-900/30 to-rose-900/30 px-4 py-2 text-pink-400 hover:from-pink-800/40 hover:to-rose-800/40 transition-all duration-300 hover:scale-105 font-mono font-bold text-xs rounded-lg"
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-pink-500/10 to-rose-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                <div className="relative flex items-center gap-2">
+                <div className="relative flex items-center gap-1">
                   <span>📸</span>
-                  <span>EXPORT_WINNERS_IMAGE</span>
+                  <span>EXPORT_IMAGE</span>
                 </div>
               </button>
               <button
                 onClick={() => handleExportWinners('json')}
-                className="group relative overflow-hidden border-2 border-zinc-500 bg-gradient-to-r from-zinc-900/30 to-zinc-800/30 px-6 py-3 text-zinc-400 hover:from-zinc-800/40 hover:to-zinc-700/40 transition-all duration-300 hover:scale-105 font-mono font-bold text-sm rounded-lg"
+                className="group relative overflow-hidden border-2 border-zinc-500 bg-gradient-to-r from-zinc-900/30 to-zinc-800/30 px-4 py-2 text-zinc-400 hover:from-zinc-800/40 hover:to-zinc-700/40 transition-all duration-300 hover:scale-105 font-mono font-bold text-xs rounded-lg"
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-zinc-500/10 to-zinc-400/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                <div className="relative flex items-center gap-2">
+                <div className="relative flex items-center gap-1">
                   <span>📄</span>
                   <span>EXPORT_JSON</span>
                 </div>
               </button>
             </div>
             
-            <div className="flex gap-3">
+            <div className="flex gap-2">
               <button
                 onClick={() => setCurrentView("raffle")}
-                className="group relative overflow-hidden border-2 border-blue-500 bg-gradient-to-r from-blue-900/30 to-cyan-900/30 px-6 py-3 text-blue-400 hover:from-blue-800/40 hover:to-cyan-800/40 transition-all duration-300 hover:scale-105 font-mono font-bold text-sm rounded-lg"
+                className="group relative overflow-hidden border-2 border-blue-500 bg-gradient-to-r from-blue-900/30 to-cyan-900/30 px-4 py-2 text-blue-400 hover:from-blue-800/40 hover:to-cyan-800/40 transition-all duration-300 hover:scale-105 font-mono font-bold text-xs rounded-lg"
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                <div className="relative flex items-center gap-2">
+                <div className="relative flex items-center gap-1">
                   <span>✏️</span>
                   <span>BACK_TO_EDIT</span>
                 </div>
               </button>
               <button
                 onClick={() => setCurrentView("selector")}
-                className="group relative overflow-hidden border-2 border-zinc-500 bg-gradient-to-r from-zinc-900/30 to-zinc-800/30 px-6 py-3 text-zinc-400 hover:from-zinc-800/40 hover:to-zinc-700/40 transition-all duration-300 hover:scale-105 font-mono font-bold text-sm rounded-lg"
+                className="group relative overflow-hidden border-2 border-zinc-500 bg-gradient-to-r from-zinc-900/30 to-zinc-800/30 px-4 py-2 text-zinc-400 hover:from-zinc-800/40 hover:to-zinc-700/40 transition-all duration-300 hover:scale-105 font-mono font-bold text-xs rounded-lg"
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-zinc-500/10 to-zinc-400/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                <div className="relative flex items-center gap-2">
+                <div className="relative flex items-center gap-1">
                   <span>🏠</span>
                   <span>NEW_RAFFLE</span>
                 </div>
@@ -1267,19 +1280,19 @@ const PunkableRaffleSystem = () => {
 
   return (
     <section className="mx-auto max-w-6xl px-4 pb-12 sm:px-6">
-      <div className="flex flex-col md:flex-row items-center justify-between mb-4 md:mb-6 gap-2">
+      <div className="flex flex-col md:flex-row items-center justify-between mb-3 gap-2">
         <div className="text-center md:text-left">
-          <h2 className="text-2xl font-bold text-zinc-100 font-mono">P.E.R.S.</h2>
-          <div className="text-xs md:text-sm text-zinc-400 font-mono">Punkable Ethereal Raffle System</div>
+          <h2 className="text-lg font-bold text-zinc-100 font-mono">P.E.R.S.</h2>
+          <div className="text-xs text-zinc-400 font-mono">Punkable Ethereal Raffle System</div>
         </div>
         <div className="text-xs text-zinc-500 font-mono">v2.1</div>
       </div>
       <div className="border border-zinc-800 p-4 md:p-6 text-xs md:text-sm leading-relaxed text-zinc-300 rounded-lg">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-4">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-3">
             {currentRaffle?.image_url && (
-              <div className="w-16 h-16 rounded-xl overflow-hidden shadow-lg">
+              <div className="w-12 h-12 rounded-lg overflow-hidden shadow-lg">
                 <img
                   src={currentRaffle.image_url || "/placeholder.svg"}
                   alt="Raffle"
@@ -1288,10 +1301,10 @@ const PunkableRaffleSystem = () => {
               </div>
             )}
             <div>
-              <h3 className="text-2xl font-bold text-zinc-100 font-mono">
+              <h3 className="text-lg font-bold text-zinc-100 font-mono">
                 {currentRaffle?.title}
               </h3>
-              <p className="text-zinc-400">{currentRaffle?.description || "A fair and transparent raffle system"}</p>
+              <p className="text-xs text-zinc-400">{currentRaffle?.description || "A fair and transparent raffle system"}</p>
             </div>
           </div>
           <div className="flex items-center gap-3">
