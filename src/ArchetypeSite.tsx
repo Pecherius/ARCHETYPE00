@@ -1531,14 +1531,11 @@ function NeuralPingPong() {
 
 // 🏛️ ARCHETYPE_EXCLUSIVE_PRIZES_MUSEUM: Continuous moving gallery with drag support
 function ArchetypeExclusivePrizesMuseum() {
-  const [isHovered, setIsHovered] = useState(false);
-  const [isPaused, setIsPaused] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [scrollPosition, setScrollPosition] = useState(0);
   const [dragStart, setDragStart] = useState(0);
   const [dragOffset, setDragOffset] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
-  const animationRef = useRef<number>();
 
   // Optimized color functions with useMemo
   const rarityColors = useMemo(() => ({
@@ -1636,11 +1633,7 @@ function ArchetypeExclusivePrizesMuseum() {
         <div 
           ref={containerRef}
           className="absolute top-0 left-0 h-full flex items-center cursor-grab active:cursor-grabbing select-none"
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => {
-            setIsHovered(false);
-            handleDragEnd();
-          }}
+          onMouseLeave={handleDragEnd}
           onMouseDown={handleDragStart}
           onMouseMove={handleDragMove}
           onMouseUp={handleDragEnd}
