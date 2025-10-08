@@ -686,36 +686,36 @@ const PunkableRaffleSystem = () => {
           <div className="text-center mb-8">
             <div className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-pink-500/20 to-purple-500/20 border border-pink-500/30 rounded-full text-pink-400 text-sm font-medium mb-6">
               <span className="w-2 h-2 bg-pink-500 rounded-full animate-pulse"></span>
-              ARCHETYPE_00 // FRAGMENT_RAFFLE_SYSTEM v2.1
+              PUNKABLE_ETHEREAL_RAFFLE_SYSTEM v2.1
             </div>
             <h3 className="text-2xl md:text-4xl font-bold text-zinc-100 mb-4 md:mb-6 bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent text-center">
-              <span className="text-red-500">P.E.R.S.</span> // <span className="text-green-400">QUANTUM_SELECTION</span>
+              <span className="text-red-500">P.E.R.S.</span> // <span className="text-green-400">FAIR_RAFFLE_SYSTEM</span>
             </h3>
             <div className="max-w-4xl mx-auto space-y-4">
               <p className="text-zinc-300 text-sm md:text-lg leading-relaxed px-2 md:px-0">
-                Scientific selection algorithm operating within the <span className="text-pink-400 font-semibold">ARCHETYPE_00 quantum field</span>. 
-                Unlike traditional random number generators, this system processes <span className="text-green-400 font-semibold">weighted fragment data</span> to create authentic selection patterns.
+                A transparent raffle system that uses <span className="text-green-400 font-semibold">weighted selection</span> based on participant data. 
+                Unlike simple random generators, P.E.R.S. considers <span className="text-pink-400 font-semibold">ticket counts and participation history</span> to ensure fair distribution.
               </p>
               <div className="bg-gradient-to-r from-zinc-800/50 to-zinc-900/50 border border-zinc-700/50 rounded-xl p-6 backdrop-blur-sm">
                 <h4 className="text-lg md:text-xl font-bold text-pink-400 mb-3 flex items-center gap-2">
                   <span className="text-xl md:text-2xl">⚡</span>
-                  QUANTUM_SELECTION_ALGORITHM
+                  HOW_P.E.R.S._WORKS
                 </h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs md:text-sm">
                   <div className="space-y-2">
                     <p className="text-zinc-300">
-                      <span className="text-green-400 font-semibold">• Weighted Distribution:</span> Fragment density determines quantum probability. Higher density = increased selection likelihood.
+                      <span className="text-green-400 font-semibold">• Weighted Selection:</span> More tickets = higher chance to win. Each participant's probability is calculated based on their ticket count.
                     </p>
                     <p className="text-zinc-300">
-                      <span className="text-blue-400 font-semibold">• Verifiable Process:</span> All quantum states logged and auditable. No hidden variables or deterministic bias.
+                      <span className="text-blue-400 font-semibold">• Transparent Process:</span> All selections are logged and verifiable. You can see exactly how winners are chosen.
                     </p>
                   </div>
                   <div className="space-y-2">
                     <p className="text-zinc-300">
-                      <span className="text-purple-400 font-semibold">• Community Protocol:</span> Designed for LUKSO ecosystem participants, ensuring fair distribution mechanisms.
+                      <span className="text-purple-400 font-semibold">• Fair Distribution:</span> Designed for community raffles. No hidden algorithms or unfair advantages.
                     </p>
                     <p className="text-zinc-300">
-                      <span className="text-pink-400 font-semibold">• Scientific Method:</span> Creates authentic randomness through transparent quantum processing algorithms.
+                      <span className="text-pink-400 font-semibold">• Easy to Use:</span> Create raffles, add participants with tickets, and let P.E.R.S. select winners fairly.
                     </p>
                   </div>
                 </div>
@@ -723,48 +723,48 @@ const PunkableRaffleSystem = () => {
             </div>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6 mb-8">
-            <div className="group relative overflow-hidden border border-pink-500/30 rounded-xl bg-gradient-to-br from-pink-500/10 to-purple-500/10 p-6 backdrop-blur-sm hover:border-pink-400/50 transition-all duration-300">
+          <div className="grid md:grid-cols-3 gap-4 md:gap-6 mb-8">
+            <div className="group relative overflow-hidden border border-pink-500/30 rounded-xl bg-gradient-to-br from-pink-500/10 to-purple-500/10 p-4 md:p-6 backdrop-blur-sm hover:border-pink-400/50 transition-all duration-300">
               <div className="absolute inset-0 bg-gradient-to-br from-pink-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <div className="relative">
                 <div className="flex items-center gap-3 mb-3">
                   <div className="w-8 h-8 rounded-lg bg-pink-500/20 flex items-center justify-center">
                     <span className="text-pink-400 text-lg">⚡</span>
                   </div>
-                  <h4 className="text-pink-400 font-semibold">RESONANCE_FIELD</h4>
+                  <h4 className="text-pink-400 font-semibold text-sm">WEIGHTED_SELECTION</h4>
                 </div>
                 <p className="text-xs text-zinc-400 leading-relaxed">
-                  Fragment-based selection algorithm processes weighted data to create authentic selection patterns within the ARCHETYPE_00 resonance field.
+                  Each participant's chance to win is based on their ticket count. More tickets = higher probability of winning.
                 </p>
               </div>
             </div>
             
-            <div className="group relative overflow-hidden border border-green-500/30 rounded-xl bg-gradient-to-br from-green-500/10 to-emerald-500/10 p-6 backdrop-blur-sm hover:border-green-400/50 transition-all duration-300">
+            <div className="group relative overflow-hidden border border-green-500/30 rounded-xl bg-gradient-to-br from-green-500/10 to-emerald-500/10 p-4 md:p-6 backdrop-blur-sm hover:border-green-400/50 transition-all duration-300">
               <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <div className="relative">
                 <div className="flex items-center gap-3 mb-3">
                   <div className="w-8 h-8 rounded-lg bg-green-500/20 flex items-center justify-center">
                     <span className="text-green-400 text-lg">💾</span>
                   </div>
-                  <h4 className="text-green-400 font-semibold">FRAGMENT_STORAGE</h4>
+                  <h4 className="text-green-400 font-semibold text-sm">DATA_STORAGE</h4>
                 </div>
                 <p className="text-xs text-zinc-400 leading-relaxed">
-                  Persistent storage system for participant and prize data. Maintains fragment integrity across multiple raffle sessions.
+                  Saves all participant and prize data. Your raffles are stored locally and can be accessed anytime.
                 </p>
               </div>
             </div>
             
-            <div className="group relative overflow-hidden border border-purple-500/30 rounded-xl bg-gradient-to-br from-purple-500/10 to-pink-500/10 p-6 backdrop-blur-sm hover:border-purple-400/50 transition-all duration-300">
+            <div className="group relative overflow-hidden border border-purple-500/30 rounded-xl bg-gradient-to-br from-purple-500/10 to-pink-500/10 p-4 md:p-6 backdrop-blur-sm hover:border-purple-400/50 transition-all duration-300">
               <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <div className="relative">
                 <div className="flex items-center gap-3 mb-3">
                   <div className="w-8 h-8 rounded-lg bg-purple-500/20 flex items-center justify-center">
                     <span className="text-purple-400 text-lg">🎉</span>
                   </div>
-                  <h4 className="text-purple-400 font-semibold">QUANTUM_SELECTION</h4>
+                  <h4 className="text-purple-400 font-semibold text-sm">FAIR_SELECTION</h4>
                 </div>
                 <p className="text-xs text-zinc-400 leading-relaxed">
-                  Advanced selection algorithm creates authentic drama and excitement through transparent fragment processing and weighted probability calculations.
+                  Transparent winner selection process. All results are logged and verifiable for complete fairness.
                 </p>
               </div>
             </div>
@@ -804,8 +804,8 @@ const PunkableRaffleSystem = () => {
                 )}
               </div>
               <p className="text-zinc-400 text-xs md:text-sm max-w-md px-2 md:px-0">
-                Initialize quantum selection parameters for your first P.E.R.S. session. 
-                <span className="text-pink-400 font-semibold"> Scientific method—transparent and verifiable.</span>
+                Create your first raffle with P.E.R.S. 
+                <span className="text-pink-400 font-semibold"> Simple, fair, and transparent.</span>
               </p>
             </div>
           </div>
@@ -1094,9 +1094,12 @@ const PunkableRaffleSystem = () => {
 
   return (
     <section className="mx-auto max-w-6xl px-4 pb-12 sm:px-6">
-      <div className="flex items-center justify-between mb-4 md:mb-6">
-        <h2 className="text-lg md:text-2xl font-bold tracking-wide text-zinc-100 text-center md:text-left">P.E.R.S.</h2>
-        <div className="text-xs md:text-sm text-zinc-400 font-mono hidden md:block">Punkable Ethereal Raffle System</div>
+      <div className="flex flex-col md:flex-row items-center justify-between mb-4 md:mb-6 gap-2">
+        <div className="text-center md:text-left">
+          <h2 className="text-lg md:text-2xl font-bold tracking-wide text-zinc-100">P.E.R.S.</h2>
+          <div className="text-xs md:text-sm text-zinc-400 font-mono">Punkable Ethereal Raffle System</div>
+        </div>
+        <div className="text-xs text-zinc-500 font-mono">v2.1</div>
       </div>
       <div className="border border-zinc-800 p-4 md:p-6 text-xs md:text-sm leading-relaxed text-zinc-300 rounded-lg">
         {/* Header */}
