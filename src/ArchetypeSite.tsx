@@ -1890,27 +1890,27 @@ export default function ArchetypeSite(){
 
         {/* HERO */}
         <section className="mx-auto flex max-w-6xl flex-col items-center gap-6 px-6 py-16 text-center relative">
-          {/* Left Side Processing Elements */}
-          <div className="absolute left-0 top-1/2 transform -translate-y-1/2 hidden lg:block">
-            <div className="space-y-8">
-              {/* Loading NFTs */}
+          {/* Left Side Processing Elements - More subtle and better positioned */}
+          <div className="absolute left-4 top-1/2 transform -translate-y-1/2 hidden lg:block">
+            <div className="space-y-6">
+              {/* Loading NFTs - More cryptic */}
               <motion.div
-                className="bg-zinc-900/80 border border-pink-500/30 rounded-lg p-4 backdrop-blur-sm"
-                initial={{ opacity: 0, x: -50 }}
-                animate={{ opacity: 1, x: 0 }}
+                className="bg-zinc-900/60 border border-pink-500/20 rounded-lg p-3 backdrop-blur-sm"
+                initial={{ opacity: 0, x: -30 }}
+                animate={{ opacity: 0.7, x: 0 }}
                 transition={{ duration: 0.8, delay: 0.5 }}
               >
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="w-2 h-2 bg-pink-500 rounded-full animate-pulse"></div>
-                  <span className="text-pink-400 text-sm font-mono">LOADING_NFTS</span>
+                <div className="flex items-center gap-2 mb-1">
+                  <div className="w-1.5 h-1.5 bg-pink-500 rounded-full animate-pulse"></div>
+                  <span className="text-pink-400 text-xs font-mono">FRAGMENT_SYNC</span>
                 </div>
-                <div className="text-xs text-zinc-400 font-mono">
-                  <div>• ARCHETYPE_00 fragments</div>
-                  <div>• Corrupted data streams</div>
-                  <div>• Resonance patterns</div>
+                <div className="text-xs text-zinc-500 font-mono">
+                  <div>• Data corruption detected</div>
+                  <div>• Resonance frequency: 38Hz</div>
+                  <div>• Neural patterns: [REDACTED]</div>
                 </div>
                 <motion.div
-                  className="mt-2 h-1 bg-zinc-700 rounded-full overflow-hidden"
+                  className="mt-1 h-0.5 bg-zinc-700 rounded-full overflow-hidden"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 1 }}
@@ -1923,24 +1923,24 @@ export default function ArchetypeSite(){
                 </motion.div>
               </motion.div>
 
-              {/* Universal Profiles */}
+              {/* Universal Profiles - More mysterious */}
               <motion.div
-                className="bg-zinc-900/80 border border-cyan-500/30 rounded-lg p-4 backdrop-blur-sm"
-                initial={{ opacity: 0, x: -50 }}
-                animate={{ opacity: 1, x: 0 }}
+                className="bg-zinc-900/60 border border-cyan-500/20 rounded-lg p-3 backdrop-blur-sm"
+                initial={{ opacity: 0, x: -30 }}
+                animate={{ opacity: 0.7, x: 0 }}
                 transition={{ duration: 0.8, delay: 0.8 }}
               >
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="w-2 h-2 bg-cyan-500 rounded-full animate-pulse"></div>
-                  <span className="text-cyan-400 text-sm font-mono">UNIVERSAL_PROFILES</span>
+                <div className="flex items-center gap-2 mb-1">
+                  <div className="w-1.5 h-1.5 bg-cyan-500 rounded-full animate-pulse"></div>
+                  <span className="text-cyan-400 text-xs font-mono">IDENTITY_MATRIX</span>
                 </div>
-                <div className="text-xs text-zinc-400 font-mono">
-                  <div>• Identity verification</div>
-                  <div>• LUKSO network sync</div>
-                  <div>• Digital footprint</div>
+                <div className="text-xs text-zinc-500 font-mono">
+                  <div>• Quantum verification</div>
+                  <div>• LUKSO protocol active</div>
+                  <div>• Digital signature: [CLASSIFIED]</div>
                 </div>
                 <motion.div
-                  className="mt-2 h-1 bg-zinc-700 rounded-full overflow-hidden"
+                  className="mt-1 h-0.5 bg-zinc-700 rounded-full overflow-hidden"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 1.2 }}
@@ -1953,24 +1953,24 @@ export default function ArchetypeSite(){
                 </motion.div>
               </motion.div>
 
-              {/* Fluffy Dynasties */}
+              {/* Pepitoverse 2026 - Corrected */}
               <motion.div
-                className="bg-zinc-900/80 border border-purple-500/30 rounded-lg p-4 backdrop-blur-sm"
-                initial={{ opacity: 0, x: -50 }}
-                animate={{ opacity: 1, x: 0 }}
+                className="bg-zinc-900/60 border border-purple-500/20 rounded-lg p-3 backdrop-blur-sm"
+                initial={{ opacity: 0, x: -30 }}
+                animate={{ opacity: 0.7, x: 0 }}
                 transition={{ duration: 0.8, delay: 1.1 }}
               >
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse"></div>
-                  <span className="text-purple-400 text-sm font-mono">FLUFFY_DYNASTIES</span>
+                <div className="flex items-center gap-2 mb-1">
+                  <div className="w-1.5 h-1.5 bg-purple-500 rounded-full animate-pulse"></div>
+                  <span className="text-purple-400 text-xs font-mono">PEPITOVERSE_2026</span>
                 </div>
-                <div className="text-xs text-zinc-400 font-mono">
-                  <div>• Preparing launch</div>
-                  <div>• Ecosystem integration</div>
-                  <div>• 2026 roadmap</div>
+                <div className="text-xs text-zinc-500 font-mono">
+                  <div>• Convergence point: 2026</div>
+                  <div>• Reality matrix: [UNSTABLE]</div>
+                  <div>• Quantum leap: [PENDING]</div>
                 </div>
                 <motion.div
-                  className="mt-2 h-1 bg-zinc-700 rounded-full overflow-hidden"
+                  className="mt-1 h-0.5 bg-zinc-700 rounded-full overflow-hidden"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 1.4 }}
@@ -1985,27 +1985,27 @@ export default function ArchetypeSite(){
             </div>
           </div>
 
-          {/* Right Side Processing Elements */}
-          <div className="absolute right-0 top-1/2 transform -translate-y-1/2 hidden lg:block">
-            <div className="space-y-8">
-              {/* Calculating Benefits */}
+          {/* Right Side Processing Elements - Better positioned to avoid collision */}
+          <div className="absolute right-4 top-1/2 transform -translate-y-1/2 hidden lg:block">
+            <div className="space-y-6">
+              {/* Calculating Benefits - Moved down to avoid collision */}
               <motion.div
-                className="bg-zinc-900/80 border border-green-500/30 rounded-lg p-4 backdrop-blur-sm"
-                initial={{ opacity: 0, x: 50 }}
-                animate={{ opacity: 1, x: 0 }}
+                className="bg-zinc-900/60 border border-green-500/20 rounded-lg p-3 backdrop-blur-sm"
+                initial={{ opacity: 0, x: 30 }}
+                animate={{ opacity: 0.7, x: 0 }}
                 transition={{ duration: 0.8, delay: 0.6 }}
               >
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                  <span className="text-green-400 text-sm font-mono">CALCULATING_BENEFITS</span>
+                <div className="flex items-center gap-2 mb-1">
+                  <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>
+                  <span className="text-green-400 text-xs font-mono">BENEFIT_CALC</span>
                 </div>
-                <div className="text-xs text-zinc-400 font-mono">
-                  <div>• Retroactive rewards</div>
-                  <div>• Fragment multipliers</div>
-                  <div>• Resonance bonuses</div>
+                <div className="text-xs text-zinc-500 font-mono">
+                  <div>• Retroactive rewards: [CALCULATING]</div>
+                  <div>• Fragment density: [ANALYZING]</div>
+                  <div>• Resonance bonus: [PENDING]</div>
                 </div>
                 <motion.div
-                  className="mt-2 h-1 bg-zinc-700 rounded-full overflow-hidden"
+                  className="mt-1 h-0.5 bg-zinc-700 rounded-full overflow-hidden"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 1.1 }}
@@ -2018,24 +2018,24 @@ export default function ArchetypeSite(){
                 </motion.div>
               </motion.div>
 
-              {/* Neural Network */}
+              {/* Neural Network - More subtle */}
               <motion.div
-                className="bg-zinc-900/80 border border-yellow-500/30 rounded-lg p-4 backdrop-blur-sm"
-                initial={{ opacity: 0, x: 50 }}
-                animate={{ opacity: 1, x: 0 }}
+                className="bg-zinc-900/60 border border-yellow-500/20 rounded-lg p-3 backdrop-blur-sm"
+                initial={{ opacity: 0, x: 30 }}
+                animate={{ opacity: 0.7, x: 0 }}
                 transition={{ duration: 0.8, delay: 0.9 }}
               >
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="w-2 h-2 bg-yellow-500 rounded-full animate-pulse"></div>
-                  <span className="text-yellow-400 text-sm font-mono">NEURAL_NETWORK</span>
+                <div className="flex items-center gap-2 mb-1">
+                  <div className="w-1.5 h-1.5 bg-yellow-500 rounded-full animate-pulse"></div>
+                  <span className="text-yellow-400 text-xs font-mono">NEURAL_SYNC</span>
                 </div>
-                <div className="text-xs text-zinc-400 font-mono">
-                  <div>• Synaptic connections</div>
-                  <div>• Data processing</div>
-                  <div>• Pattern recognition</div>
+                <div className="text-xs text-zinc-500 font-mono">
+                  <div>• Synaptic connections: [ACTIVE]</div>
+                  <div>• Data processing: [RUNNING]</div>
+                  <div>• Pattern recognition: [LEARNING]</div>
                 </div>
                 <motion.div
-                  className="mt-2 h-1 bg-zinc-700 rounded-full overflow-hidden"
+                  className="mt-1 h-0.5 bg-zinc-700 rounded-full overflow-hidden"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 1.3 }}
@@ -2048,24 +2048,24 @@ export default function ArchetypeSite(){
                 </motion.div>
               </motion.div>
 
-              {/* Quantum Selection */}
+              {/* Quantum Selection - More mysterious */}
               <motion.div
-                className="bg-zinc-900/80 border border-rose-500/30 rounded-lg p-4 backdrop-blur-sm"
-                initial={{ opacity: 0, x: 50 }}
-                animate={{ opacity: 1, x: 0 }}
+                className="bg-zinc-900/60 border border-rose-500/20 rounded-lg p-3 backdrop-blur-sm"
+                initial={{ opacity: 0, x: 30 }}
+                animate={{ opacity: 0.7, x: 0 }}
                 transition={{ duration: 0.8, delay: 1.2 }}
               >
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="w-2 h-2 bg-rose-500 rounded-full animate-pulse"></div>
-                  <span className="text-rose-400 text-sm font-mono">QUANTUM_SELECTION</span>
+                <div className="flex items-center gap-2 mb-1">
+                  <div className="w-1.5 h-1.5 bg-rose-500 rounded-full animate-pulse"></div>
+                  <span className="text-rose-400 text-xs font-mono">QUANTUM_MATRIX</span>
                 </div>
-                <div className="text-xs text-zinc-400 font-mono">
-                  <div>• Probability matrices</div>
-                  <div>• Entropy calculations</div>
-                  <div>• Randomness generation</div>
+                <div className="text-xs text-zinc-500 font-mono">
+                  <div>• Probability: [UNKNOWN]</div>
+                  <div>• Entropy level: [CRITICAL]</div>
+                  <div>• Randomness: [CHAOTIC]</div>
                 </div>
                 <motion.div
-                  className="mt-2 h-1 bg-zinc-700 rounded-full overflow-hidden"
+                  className="mt-1 h-0.5 bg-zinc-700 rounded-full overflow-hidden"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 1.5 }}
@@ -2363,7 +2363,100 @@ export default function ArchetypeSite(){
           ))}
         </section>
 
-        {/* NEURAL PING PONG GAME - MOVED UP */}
+        {/* MINT OPERATION - MOVED BEFORE PING PONG */}
+        <section className="mx-auto max-w-6xl px-4 pb-12 sm:px-6">
+          <motion.h2 
+            className="mb-6 text-2xl font-bold tracking-wide text-zinc-100"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          >
+            Mint Operation // Corrupted Resonance
+          </motion.h2>
+          <motion.div 
+            className="border border-red-500 p-6 text-sm leading-relaxed text-zinc-300 bg-red-500/5"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            whileHover={{ scale: 1.01 }}
+          >
+            <div className="font-mono text-red-400 mb-4 text-center">
+              [ARCHETYPE_00::corrupted_resonance_detected]
+            </div>
+            <p className="text-center mb-6 text-base">
+              Emission layer active. Each mint stabilizes the anomaly, amplifying the system's response probability. Holders influence signal strength across the Punkable Ethereal field. Retroactive transmissions are unpredictable. Proceed with caution.
+            </p>
+            
+            <motion.div 
+              className="grid md:grid-cols-3 gap-6"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.6 }}
+            >
+              <motion.div 
+                className="text-center p-4 border border-zinc-700 bg-zinc-900/30"
+                whileHover={{ scale: 1.05, borderColor: "#10b981" }}
+                transition={{ duration: 0.3 }}
+              >
+                <motion.div 
+                  className="text-2xl font-bold text-green-400 mb-2"
+                  animate={{ scale: [1, 1.05, 1] }}
+                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                >
+                  200
+                </motion.div>
+                <div className="text-xs text-zinc-500">Total Supply</div>
+                <div className="text-xs text-zinc-400 mt-1">Fragments</div>
+              </motion.div>
+              
+              <motion.div 
+                className="text-center p-4 border border-zinc-700 bg-zinc-900/30"
+                whileHover={{ scale: 1.05, borderColor: "#eab308" }}
+                transition={{ duration: 0.3 }}
+              >
+                <motion.div 
+                  className="text-2xl font-bold text-yellow-400 mb-2"
+                  animate={{ scale: [1, 1.05, 1] }}
+                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+                >
+                  2.5 LYX
+                </motion.div>
+                <div className="text-xs text-zinc-500">Mint Price</div>
+                <div className="text-xs text-zinc-400 mt-1">Per Fragment</div>
+              </motion.div>
+              
+              <motion.div 
+                className="text-center p-4 border border-zinc-700 bg-zinc-900/30"
+                whileHover={{ scale: 1.05, borderColor: "#ef4444" }}
+                transition={{ duration: 0.3 }}
+              >
+                <motion.div 
+                  className="text-2xl font-bold text-red-400 mb-2"
+                  animate={{ scale: [1, 1.05, 1] }}
+                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+                >
+                  ∞
+                </motion.div>
+                <div className="text-xs text-zinc-500">Resonance</div>
+                <div className="text-xs text-zinc-400 mt-1">Amplification</div>
+              </motion.div>
+            </motion.div>
+            
+            <motion.div 
+              className="mt-6 p-4 border border-zinc-700 bg-zinc-900/50"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.8 }}
+            >
+              <h4 className="text-green-400 font-semibold mb-3">Warning: Unstable Fragment</h4>
+              <p className="text-xs text-zinc-400">
+                This artifact contains corrupted data from damaged chain archives. Its internal structure is unstable and may cause unexpected network reactions. Each mint increases the probability of spontaneous events across the Punkable Ethereal System. Holders assume full responsibility for resonance field interactions.
+              </p>
+            </motion.div>
+          </motion.div>
+        </section>
+
+        {/* NEURAL PING PONG GAME */}
         <section data-section="game" className="mx-auto max-w-6xl px-4 pb-12 sm:px-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -2519,170 +2612,7 @@ export default function ArchetypeSite(){
           </motion.div>
         </section>
 
-        {/* CYPHERPUNK MANIFESTO */}
-        <section className="mx-auto max-w-6xl px-4 pb-12 sm:px-6">
-          <motion.h2 
-            className="mb-6 text-2xl font-bold tracking-wide text-zinc-100"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-          >
-            Cypherpunk Manifesto // Digital Resistance
-          </motion.h2>
-          <motion.div 
-            className="border border-zinc-800 p-6 text-sm leading-relaxed text-zinc-300"
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-          >
-            <div className="grid md:grid-cols-2 gap-8">
-              <motion.div
-                initial={{ opacity: 0, x: -30 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8, delay: 0.6 }}
-                whileHover={{ scale: 1.02 }}
-              >
-                <h3 className="text-lg font-semibold text-green-400 mb-4">The Resonance Revolution</h3>
-                <p className="mb-4">
-                  In the digital underground, where LUKSO's Universal Profiles intersect with the fragmented remnants of corrupted chains, a new form of resistance emerges. ARCHETYPE_00 represents more than a digital asset—it's a frequency weapon against centralized control.
-                </p>
-                <p className="mb-4">
-                  Each fragment carries the DNA of rebellion, encoded in resonance patterns that traditional systems cannot comprehend. The more fragments you accumulate, the stronger your signal becomes in the ethereal network—a digital echo that grows louder with each acquisition.
-                </p>
-              </motion.div>
-              
-              <motion.div
-                initial={{ opacity: 0, x: 30 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8, delay: 0.8 }}
-                whileHover={{ scale: 1.02 }}
-              >
-                <h3 className="text-lg font-semibold text-red-400 mb-4">Network Anomalies</h3>
-                <p className="mb-4">
-                  The Punkable Ethereal System operates on principles that defy conventional blockchain mechanics. Resonance fields create spontaneous events—unannounced distributions, anomaly-based rewards, and network reactions that respond to frequency patterns rather than traditional smart contract logic.
-                </p>
-                <p className="mb-4">
-                  This isn't just about holding tokens. It's about becoming part of a living, breathing digital organism that responds to the collective resonance of its participants. The network decides how to react, but your signal strength determines your influence.
-                </p>
-              </motion.div>
-            </div>
-            
-            <motion.div 
-              className="mt-8 p-4 border border-yellow-500 bg-yellow-500/5"
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.8, delay: 1 }}
-              whileHover={{ scale: 1.02, borderColor: "#eab308" }}
-            >
-              <motion.p 
-                className="text-center text-yellow-400 font-mono text-sm"
-                animate={{ 
-                  textShadow: [
-                    "0 0 0px #eab308",
-                    "0 0 10px #eab308",
-                    "0 0 0px #eab308"
-                  ]
-                }}
-                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-              >
-                "The resonance field is not controlled—it evolves. Each fragment amplifies the signal. Each holder becomes a node in the resistance. The network responds to frequency, not authority."
-              </motion.p>
-            </motion.div>
-          </motion.div>
-        </section>
 
-        {/* MINT OPERATION */}
-        <section className="mx-auto max-w-6xl px-4 pb-12 sm:px-6">
-          <motion.h2 
-            className="mb-6 text-2xl font-bold tracking-wide text-zinc-100"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-          >
-            Mint Operation // Corrupted Resonance
-          </motion.h2>
-          <motion.div 
-            className="border border-red-500 p-6 text-sm leading-relaxed text-zinc-300 bg-red-500/5"
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            whileHover={{ scale: 1.01 }}
-          >
-            <div className="font-mono text-red-400 mb-4 text-center">
-              [ARCHETYPE_00::corrupted_resonance_detected]
-            </div>
-            <p className="text-center mb-6 text-base">
-              Emission layer active. Each mint stabilizes the anomaly, amplifying the system's response probability. Holders influence signal strength across the Punkable Ethereal field. Retroactive transmissions are unpredictable. Proceed with caution.
-            </p>
-            
-            <motion.div 
-              className="grid md:grid-cols-3 gap-6"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.6 }}
-            >
-              <motion.div 
-                className="text-center p-4 border border-zinc-700 bg-zinc-900/30"
-                whileHover={{ scale: 1.05, borderColor: "#10b981" }}
-                transition={{ duration: 0.3 }}
-              >
-                <motion.div 
-                  className="text-2xl font-bold text-green-400 mb-2"
-                  animate={{ scale: [1, 1.05, 1] }}
-                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                >
-                  200
-                </motion.div>
-                <div className="text-xs text-zinc-500">Total Supply</div>
-                <div className="text-xs text-zinc-400 mt-1">Fragments</div>
-              </motion.div>
-              
-              <motion.div 
-                className="text-center p-4 border border-zinc-700 bg-zinc-900/30"
-                whileHover={{ scale: 1.05, borderColor: "#eab308" }}
-                transition={{ duration: 0.3 }}
-              >
-                <motion.div 
-                  className="text-2xl font-bold text-yellow-400 mb-2"
-                  animate={{ scale: [1, 1.05, 1] }}
-                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
-                >
-                  2.5 LYX
-                </motion.div>
-                <div className="text-xs text-zinc-500">Mint Price</div>
-                <div className="text-xs text-zinc-400 mt-1">Per Fragment</div>
-              </motion.div>
-              
-              <motion.div 
-                className="text-center p-4 border border-zinc-700 bg-zinc-900/30"
-                whileHover={{ scale: 1.05, borderColor: "#ef4444" }}
-                transition={{ duration: 0.3 }}
-              >
-                <motion.div 
-                  className="text-2xl font-bold text-red-400 mb-2"
-                  animate={{ scale: [1, 1.05, 1] }}
-                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-                >
-                  ∞
-                </motion.div>
-                <div className="text-xs text-zinc-500">Resonance</div>
-                <div className="text-xs text-zinc-400 mt-1">Amplification</div>
-              </motion.div>
-            </motion.div>
-            
-            <motion.div 
-              className="mt-6 p-4 border border-zinc-700 bg-zinc-900/50"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.8 }}
-            >
-              <h4 className="text-green-400 font-semibold mb-3">Warning: Unstable Fragment</h4>
-              <p className="text-xs text-zinc-400">
-                This artifact contains corrupted data from damaged chain archives. Its internal structure is unstable and may cause unexpected network reactions. Each mint increases the probability of spontaneous events across the Punkable Ethereal System. Holders assume full responsibility for resonance field interactions.
-              </p>
-            </motion.div>
-          </motion.div>
-        </section>
 
         {/* PUNKABLE ETHEREAL RAFFLE SYSTEM */}
         <section data-section="raffle">
