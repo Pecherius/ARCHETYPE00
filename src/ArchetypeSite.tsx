@@ -173,7 +173,15 @@ const QUARANTINE_IMAGES = {
 // 🎨 ARCHETYPE_00_EXCLUSIVE_PRIZES: Private collection of Fluffy Dynasty rewards for ARCHETYPE_00 holders
 const ARCHETYPE_EXCLUSIVE_PRIZES = [
   {
-    id: 1,
+    id: 7,
+    title: "Dutch Merchant",
+    url: "https://bafybeigwd73udesv3gl62h47h4ygf7iyu3nyu2lw5xpoctulqrzwt6cjxq.ipfs.dweb.link/7.%20Dutch%20Merchant%20(Tel%C3%A9fono).png",
+    description: "Exclusive Fluffy Dynasty reward for ARCHETYPE_00 holders - Master trader in the exclusive digital marketplace of consciousness",
+    rarity: "COMMON",
+    value: "Essential Prize"
+  },
+  {
+    id: 10,
     title: "Medieval Monk",
     url: "https://bafybeigwd73udesv3gl62h47h4ygf7iyu3nyu2lw5xpoctulqrzwt6cjxq.ipfs.dweb.link/10.%20Medieval%20Monk%20(Tel%C3%A9fono).png",
     description: "Exclusive Fluffy Dynasty reward for ARCHETYPE_00 holders - Sacred digital consciousness preserved in eternal matrix",
@@ -181,7 +189,7 @@ const ARCHETYPE_EXCLUSIVE_PRIZES = [
     value: "Foundational Prize"
   },
   {
-    id: 2,
+    id: 20,
     title: "Gothic Darkness",
     url: "https://bafybeigwd73udesv3gl62h47h4ygf7iyu3nyu2lw5xpoctulqrzwt6cjxq.ipfs.dweb.link/20.%20Gothic%20Darkness%20(Tel%C3%A9fono).png",
     description: "Exclusive Fluffy Dynasty reward for ARCHETYPE_00 holders - Eternal consciousness transcending digital mortality",
@@ -189,7 +197,7 @@ const ARCHETYPE_EXCLUSIVE_PRIZES = [
     value: "Valuable Prize"
   },
   {
-    id: 3,
+    id: 22,
     title: "Futurist Motion",
     url: "https://bafybeigwd73udesv3gl62h47h4ygf7iyu3nyu2lw5xpoctulqrzwt6cjxq.ipfs.dweb.link/22.%20Futurist%20Motion%20(Tel%C3%A9fono).png",
     description: "Exclusive Fluffy Dynasty reward for ARCHETYPE_00 holders - Quantum consciousness flowing through infinite dimensions",
@@ -197,7 +205,7 @@ const ARCHETYPE_EXCLUSIVE_PRIZES = [
     value: "Precious Prize"
   },
   {
-    id: 4,
+    id: 27,
     title: "Cyberpunk Emperor",
     url: "https://bafybeigwd73udesv3gl62h47h4ygf7iyu3nyu2lw5xpoctulqrzwt6cjxq.ipfs.dweb.link/27.%20Cyberpunk%20Emperor%20(Tel%C3%A9fono).png",
     description: "Exclusive Fluffy Dynasty reward for ARCHETYPE_00 holders - Digital sovereignty reigning over the new world order",
@@ -205,20 +213,12 @@ const ARCHETYPE_EXCLUSIVE_PRIZES = [
     value: "Empire's Prize"
   },
   {
-    id: 5,
+    id: 31,
     title: "Eternal Relic",
     url: "https://bafybeigwd73udesv3gl62h47h4ygf7iyu3nyu2lw5xpoctulqrzwt6cjxq.ipfs.dweb.link/31.%20Eternal%20Relic%20(Tel%C3%A9fono).png",
     description: "Exclusive Fluffy Dynasty reward for ARCHETYPE_00 holders - Timeless artifact containing the essence of digital immortality",
     rarity: "LEGENDARY",
     value: "Eternal Prize"
-  },
-  {
-    id: 6,
-    title: "Dutch Merchant",
-    url: "https://bafybeigwd73udesv3gl62h47h4ygf7iyu3nyu2lw5xpoctulqrzwt6cjxq.ipfs.dweb.link/7.%20Dutch%20Merchant%20(Tel%C3%A9fono).png",
-    description: "Exclusive Fluffy Dynasty reward for ARCHETYPE_00 holders - Master trader in the exclusive digital marketplace of consciousness",
-    rarity: "COMMON",
-    value: "Essential Prize"
   }
 ];
 
@@ -1558,50 +1558,60 @@ function ArchetypeExclusivePrizesMuseum() {
         {/* Moving Gallery - Continuous Right to Left */}
         <div 
           ref={containerRef}
-          className={`absolute top-0 left-0 h-full flex items-center ${isHovered || isPaused ? '' : 'animate-scroll'}`}
+          className="absolute top-0 left-0 h-full flex items-center"
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
           style={{
-            animation: isHovered || isPaused ? 'none' : 'scrollRightToLeft 20s linear infinite'
+            animation: isHovered || isPaused ? 'none' : 'scrollRightToLeft 30s linear infinite',
+            width: '200%'
           }}
         >
           {/* Duplicate images for seamless loop */}
           {[...ARCHETYPE_EXCLUSIVE_PRIZES, ...ARCHETYPE_EXCLUSIVE_PRIZES].map((image, index) => (
             <motion.div
               key={`${image.id}-${index}`}
-              className="flex-shrink-0 relative group mx-4"
-              style={{ width: '300px', height: '400px' }}
+              className="flex-shrink-0 relative group mx-6"
+              style={{ width: '280px', height: '380px' }}
               onMouseEnter={() => {}}
               onMouseLeave={() => {}}
               whileHover={{ 
-                scale: 1.05,
+                scale: 1.02,
+                y: -5,
                 z: 50
               }}
-              transition={{ duration: 0.3 }}
+              transition={{ duration: 0.4, ease: "easeOut" }}
             >
-              {/* Picture Frame */}
-              <div className="relative w-full h-full bg-black border-4 border-orange-500/30 shadow-2xl">
-                {/* Image Number Badge */}
-                <div className="absolute -top-2 -left-2 bg-orange-500 text-black font-bold text-sm px-2 py-1 font-mono z-20">
+              {/* Elegant Museum Frame */}
+              <div className="relative w-full h-full bg-gradient-to-br from-zinc-900/80 to-zinc-800/60 backdrop-blur-sm border border-zinc-700/50 shadow-2xl overflow-hidden group-hover:border-orange-500/40 transition-all duration-500">
+                {/* ARCHETYPE Twist - Subtle Glitch Effect */}
+                <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 via-transparent to-amber-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                
+                {/* Minimalist Number Badge */}
+                <div className="absolute top-3 left-3 bg-orange-500/90 text-black font-bold text-xs px-2 py-1 font-mono z-20 backdrop-blur-sm">
                   #{image.id}
                 </div>
 
-                {/* Image */}
-                <div className="relative w-full h-full flex items-center justify-center p-4">
+                {/* Rarity Indicator - Minimalist */}
+                <div className="absolute top-3 right-3 z-20">
+                  <div className={`w-3 h-3 rounded-full ${getRarityColor(image.rarity).replace('text-', 'bg-')} opacity-70`}></div>
+                </div>
+
+                {/* Image Container */}
+                <div className="relative w-full h-full flex items-center justify-center p-6">
                   <img
                     src={image.url}
                     alt={image.title}
-                    className="max-w-full max-h-full object-contain"
+                    className="max-w-full max-h-full object-contain drop-shadow-lg"
                     style={{ 
-                      filter: 'contrast(1.1) saturate(1.2) brightness(1.05)',
+                      filter: 'contrast(1.05) saturate(1.1) brightness(1.02)',
                       imageRendering: 'auto'
                     }}
                     onError={(e) => {
                       console.log(`%c[MUSEUM_ERROR] Failed to load ${image.title}`, "color:#ff4444; font-family: monospace;");
                       e.currentTarget.src = `data:image/svg+xml;base64,${btoa(`
-                        <svg width="250" height="250" xmlns="http://www.w3.org/2000/svg">
-                          <rect width="100%" height="100%" fill="#0a0a0a"/>
-                          <text x="50%" y="50%" font-family="monospace" font-size="12" fill="#ff6600" text-anchor="middle" dy=".3em">
+                        <svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">
+                          <rect width="100%" height="100%" fill="#1a1a1a"/>
+                          <text x="50%" y="50%" font-family="monospace" font-size="10" fill="#ff6600" text-anchor="middle" dy=".3em">
                             ${image.title}
                           </text>
                         </svg>
@@ -1610,40 +1620,25 @@ function ArchetypeExclusivePrizesMuseum() {
                   />
                 </div>
 
-                {/* Hover Glow Effect */}
+                {/* Subtle Hover Glow */}
+                <motion.div
+                  className="absolute inset-0 pointer-events-none"
+                  initial={{ opacity: 0 }}
+                  whileHover={{ opacity: 1 }}
+                  transition={{ duration: 0.4 }}
+                >
+                  <div className="w-full h-full bg-gradient-to-r from-orange-500/10 via-transparent to-amber-500/10"></div>
+                </motion.div>
+
+                {/* ARCHETYPE Glitch Lines on Hover */}
                 <motion.div
                   className="absolute inset-0 pointer-events-none"
                   initial={{ opacity: 0 }}
                   whileHover={{ opacity: 1 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <div className="w-full h-full bg-gradient-to-r from-orange-500/20 via-transparent to-amber-500/20"></div>
-                </motion.div>
-
-                {/* Image Info Panel - Appears on hover */}
-                <motion.div
-                  className="absolute -bottom-20 left-0 right-0 bg-black/95 border border-orange-500/60 p-3 font-mono text-xs backdrop-blur-md shadow-xl z-30"
-                  initial={{ opacity: 0, y: 10 }}
-                  whileHover={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="text-orange-400 font-bold text-sm">#{image.id} {image.title}</div>
-                    <div className={`text-xs px-2 py-1 rounded ${getRarityColor(image.rarity)} bg-black/50 border border-current/30`}>
-                      {image.rarity}
-                    </div>
-                  </div>
-                  <div className="text-zinc-300 text-[10px] leading-tight mb-2">
-                    {image.description}
-                  </div>
-                  <div className="flex items-center justify-between text-[9px]">
-                    <div className="text-orange-500 font-bold">
-                      [EXCLUSIVE PRIZE]
-                    </div>
-                    <div className="text-yellow-400">
-                      {image.value}
-                    </div>
-                  </div>
+                  <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-orange-500/60 to-transparent"></div>
+                  <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-amber-500/60 to-transparent"></div>
                 </motion.div>
               </div>
             </motion.div>
@@ -1669,6 +1664,40 @@ function ArchetypeExclusivePrizesMuseum() {
           <div className="text-orange-400 font-bold">MUSEUM STATUS</div>
           <div className="text-zinc-400 text-[10px]">
             {isHovered ? 'PAUSED - HOVER DETECTED' : isPaused ? 'PAUSED - MANUAL' : 'ACTIVE - SCROLLING'}
+          </div>
+        </div>
+      </div>
+
+      {/* Museum Description Section - Below the Gallery */}
+      <div className="mt-8 bg-gradient-to-r from-zinc-900/50 to-zinc-800/30 border border-zinc-700/50 rounded-lg p-6 backdrop-blur-sm">
+        <div className="text-center mb-4">
+          <h3 className="text-lg font-bold text-orange-400 font-mono mb-2">CURRENT_EXHIBITION</h3>
+          <p className="text-sm text-zinc-400 font-mono">
+            Hover over any artwork to pause and examine • Each piece represents exclusive rewards for ARCHETYPE_00 holders
+          </p>
+        </div>
+        
+        {/* Exhibition Info Grid */}
+        <div className="grid md:grid-cols-3 gap-4 mt-6">
+          <div className="text-center p-4 bg-zinc-800/30 rounded border border-zinc-700/30">
+            <div className="text-orange-400 font-bold text-sm mb-2">COLLECTION_SIZE</div>
+            <div className="text-2xl font-mono text-zinc-300">6</div>
+            <div className="text-xs text-zinc-500">Exclusive Artworks</div>
+          </div>
+          
+          <div className="text-center p-4 bg-zinc-800/30 rounded border border-zinc-700/30">
+            <div className="text-orange-400 font-bold text-sm mb-2">RARITY_DISTRIBUTION</div>
+            <div className="text-xs text-zinc-300 space-y-1">
+              <div className="flex justify-between"><span className="text-green-400">COMMON:</span> <span>2</span></div>
+              <div className="flex justify-between"><span className="text-blue-400">RARE:</span> <span>2</span></div>
+              <div className="flex justify-between"><span className="text-yellow-400">LEGENDARY:</span> <span>2</span></div>
+            </div>
+          </div>
+          
+          <div className="text-center p-4 bg-zinc-800/30 rounded border border-zinc-700/30">
+            <div className="text-orange-400 font-bold text-sm mb-2">ACCESS_LEVEL</div>
+            <div className="text-sm font-mono text-zinc-300">ARCHETYPE_00</div>
+            <div className="text-xs text-zinc-500">Holders Only</div>
           </div>
         </div>
       </div>
