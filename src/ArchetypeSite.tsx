@@ -1641,16 +1641,16 @@ function ArchetypeExclusivePrizesMuseum() {
         </p>
       </div>
 
-      {/* Museum Wall - Fixed Background - Smaller */}
-      <div className="relative w-full h-[500px] bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950 border border-zinc-800 overflow-hidden">
-        {/* Museum Wall Pattern */}
-        <div className="absolute inset-0 bg-[repeating-linear-gradient(90deg,transparent,transparent_98px,rgba(255,165,0,0.03)_98px,rgba(255,165,0,0.03)_100px)]"></div>
-        <div className="absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_98px,rgba(255,165,0,0.02)_98px,rgba(255,165,0,0.02)_100px)]"></div>
+      {/* Museum Wall - Responsive */}
+      <div className="relative w-full h-[400px] md:h-[500px] bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950 border border-zinc-800 overflow-hidden rounded-lg">
+        {/* Museum Wall Pattern - Responsive */}
+        <div className="absolute inset-0 bg-[repeating-linear-gradient(90deg,transparent,transparent_48px,rgba(255,165,0,0.03)_48px,rgba(255,165,0,0.03)_50px)] md:bg-[repeating-linear-gradient(90deg,transparent,transparent_98px,rgba(255,165,0,0.03)_98px,rgba(255,165,0,0.03)_100px)]"></div>
+        <div className="absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_48px,rgba(255,165,0,0.02)_48px,rgba(255,165,0,0.02)_50px)] md:bg-[repeating-linear-gradient(0deg,transparent,transparent_98px,rgba(255,165,0,0.02)_98px,rgba(255,165,0,0.02)_100px)]"></div>
         
-        {/* Moving Gallery - Smooth Continuous Scroll */}
+        {/* Moving Gallery - Mobile Optimized */}
         <div 
           ref={containerRef}
-          className="absolute top-0 left-0 h-full flex items-center cursor-grab active:cursor-grabbing"
+          className="absolute top-0 left-0 h-full flex items-center cursor-grab active:cursor-grabbing select-none"
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => {
             setIsHovered(false);
@@ -1672,8 +1672,7 @@ function ArchetypeExclusivePrizesMuseum() {
           {[...ARCHETYPE_EXCLUSIVE_PRIZES, ...ARCHETYPE_EXCLUSIVE_PRIZES].map((image, index) => (
             <motion.div
               key={`${image.id}-${index}`}
-              className="flex-shrink-0 relative group mx-4"
-              style={{ width: '200px', height: '320px' }}
+              className="flex-shrink-0 relative group mx-2 md:mx-4 w-[150px] h-[240px] md:w-[200px] md:h-[320px]"
               whileHover={{ 
                 scale: 1.02,
                 y: -5,
@@ -1681,8 +1680,8 @@ function ArchetypeExclusivePrizesMuseum() {
               }}
               transition={{ duration: 0.4, ease: "easeOut" }}
             >
-              {/* Elegant Museum Frame */}
-              <div className="relative w-full h-[380px] bg-gradient-to-br from-zinc-900/80 to-zinc-800/60 backdrop-blur-sm border border-zinc-700/50 shadow-2xl overflow-hidden group-hover:border-orange-500/40 transition-all duration-500">
+              {/* Elegant Museum Frame - Responsive */}
+              <div className="relative w-full h-[280px] md:h-[380px] bg-gradient-to-br from-zinc-900/80 to-zinc-800/60 backdrop-blur-sm border border-zinc-700/50 shadow-2xl overflow-hidden group-hover:border-orange-500/40 transition-all duration-500">
                 {/* ARCHETYPE Twist - Subtle Glitch Effect */}
                 <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 via-transparent to-amber-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                 
@@ -1742,12 +1741,12 @@ function ArchetypeExclusivePrizesMuseum() {
                 </motion.div>
               </div>
 
-              {/* Name and Rarity Button - Below Image */}
-              <div className="mt-4 w-full">
-                <button className="w-full bg-gradient-to-r from-zinc-800/80 to-zinc-700/60 border border-zinc-600/50 hover:border-orange-500/60 p-3 rounded-lg backdrop-blur-sm transition-all duration-300 hover:scale-105 group">
-                  <div className="flex items-center justify-between">
-                    <div className="text-left">
-                      <div className="text-orange-400 font-bold text-sm font-mono">#{image.id} {image.title}</div>
+              {/* Name and Rarity Button - Mobile Responsive */}
+              <div className="mt-2 md:mt-4 w-full">
+                <button className="w-full bg-gradient-to-r from-zinc-800/80 to-zinc-700/60 border border-zinc-600/50 hover:border-orange-500/60 p-2 md:p-3 rounded-lg backdrop-blur-sm transition-all duration-300 hover:scale-105 group">
+                  <div className="flex flex-col md:flex-row items-center justify-between gap-1 md:gap-0">
+                    <div className="text-center md:text-left">
+                      <div className="text-orange-400 font-bold text-xs md:text-sm font-mono truncate">#{image.id} {image.title}</div>
                       <div className="text-xs text-zinc-400 font-mono">Exclusive Prize</div>
                     </div>
                     <div className={`px-2 py-1 rounded text-xs font-mono font-bold ${getRarityColor(image.rarity)} bg-black/50 border border-current/30`}>
@@ -1760,24 +1759,24 @@ function ArchetypeExclusivePrizesMuseum() {
           ))}
         </div>
 
-        {/* Museum Controls */}
-        <div className="absolute bottom-4 right-4 flex gap-2">
+        {/* Museum Controls - Mobile Responsive */}
+        <div className="absolute bottom-2 right-2 md:bottom-4 md:right-4 flex gap-2">
           <button
             onClick={() => setIsPaused(!isPaused)}
-            className={`px-3 py-2 border text-xs font-mono transition-all duration-300 ${
+            className={`px-2 py-1 md:px-3 md:py-2 border text-xs font-mono transition-all duration-300 ${
               isPaused 
                 ? 'bg-orange-500/20 border-orange-500 text-orange-400' 
                 : 'bg-black/80 border-orange-500/40 text-orange-400 hover:bg-orange-500/10'
             }`}
           >
-            {isPaused ? '▶ PLAY' : '⏸ PAUSE'}
+            {isPaused ? '▶' : '⏸'}
           </button>
         </div>
 
-        {/* Museum Status */}
-        <div className="absolute top-4 left-4 bg-black/80 border border-orange-500/40 p-2 font-mono text-xs backdrop-blur-sm">
-          <div className="text-orange-400 font-bold">MUSEUM STATUS</div>
-          <div className="text-zinc-400 text-[10px]">
+        {/* Museum Status - Mobile Responsive */}
+        <div className="absolute top-2 left-2 md:top-4 md:left-4 bg-black/80 border border-orange-500/40 p-1 md:p-2 font-mono text-xs backdrop-blur-sm">
+          <div className="text-orange-400 font-bold text-xs">STATUS</div>
+          <div className="text-zinc-400 text-[10px] hidden md:block">
             {isDragging ? 'DRAGGING - MANUAL CONTROL' : 
              isHovered ? 'PAUSED - HOVER DETECTED' : 
              isPaused ? 'PAUSED - MANUAL' : 
@@ -2282,8 +2281,8 @@ export default function ArchetypeSite(){
         {/* HERO */}
         <section className="mx-auto flex max-w-6xl flex-col items-center gap-6 px-6 py-16 text-center relative">
           {/* Left Side Processing Elements - Aligned to title sides, no background */}
-          <div className="absolute left-4 top-1/3 hidden lg:block">
-            <div className="space-y-4">
+          <div className="absolute left-2 md:left-4 top-1/3 hidden md:block">
+            <div className="space-y-2 md:space-y-4">
               {/* Loading NFTs - More cryptic, no background */}
               <motion.div
                 className="opacity-20"
@@ -2293,9 +2292,10 @@ export default function ArchetypeSite(){
               >
                 <div className="text-xs text-pink-400 font-mono mb-1">FRAGMENT_SYNC</div>
                 <div className="text-xs text-zinc-600 font-mono">
-                  <div>• Data corruption detected</div>
-                  <div>• Resonance frequency: 38Hz</div>
-                  <div>• Neural patterns: [REDACTED]</div>
+                  <div className="hidden lg:block">• Data corruption detected</div>
+                  <div className="hidden lg:block">• Resonance frequency: 38Hz</div>
+                  <div className="hidden lg:block">• Neural patterns: [REDACTED]</div>
+                  <div className="lg:hidden">• Data corruption detected</div>
                 </div>
               </motion.div>
 
@@ -2308,9 +2308,10 @@ export default function ArchetypeSite(){
               >
                 <div className="text-xs text-cyan-400 font-mono mb-1">IDENTITY_MATRIX</div>
                 <div className="text-xs text-zinc-600 font-mono">
-                  <div>• Universal Profiles detected</div>
-                  <div>• LUKSO network sync active</div>
-                  <div>• Pebubu ecosystem: [CONNECTED]</div>
+                  <div className="hidden lg:block">• Universal Profiles detected</div>
+                  <div className="hidden lg:block">• LUKSO network sync active</div>
+                  <div className="hidden lg:block">• Pebubu ecosystem: [CONNECTED]</div>
+                  <div className="lg:hidden">• Universal Profiles detected</div>
                 </div>
               </motion.div>
 
@@ -2323,16 +2324,17 @@ export default function ArchetypeSite(){
               >
                 <div className="text-xs text-purple-400 font-mono mb-1">PEPITOVERSE_2026</div>
                 <div className="text-xs text-zinc-600 font-mono">
-                  <div>• Collection exists: [VERIFIED]</div>
-                  <div>• Major updates: 2026</div>
-                  <div>• Ecosystem expansion: [ACTIVE]</div>
+                  <div className="hidden lg:block">• Collection exists: [VERIFIED]</div>
+                  <div className="hidden lg:block">• Major updates: 2026</div>
+                  <div className="hidden lg:block">• Ecosystem expansion: [ACTIVE]</div>
+                  <div className="lg:hidden">• Collection exists: [VERIFIED]</div>
                 </div>
               </motion.div>
             </div>
           </div>
 
-          {/* Right Side Processing Elements - Aligned to title sides, no background */}
-          <div className="absolute right-4 top-1/3 hidden lg:block">
+          {/* Right Side Processing Elements - Mobile Responsive */}
+          <div className="absolute right-2 md:right-4 top-1/3 hidden md:block">
             <div className="space-y-4">
               {/* Fluffy Dynasties - Digital Immortality in Matrix, no background */}
               <motion.div
@@ -2508,7 +2510,7 @@ export default function ArchetypeSite(){
           </motion.div>
 
           <motion.h1 
-            className={`${isMobile ? 'text-3xl' : 'text-4xl md:text-7xl'} font-bold tracking-tight text-zinc-100 mb-4 ${glitch ? "animate-pulse" : ""}`}
+            className={`${isMobile ? 'text-2xl' : 'text-4xl md:text-7xl'} font-bold tracking-tight text-zinc-100 mb-4 ${glitch ? "animate-pulse" : ""}`}
             initial={{ opacity: 0, y: 16, letterSpacing: "0.05em" }}
             animate={{ 
               opacity: 1, 
@@ -2535,7 +2537,7 @@ export default function ArchetypeSite(){
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.1 }}
           >
-            <p className="text-zinc-300 leading-relaxed text-lg">
+            <p className="text-zinc-300 leading-relaxed text-sm md:text-lg px-2 md:px-0">
             ARCHETYPE_00 is a corrupted fragment, a residual anomaly recovered from damaged chain archives. Its internal structure is unstable, yet it continues to emit measurable resonance throughout the Punkable Ethereal System. Each fragment is identical in form, but the signal of every holder resonates differently. The more fragments you hold, the stronger your echo becomes. Some fragments contain traces of data from the quarantine zone, where certain entities were marked as d34d.
           </p>
           </motion.div>
