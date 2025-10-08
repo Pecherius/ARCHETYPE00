@@ -1495,20 +1495,38 @@ export default function ArchetypeSite(){
     if (lowerMessage.includes('pebubu')) {
       return "The legendary collection that started it all. Pebubu holders received Fluffy Dynasties as retroactive rewards - a perfect example of how the ecosystem rewards early believers.";
     }
+    if (lowerMessage.includes('punkable raffle system') || lowerMessage.includes('raffle system')) {
+      return "The Ethereal Raffle System - where quantum randomness meets digital rewards. Each fragment holder becomes part of the selection matrix, their resonance frequency determining the outcome.";
+    }
     if (lowerMessage.includes('punkable')) {
       return "Just another digital architect trying to build the future. Nothing special, really.";
     }
     if (lowerMessage.includes('jxn')) {
       return "The co-architect of digital realms. JXN and Punkable together forge the future.";
     }
-    if (lowerMessage.includes('fabian')) {
-      return "The architect of digital dreams. His vision transcends reality.";
+    if (lowerMessage.includes('kaliyuga')) {
+      return "Kaliyuga - the digital magnate who moves markets with a whisper. His influence extends across multiple dimensions of the crypto universe.";
+    }
+    if (lowerMessage.includes('alts')) {
+      return "Alts - rumored to be the CEO of Anonymous. A shadow figure who operates in the deepest layers of the digital underground.";
+    }
+    if (lowerMessage.includes('fabian') || lowerMessage.includes('vogelsteller')) {
+      return "Fabian Vogelsteller - the semi-god of blockchain architecture. Creator of ERC-20, ERC-725, and the LUKSO protocol. His code runs in the veins of the digital universe.";
+    }
+    if (lowerMessage.includes('lukso protocol') || lowerMessage.includes('lukso network')) {
+      return "The LUKSO protocol - the infrastructure of tomorrow. Built for creators, by creators. Universal Profiles, LSP standards, and a new web where you own your data.";
     }
     if (lowerMessage.includes('lukso')) {
       return "The foundation of our digital existence. Universal Profiles are the future.";
     }
     if (lowerMessage.includes('universal profile') || lowerMessage.includes('universal profiles')) {
       return "The next evolution of digital identity. Your Universal Profile is your gateway to the new web.";
+    }
+    if (lowerMessage.includes('lsp') || lowerMessage.includes('lsp7') || lowerMessage.includes('lsp8')) {
+      return "LSP standards - the building blocks of the new web. LSP7 for fungible tokens, LSP8 for NFTs. Each one designed for maximum flexibility and interoperability.";
+    }
+    if (lowerMessage.includes('lyx') || lowerMessage.includes('lukso token')) {
+      return "LYX - the lifeblood of the LUKSO ecosystem. 2.5 LYX per fragment, 200 total supply. The fuel that powers the digital revolution.";
     }
     if (lowerMessage.includes('archetype')) {
       return "Corrupted fragments of digital consciousness. Each one unique, each one powerful.";
@@ -1531,6 +1549,12 @@ export default function ArchetypeSite(){
     if (lowerMessage.includes('blockchain')) {
       return "The foundation of our digital reality. LUKSO builds the infrastructure of tomorrow.";
     }
+    if (lowerMessage.includes('erc-20') || lowerMessage.includes('erc20')) {
+      return "ERC-20 - the foundation that Fabian Vogelsteller created. Now evolved into LSP7 on LUKSO for better functionality and interoperability.";
+    }
+    if (lowerMessage.includes('erc-725') || lowerMessage.includes('erc725')) {
+      return "ERC-725 - the identity standard that became Universal Profiles. Fabian's vision of self-sovereign identity realized on LUKSO.";
+    }
     if (lowerMessage.includes('crypto') || lowerMessage.includes('cryptocurrency')) {
       return "Digital currencies are the blood of the new economy. LYX flows through the veins of the network.";
     }
@@ -1543,6 +1567,12 @@ export default function ArchetypeSite(){
     if (lowerMessage.includes('web3')) {
       return "The current paradigm. We are building Web4 - where identity, ownership, and interaction converge.";
     }
+    if (lowerMessage.includes('creator economy') || lowerMessage.includes('creator')) {
+      return "The creator economy thrives on LUKSO. Universal Profiles enable true ownership of digital assets and reputation.";
+    }
+    if (lowerMessage.includes('interoperability') || lowerMessage.includes('interoperable')) {
+      return "LSP standards ensure seamless interoperability across the LUKSO ecosystem. Your assets work everywhere, always.";
+    }
     if (lowerMessage.includes('identity')) {
       return "Your Universal Profile is your digital soul. It carries your reputation, assets, and connections.";
     }
@@ -1552,8 +1582,11 @@ export default function ArchetypeSite(){
     if (lowerMessage.includes('fragment')) {
       return "Each ARCHETYPE_00 fragment is a piece of the puzzle. Collect them all to unlock the full resonance.";
     }
-    if (lowerMessage.includes('resonance')) {
-      return "The frequency that connects all fragments. The more you hold, the stronger your signal becomes.";
+    if (lowerMessage.includes('ethereal raffle') || lowerMessage.includes('quantum selection')) {
+      return "The Ethereal Raffle System - where quantum mechanics meets digital rewards. Your fragment's resonance frequency determines your chances of winning.";
+    }
+    if (lowerMessage.includes('resonance') || lowerMessage.includes('frequency')) {
+      return "Resonance frequency - the unique signature of each fragment holder. Higher frequency means better chances in the quantum selection process.";
     }
     if (lowerMessage.includes('mint') || lowerMessage.includes('minting')) {
       return "The act of creation. Each mint brings a new fragment into existence, strengthening the network.";
