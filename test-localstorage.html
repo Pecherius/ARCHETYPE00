@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test localStorage</title>
+</head>
+<body>
+    <h1>Test localStorage</h1>
+    <button onclick="testLocalStorage()">Test localStorage</button>
+    <div id="result"></div>
+    
+    <script>
+        function testLocalStorage() {
+            try {
+                // Test basic localStorage
+                localStorage.setItem('test', 'working');
+                const value = localStorage.getItem('test');
+                
+                // Test raffle data
+                const testRaffle = {
+                    id: 'test-123',
+                    title: 'Test Raffle',
+                    description: 'Test Description',
+                    createdAt: new Date().toISOString(),
+                    participants: [],
+                    prizes: [],
+                    winners: []
+                };
+                
+                localStorage.setItem('savedRaffles', JSON.stringify([testRaffle]));
+                const savedRaffles = JSON.parse(localStorage.getItem('savedRaffles') || '[]');
+                
+                document.getElementById('result').innerHTML = `
+                    <p>Basic localStorage: ${value}</p>
+                    <p>Raffle data: ${savedRaffles.length} raffles saved</p>
+                    <p>localStorage is working!</p>
+                `;
+            } catch (error) {
+                document.getElementById('result').innerHTML = `<p>Error: ${error.message}</p>`;
+            }
+        }
+    </script>
+</body>
+</html>
