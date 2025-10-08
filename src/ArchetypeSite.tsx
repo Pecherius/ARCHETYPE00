@@ -364,73 +364,51 @@ function useThematicAudio() {
     return () => cancelAnimationFrame(raf);
   }, [active]);
 
-  const create8BitMelody = (ctx: AudioContext, gain: GainNode) => {
+  const createAmbientSoundscape = (ctx: AudioContext, gain: GainNode) => {
     const oscillators: OscillatorNode[] = [];
     
-    // Main melody - cyberpunk theme
-    const melody = [
-      { freq: 220, duration: 0.5 }, // A3
-      { freq: 246.94, duration: 0.5 }, // B3
-      { freq: 261.63, duration: 0.5 }, // C4
-      { freq: 293.66, duration: 0.5 }, // D4
-      { freq: 329.63, duration: 0.5 }, // E4
-      { freq: 349.23, duration: 0.5 }, // F4
-      { freq: 392.00, duration: 0.5 }, // G4
-      { freq: 440.00, duration: 1.0 }, // A4
-    ];
-
-    // Bass line
-    const bass = [
-      { freq: 55, duration: 1.0 }, // A1
-      { freq: 61.74, duration: 1.0 }, // B1
-      { freq: 65.41, duration: 1.0 }, // C2
-      { freq: 73.42, duration: 1.0 }, // D2
-    ];
-
-    // Create melody oscillators
-    melody.forEach((note, index) => {
-      const osc = ctx.createOscillator();
-      const noteGain = ctx.createGain();
-      
-      osc.type = "square"; // 8-bit sound
-      osc.frequency.value = note.freq;
-      noteGain.gain.value = 0.1;
-      
-      osc.connect(noteGain).connect(gain);
-      
-      // Stagger the start times for melody effect
-      setTimeout(() => {
-        osc.start();
-        oscillators.push(osc);
-      }, index * 500);
-    });
-
-    // Create bass oscillators
-    bass.forEach((note, index) => {
-      const osc = ctx.createOscillator();
-      const noteGain = ctx.createGain();
-      
-      osc.type = "sawtooth"; // Deeper bass
-      osc.frequency.value = note.freq;
-      noteGain.gain.value = 0.15;
-      
-      osc.connect(noteGain).connect(gain);
-      
-      setTimeout(() => {
-        osc.start();
-        oscillators.push(osc);
-      }, index * 1000);
-    });
-
-    // Ambient pad
-    const pad = ctx.createOscillator();
+    // Soft ambient pad - very low volume
+    const ambientPad = ctx.createOscillator();
     const padGain = ctx.createGain();
-    pad.type = "triangle";
-    pad.frequency.value = 110; // A2
-    padGain.gain.value = 0.05;
-    pad.connect(padGain).connect(gain);
-    pad.start();
-    oscillators.push(pad);
+    ambientPad.type = "sine";
+    ambientPad.frequency.value = 82.41; // E2 - very low and soft
+    padGain.gain.value = 0.02; // Very quiet
+    ambientPad.connect(padGain).connect(gain);
+    ambientPad.start();
+    oscillators.push(ambientPad);
+
+    // Subtle harmonic layer
+    const harmonic = ctx.createOscillator();
+    const harmonicGain = ctx.createGain();
+    harmonic.type = "sine";
+    harmonic.frequency.value = 164.81; // E3 - one octave higher
+    harmonicGain.gain.value = 0.015; // Even quieter
+    harmonic.connect(harmonicGain).connect(gain);
+    harmonic.start();
+    oscillators.push(harmonic);
+
+    // Very subtle high frequency shimmer
+    const shimmer = ctx.createOscillator();
+    const shimmerGain = ctx.createGain();
+    shimmer.type = "sine";
+    shimmer.frequency.value = 329.63; // E4
+    shimmerGain.gain.value = 0.01; // Barely audible
+    shimmer.connect(shimmerGain).connect(gain);
+    shimmer.start();
+    oscillators.push(shimmer);
+
+    // Add gentle modulation to create movement
+    const lfo = ctx.createOscillator();
+    const lfoGain = ctx.createGain();
+    lfo.type = "sine";
+    lfo.frequency.value = 0.1; // Very slow modulation
+    lfoGain.gain.value = 5; // Small frequency variation
+    
+    // Apply LFO to the ambient pad
+    lfo.connect(lfoGain);
+    lfoGain.connect(ambientPad.frequency);
+    lfo.start();
+    oscillators.push(lfo);
 
     return oscillators;
   };
@@ -450,9 +428,9 @@ function useThematicAudio() {
       const gain = ctx.createGain();
       const analyser = ctx.createAnalyser();
       analyser.fftSize = 1024;
-      gain.gain.value = 0.3; // Lower volume for ambient
+      gain.gain.value = 0.1; // Very low volume for ambient
       
-      const oscillators = create8BitMelody(ctx, gain);
+      const oscillators = createAmbientSoundscape(ctx, gain);
       oscillators.forEach(osc => osc.connect(analyser));
       analyser.connect(ctx.destination);
       
@@ -462,7 +440,7 @@ function useThematicAudio() {
       setActive(true);
       
       // eslint-disable-next-line no-console
-      console.log("%c[THEMATIC_AUDIO] 8-bit cyberpunk ambient activated. Resonance field established.", "color:#ff69b4; font-family: monospace;");
+      console.log("%c[THEMATIC_AUDIO] Ambient soundscape activated. Resonance field established.", "color:#ff69b4; font-family: monospace;");
     } else {
       oscillatorsRef.current.forEach(osc => {
         osc.stop();
@@ -476,7 +454,7 @@ function useThematicAudio() {
       setActive(false);
       
       // eslint-disable-next-line no-console
-      console.log("%c[THEMATIC_AUDIO] Ambient track terminated. Switching to silence.", "color:#666; font-family: monospace;");
+      console.log("%c[THEMATIC_AUDIO] Ambient soundscape terminated. Switching to silence.", "color:#666; font-family: monospace;");
     }
   };
   
@@ -3072,7 +3050,7 @@ export default function ArchetypeSite(){
           </div>
           
           <button onClick={toggleHum} className="inline-flex items-center gap-2 border border-zinc-800 px-3 py-1 hover:bg-zinc-900 text-xs break-words">
-            <span className={`h-2 w-2 ${humOn ? "bg-pink-500" : "bg-zinc-400"}`}/> {humOn ? "8bit_audio: on" : "8bit_audio: off"}
+            <span className={`h-2 w-2 ${humOn ? "bg-pink-500" : "bg-zinc-400"}`}/> {humOn ? "ambient: on" : "ambient: off"}
           </button>
         </footer>
       </div>
