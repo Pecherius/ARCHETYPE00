@@ -5,6 +5,7 @@ import { motion, useAnimation } from "framer-motion";
 // Icons removed - not used in current implementation
 import PunkableRaffleSystem from "./components/PunkableRaffleSystem";
 import { RaffleLanguageProvider } from "./hooks/use-raffle-language";
+import html2canvas from "html2canvas";
 
 // 🌐 LUKSO_INTEGRATION: Basic Universal Profile detection
 // Reads data from browser extension without changing the core lore
@@ -696,6 +697,8 @@ function NeuralPingPong() {
   const [lastHitTime, setLastHitTime] = useState(0);
   const [hasReached40, setHasReached40] = useState(false);
   const [show40Achievement, setShow40Achievement] = useState(false);
+  const [isCapturing, setIsCapturing] = useState(false);
+  const gameContainerRef = useRef<HTMLDivElement>(null);
   
   // Game objects - enhanced
   const [ball, setBall] = useState({ 
@@ -827,6 +830,35 @@ function NeuralPingPong() {
   // Screen shake effect
   const triggerScreenShake = (intensity: number, duration: number) => {
     setScreenShake({ intensity, duration });
+  };
+
+  // Screenshot function for 40+ points achievement
+  const captureAchievementScreenshot = async () => {
+    if (!gameContainerRef.current || isCapturing) return;
+    
+    setIsCapturing(true);
+    try {
+      const canvas = await html2canvas(gameContainerRef.current, {
+        backgroundColor: '#000000',
+        scale: 2, // Higher quality
+        useCORS: true,
+        allowTaint: true,
+        logging: false
+      });
+      
+      // Create download link
+      const link = document.createElement('a');
+      link.download = `archetype-40-points-achievement-${Date.now()}.png`;
+      link.href = canvas.toDataURL();
+      link.click();
+      
+      // Show success message
+      console.log('🎉 Achievement screenshot saved!');
+    } catch (error) {
+      console.error('Error capturing screenshot:', error);
+    } finally {
+      setIsCapturing(false);
+    }
   };
 
 
@@ -1552,6 +1584,22 @@ function NeuralPingPong() {
                   MAIN MENU
                 </button>
               </div>
+              
+              {/* Screenshot button for 40+ points achievement */}
+              {hasReached40 && (
+                <div className="mt-4 text-center">
+                  <button
+                    onClick={captureAchievementScreenshot}
+                    disabled={isCapturing}
+                    className="px-6 py-3 bg-gradient-to-r from-yellow-900/30 to-amber-900/30 border-2 border-yellow-500 text-yellow-300 hover:from-yellow-800/40 hover:to-amber-800/40 transition-all duration-300 hover:scale-105 font-mono font-bold text-sm rounded-lg disabled:opacity-50"
+                  >
+                    {isCapturing ? "📸 CAPTURING PROOF..." : "📸 CAPTURE ACHIEVEMENT PROOF"}
+                  </button>
+                  <p className="text-xs text-yellow-400 font-mono mt-2">
+                    TOMALE CAPTURA A ESTO O SI NO NO TE CREERE QUE LLEGASTE HASTA AQUI
+                  </p>
+                </div>
+              )}
             </motion.div>
           </div>
         </div>
@@ -1560,7 +1608,7 @@ function NeuralPingPong() {
   }
 
   return (
-    <div className="border border-zinc-800 p-4 bg-zinc-950">
+    <div ref={gameContainerRef} className="border border-zinc-800 p-4 bg-zinc-950">
       <h3 className="text-lg font-semibold text-zinc-100 mb-4">NEURAL_PING_PONG // ACTIVE</h3>
       <div className="relative w-full" style={{ height: '500px' }}>
         <canvas
@@ -1598,6 +1646,13 @@ function NeuralPingPong() {
             <div className="mt-2 text-xs text-yellow-400 font-mono">
               RESONANCE_LEVEL: LEGENDARY
             </div>
+            <button
+              onClick={captureAchievementScreenshot}
+              disabled={isCapturing}
+              className="mt-3 w-full px-3 py-2 bg-yellow-600/20 border border-yellow-500 text-yellow-300 hover:bg-yellow-600/30 transition-colors rounded text-xs font-mono disabled:opacity-50"
+            >
+              {isCapturing ? "CAPTURING..." : "📸 CAPTURE PROOF"}
+            </button>
           </motion.div>
         )}
       </div>
