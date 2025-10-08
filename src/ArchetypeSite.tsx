@@ -1568,9 +1568,10 @@ function ArchetypeExclusivePrizesMuseum() {
     return rarityColors.bg[rarity as keyof typeof rarityColors.bg] || rarityColors.bg.default;
   }, [rarityColors]);
 
-  // Smooth continuous scroll animation - Optimized with useCallback
+  // Smooth continuous scroll animation - Desktop only, mobile drag only
   const animateScroll = useCallback(() => {
-    if (!isHovered && !isPaused && !isDragging && containerRef.current) {
+    const isMobile = window.innerWidth < 768;
+    if (!isMobile && !isHovered && !isPaused && !isDragging && containerRef.current) {
       setScrollPosition(prev => {
         const newPos = prev + 0.15; // Much slower, smoother movement
         return newPos >= 100 ? 0 : newPos; // Reset when reaching 100%
@@ -1781,6 +1782,9 @@ function ArchetypeExclusivePrizesMuseum() {
              isHovered ? 'PAUSED - HOVER DETECTED' : 
              isPaused ? 'PAUSED - MANUAL' : 
              'ACTIVE - SCROLLING'}
+          </div>
+          <div className="text-zinc-400 text-[10px] md:hidden">
+            {isDragging ? 'DRAGGING' : 'DRAG TO VIEW'}
           </div>
         </div>
       </div>
@@ -2650,7 +2654,7 @@ export default function ArchetypeSite(){
         {/* MINT OPERATION - MOVED BEFORE PING PONG */}
         <section className="mx-auto max-w-6xl px-4 pb-12 sm:px-6">
           <motion.h2 
-            className="mb-6 text-2xl font-bold tracking-wide text-zinc-100"
+            className="mb-4 md:mb-6 text-lg md:text-2xl font-bold tracking-wide text-zinc-100 text-center md:text-left"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
@@ -2658,7 +2662,7 @@ export default function ArchetypeSite(){
             Mint Operation // Corrupted Resonance
           </motion.h2>
           <motion.div 
-            className="border border-red-500 p-6 text-sm leading-relaxed text-zinc-300 bg-red-500/5"
+            className="border border-red-500 p-4 md:p-6 text-xs md:text-sm leading-relaxed text-zinc-300 bg-red-500/5 rounded-lg"
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.4 }}
@@ -2667,7 +2671,7 @@ export default function ArchetypeSite(){
             <div className="font-mono text-red-400 mb-4 text-center">
               [ARCHETYPE_00::corrupted_resonance_detected]
             </div>
-            <p className="text-center mb-6 text-base">
+            <p className="text-center mb-4 md:mb-6 text-sm md:text-base px-2 md:px-0">
               Emission layer active. Each mint stabilizes the anomaly, amplifying the system's response probability. Holders influence signal strength across the Punkable Ethereal field. Retroactive transmissions are unpredictable. Proceed with caution.
             </p>
             
@@ -3046,13 +3050,13 @@ export default function ArchetypeSite(){
             </div>
           </div>
           
-          {/* MATRIX CHAT INTERFACE */}
-          <div data-section="matrix" className="mt-8 border border-cyan-500 p-6 bg-gradient-to-r from-cyan-900/10 to-blue-900/10">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-cyan-400">MATRIX_INTERFACE // AI_CONVERSATION</h3>
+          {/* MATRIX CHAT INTERFACE - Mobile Responsive */}
+          <div data-section="matrix" className="mt-6 md:mt-8 border border-cyan-500 p-4 md:p-6 bg-gradient-to-r from-cyan-900/10 to-blue-900/10 rounded-lg">
+            <div className="flex flex-col md:flex-row items-center justify-between mb-4 gap-3">
+              <h3 className="text-sm md:text-lg font-semibold text-cyan-400 text-center md:text-left">MATRIX_INTERFACE // AI_CONVERSATION</h3>
               <button
                 onClick={() => setMatrixChatOpen(!matrixChatOpen)}
-                className="px-4 py-2 border border-cyan-500 bg-cyan-500/20 text-cyan-400 hover:bg-cyan-500/30 text-sm"
+                className="px-3 md:px-4 py-2 border border-cyan-500 bg-cyan-500/20 text-cyan-400 hover:bg-cyan-500/30 text-xs md:text-sm rounded"
               >
                 {matrixChatOpen ? 'DISCONNECT' : 'CONNECT_TO_MATRIX'}
               </button>
@@ -3060,10 +3064,10 @@ export default function ArchetypeSite(){
             
             {matrixChatOpen && (
               <div className="space-y-4">
-                {/* Holographic Face - 3D Compatible */}
+                {/* Holographic Face - 3D Compatible - Mobile Responsive */}
                 <div className="flex justify-center mb-4">
                   <div 
-                    className="relative w-48 h-48"
+                    className="relative w-32 h-32 md:w-48 md:h-48"
                     style={{
                       perspective: '1000px',
                       transformStyle: 'preserve-3d'
@@ -3273,16 +3277,16 @@ export default function ArchetypeSite(){
                   `
                 }} />
                 
-                {/* Chat History */}
-                <div className="h-48 overflow-y-auto border border-zinc-700 bg-zinc-900/50 p-4 space-y-2">
+                {/* Chat History - Mobile Responsive */}
+                <div className="h-32 md:h-48 overflow-y-auto border border-zinc-700 bg-zinc-900/50 p-3 md:p-4 space-y-2 rounded">
                   {matrixChatHistory.length === 0 ? (
-                    <div className="text-center text-zinc-500 text-sm">
-                      <p>Matrix interface ready. Ask about Pepito, Pebubu, Punkable, LUKSO, Universal Profiles, the Ethereal Raffle System, or the digital future.</p>
+                    <div className="text-center text-zinc-500 text-xs md:text-sm">
+                      <p>Matrix interface ready. Ask about Pepito, Pebubu, Punkable, LUKSO, Universal Profiles, P.E.R.S., or the digital future.</p>
                     </div>
                   ) : (
                     matrixChatHistory.map((msg, index) => (
                       <div key={index} className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'}`}>
-                        <div className={`max-w-xs px-3 py-2 rounded-lg text-sm ${
+                        <div className={`max-w-[80%] md:max-w-xs px-2 md:px-3 py-1 md:py-2 rounded-lg text-xs md:text-sm ${
                           msg.type === 'user' 
                             ? 'bg-cyan-500/20 text-cyan-300' 
                             : 'bg-zinc-700 text-zinc-200'
@@ -3290,14 +3294,14 @@ export default function ArchetypeSite(){
                           <div className="text-xs text-zinc-400 mb-1">
                             {msg.type === 'user' ? 'YOU' : 'MATRIX'}
                           </div>
-                          {msg.message}
+                          <div className="break-words">{msg.message}</div>
                         </div>
                       </div>
                     ))
                   )}
                 </div>
                 
-                {/* Input */}
+                {/* Input - Mobile Responsive */}
                 <div className="flex gap-2">
                   <input
                     type="text"
@@ -3305,17 +3309,17 @@ export default function ArchetypeSite(){
                     onChange={(e) => setMatrixMessage(e.target.value)}
                     onKeyPress={(e) => e.key === 'Enter' && sendMatrixMessage()}
                     placeholder="Type your message to the Matrix..."
-                    className="flex-1 px-3 py-2 bg-zinc-800 border border-zinc-600 text-zinc-100 placeholder-zinc-500 focus:border-cyan-500 focus:outline-none text-sm"
+                    className="flex-1 px-2 md:px-3 py-2 bg-zinc-800 border border-zinc-600 text-zinc-100 placeholder-zinc-500 focus:border-cyan-500 focus:outline-none text-xs md:text-sm rounded"
                   />
                   <button
                     onClick={sendMatrixMessage}
-                    className="px-4 py-2 bg-cyan-500/20 border border-cyan-500 text-cyan-400 hover:bg-cyan-500/30 text-sm"
+                    className="px-3 md:px-4 py-2 bg-cyan-500/20 border border-cyan-500 text-cyan-400 hover:bg-cyan-500/30 text-xs md:text-sm rounded"
                   >
                     SEND
                   </button>
                 </div>
                 
-                <div className="text-xs text-zinc-500 text-center">
+                <div className="text-xs text-zinc-500 text-center px-2">
                   Try: "Pepito", "Pebubu", "Punkable", "JXN", "LUKSO", "Universal Profiles", "LYX", "Fragments", "Crypto", "2026"
                 </div>
               </div>

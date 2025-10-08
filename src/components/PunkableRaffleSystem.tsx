@@ -688,34 +688,34 @@ const PunkableRaffleSystem = () => {
               <span className="w-2 h-2 bg-pink-500 rounded-full animate-pulse"></span>
               ARCHETYPE_00 // FRAGMENT_RAFFLE_SYSTEM v2.1
             </div>
-            <h3 className="text-4xl font-bold text-zinc-100 mb-6 bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent">
-              <span className="text-red-500">PUNKABLE_ETHEREAL_RAFFLE</span> // <span className="text-green-400">RESONANCE_MODE</span>
+            <h3 className="text-2xl md:text-4xl font-bold text-zinc-100 mb-4 md:mb-6 bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent text-center">
+              <span className="text-red-500">P.E.R.S.</span> // <span className="text-green-400">QUANTUM_SELECTION</span>
             </h3>
             <div className="max-w-4xl mx-auto space-y-4">
-              <p className="text-zinc-300 text-lg leading-relaxed">
-                Fragment-based selection algorithm operating within the <span className="text-pink-400 font-semibold">ARCHETYPE_00 resonance field</span>. 
+              <p className="text-zinc-300 text-sm md:text-lg leading-relaxed px-2 md:px-0">
+                Scientific selection algorithm operating within the <span className="text-pink-400 font-semibold">ARCHETYPE_00 quantum field</span>. 
                 Unlike traditional random number generators, this system processes <span className="text-green-400 font-semibold">weighted fragment data</span> to create authentic selection patterns.
               </p>
               <div className="bg-gradient-to-r from-zinc-800/50 to-zinc-900/50 border border-zinc-700/50 rounded-xl p-6 backdrop-blur-sm">
-                <h4 className="text-xl font-bold text-pink-400 mb-3 flex items-center gap-2">
-                  <span className="text-2xl">⚡</span>
-                  FRAGMENT_RESONANCE_ENGINE
+                <h4 className="text-lg md:text-xl font-bold text-pink-400 mb-3 flex items-center gap-2">
+                  <span className="text-xl md:text-2xl">⚡</span>
+                  QUANTUM_SELECTION_ALGORITHM
                 </h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs md:text-sm">
                   <div className="space-y-2">
                     <p className="text-zinc-300">
-                      <span className="text-green-400 font-semibold">• Weighted Selection:</span> Fragment count determines resonance strength. More fragments = higher selection probability.
+                      <span className="text-green-400 font-semibold">• Weighted Distribution:</span> Fragment density determines quantum probability. Higher density = increased selection likelihood.
                     </p>
                     <p className="text-zinc-300">
-                      <span className="text-blue-400 font-semibold">• Transparent Process:</span> All selections logged and verifiable. No black box algorithms or hidden parameters.
+                      <span className="text-blue-400 font-semibold">• Verifiable Process:</span> All quantum states logged and auditable. No hidden variables or deterministic bias.
                     </p>
                   </div>
                   <div className="space-y-2">
                     <p className="text-zinc-300">
-                      <span className="text-purple-400 font-semibold">• Community Focused:</span> Built for LUKSO ecosystem communities, not corporate profit extraction.
+                      <span className="text-purple-400 font-semibold">• Community Protocol:</span> Designed for LUKSO ecosystem participants, ensuring fair distribution mechanisms.
                     </p>
                     <p className="text-zinc-300">
-                      <span className="text-pink-400 font-semibold">• Memorable Experience:</span> Creates authentic drama and excitement through transparent fragment processing.
+                      <span className="text-pink-400 font-semibold">• Scientific Method:</span> Creates authentic randomness through transparent quantum processing algorithms.
                     </p>
                   </div>
                 </div>
@@ -772,17 +772,18 @@ const PunkableRaffleSystem = () => {
 
           <div className="text-center">
             <div className="inline-flex flex-col items-center gap-4">
-              <div className="flex gap-4">
+              <div className="flex flex-col md:flex-row gap-3 md:gap-4 w-full max-w-md md:max-w-none">
                 <motion.button
                   onClick={() => setShowCreateForm(true)}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="group relative px-6 py-3 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-bold rounded-lg transition-all duration-300 shadow-lg hover:shadow-pink-500/30 border border-pink-400/50 overflow-hidden"
+                  className="group relative px-4 md:px-6 py-3 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-bold rounded-lg transition-all duration-300 shadow-lg hover:shadow-pink-500/30 border border-pink-400/50 overflow-hidden text-sm md:text-base"
                 >
                   <div className="absolute inset-0 bg-gradient-to-r from-pink-400/20 to-purple-400/20 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  <div className="relative flex items-center gap-2">
+                  <div className="relative flex items-center justify-center gap-2">
                     <span>⚡</span>
-                    <span>INITIALIZE_RAFFLE</span>
+                    <span className="hidden md:inline">INITIALIZE_RAFFLE</span>
+                    <span className="md:hidden">CREATE</span>
                   </div>
                 </motion.button>
                 
@@ -791,19 +792,20 @@ const PunkableRaffleSystem = () => {
                     onClick={() => setShowRaffleHistory(true)}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    className="group relative px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold rounded-lg transition-all duration-300 shadow-lg hover:shadow-green-500/30 border border-green-400/50 overflow-hidden"
+                    className="group relative px-4 md:px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold rounded-lg transition-all duration-300 shadow-lg hover:shadow-green-500/30 border border-green-400/50 overflow-hidden text-sm md:text-base"
                   >
                     <div className="absolute inset-0 bg-gradient-to-r from-green-400/20 to-emerald-400/20 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    <div className="relative flex items-center gap-2">
+                    <div className="relative flex items-center justify-center gap-2">
                       <span>📁</span>
-                      <span>RAFFLE_HISTORY</span>
+                      <span className="hidden md:inline">RAFFLE_HISTORY</span>
+                      <span className="md:hidden">HISTORY</span>
                     </div>
                   </motion.button>
                 )}
               </div>
-              <p className="text-zinc-400 text-sm max-w-md">
-                Initialize fragment resonance parameters for your first raffle session. 
-                <span className="text-pink-400 font-semibold"> No experience required—just pure digital consciousness.</span>
+              <p className="text-zinc-400 text-xs md:text-sm max-w-md px-2 md:px-0">
+                Initialize quantum selection parameters for your first P.E.R.S. session. 
+                <span className="text-pink-400 font-semibold"> Scientific method—transparent and verifiable.</span>
               </p>
             </div>
           </div>
@@ -1092,11 +1094,11 @@ const PunkableRaffleSystem = () => {
 
   return (
     <section className="mx-auto max-w-6xl px-4 pb-12 sm:px-6">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold tracking-wide text-zinc-100">Punkable Ethereal Raffle System</h2>
-        {/* Language selector removed - using fixed English text */}
+      <div className="flex items-center justify-between mb-4 md:mb-6">
+        <h2 className="text-lg md:text-2xl font-bold tracking-wide text-zinc-100 text-center md:text-left">P.E.R.S.</h2>
+        <div className="text-xs md:text-sm text-zinc-400 font-mono hidden md:block">Punkable Ethereal Raffle System</div>
       </div>
-      <div className="border border-zinc-800 p-6 text-sm leading-relaxed text-zinc-300">
+      <div className="border border-zinc-800 p-4 md:p-6 text-xs md:text-sm leading-relaxed text-zinc-300 rounded-lg">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-4">
