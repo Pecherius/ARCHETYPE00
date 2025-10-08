@@ -1520,11 +1520,16 @@ function NeuralPingPong() {
   );
 }
 
-// 🏛️ ARCHETYPE_EXCLUSIVE_PRIZES_MUSEUM: Continuous moving gallery like a real museum
+// 🏛️ ARCHETYPE_EXCLUSIVE_PRIZES_MUSEUM: Continuous moving gallery with drag support
 function ArchetypeExclusivePrizesMuseum() {
   const [isHovered, setIsHovered] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const [scrollPosition, setScrollPosition] = useState(0);
+  const [dragStart, setDragStart] = useState(0);
+  const [dragOffset, setDragOffset] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
+  const animationRef = useRef<number>();
 
   const getRarityColor = (rarity: string) => {
     switch (rarity) {
@@ -1535,6 +1540,78 @@ function ArchetypeExclusivePrizesMuseum() {
       case 'COMMON': return 'text-green-400';
       default: return 'text-zinc-400';
     }
+  };
+
+  const getRarityBgColor = (rarity: string) => {
+    switch (rarity) {
+      case 'MYTHIC': return 'bg-purple-400';
+      case 'LEGENDARY': return 'bg-yellow-400';
+      case 'EPIC': return 'bg-pink-400';
+      case 'RARE': return 'bg-blue-400';
+      case 'COMMON': return 'bg-green-400';
+      default: return 'bg-zinc-400';
+    }
+  };
+
+  // Smooth continuous scroll animation
+  const animateScroll = () => {
+    if (!isHovered && !isPaused && !isDragging && containerRef.current) {
+      setScrollPosition(prev => {
+        const newPos = prev + 0.5; // Slower, smoother movement
+        return newPos >= 100 ? 0 : newPos; // Reset when reaching 100%
+      });
+      animationRef.current = requestAnimationFrame(animateScroll);
+    }
+  };
+
+  // Start animation
+  useEffect(() => {
+    animationRef.current = requestAnimationFrame(animateScroll);
+    return () => {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
+    };
+  }, [isHovered, isPaused, isDragging]);
+
+  // Handle drag start
+  const handleDragStart = (e: React.MouseEvent) => {
+    setIsDragging(true);
+    setDragStart(e.clientX);
+    setDragOffset(scrollPosition);
+  };
+
+  // Handle drag move
+  const handleDragMove = (e: React.MouseEvent) => {
+    if (isDragging) {
+      const deltaX = e.clientX - dragStart;
+      const newPosition = dragOffset + (deltaX / 10); // Scale down for smoother feel
+      setScrollPosition(Math.max(0, Math.min(100, newPosition)));
+    }
+  };
+
+  // Handle drag end
+  const handleDragEnd = () => {
+    setIsDragging(false);
+  };
+
+  // Touch support
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setIsDragging(true);
+    setDragStart(e.touches[0].clientX);
+    setDragOffset(scrollPosition);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (isDragging) {
+      const deltaX = e.touches[0].clientX - dragStart;
+      const newPosition = dragOffset + (deltaX / 10);
+      setScrollPosition(Math.max(0, Math.min(100, newPosition)));
+    }
+  };
+
+  const handleTouchEnd = () => {
+    setIsDragging(false);
   };
 
   return (
@@ -1550,20 +1627,30 @@ function ArchetypeExclusivePrizesMuseum() {
       </div>
 
       {/* Museum Wall - Fixed Background */}
-      <div className="relative w-full h-[600px] bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950 border border-zinc-800 overflow-hidden">
+      <div className="relative w-full h-[700px] bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950 border border-zinc-800 overflow-hidden">
         {/* Museum Wall Pattern */}
         <div className="absolute inset-0 bg-[repeating-linear-gradient(90deg,transparent,transparent_98px,rgba(255,165,0,0.03)_98px,rgba(255,165,0,0.03)_100px)]"></div>
         <div className="absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_98px,rgba(255,165,0,0.02)_98px,rgba(255,165,0,0.02)_100px)]"></div>
         
-        {/* Moving Gallery - Continuous Right to Left */}
+        {/* Moving Gallery - Smooth Continuous Scroll */}
         <div 
           ref={containerRef}
-          className="absolute top-0 left-0 h-full flex items-center"
+          className="absolute top-0 left-0 h-full flex items-center cursor-grab active:cursor-grabbing"
           onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
+          onMouseLeave={() => {
+            setIsHovered(false);
+            handleDragEnd();
+          }}
+          onMouseDown={handleDragStart}
+          onMouseMove={handleDragMove}
+          onMouseUp={handleDragEnd}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
           style={{
-            animation: isHovered || isPaused ? 'none' : 'scrollRightToLeft 30s linear infinite',
-            width: '200%'
+            transform: `translateX(-${scrollPosition}%)`,
+            width: '200%',
+            transition: isDragging ? 'none' : 'transform 0.1s ease-out'
           }}
         >
           {/* Duplicate images for seamless loop */}
@@ -1571,9 +1658,7 @@ function ArchetypeExclusivePrizesMuseum() {
             <motion.div
               key={`${image.id}-${index}`}
               className="flex-shrink-0 relative group mx-6"
-              style={{ width: '280px', height: '380px' }}
-              onMouseEnter={() => {}}
-              onMouseLeave={() => {}}
+              style={{ width: '280px', height: '450px' }}
               whileHover={{ 
                 scale: 1.02,
                 y: -5,
@@ -1582,7 +1667,7 @@ function ArchetypeExclusivePrizesMuseum() {
               transition={{ duration: 0.4, ease: "easeOut" }}
             >
               {/* Elegant Museum Frame */}
-              <div className="relative w-full h-full bg-gradient-to-br from-zinc-900/80 to-zinc-800/60 backdrop-blur-sm border border-zinc-700/50 shadow-2xl overflow-hidden group-hover:border-orange-500/40 transition-all duration-500">
+              <div className="relative w-full h-[380px] bg-gradient-to-br from-zinc-900/80 to-zinc-800/60 backdrop-blur-sm border border-zinc-700/50 shadow-2xl overflow-hidden group-hover:border-orange-500/40 transition-all duration-500">
                 {/* ARCHETYPE Twist - Subtle Glitch Effect */}
                 <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 via-transparent to-amber-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                 
@@ -1593,7 +1678,7 @@ function ArchetypeExclusivePrizesMuseum() {
 
                 {/* Rarity Indicator - Minimalist */}
                 <div className="absolute top-3 right-3 z-20">
-                  <div className={`w-3 h-3 rounded-full ${getRarityColor(image.rarity).replace('text-', 'bg-')} opacity-70`}></div>
+                  <div className={`w-3 h-3 rounded-full ${getRarityBgColor(image.rarity)} opacity-70`}></div>
                 </div>
 
                 {/* Image Container */}
@@ -1641,6 +1726,21 @@ function ArchetypeExclusivePrizesMuseum() {
                   <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-amber-500/60 to-transparent"></div>
                 </motion.div>
               </div>
+
+              {/* Name and Rarity Button - Below Image */}
+              <div className="mt-4 w-full">
+                <button className="w-full bg-gradient-to-r from-zinc-800/80 to-zinc-700/60 border border-zinc-600/50 hover:border-orange-500/60 p-3 rounded-lg backdrop-blur-sm transition-all duration-300 hover:scale-105 group">
+                  <div className="flex items-center justify-between">
+                    <div className="text-left">
+                      <div className="text-orange-400 font-bold text-sm font-mono">#{image.id} {image.title}</div>
+                      <div className="text-xs text-zinc-400 font-mono">Exclusive Prize</div>
+                    </div>
+                    <div className={`px-2 py-1 rounded text-xs font-mono font-bold ${getRarityColor(image.rarity)} bg-black/50 border border-current/30`}>
+                      {image.rarity}
+                    </div>
+                  </div>
+                </button>
+              </div>
             </motion.div>
           ))}
         </div>
@@ -1663,7 +1763,10 @@ function ArchetypeExclusivePrizesMuseum() {
         <div className="absolute top-4 left-4 bg-black/80 border border-orange-500/40 p-2 font-mono text-xs backdrop-blur-sm">
           <div className="text-orange-400 font-bold">MUSEUM STATUS</div>
           <div className="text-zinc-400 text-[10px]">
-            {isHovered ? 'PAUSED - HOVER DETECTED' : isPaused ? 'PAUSED - MANUAL' : 'ACTIVE - SCROLLING'}
+            {isDragging ? 'DRAGGING - MANUAL CONTROL' : 
+             isHovered ? 'PAUSED - HOVER DETECTED' : 
+             isPaused ? 'PAUSED - MANUAL' : 
+             'ACTIVE - SCROLLING'}
           </div>
         </div>
       </div>
