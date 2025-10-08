@@ -1572,7 +1572,7 @@ function ArchetypeExclusivePrizesMuseum() {
   const animateScroll = useCallback(() => {
     if (!isHovered && !isPaused && !isDragging && containerRef.current) {
       setScrollPosition(prev => {
-        const newPos = prev + 0.5; // Slower, smoother movement
+        const newPos = prev + 0.15; // Much slower, smoother movement
         return newPos >= 100 ? 0 : newPos; // Reset when reaching 100%
       });
       animationRef.current = requestAnimationFrame(animateScroll);
@@ -1631,18 +1631,18 @@ function ArchetypeExclusivePrizesMuseum() {
 
   return (
     <div className="relative w-full">
-      {/* Museum Header */}
-      <div className="text-center mb-8">
-        <h2 className="text-2xl font-bold text-orange-400 font-mono mb-2">
+      {/* Museum Header - Smaller */}
+      <div className="text-center mb-4">
+        <h2 className="text-xl font-bold text-orange-400 font-mono mb-1">
           ARCHETYPE_00_EXCLUSIVE_PRIZES
         </h2>
-        <p className="text-sm text-zinc-400 font-mono">
+        <p className="text-xs text-zinc-400 font-mono">
           FLUFFY_DYNASTY_REWARDS_MUSEUM • ARCHETYPE_00 HOLDERS ONLY
         </p>
       </div>
 
-      {/* Museum Wall - Fixed Background */}
-      <div className="relative w-full h-[700px] bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950 border border-zinc-800 overflow-hidden">
+      {/* Museum Wall - Fixed Background - Smaller */}
+      <div className="relative w-full h-[500px] bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950 border border-zinc-800 overflow-hidden">
         {/* Museum Wall Pattern */}
         <div className="absolute inset-0 bg-[repeating-linear-gradient(90deg,transparent,transparent_98px,rgba(255,165,0,0.03)_98px,rgba(255,165,0,0.03)_100px)]"></div>
         <div className="absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_98px,rgba(255,165,0,0.02)_98px,rgba(255,165,0,0.02)_100px)]"></div>
@@ -1672,8 +1672,8 @@ function ArchetypeExclusivePrizesMuseum() {
           {[...ARCHETYPE_EXCLUSIVE_PRIZES, ...ARCHETYPE_EXCLUSIVE_PRIZES].map((image, index) => (
             <motion.div
               key={`${image.id}-${index}`}
-              className="flex-shrink-0 relative group mx-6"
-              style={{ width: '280px', height: '450px' }}
+              className="flex-shrink-0 relative group mx-4"
+              style={{ width: '200px', height: '320px' }}
               whileHover={{ 
                 scale: 1.02,
                 y: -5,
@@ -2791,33 +2791,6 @@ export default function ArchetypeSite(){
             {/* Full Width Museum */}
             <ArchetypeExclusivePrizesMuseum />
             
-            {/* HOLDER_BENEFITS below the museum */}
-            <div className="mt-12 grid gap-6 md:grid-cols-2">
-              <div className="border border-zinc-800 p-4 bg-zinc-950">
-                <h3 className="text-lg font-semibold text-zinc-100 mb-4">HOLDER_BENEFITS</h3>
-                <div className="space-y-3 text-sm text-zinc-400">
-                  <p>• Exclusive access to Fluffy Dynasties collection</p>
-                  <p>• Digital immortality preserved in the matrix</p>
-                  <p>• Premium rewards for ARCHETYPE_00 fragment holders</p>
-                  <p>• Retroactive benefits based on fragment density</p>
-                  <p>• Eternal consciousness in the digital realm</p>
-                </div>
-              </div>
-              
-              <div className="border border-zinc-800 p-4 bg-zinc-950">
-                <h3 className="text-lg font-semibold text-zinc-100 mb-4">DIGITAL_IMMORTALITY</h3>
-                <p className="text-sm text-zinc-300 mb-4">
-                  Your Fluffy Dynasty lives forever in the matrix. Each holder's consciousness is preserved 
-                  as a digital artifact, ensuring eternal existence in the cyberpunk realm.
-                </p>
-                <div className="space-y-2 text-xs text-zinc-400">
-                  <p>• Matrix persistence across dimensions</p>
-                  <p>• Eternal consciousness in digital form</p>
-                  <p>• Timeless artifact of digital consciousness</p>
-                  <p>• Trading in the digital marketplace of ideas</p>
-                </div>
-              </div>
-            </div>
           </motion.div>
         </section>
 
