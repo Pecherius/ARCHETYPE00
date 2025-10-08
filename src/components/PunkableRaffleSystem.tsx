@@ -1279,20 +1279,20 @@ const PunkableRaffleSystem = () => {
   const canSelectWinner = participants.length > 0 && remainingPrizeCount > 0 && !selecting;
 
   return (
-    <section className="mx-auto max-w-6xl px-4 pb-12 sm:px-6">
-      <div className="flex flex-col md:flex-row items-center justify-between mb-3 gap-2">
+    <section className="mx-auto max-w-4xl px-4 pb-8 sm:px-6">
+      <div className="flex flex-col md:flex-row items-center justify-between mb-2 gap-2">
         <div className="text-center md:text-left">
-          <h2 className="text-lg font-bold text-zinc-100 font-mono">P.E.R.S.</h2>
+          <h2 className="text-sm font-bold text-zinc-100 font-mono">P.E.R.S.</h2>
           <div className="text-xs text-zinc-400 font-mono">Punkable Ethereal Raffle System</div>
         </div>
         <div className="text-xs text-zinc-500 font-mono">v2.1</div>
       </div>
-      <div className="border border-zinc-800 p-4 md:p-6 text-xs md:text-sm leading-relaxed text-zinc-300 rounded-lg">
+      <div className="border border-zinc-800 p-3 text-xs leading-relaxed text-zinc-300 rounded-lg">
         {/* Header */}
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-3">
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2">
             {currentRaffle?.image_url && (
-              <div className="w-12 h-12 rounded-lg overflow-hidden shadow-lg">
+              <div className="w-8 h-8 rounded-lg overflow-hidden shadow-lg">
                 <img
                   src={currentRaffle.image_url || "/placeholder.svg"}
                   alt="Raffle"
@@ -1301,27 +1301,34 @@ const PunkableRaffleSystem = () => {
               </div>
             )}
             <div>
-              <h3 className="text-lg font-bold text-zinc-100 font-mono">
+              <h3 className="text-sm font-bold text-zinc-100 font-mono">
                 {currentRaffle?.title}
               </h3>
               <p className="text-xs text-zinc-400">{currentRaffle?.description || "A fair and transparent raffle system"}</p>
             </div>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             {winners.length > 0 && (
               <button
                 onClick={() => setCurrentView("results")}
-                className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-semibold px-4 py-2 rounded-lg shadow-md flex items-center gap-2"
+                className="group relative overflow-hidden border-2 border-green-500 bg-gradient-to-r from-green-900/30 to-emerald-900/30 px-3 py-1.5 text-green-400 hover:from-green-800/40 hover:to-emerald-800/40 transition-all duration-300 hover:scale-105 font-mono font-bold text-xs rounded-lg"
               >
-                <span className="text-lg">🏆</span>
-                View Winners
+                <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 to-emerald-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="relative flex items-center gap-1">
+                  <span>🏆</span>
+                  <span>View Winners</span>
+                </div>
               </button>
             )}
             <button
               onClick={goBackToRaffles}
-              className="border border-zinc-600 text-zinc-300 hover:bg-zinc-800 px-4 py-2 rounded-lg"
+              className="group relative overflow-hidden border-2 border-zinc-500 bg-gradient-to-r from-zinc-900/30 to-zinc-800/30 px-3 py-1.5 text-zinc-400 hover:from-zinc-800/40 hover:to-zinc-700/40 transition-all duration-300 hover:scale-105 font-mono font-bold text-xs rounded-lg"
             >
-              ← Back to Raffles
+              <div className="absolute inset-0 bg-gradient-to-r from-zinc-500/10 to-zinc-400/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <div className="relative flex items-center gap-1">
+                <span>←</span>
+                <span>Back to Raffles</span>
+              </div>
             </button>
           </div>
         </div>
@@ -1356,19 +1363,19 @@ const PunkableRaffleSystem = () => {
         </AnimatePresence>
 
         {/* Main Content Grid */}
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 lg:gap-6">
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-3">
           {/* Participants Column */}
-          <div className="space-y-4">
-            <h4 className="text-lg font-bold text-zinc-100 flex items-center gap-2">
+          <div className="space-y-2">
+            <h4 className="text-sm font-bold text-zinc-100 flex items-center gap-2">
               <span className="text-pink-500">👥</span> Participants ({participants.length})
             </h4>
-            <div className="space-y-2 lg:space-y-3 h-48 overflow-y-auto border border-zinc-700 rounded-lg p-2 lg:p-3 bg-zinc-800/30 scrollbar-thin scrollbar-thumb-zinc-600 scrollbar-track-zinc-800">
+            <div className="space-y-1 h-40 overflow-y-auto border border-zinc-700 rounded-lg p-2 bg-zinc-800/30 scrollbar-thin scrollbar-thumb-zinc-600 scrollbar-track-zinc-800">
               {participants.map((participant) => (
                 <motion.div
                   key={participant.id}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className={`rounded-lg p-4 border ${
+                  className={`rounded p-2 border ${
                     participant.tickets >= 20 
                       ? 'bg-gradient-to-r from-purple-900/30 to-pink-900/30 border-purple-500/50' 
                       : participant.tickets >= 10 
@@ -1380,28 +1387,28 @@ const PunkableRaffleSystem = () => {
                   style={{ borderLeft: `4px solid ${participant.color}` }}
                 >
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-1">
                       <div
-                        className="w-6 h-6 rounded-full shadow-sm flex items-center justify-center"
+                        className="w-5 h-5 rounded-full shadow-sm flex items-center justify-center"
                         style={{ backgroundColor: participant.color }}
                       >
                         {participant.tickets >= 20 ? (
-                          <span className="text-sm">🐋</span>
+                          <span className="text-xs">🐋</span>
                         ) : participant.tickets >= 10 ? (
-                          <span className="text-sm">💎</span>
+                          <span className="text-xs">💎</span>
                         ) : participant.tickets >= 5 ? (
-                          <span className="text-sm">⭐</span>
+                          <span className="text-xs">⭐</span>
                         ) : (
                           <ParticipantIcon
                             participantId={participant.id}
                             participantName={participant.name}
-                            className="w-4 h-4 text-white"
+                            className="w-3 h-3 text-white"
                           />
                         )}
                       </div>
-                      <span className="font-semibold text-zinc-100">{participant.name}</span>
+                      <span className="font-semibold text-zinc-100 text-xs">{participant.name}</span>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1">
                       <div className="flex items-center gap-1">
                         <input
                           type="number"
@@ -1417,9 +1424,9 @@ const PunkableRaffleSystem = () => {
                               )
                             );
                           }}
-                          className="w-16 px-2 py-1 text-sm bg-zinc-700 border border-zinc-600 rounded text-zinc-100 focus:border-pink-500 focus:outline-none"
+                          className="w-12 px-1 py-0.5 text-xs bg-zinc-700 border border-zinc-600 rounded text-zinc-100 focus:border-pink-500 focus:outline-none"
                         />
-                        <span className="text-sm text-zinc-400">tickets</span>
+                        <span className="text-xs text-zinc-400">tickets</span>
                       </div>
                       {participant.up_address && !userStorageService.getUserByUpAddress(participant.up_address) && (
                         <button
@@ -1453,31 +1460,31 @@ const PunkableRaffleSystem = () => {
             </div>
 
             {/* Add Participant Form */}
-            <div className="bg-zinc-800/30 p-4 rounded-lg border border-zinc-700">
-              <div className="flex items-center justify-between mb-3">
-                <h5 className="text-sm font-semibold text-zinc-300">Add New Participant</h5>
-                  <div className="flex gap-2">
+            <div className="bg-zinc-800/30 p-2 rounded border border-zinc-700">
+              <div className="flex items-center justify-between mb-2">
+                <h5 className="text-xs font-semibold text-zinc-300">Add New Participant</h5>
+                  <div className="flex gap-1">
                     <button
                       onClick={() => setShowSavedUsers(true)}
-                      className="px-2 py-1 bg-zinc-700 hover:bg-zinc-600 text-zinc-300 text-xs rounded transition-colors"
+                      className="px-1.5 py-0.5 bg-zinc-700 hover:bg-zinc-600 text-zinc-300 text-xs rounded transition-colors"
                     >
                       From Saved
                     </button>
                     <button
                       onClick={() => setShowSaveUserDialog(true)}
-                      className="px-2 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded transition-colors"
+                      className="px-1.5 py-0.5 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded transition-colors"
                     >
                       Save User
                     </button>
                   </div>
               </div>
-              <div className="space-y-3">
+              <div className="space-y-2">
                 <input
                   type="text"
                   value={newParticipantName}
                   onChange={(e) => setNewParticipantName(e.target.value)}
                   placeholder="Enter name"
-                  className="w-full px-3 py-2 bg-zinc-700 border border-zinc-600 rounded-md text-zinc-100 text-sm"
+                  className="w-full px-2 py-1 bg-zinc-700 border border-zinc-600 rounded text-zinc-100 text-xs"
                 />
                 <input
                   type="number"
@@ -1485,14 +1492,14 @@ const PunkableRaffleSystem = () => {
                   onChange={(e) => setNewParticipantTickets(e.target.value)}
                   placeholder="Number of tickets"
                   min="1"
-                  className="w-full px-3 py-2 bg-zinc-700 border border-zinc-600 rounded-md text-zinc-100 text-sm"
+                  className="w-full px-2 py-1 bg-zinc-700 border border-zinc-600 rounded text-zinc-100 text-xs"
                 />
                 <input
                   type="text"
                   value={newParticipantUpAddress}
                   onChange={(e) => setNewParticipantUpAddress(e.target.value)}
                   placeholder="UP Address (optional)"
-                  className="w-full px-3 py-2 bg-zinc-700 border border-zinc-600 rounded-md text-zinc-100 text-sm"
+                  className="w-full px-2 py-1 bg-zinc-700 border border-zinc-600 rounded text-zinc-100 text-xs"
                 />
                 {duplicateUpAddressError && (
                   <p className="text-xs text-red-400">{duplicateUpAddressError}</p>
@@ -1500,9 +1507,9 @@ const PunkableRaffleSystem = () => {
                 <button
                   onClick={addParticipant}
                   disabled={!!duplicateUpAddressError || !newParticipantName.trim() || !newParticipantTickets.trim() || Number.parseInt(newParticipantTickets) <= 0}
-                  className="w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-semibold py-2 rounded-lg text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-semibold py-1 rounded text-xs disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                    Add Participant
+                  Add Participant
                 </button>
                 {newParticipantName.trim() && newParticipantUpAddress.trim() && (
                   <button
@@ -1594,22 +1601,22 @@ const PunkableRaffleSystem = () => {
           </div>
 
           {/* Prizes and Winners Column */}
-          <div className="space-y-4 lg:space-y-6 order-1 xl:order-2">
+          <div className="space-y-2 order-1 xl:order-2">
             {/* Prizes */}
             <div>
-              <h4 className="text-lg font-bold text-zinc-100 flex items-center gap-2 mb-4">
+              <h4 className="text-sm font-bold text-zinc-100 flex items-center gap-2 mb-2">
                 <span className="text-pink-500">🏆</span> Prizes ({remainingPrizeCount})
               </h4>
-              <div className="space-y-2 lg:space-y-3 h-48 overflow-y-auto border border-zinc-700 rounded-lg p-2 lg:p-3 bg-zinc-800/30 scrollbar-thin scrollbar-thumb-zinc-600 scrollbar-track-zinc-800">
+              <div className="space-y-1 h-40 overflow-y-auto border border-zinc-700 rounded-lg p-2 bg-zinc-800/30 scrollbar-thin scrollbar-thumb-zinc-600 scrollbar-track-zinc-800">
                 {prizes.map((prize) => (
                   <motion.div
                     key={prize.id}
                     initial={{ opacity: 0, x: 10 }}
                     animate={{ opacity: 1, x: 0 }}
-                    className="flex justify-between items-center bg-zinc-800/50 p-3 rounded-lg border border-zinc-700"
+                    className="flex justify-between items-center bg-zinc-800/50 p-2 rounded border border-zinc-700"
                   >
-                    <span className="font-semibold text-zinc-100">{prize.name}</span>
-                    <div className="flex items-center gap-2">
+                    <span className="font-semibold text-zinc-100 text-xs">{prize.name}</span>
+                    <div className="flex items-center gap-1">
                       {/* Editable quantity field */}
                       <div className="flex items-center gap-1">
                         <input
@@ -1621,7 +1628,7 @@ const PunkableRaffleSystem = () => {
                               p.id === prize.id ? { ...p, remaining: newCount } : p
                             ));
                           }}
-                          className="w-16 px-2 py-1 bg-zinc-700 border border-zinc-600 rounded text-pink-400 text-center text-sm font-bold focus:border-pink-400 focus:ring-1 focus:ring-pink-400"
+                          className="w-12 px-1 py-0.5 bg-zinc-700 border border-zinc-600 rounded text-pink-400 text-center text-xs font-bold focus:border-pink-400 focus:ring-1 focus:ring-pink-400"
                           min="0"
                           title="Click to edit remaining quantity"
                         />
@@ -1715,28 +1722,28 @@ const PunkableRaffleSystem = () => {
 
             {/* Winners */}
             <div data-section="winners">
-              <div className="flex items-center justify-between mb-4">
-                <h4 className="text-lg font-bold text-zinc-100 flex items-center gap-2">
+              <div className="flex items-center justify-between mb-2">
+                <h4 className="text-sm font-bold text-zinc-100 flex items-center gap-2">
                   <span className="text-pink-500">🎉</span> Winners ({winners.length})
                 </h4>
                 {winners.length > 0 && (
-                  <div className="flex flex-col sm:flex-row gap-2">
+                  <div className="flex gap-1">
                     <button
                       onClick={() => handleExportWinners('image')}
-                      className="px-2 lg:px-3 py-1 bg-pink-600 hover:bg-pink-700 text-white text-xs rounded transition-colors"
+                      className="px-2 py-1 bg-pink-600 hover:bg-pink-700 text-white text-xs rounded transition-colors"
                     >
                       Export Winners
                     </button>
                     <button
                       onClick={() => handleExportWinners('json')}
-                      className="px-2 lg:px-3 py-1 bg-zinc-600 hover:bg-zinc-700 text-white text-xs rounded transition-colors"
+                      className="px-2 py-1 bg-zinc-600 hover:bg-zinc-700 text-white text-xs rounded transition-colors"
                     >
                       Export as JSON
                     </button>
                   </div>
                 )}
               </div>
-              <div className="space-y-2 lg:space-y-3 h-48 overflow-y-auto border border-zinc-700 rounded-lg p-2 lg:p-3 bg-zinc-800/30 scrollbar-thin scrollbar-thumb-zinc-600 scrollbar-track-zinc-800">
+              <div className="space-y-1 h-40 overflow-y-auto border border-zinc-700 rounded-lg p-2 bg-zinc-800/30 scrollbar-thin scrollbar-thumb-zinc-600 scrollbar-track-zinc-800">
                 {winners.length === 0 ? (
                   <div className="text-center text-zinc-500 py-8">
                     <span className="text-3xl mb-2 block">🏆</span>
@@ -1748,23 +1755,23 @@ const PunkableRaffleSystem = () => {
                       key={win.id}
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="bg-zinc-800/50 p-4 rounded-lg border-l-4"
+                      className="bg-zinc-800/50 p-2 rounded border-l-4"
                       style={{ borderLeftColor: win.participant_color }}
                     >
-                      <div className="flex items-center gap-3 mb-2">
+                      <div className="flex items-center gap-2 mb-1">
                         <div
-                          className="w-6 h-6 rounded-full shadow-sm flex items-center justify-center"
+                          className="w-5 h-5 rounded-full shadow-sm flex items-center justify-center"
                           style={{ backgroundColor: win.participant_color }}
                         >
                           <ParticipantIcon
                             participantId={win.participant_id}
                             participantName={win.participant_name}
-                            className="w-4 h-4 text-white"
+                            className="w-3 h-3 text-white"
                           />
                         </div>
-                        <span className="font-semibold text-zinc-100">{win.participant_name}</span>
+                        <span className="font-semibold text-zinc-100 text-xs">{win.participant_name}</span>
                       </div>
-                      <span className="text-sm font-bold text-pink-400 bg-pink-500/20 px-2 py-1 rounded-full">
+                      <span className="text-xs font-bold text-pink-400 bg-pink-500/20 px-1.5 py-0.5 rounded-full">
                         {win.prize_name}
                       </span>
                     </motion.div>
