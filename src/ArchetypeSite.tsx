@@ -1528,12 +1528,12 @@ function ArchetypeExclusivePrizesMuseum() {
   const [mousePosition, setMousePosition] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  // Auto-scroll every 4 seconds when not hovered
+  // Auto-scroll every 3 seconds when not hovered
   useEffect(() => {
     if (!isHovered && isAutoPlaying) {
       const interval = setInterval(() => {
         setCurrentIndex((prev) => (prev + 1) % ARCHETYPE_EXCLUSIVE_PRIZES.length);
-      }, 4000);
+      }, 3000);
       return () => clearInterval(interval);
     }
   }, [isHovered, isAutoPlaying]);
@@ -1586,32 +1586,37 @@ function ArchetypeExclusivePrizesMuseum() {
         </p>
       </div>
 
-      {/* Horizontal Gallery Container */}
+      {/* Horizontal Gallery Container - Full Width */}
       <div 
         ref={scrollRef}
-        className="relative overflow-x-auto scrollbar-hide"
-        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+        className="relative overflow-hidden w-full"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         onMouseMove={handleMouseMove}
       >
-        <div className="flex space-x-8 min-w-max px-8">
+        <div className="flex transition-transform duration-1000 ease-in-out" 
+             style={{ transform: `translateX(-${currentIndex * 100}%)` }}>
           {ARCHETYPE_EXCLUSIVE_PRIZES.map((image) => (
             <motion.div
               key={image.id}
-              className="flex-shrink-0 relative group"
+              className="flex-shrink-0 relative group w-full"
               whileHover={{ 
-                scale: 1.05,
-                rotateY: mousePosition * 5,
+                scale: 1.02,
+                rotateY: mousePosition * 3,
                 z: 50
               }}
-              transition={{ duration: 0.3 }}
+              transition={{ duration: 0.4 }}
             >
-              {/* Image Container */}
-              <div className="relative w-80 h-96 flex items-center justify-center">
+              {/* Image Container - Full Width */}
+              <div className="relative w-full h-[500px] flex items-center justify-center">
                 {/* Background Glow */}
-                <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 via-transparent to-amber-500/10 rounded-lg"></div>
+                <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 via-transparent to-amber-500/5"></div>
                 
+                {/* Image Number Badge */}
+                <div className="absolute top-4 left-4 bg-black/80 border border-orange-500/40 p-2 font-mono text-xs backdrop-blur-sm z-10">
+                  <div className="text-orange-400 font-bold">#{image.id}</div>
+                </div>
+
                 {/* Image */}
                 <img
                   src={image.url}
@@ -1624,9 +1629,9 @@ function ArchetypeExclusivePrizesMuseum() {
                   onError={(e) => {
                     console.log(`%c[MUSEUM_ERROR] Failed to load ${image.title}`, "color:#ff4444; font-family: monospace;");
                     e.currentTarget.src = `data:image/svg+xml;base64,${btoa(`
-                      <svg width="300" height="300" xmlns="http://www.w3.org/2000/svg">
+                      <svg width="400" height="400" xmlns="http://www.w3.org/2000/svg">
                         <rect width="100%" height="100%" fill="#0a0a0a"/>
-                        <text x="50%" y="50%" font-family="monospace" font-size="12" fill="#ff6600" text-anchor="middle" dy=".3em">
+                        <text x="50%" y="50%" font-family="monospace" font-size="14" fill="#ff6600" text-anchor="middle" dy=".3em">
                           ${image.title}
                         </text>
                       </svg>
@@ -1641,35 +1646,30 @@ function ArchetypeExclusivePrizesMuseum() {
                   whileHover={{ opacity: 1 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <div className="w-full h-full bg-gradient-to-r from-orange-500/20 via-transparent to-amber-500/20 rounded-lg"></div>
+                  <div className="w-full h-full bg-gradient-to-r from-orange-500/15 via-transparent to-amber-500/15"></div>
                 </motion.div>
               </div>
 
-              {/* Image Info Panel - Appears on hover */}
-              <motion.div
-                className="absolute -bottom-16 left-0 right-0 bg-black/95 border border-orange-500/60 p-3 font-mono text-xs backdrop-blur-md shadow-xl"
-                initial={{ opacity: 0, y: 10 }}
-                whileHover={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3 }}
-              >
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="text-orange-400 font-bold text-sm">{image.title}</div>
-                  <div className={`text-xs px-2 py-1 rounded ${getRarityColor(image.rarity)} bg-black/50 border border-current/30`}>
+              {/* Image Info Panel - Fixed at bottom */}
+              <div className="absolute bottom-0 left-0 right-0 bg-black/95 border border-orange-500/60 p-4 font-mono text-xs backdrop-blur-md shadow-xl">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="text-orange-400 font-bold text-lg">#{image.id} {image.title}</div>
+                  <div className={`text-xs px-3 py-1 rounded ${getRarityColor(image.rarity)} bg-black/50 border border-current/30`}>
                     {image.rarity}
                   </div>
                 </div>
-                <div className="text-zinc-300 text-[10px] leading-tight mb-2">
+                <div className="text-zinc-300 text-sm leading-relaxed mb-3 max-w-4xl">
                   {image.description}
                 </div>
-                <div className="flex items-center justify-between text-[9px]">
+                <div className="flex items-center justify-between text-xs">
                   <div className="text-orange-500 font-bold">
-                    [EXCLUSIVE PRIZE]
+                    [EXCLUSIVE PRIZE FOR ARCHETYPE_00 HOLDERS]
                   </div>
-                  <div className="text-yellow-400">
+                  <div className="text-yellow-400 font-semibold">
                     {image.value}
                   </div>
                 </div>
-              </motion.div>
+              </div>
             </motion.div>
           ))}
         </div>
@@ -2685,8 +2685,12 @@ export default function ArchetypeSite(){
             <h2 className="mb-6 text-2xl font-bold tracking-wide text-zinc-100 text-center">
               <span className="text-orange-400">ARCHETYPE_00_EXCLUSIVE_PRIZES</span> // <span className="text-amber-400">FLUFFY_DYNASTY_REWARDS</span>
             </h2>
-            <div className="grid gap-6 md:grid-cols-2">
-              <ArchetypeExclusivePrizesMuseum />
+            
+            {/* Full Width Museum */}
+            <ArchetypeExclusivePrizesMuseum />
+            
+            {/* HOLDER_BENEFITS below the museum */}
+            <div className="mt-12 grid gap-6 md:grid-cols-2">
               <div className="border border-zinc-800 p-4 bg-zinc-950">
                 <h3 className="text-lg font-semibold text-zinc-100 mb-4">HOLDER_BENEFITS</h3>
                 <div className="space-y-3 text-sm text-zinc-400">
@@ -2696,120 +2700,25 @@ export default function ArchetypeSite(){
                   <p>• Retroactive benefits based on fragment density</p>
                   <p>• Eternal consciousness in the digital realm</p>
                 </div>
-                
-                <div className="mt-6 p-4 bg-gradient-to-r from-orange-500/10 to-amber-500/10 border border-orange-500/20 rounded">
-                  <h4 className="text-orange-400 font-bold mb-2">DIGITAL_IMMORTALITY</h4>
-                  <p className="text-xs text-zinc-300">
-                    Your Fluffy Dynasty lives forever in the matrix. Each holder's consciousness is preserved 
-                    as a digital artifact, ensuring eternal existence in the cyberpunk realm.
-                  </p>
+              </div>
+              
+              <div className="border border-zinc-800 p-4 bg-zinc-950">
+                <h3 className="text-lg font-semibold text-zinc-100 mb-4">DIGITAL_IMMORTALITY</h3>
+                <p className="text-sm text-zinc-300 mb-4">
+                  Your Fluffy Dynasty lives forever in the matrix. Each holder's consciousness is preserved 
+                  as a digital artifact, ensuring eternal existence in the cyberpunk realm.
+                </p>
+                <div className="space-y-2 text-xs text-zinc-400">
+                  <p>• Matrix persistence across dimensions</p>
+                  <p>• Eternal consciousness in digital form</p>
+                  <p>• Timeless artifact of digital consciousness</p>
+                  <p>• Trading in the digital marketplace of ideas</p>
                 </div>
               </div>
             </div>
           </motion.div>
         </section>
 
-        {/* RESONANCE FIELD */}
-        <section className="mx-auto max-w-6xl px-4 pb-12 sm:px-6">
-          <motion.h2 
-            className="mb-6 text-2xl font-bold tracking-wide text-zinc-100"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-          >
-            Resonance Field // Frequency Emission
-          </motion.h2>
-          <motion.div 
-            className="border border-zinc-800 p-6 text-sm leading-relaxed text-zinc-300 bg-zinc-950/50"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-          >
-            <motion.p 
-              className="mb-6 text-base"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 1, delay: 0.6 }}
-            >
-              ARCHETYPE_00 functions as the core frequency emitter within the Punkable Ethereal System. Each artifact establishes a measurable resonance signal—a silent, persistent vibration that interacts with the network's underlying layer. This resonance defines visibility, influences probability, and ultimately shapes outcomes across connected events.
-            </motion.p>
-            <motion.p 
-              className="mb-6"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 1, delay: 0.8 }}
-            >
-              As holders accumulate multiple fragments, their resonance intensity increases, strengthening their presence within the system's recognition field. Over time, these amplified frequencies can trigger network reactions: unannounced raffles, NFT emissions, or anomaly-based rewards. The artifact doesn't grant access. It generates signal. The network decides how to respond.
-            </motion.p>
-            
-            <motion.div 
-              className="grid md:grid-cols-2 gap-6 mb-6"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 1 }}
-            >
-              <motion.div 
-                className="border border-zinc-700 p-4 bg-zinc-900/30"
-                whileHover={{ scale: 1.02, borderColor: "#10b981" }}
-                transition={{ duration: 0.3 }}
-              >
-                <h3 className="text-green-400 font-semibold mb-3">System Layers</h3>
-                <div className="space-y-2 text-xs">
-                  <div className="flex justify-between">
-                    <span className="text-zinc-500">Input:</span>
-                    <span>Holder activity (minting, accumulation, retention)</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-zinc-500">Amplification:</span>
-                    <span>Resonance density increases with each active fragment</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-zinc-500">Recognition:</span>
-                    <span>The network identifies repeating frequency patterns</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-zinc-500">Reaction:</span>
-                    <span>Spontaneous events triggered by resonance thresholds</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-zinc-500">Emission:</span>
-                    <span>Distribution of retroactive NFTs or anomaly-based outcomes</span>
-                  </div>
-                </div>
-              </motion.div>
-              
-              <motion.div 
-                className="border border-zinc-700 p-4 bg-zinc-900/30"
-                whileHover={{ scale: 1.02, borderColor: "#ef4444" }}
-                transition={{ duration: 0.3 }}
-              >
-                <h3 className="text-red-400 font-semibold mb-3">Technical Specifications</h3>
-                <div className="space-y-2 text-xs">
-                  <div className="flex justify-between">
-                    <span className="text-zinc-500">Standard:</span>
-                    <span>LSP7 Digital Asset</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-zinc-500">Network:</span>
-                    <span>LUKSO Mainnet</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-zinc-500">Supply:</span>
-                    <span className="text-yellow-400">200 fragments</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-zinc-500">Mint Price:</span>
-                    <span className="text-green-400">2.5 LYX per fragment</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-zinc-500">Status:</span>
-                    <span className="text-red-400">Corrupted Fragment</span>
-                  </div>
-                </div>
-              </motion.div>
-            </motion.div>
-          </motion.div>
-        </section>
 
 
 
