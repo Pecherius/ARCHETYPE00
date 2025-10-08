@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./components/ui/dialog";
 // Tooltip components removed - using custom implementation
 import { motion, useAnimation } from "framer-motion";
@@ -1670,29 +1670,18 @@ function ArchetypeExclusivePrizesMuseum() {
   const [isAutoPlaying, setIsAutoPlaying] = useState(false);
   const autoPlayRef = useRef<number | null>(null);
 
-  // Optimized color functions with useMemo
-  const rarityColors = useMemo(() => ({
-    text: {
-      'MYTHIC': 'text-purple-400',
-      'LEGENDARY': 'text-yellow-400',
-      'EPIC': 'text-pink-400',
-      'RARE': 'text-blue-400',
-      'COMMON': 'text-green-400',
-      'default': 'text-zinc-400'
-    },
-    bg: {
+  // Simplified rarity color functions
+  const getRarityStyle = (rarity: string) => {
+    const rarityStyles = {
       'MYTHIC': 'bg-purple-400/20 border-purple-400/40',
       'LEGENDARY': 'bg-yellow-400/20 border-yellow-400/40',
       'EPIC': 'bg-pink-400/20 border-pink-400/40',
       'RARE': 'bg-blue-400/20 border-blue-400/40',
       'COMMON': 'bg-green-400/20 border-green-400/40',
       'default': 'bg-zinc-400/20 border-zinc-400/40'
-    }
-  }), []);
-
-  const getRarityStyle = useCallback((rarity: string) => {
-    return rarityColors.bg[rarity as keyof typeof rarityColors.bg] || rarityColors.bg.default;
-  }, [rarityColors]);
+    };
+    return rarityStyles[rarity as keyof typeof rarityStyles] || rarityStyles.default;
+  };
 
   // Auto-play functionality
   const startAutoPlay = useCallback(() => {

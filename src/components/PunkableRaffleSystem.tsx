@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef, useCallback, useMemo } from "react"
+import { useState, useEffect, useRef, useCallback } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import confetti from "canvas-confetti"
 import { RaffleService, type Raffle, type Participant, type Prize, type Winner } from "../lib/raffle-service"
@@ -1117,14 +1117,8 @@ const PunkableRaffleSystem = () => {
     )
   }
 
-  const remainingPrizeCount = useMemo(() => 
-    prizes.reduce((sum, p) => sum + p.remaining, 0),
-    [prizes]
-  )
-  const canSelectWinner = useMemo(() => 
-    participants.length > 0 && remainingPrizeCount > 0 && !selecting,
-    [participants.length, remainingPrizeCount, selecting]
-  )
+  const remainingPrizeCount = prizes.reduce((sum, p) => sum + p.remaining, 0);
+  const canSelectWinner = participants.length > 0 && remainingPrizeCount > 0 && !selecting;
 
   return (
     <section className="mx-auto max-w-6xl px-4 pb-12 sm:px-6">
