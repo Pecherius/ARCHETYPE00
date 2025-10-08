@@ -328,150 +328,6 @@ function useGlobalKeys(
   }, [toggleGlitch, pulse, toggleVHS, onD34D]);
 }
 
-// 🎵 THEMATIC_AUDIO_HOOK: 8-bit cyberpunk ambient soundtrack
-// Creates a layered 8-bit style ambient track related to the ARCHETYPE lore
-function useThematicAudio() {
-  const ctxRef = useRef<AudioContext | null>(null);
-  const oscillatorsRef = useRef<OscillatorNode[]>([]);
-  const gainRef = useRef<GainNode | null>(null);
-  const analyserRef = useRef<AnalyserNode | null>(null);
-  const [active, setActive] = useState(false);
-  const [level, setLevel] = useState(0.1);
-
-  // Drive visuals from audio
-  useEffect(() => {
-    let raf = 0;
-    const sample = () => {
-      const analyser = analyserRef.current;
-      if (active && analyser) {
-        const arr = new Uint8Array(analyser.frequencyBinCount);
-        analyser.getByteTimeDomainData(arr);
-        let sum = 0; 
-        for (let i = 0; i < arr.length; i++) { 
-          const v = (arr[i] - 128) / 128; 
-          sum += v * v; 
-        }
-        const rms = Math.sqrt(sum / arr.length);
-        setLevel(0.1 + rms * 0.8);
-      } else {
-        // Gentle breathing when off
-        const t = Date.now() / 1000;
-        setLevel(0.12 + 0.04 * Math.sin(t * 1.4));
-      }
-      raf = requestAnimationFrame(sample);
-    };
-    raf = requestAnimationFrame(sample);
-    return () => cancelAnimationFrame(raf);
-  }, [active]);
-
-  const createAmbientSoundscape = (ctx: AudioContext, gain: GainNode) => {
-    const oscillators: OscillatorNode[] = [];
-    
-    // Ultra-subtle ambient pad - barely perceptible
-    const ambientPad = ctx.createOscillator();
-    const padGain = ctx.createGain();
-    ambientPad.type = "sine";
-    ambientPad.frequency.value = 55; // A1 - very low
-    padGain.gain.value = 0.003; // Extremely quiet
-    ambientPad.connect(padGain).connect(gain);
-    ambientPad.start();
-    oscillators.push(ambientPad);
-
-    // Whisper-thin harmonic layer
-    const harmonic = ctx.createOscillator();
-    const harmonicGain = ctx.createGain();
-    harmonic.type = "sine";
-    harmonic.frequency.value = 110; // A2 - one octave higher
-    harmonicGain.gain.value = 0.002; // Almost inaudible
-    harmonic.connect(harmonicGain).connect(gain);
-    harmonic.start();
-    oscillators.push(harmonic);
-
-    // Ghost-like high frequency
-    const shimmer = ctx.createOscillator();
-    const shimmerGain = ctx.createGain();
-    shimmer.type = "sine";
-    shimmer.frequency.value = 220; // A3
-    shimmerGain.gain.value = 0.001; // Barely there
-    shimmer.connect(shimmerGain).connect(gain);
-    shimmer.start();
-    oscillators.push(shimmer);
-
-    // Ultra-slow modulation for breathing effect
-    const lfo = ctx.createOscillator();
-    const lfoGain = ctx.createGain();
-    lfo.type = "sine";
-    lfo.frequency.value = 0.05; // Extremely slow - 20 second cycle
-    lfoGain.gain.value = 2; // Very small frequency variation
-    
-    // Apply LFO to create gentle breathing
-    lfo.connect(lfoGain);
-    lfoGain.connect(ambientPad.frequency);
-    lfo.start();
-    oscillators.push(lfo);
-
-    // Add a second LFO for the harmonic layer
-    const lfo2 = ctx.createOscillator();
-    const lfo2Gain = ctx.createGain();
-    lfo2.type = "sine";
-    lfo2.frequency.value = 0.07; // Slightly different cycle
-    lfo2Gain.gain.value = 1.5;
-    
-    lfo2.connect(lfo2Gain);
-    lfo2Gain.connect(harmonic.frequency);
-    lfo2.start();
-    oscillators.push(lfo2);
-
-    return oscillators;
-  };
-
-  const toggle = async () => {
-    if (!ctxRef.current) {
-      // @ts-ignore
-      ctxRef.current = new (window.AudioContext || window.webkitAudioContext)();
-    }
-    const ctx = ctxRef.current!;
-    
-    if (ctx.state === 'suspended') {
-      await ctx.resume();
-    }
-    
-    if (!active) {
-      const gain = ctx.createGain();
-      const analyser = ctx.createAnalyser();
-      analyser.fftSize = 1024;
-      gain.gain.value = 0.02; // Ultra-low volume for ambient
-      
-      const oscillators = createAmbientSoundscape(ctx, gain);
-      oscillators.forEach(osc => osc.connect(analyser));
-      analyser.connect(ctx.destination);
-      
-      oscillatorsRef.current = oscillators;
-      gainRef.current = gain;
-      analyserRef.current = analyser;
-      setActive(true);
-      
-      // eslint-disable-next-line no-console
-      console.log("%c[THEMATIC_AUDIO] Ambient soundscape activated. Resonance field established.", "color:#ff69b4; font-family: monospace;");
-    } else {
-      oscillatorsRef.current.forEach(osc => {
-        osc.stop();
-        osc.disconnect();
-      });
-      gainRef.current?.disconnect();
-      analyserRef.current?.disconnect();
-      oscillatorsRef.current = [];
-      gainRef.current = null;
-      analyserRef.current = null;
-      setActive(false);
-      
-      // eslint-disable-next-line no-console
-      console.log("%c[THEMATIC_AUDIO] Ambient soundscape terminated. Switching to silence.", "color:#666; font-family: monospace;");
-    }
-  };
-  
-  return { active, toggle, level };
-}
 
 // ----------------------
 // Terminal Interface Component
@@ -1626,7 +1482,6 @@ export default function ArchetypeSite(){
   const [matrixMessage, setMatrixMessage] = useState('');
   const [matrixChatHistory, setMatrixChatHistory] = useState<Array<{type: 'user' | 'matrix', message: string, timestamp: number}>>([]);
   const [isMatrixSpeaking, setIsMatrixSpeaking] = useState(false);
-  const { active: humOn, toggle: toggleHum, level } = useThematicAudio();
   const upProfile = useUniversalProfile();
   const artControls = useAnimation();
 
@@ -1993,15 +1848,15 @@ export default function ArchetypeSite(){
               
             <button
               onClick={() => {
-                toggleHum();
+                // Audio removed
                 setIsMenuOpen(false);
               }}
                 className="w-full px-6 py-4 bg-zinc-800 border border-yellow-500 text-yellow-400 hover:bg-zinc-700 transition-colors rounded-lg text-left"
               >
                 <div className="flex items-center gap-3">
-                  <span className="text-2xl">{humOn ? '🔇' : '🔊'}</span>
+                  <span className="text-2xl">🔊</span>
                   <div>
-                    <div className="font-bold">{humOn ? 'AUDIO_OFF' : 'AUDIO_ON'}</div>
+                    <div className="font-bold">AUDIO_DISABLED</div>
                     <div className="text-sm text-zinc-400">Toggle sound</div>
                   </div>
                 </div>
@@ -2225,13 +2080,13 @@ export default function ArchetypeSite(){
             </div>
           </div>
 
-          {/* Floating Code Elements */}
+          {/* Floating Code Elements - More Visible */}
           <div className="absolute inset-0 pointer-events-none overflow-hidden">
             {/* Left side floating code */}
             <motion.div
-              className="absolute left-4 top-1/4 text-xs font-mono text-zinc-600"
+              className="absolute left-4 top-1/4 text-xs font-mono text-zinc-400"
               animate={{ 
-                opacity: [0.3, 0.8, 0.3],
+                opacity: [0.4, 0.9, 0.4],
                 y: [0, -10, 0]
               }}
               transition={{ 
@@ -2241,15 +2096,15 @@ export default function ArchetypeSite(){
                 delay: 0.5
               }}
             >
-              <div>0x1a2b3c4d...</div>
-              <div>loading_fragments()</div>
-              <div>resonance_++</div>
+              <div className="text-pink-400">0x1a2b3c4d...</div>
+              <div className="text-cyan-400">loading_fragments()</div>
+              <div className="text-purple-400">resonance_++</div>
             </motion.div>
 
             <motion.div
-              className="absolute left-8 top-3/4 text-xs font-mono text-zinc-600"
+              className="absolute left-8 top-3/4 text-xs font-mono text-zinc-400"
               animate={{ 
-                opacity: [0.2, 0.6, 0.2],
+                opacity: [0.3, 0.8, 0.3],
                 y: [0, 15, 0]
               }}
               transition={{ 
@@ -2259,16 +2114,16 @@ export default function ArchetypeSite(){
                 delay: 1.5
               }}
             >
-              <div>quantum_state = true</div>
-              <div>neural_sync...</div>
-              <div>processing_data</div>
+              <div className="text-green-400">quantum_state = true</div>
+              <div className="text-yellow-400">neural_sync...</div>
+              <div className="text-rose-400">processing_data</div>
             </motion.div>
 
             {/* Right side floating code */}
             <motion.div
-              className="absolute right-4 top-1/3 text-xs font-mono text-zinc-600"
+              className="absolute right-4 top-1/3 text-xs font-mono text-zinc-400"
               animate={{ 
-                opacity: [0.4, 0.7, 0.4],
+                opacity: [0.5, 0.9, 0.5],
                 y: [0, -8, 0]
               }}
               transition={{ 
@@ -2278,15 +2133,15 @@ export default function ArchetypeSite(){
                 delay: 0.8
               }}
             >
-              <div>up_address: 0x...</div>
-              <div>verifying_identity</div>
-              <div>calculating_benefits</div>
+              <div className="text-cyan-400">up_address: 0x...</div>
+              <div className="text-pink-400">verifying_identity</div>
+              <div className="text-green-400">calculating_benefits</div>
             </motion.div>
 
             <motion.div
-              className="absolute right-8 top-2/3 text-xs font-mono text-zinc-600"
+              className="absolute right-8 top-2/3 text-xs font-mono text-zinc-400"
               animate={{ 
-                opacity: [0.3, 0.9, 0.3],
+                opacity: [0.4, 1, 0.4],
                 y: [0, 12, 0]
               }}
               transition={{ 
@@ -2296,11 +2151,69 @@ export default function ArchetypeSite(){
                 delay: 2
               }}
             >
-              <div>entropy_level: high</div>
-              <div>random_seed: 0x...</div>
-              <div>selection_ready</div>
+              <div className="text-purple-400">entropy_level: high</div>
+              <div className="text-yellow-400">random_seed: 0x...</div>
+              <div className="text-rose-400">selection_ready</div>
             </motion.div>
           </div>
+
+          {/* Character Loading Benefits */}
+          <motion.div
+            className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 hidden lg:block"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1, delay: 2 }}
+          >
+            <div className="bg-zinc-900/90 border border-pink-500/50 rounded-lg p-6 backdrop-blur-sm">
+              <div className="flex items-center gap-4">
+                {/* Character Avatar */}
+                <motion.div
+                  className="w-16 h-16 bg-gradient-to-br from-pink-500 to-purple-500 rounded-full flex items-center justify-center text-2xl"
+                  animate={{ 
+                    rotate: [0, 360],
+                    scale: [1, 1.1, 1]
+                  }}
+                  transition={{ 
+                    rotate: { duration: 4, repeat: Infinity, ease: "linear" },
+                    scale: { duration: 2, repeat: Infinity, ease: "easeInOut" }
+                  }}
+                >
+                  🤖
+                </motion.div>
+                
+                {/* Loading Text */}
+                <div>
+                  <motion.div
+                    className="text-pink-400 font-mono text-sm mb-1"
+                    animate={{ opacity: [0.5, 1, 0.5] }}
+                    transition={{ duration: 1.5, repeat: Infinity }}
+                  >
+                    CALCULATING_HOLDER_BENEFITS
+                  </motion.div>
+                  <div className="text-xs text-zinc-400 font-mono">
+                    Processing 1,247 ARCHETYPE_00 holders...
+                  </div>
+                  <div className="text-xs text-zinc-500 font-mono">
+                    Estimated completion: 2.3 minutes
+                  </div>
+                  
+                  {/* Progress Bar */}
+                  <motion.div
+                    className="mt-2 h-2 bg-zinc-700 rounded-full overflow-hidden w-48"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 2.5 }}
+                  >
+                    <motion.div
+                      className="h-full bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500"
+                      animate={{ width: ["0%", "100%", "0%"] }}
+                      transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+                    />
+                  </motion.div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
 
           {/* Epic Presentation */}
           <motion.div
@@ -2407,9 +2320,9 @@ export default function ArchetypeSite(){
               </div>
               {/* audio-reactive rings */}
               <div className="pointer-events-none absolute left-1/2 top-1/2 h-56 w-56 -translate-x-1/2 -translate-y-1/2">
-                <Ring delay={0} scale={1 + level*0.6}/>
-                <Ring delay={0.4} scale={1 + level*0.4}/>
-                <Ring delay={0.8} scale={1 + level*0.2}/>
+                <Ring delay={0} scale={1.2}/>
+                <Ring delay={0.4} scale={1.1}/>
+                <Ring delay={0.8} scale={1.05}/>
               </div>
             </motion.div>
             <motion.div className="mx-auto mt-2 h-1 w-1/2 max-w-56 bg-gradient-to-r from-transparent via-zinc-700 to-transparent" initial={{ opacity: 0 }} animate={{ opacity: 0.35 }} />
@@ -3328,9 +3241,6 @@ export default function ArchetypeSite(){
             </div>
           </div>
           
-          <button onClick={toggleHum} className="inline-flex items-center gap-2 border border-zinc-800 px-3 py-1 hover:bg-zinc-900 text-xs break-words">
-            <span className={`h-2 w-2 ${humOn ? "bg-pink-500" : "bg-zinc-400"}`}/> {humOn ? "ambient: on" : "ambient: off"}
-          </button>
         </footer>
       </div>
     </main>
