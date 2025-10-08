@@ -1529,13 +1529,15 @@ function NeuralPingPong() {
   );
 }
 
-// 🏛️ ARCHETYPE_EXCLUSIVE_PRIZES_MUSEUM: Continuous moving gallery with drag support
+// 🏛️ ARCHETYPE_EXCLUSIVE_PRIZES_MUSEUM: Premium gallery with smooth navigation
 function ArchetypeExclusivePrizesMuseum() {
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
-  const [scrollPosition, setScrollPosition] = useState(0);
   const [dragStart, setDragStart] = useState(0);
   const [dragOffset, setDragOffset] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
+  const [isAutoPlaying, setIsAutoPlaying] = useState(false);
+  const autoPlayRef = useRef<NodeJS.Timeout | null>(null);
 
   // Optimized color functions with useMemo
   const rarityColors = useMemo(() => ({
@@ -1548,12 +1550,12 @@ function ArchetypeExclusivePrizesMuseum() {
       'default': 'text-zinc-400'
     },
     bg: {
-      'MYTHIC': 'bg-purple-400',
-      'LEGENDARY': 'bg-yellow-400',
-      'EPIC': 'bg-pink-400',
-      'RARE': 'bg-blue-400',
-      'COMMON': 'bg-green-400',
-      'default': 'bg-zinc-400'
+      'MYTHIC': 'bg-purple-400/20 border-purple-400/40',
+      'LEGENDARY': 'bg-yellow-400/20 border-yellow-400/40',
+      'EPIC': 'bg-pink-400/20 border-pink-400/40',
+      'RARE': 'bg-blue-400/20 border-blue-400/40',
+      'COMMON': 'bg-green-400/20 border-green-400/40',
+      'default': 'bg-zinc-400/20 border-zinc-400/40'
     }
   }), []);
 
@@ -1561,51 +1563,82 @@ function ArchetypeExclusivePrizesMuseum() {
     return rarityColors.text[rarity as keyof typeof rarityColors.text] || rarityColors.text.default;
   }, [rarityColors]);
 
-  const getRarityBgColor = useCallback((rarity: string) => {
+  const getRarityStyle = useCallback((rarity: string) => {
     return rarityColors.bg[rarity as keyof typeof rarityColors.bg] || rarityColors.bg.default;
   }, [rarityColors]);
 
-  // No automatic animation - drag only
+  // Auto-play functionality
+  const startAutoPlay = useCallback(() => {
+    if (autoPlayRef.current) clearInterval(autoPlayRef.current);
+    setIsAutoPlaying(true);
+    autoPlayRef.current = setInterval(() => {
+      setCurrentIndex(prev => (prev + 1) % ARCHETYPE_EXCLUSIVE_PRIZES.length);
+    }, 4000);
+  }, []);
 
-  // Handle drag start - Optimized with useCallback
+  const stopAutoPlay = useCallback(() => {
+    if (autoPlayRef.current) {
+      clearInterval(autoPlayRef.current);
+      autoPlayRef.current = null;
+    }
+    setIsAutoPlaying(false);
+  }, []);
+
+  // Navigation functions
+  const goToPrevious = useCallback(() => {
+    stopAutoPlay();
+    setCurrentIndex(prev => prev === 0 ? ARCHETYPE_EXCLUSIVE_PRIZES.length - 1 : prev - 1);
+  }, [stopAutoPlay]);
+
+  const goToNext = useCallback(() => {
+    stopAutoPlay();
+    setCurrentIndex(prev => (prev + 1) % ARCHETYPE_EXCLUSIVE_PRIZES.length);
+  }, [stopAutoPlay]);
+
+  const goToSlide = useCallback((index: number) => {
+    stopAutoPlay();
+    setCurrentIndex(index);
+  }, [stopAutoPlay]);
+
+  // Drag functionality - Smooth and controlled
   const handleDragStart = useCallback((e: React.MouseEvent) => {
+    stopAutoPlay();
     setIsDragging(true);
     setDragStart(e.clientX);
-    setDragOffset(scrollPosition);
-  }, [scrollPosition]);
+    setDragOffset(currentIndex);
+  }, [currentIndex, stopAutoPlay]);
 
-  // Handle drag move - Optimized with useCallback and limits
   const handleDragMove = useCallback((e: React.MouseEvent) => {
     if (isDragging) {
-      e.preventDefault(); // Prevent text selection
+      e.preventDefault();
       const deltaX = e.clientX - dragStart;
-      const newPosition = dragOffset - (deltaX / 4); // Inverted for natural drag
-      // Better limits for natural scrolling
-      const limitedPosition = Math.max(-50, Math.min(50, newPosition));
-      setScrollPosition(limitedPosition);
+      const sensitivity = 0.3; // Much more controlled
+      const newIndex = dragOffset - (deltaX * sensitivity);
+      const clampedIndex = Math.max(0, Math.min(ARCHETYPE_EXCLUSIVE_PRIZES.length - 1, newIndex));
+      setCurrentIndex(Math.round(clampedIndex));
     }
   }, [isDragging, dragStart, dragOffset]);
 
-  // Handle drag end - Optimized with useCallback
   const handleDragEnd = useCallback(() => {
     setIsDragging(false);
   }, []);
 
-  // Touch support - Optimized with useCallback
+  // Touch support
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    stopAutoPlay();
     setIsDragging(true);
     setDragStart(e.touches[0].clientX);
-    setDragOffset(scrollPosition);
-  }, [scrollPosition]);
+    setDragOffset(currentIndex);
+  }, [currentIndex, stopAutoPlay]);
 
   const handleTouchMove = useCallback((e: React.TouchEvent) => {
     if (isDragging) {
-      e.preventDefault(); // Prevent scrolling
+      e.preventDefault();
       const deltaX = e.touches[0].clientX - dragStart;
-      const newPosition = dragOffset - (deltaX / 4); // Inverted for natural drag
-      // Better limits for natural scrolling
-      const limitedPosition = Math.max(-50, Math.min(50, newPosition));
-      setScrollPosition(limitedPosition);
+      const sensitivity = 0.3;
+      const newIndex = dragOffset - (deltaX * sensitivity);
+      const clampedIndex = Math.max(0, Math.min(ARCHETYPE_EXCLUSIVE_PRIZES.length - 1, newIndex));
+      setCurrentIndex(Math.round(clampedIndex));
     }
   }, [isDragging, dragStart, dragOffset]);
 
@@ -1613,130 +1646,169 @@ function ArchetypeExclusivePrizesMuseum() {
     setIsDragging(false);
   }, []);
 
+  // Cleanup
+  useEffect(() => {
+    return () => {
+      if (autoPlayRef.current) clearInterval(autoPlayRef.current);
+    };
+  }, []);
+
+  const currentImage = ARCHETYPE_EXCLUSIVE_PRIZES[currentIndex];
+
   return (
     <div className="relative w-full">
-      {/* Museum Header - Smaller */}
-      <div className="text-center mb-4">
-        <h2 className="text-xl font-bold text-orange-400 font-mono mb-1">
+      {/* Premium Header */}
+      <div className="text-center mb-6">
+        <h2 className="text-2xl font-bold text-orange-400 font-mono mb-2">
           ARCHETYPE_00_EXCLUSIVE_PRIZES
         </h2>
-        <p className="text-xs text-zinc-400 font-mono">
+        <p className="text-sm text-zinc-400 font-mono">
           FLUFFY_DYNASTY_REWARDS_MUSEUM • ARCHETYPE_00 HOLDERS ONLY
         </p>
       </div>
 
-      {/* Museum Wall - Optimized Space */}
-      <div className="relative w-full h-[320px] md:h-[400px] bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950 border border-zinc-800 overflow-hidden rounded-lg">
-        {/* Museum Wall Pattern - Responsive */}
-        <div className="absolute inset-0 bg-[repeating-linear-gradient(90deg,transparent,transparent_48px,rgba(255,165,0,0.03)_48px,rgba(255,165,0,0.03)_50px)] md:bg-[repeating-linear-gradient(90deg,transparent,transparent_98px,rgba(255,165,0,0.03)_98px,rgba(255,165,0,0.03)_100px)]"></div>
-        <div className="absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_48px,rgba(255,165,0,0.02)_48px,rgba(255,165,0,0.02)_50px)] md:bg-[repeating-linear-gradient(0deg,transparent,transparent_98px,rgba(255,165,0,0.02)_98px,rgba(255,165,0,0.02)_100px)]"></div>
-        
-        {/* Moving Gallery - Mobile Optimized */}
-        <div 
-          ref={containerRef}
-          className="absolute top-0 left-0 h-full flex items-center cursor-grab active:cursor-grabbing select-none"
-          onMouseLeave={handleDragEnd}
-          onMouseMove={isDragging ? handleDragMove : undefined}
-          onMouseUp={handleDragEnd}
-          onTouchMove={isDragging ? handleTouchMove : undefined}
-          onTouchEnd={handleTouchEnd}
-          style={{
-            transform: `translateX(-${scrollPosition}%)`,
-            width: '200%',
-            transition: isDragging ? 'none' : 'transform 0.1s ease-out'
-          }}
-        >
-          {/* Duplicate images for seamless loop */}
-          {[...ARCHETYPE_EXCLUSIVE_PRIZES, ...ARCHETYPE_EXCLUSIVE_PRIZES].map((image, index) => (
-            <motion.div
-              key={`${image.id}-${index}`}
-              className="flex-shrink-0 relative group mx-2 md:mx-4 w-[150px] h-[240px] md:w-[200px] md:h-[320px] cursor-grab active:cursor-grabbing"
-              whileHover={{ 
-                scale: 1.02,
-                y: -5,
-                z: 50
-              }}
-              transition={{ duration: 0.4, ease: "easeOut" }}
-              onMouseDown={handleDragStart}
-              onTouchStart={handleTouchStart}
+      {/* Main Gallery Container */}
+      <div className="relative w-full max-w-4xl mx-auto">
+        {/* Navigation Controls */}
+        <div className="flex items-center justify-between mb-4">
+          <button
+            onClick={goToPrevious}
+            className="p-3 bg-zinc-800/50 hover:bg-zinc-700/50 border border-zinc-600/50 hover:border-orange-500/50 rounded-lg transition-all duration-300 group"
+          >
+            <svg className="w-5 h-5 text-zinc-400 group-hover:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+
+          <div className="flex items-center gap-4">
+            <button
+              onClick={isAutoPlaying ? stopAutoPlay : startAutoPlay}
+              className={`px-4 py-2 rounded-lg font-mono text-sm transition-all duration-300 ${
+                isAutoPlaying 
+                  ? 'bg-red-500/20 text-red-400 border border-red-500/40 hover:bg-red-500/30' 
+                  : 'bg-green-500/20 text-green-400 border border-green-500/40 hover:bg-green-500/30'
+              }`}
             >
-              {/* Elegant Museum Frame - Optimized Space */}
-              <div className="relative w-full h-[200px] md:h-[280px] bg-gradient-to-br from-zinc-900/80 to-zinc-800/60 backdrop-blur-sm border border-zinc-700/50 shadow-2xl overflow-hidden group-hover:border-orange-500/40 transition-all duration-500">
-                {/* ARCHETYPE Twist - Subtle Glitch Effect */}
-                <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 via-transparent to-amber-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                
-                {/* Minimalist Number Badge */}
-                <div className="absolute top-3 left-3 bg-orange-500/90 text-black font-bold text-xs px-2 py-1 font-mono z-20 backdrop-blur-sm">
-                  #{image.id}
-                </div>
+              {isAutoPlaying ? 'PAUSE' : 'AUTO'}
+            </button>
+            
+            <div className="text-sm font-mono text-zinc-400">
+              {currentIndex + 1} / {ARCHETYPE_EXCLUSIVE_PRIZES.length}
+            </div>
+          </div>
 
-                {/* Rarity Indicator - Minimalist */}
-                <div className="absolute top-3 right-3 z-20">
-                  <div className={`w-3 h-3 rounded-full ${getRarityBgColor(image.rarity)} opacity-70`}></div>
-                </div>
-
-                {/* Image Container */}
-                <div className="relative w-full h-full flex items-center justify-center p-2 md:p-4">
-                  <img
-                    src={image.url}
-                    alt={image.title}
-                    className="max-w-full max-h-full object-contain drop-shadow-lg"
-                    style={{ 
-                      filter: 'contrast(1.05) saturate(1.1) brightness(1.02)',
-                      imageRendering: 'auto'
-                    }}
-                    onError={(e) => {
-                      console.log(`%c[MUSEUM_ERROR] Failed to load ${image.title}`, "color:#ff4444; font-family: monospace;");
-                      e.currentTarget.src = `data:image/svg+xml;base64,${btoa(`
-                        <svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">
-                          <rect width="100%" height="100%" fill="#1a1a1a"/>
-                          <text x="50%" y="50%" font-family="monospace" font-size="10" fill="#ff6600" text-anchor="middle" dy=".3em">
-                            ${image.title}
-                          </text>
-                        </svg>
-                      `)}`;
-                    }}
-                  />
-                </div>
-
-                {/* Subtle Hover Glow */}
-                <motion.div
-                  className="absolute inset-0 pointer-events-none"
-                  initial={{ opacity: 0 }}
-                  whileHover={{ opacity: 1 }}
-                  transition={{ duration: 0.4 }}
-                >
-                  <div className="w-full h-full bg-gradient-to-r from-orange-500/10 via-transparent to-amber-500/10"></div>
-                </motion.div>
-
-                {/* ARCHETYPE Glitch Lines on Hover */}
-                <motion.div
-                  className="absolute inset-0 pointer-events-none"
-                  initial={{ opacity: 0 }}
-                  whileHover={{ opacity: 1 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-orange-500/60 to-transparent"></div>
-                  <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-amber-500/60 to-transparent"></div>
-                </motion.div>
-              </div>
-
-              {/* Name and Rarity Button - Mobile Responsive */}
-              <div className="mt-2 md:mt-4 w-full">
-                <div className="text-center mb-2">
-                  <div className="text-orange-400 font-bold text-xs font-mono truncate max-w-full">#{image.id} {image.title}</div>
-                </div>
-                <button className={`w-full px-3 py-2 rounded text-xs font-mono font-bold ${getRarityColor(image.rarity)} bg-black/50 border border-current/30 hover:scale-105 transition-all duration-300`}>
-                  {image.rarity}
-                </button>
-              </div>
-            </motion.div>
-          ))}
+          <button
+            onClick={goToNext}
+            className="p-3 bg-zinc-800/50 hover:bg-zinc-700/50 border border-zinc-600/50 hover:border-orange-500/50 rounded-lg transition-all duration-300 group"
+          >
+            <svg className="w-5 h-5 text-zinc-400 group-hover:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
         </div>
 
-        {/* Drag Indicator - Simple and Clean */}
-        <div className="absolute bottom-3 right-3 bg-black/60 border border-orange-500/30 px-2 py-1 rounded text-xs font-mono text-orange-400 backdrop-blur-sm">
-          {isDragging ? 'DRAGGING' : 'DRAG TO VIEW'}
+        {/* Main Display Area */}
+        <div 
+          ref={containerRef}
+          className="relative w-full h-[400px] md:h-[500px] bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950 border border-zinc-800 rounded-xl overflow-hidden cursor-grab active:cursor-grabbing select-none"
+          onMouseDown={handleDragStart}
+          onMouseMove={isDragging ? handleDragMove : undefined}
+          onMouseUp={handleDragEnd}
+          onTouchStart={handleTouchStart}
+          onTouchMove={isDragging ? handleTouchMove : undefined}
+          onTouchEnd={handleTouchEnd}
+        >
+          {/* Background Pattern */}
+          <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_20px,rgba(255,165,0,0.02)_20px,rgba(255,165,0,0.02)_40px)]"></div>
+          
+          {/* Main Image Display */}
+          <div className="relative w-full h-full flex items-center justify-center p-8">
+            <motion.div
+              key={currentIndex}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
+              className="relative max-w-full max-h-full"
+            >
+              {/* Image Frame */}
+              <div className="relative bg-gradient-to-br from-zinc-900/90 to-zinc-800/70 backdrop-blur-sm border border-zinc-700/50 rounded-lg p-4 shadow-2xl">
+                {/* Number Badge */}
+                <div className="absolute -top-2 -left-2 bg-orange-500 text-black font-bold text-sm px-3 py-1 rounded-full font-mono z-20">
+                  #{currentImage.id}
+                </div>
+
+                {/* Rarity Badge */}
+                <div className={`absolute -top-2 -right-2 px-3 py-1 rounded-full text-xs font-mono font-bold ${getRarityStyle(currentImage.rarity)}`}>
+                  {currentImage.rarity}
+                </div>
+
+                {/* Image */}
+                <img
+                  src={currentImage.url}
+                  alt={currentImage.title}
+                  className="max-w-full max-h-[300px] md:max-h-[400px] object-contain drop-shadow-lg"
+                  style={{ 
+                    filter: 'contrast(1.05) saturate(1.1) brightness(1.02)',
+                    imageRendering: 'auto'
+                  }}
+                  onError={(e) => {
+                    e.currentTarget.src = `data:image/svg+xml;base64,${btoa(`
+                      <svg width="400" height="300" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="100%" height="100%" fill="#1a1a1a"/>
+                        <text x="50%" y="50%" font-family="monospace" font-size="14" fill="#ff6600" text-anchor="middle" dy=".3em">
+                          ${currentImage.title}
+                        </text>
+                      </svg>
+                    `)}`;
+                  }}
+                />
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Image Info Overlay */}
+          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
+            <div className="text-center">
+              <h3 className="text-xl font-bold text-orange-400 font-mono mb-2">
+                #{currentImage.id} {currentImage.title}
+              </h3>
+              <p className="text-sm text-zinc-300 font-mono max-w-2xl mx-auto">
+                {currentImage.description}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Thumbnail Navigation */}
+        <div className="mt-6 flex justify-center gap-2 overflow-x-auto pb-2">
+          {ARCHETYPE_EXCLUSIVE_PRIZES.map((image, index) => (
+            <button
+              key={image.id}
+              onClick={() => goToSlide(index)}
+              className={`flex-shrink-0 w-16 h-16 rounded-lg border-2 transition-all duration-300 ${
+                index === currentIndex
+                  ? 'border-orange-500 scale-110'
+                  : 'border-zinc-600 hover:border-zinc-500'
+              }`}
+            >
+              <img
+                src={image.url}
+                alt={image.title}
+                className="w-full h-full object-cover rounded-md"
+                onError={(e) => {
+                  e.currentTarget.src = `data:image/svg+xml;base64,${btoa(`
+                    <svg width="64" height="64" xmlns="http://www.w3.org/2000/svg">
+                      <rect width="100%" height="100%" fill="#1a1a1a"/>
+                      <text x="50%" y="50%" font-family="monospace" font-size="8" fill="#ff6600" text-anchor="middle" dy=".3em">
+                        ${image.id}
+                      </text>
+                    </svg>
+                  `)}`;
+                }}
+              />
+            </button>
+          ))}
         </div>
       </div>
 
