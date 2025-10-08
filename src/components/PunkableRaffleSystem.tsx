@@ -79,27 +79,39 @@ const PunkableRaffleSystem = () => {
   const handleCreateRaffle = async () => {
     if (!newRaffleTitle.trim()) return
 
+    console.log("Creating raffle with title:", newRaffleTitle.trim())
     setCreating(true)
-    const raffle = await RaffleService.createRaffle(
-      newRaffleTitle.trim(),
-      newRaffleDescription.trim() || undefined,
-      newRaffleImage.trim() || undefined,
-    )
+    
+    try {
+      const raffle = await RaffleService.createRaffle(
+        newRaffleTitle.trim(),
+        newRaffleDescription.trim() || undefined,
+        newRaffleImage.trim() || undefined,
+      )
 
-    if (raffle) {
-      setCurrentRaffle(raffle)
-      setParticipants([])
-      setPrizes([])
-      setWinners([])
-      setCurrentView("raffle")
-      setNewRaffleTitle("")
-      setNewRaffleDescription("")
-      setNewRaffleImage("")
-      setShowCreateForm(false)
-      // Save to history
-      saveRaffleToHistory(raffle)
+      console.log("Raffle created:", raffle)
+
+      if (raffle) {
+        setCurrentRaffle(raffle)
+        setParticipants([])
+        setPrizes([])
+        setWinners([])
+        setCurrentView("raffle")
+        setNewRaffleTitle("")
+        setNewRaffleDescription("")
+        setNewRaffleImage("")
+        setShowCreateForm(false)
+        // Save to history
+        saveRaffleToHistory(raffle)
+        console.log("Raffle state updated successfully")
+      } else {
+        console.error("Failed to create raffle - raffle is null")
+      }
+    } catch (error) {
+      console.error("Error in handleCreateRaffle:", error)
+    } finally {
+      setCreating(false)
     }
-    setCreating(false)
   }
 
   // Check for duplicate UP addresses
