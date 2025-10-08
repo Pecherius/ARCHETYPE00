@@ -1306,8 +1306,14 @@ const PunkableRaffleSystem = () => {
                           className="w-16 px-2 py-1 text-sm bg-zinc-700 border border-zinc-600 rounded text-zinc-100 focus:border-pink-500 focus:outline-none"
                         />
                         <span className="text-sm text-zinc-400">tickets</span>
-                        {participant.tickets >= 10 && (
+                        {participant.tickets >= 20 ? (
                           <span className="text-lg" title="Whale alert! This participant has many tickets">🐋</span>
+                        ) : participant.tickets >= 10 ? (
+                          <span className="text-lg" title="High roller! This participant has many tickets">💎</span>
+                        ) : participant.tickets >= 5 ? (
+                          <span className="text-lg" title="Medium participant">⭐</span>
+                        ) : (
+                          <span className="text-lg" title="Standard participant">🎫</span>
                         )}
                       </div>
                       {participant.up_address && !userStorageService.getUserByUpAddress(participant.up_address) && (
