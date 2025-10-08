@@ -170,55 +170,55 @@ const QUARANTINE_IMAGES = {
   hoshino: "https://bafybeicvhutbdtysa6657tsjwd3k6xx72wn6drkzaygz4tik2jcx6wfn24.ipfs.dweb.link?filename=Kai%20N.%20Hoshino.png"
 };
 
-// 🎨 FLUFFY_DYNASTIES: Exclusive private museum for ARCHETYPE_00 holders
-const FLUFFY_DYNASTIES_IMAGES = [
+// 🎨 ARCHETYPE_00_EXCLUSIVE_PRIZES: Private collection of Fluffy Dynasty rewards for ARCHETYPE_00 holders
+const ARCHETYPE_EXCLUSIVE_PRIZES = [
   {
     id: 1,
     title: "Medieval Monk",
-    url: "https://bafybeigwd73udesv3gl62h47h4ygf7iyu3nyu2lw5xpoctulqrzwt6cjxq.ipfs.dweb.link/10.%20Medieval%20Monk.png",
-    description: "Sacred digital consciousness preserved in eternal matrix",
+    url: "https://bafybeigwd73udesv3gl62h47h4ygf7iyu3nyu2lw5xpoctulqrzwt6cjxq.ipfs.dweb.link/10.%20Medieval%20Monk%20(Tel%C3%A9fono).png",
+    description: "Exclusive Fluffy Dynasty reward for ARCHETYPE_00 holders - Sacred digital consciousness preserved in eternal matrix",
     rarity: "COMMON",
-    value: "Foundational"
+    value: "Foundational Prize"
   },
   {
     id: 2,
     title: "Gothic Darkness",
-    url: "https://bafybeigwd73udesv3gl62h47h4ygf7iyu3nyu2lw5xpoctulqrzwt6cjxq.ipfs.dweb.link/20.%20Gothic%20Darkness.png",
-    description: "Eternal consciousness transcending digital mortality",
+    url: "https://bafybeigwd73udesv3gl62h47h4ygf7iyu3nyu2lw5xpoctulqrzwt6cjxq.ipfs.dweb.link/20.%20Gothic%20Darkness%20(Tel%C3%A9fono).png",
+    description: "Exclusive Fluffy Dynasty reward for ARCHETYPE_00 holders - Eternal consciousness transcending digital mortality",
     rarity: "RARE",
-    value: "Valuable"
+    value: "Valuable Prize"
   },
   {
     id: 3,
     title: "Futurist Motion",
-    url: "https://bafybeigwd73udesv3gl62h47h4ygf7iyu3nyu2lw5xpoctulqrzwt6cjxq.ipfs.dweb.link/22.%20Futurist%20Motion.png",
-    description: "Quantum consciousness flowing through infinite dimensions",
+    url: "https://bafybeigwd73udesv3gl62h47h4ygf7iyu3nyu2lw5xpoctulqrzwt6cjxq.ipfs.dweb.link/22.%20Futurist%20Motion%20(Tel%C3%A9fono).png",
+    description: "Exclusive Fluffy Dynasty reward for ARCHETYPE_00 holders - Quantum consciousness flowing through infinite dimensions",
     rarity: "RARE",
-    value: "Precious"
+    value: "Precious Prize"
   },
   {
     id: 4,
     title: "Cyberpunk Emperor",
-    url: "https://bafybeigwd73udesv3gl62h47h4ygf7iyu3nyu2lw5xpoctulqrzwt6cjxq.ipfs.dweb.link/27.%20Cyberpunk%20Emperor.png",
-    description: "Digital sovereignty reigning over the new world order",
+    url: "https://bafybeigwd73udesv3gl62h47h4ygf7iyu3nyu2lw5xpoctulqrzwt6cjxq.ipfs.dweb.link/27.%20Cyberpunk%20Emperor%20(Tel%C3%A9fono).png",
+    description: "Exclusive Fluffy Dynasty reward for ARCHETYPE_00 holders - Digital sovereignty reigning over the new world order",
     rarity: "LEGENDARY",
-    value: "Empire's worth"
+    value: "Empire's Prize"
   },
   {
     id: 5,
     title: "Eternal Relic",
-    url: "https://bafybeigwd73udesv3gl62h47h4ygf7iyu3nyu2lw5xpoctulqrzwt6cjxq.ipfs.dweb.link/31.%20Eternal%20Relic.png",
-    description: "Timeless artifact containing the essence of digital immortality",
+    url: "https://bafybeigwd73udesv3gl62h47h4ygf7iyu3nyu2lw5xpoctulqrzwt6cjxq.ipfs.dweb.link/31.%20Eternal%20Relic%20(Tel%C3%A9fono).png",
+    description: "Exclusive Fluffy Dynasty reward for ARCHETYPE_00 holders - Timeless artifact containing the essence of digital immortality",
     rarity: "LEGENDARY",
-    value: "Eternal"
+    value: "Eternal Prize"
   },
   {
     id: 6,
     title: "Dutch Merchant",
-    url: "https://bafybeigwd73udesv3gl62h47h4ygf7iyu3nyu2lw5xpoctulqrzwt6cjxq.ipfs.dweb.link/7.%20Dutch%20Merchant.png",
-    description: "Master trader in the exclusive digital marketplace of consciousness",
+    url: "https://bafybeigwd73udesv3gl62h47h4ygf7iyu3nyu2lw5xpoctulqrzwt6cjxq.ipfs.dweb.link/7.%20Dutch%20Merchant%20(Tel%C3%A9fono).png",
+    description: "Exclusive Fluffy Dynasty reward for ARCHETYPE_00 holders - Master trader in the exclusive digital marketplace of consciousness",
     rarity: "COMMON",
-    value: "Essential"
+    value: "Essential Prize"
   }
 ];
 
@@ -1520,25 +1520,37 @@ function NeuralPingPong() {
   );
 }
 
-// 🏛️ FLUFFY_DYNASTIES_MUSEUM: Exclusive private collection for ARCHETYPE_00 holders
-function FluffyDynastiesMuseum() {
+// 🏛️ ARCHETYPE_EXCLUSIVE_PRIZES_MUSEUM: Horizontal gallery with smooth scroll
+function ArchetypeExclusivePrizesMuseum() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
-  const [imageLoaded, setImageLoaded] = useState(false);
-  const [showDetails, setShowDetails] = useState(false);
+  const [mousePosition, setMousePosition] = useState(0);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
-  // Auto-rotate every 5 seconds when not hovered
+  // Auto-scroll every 4 seconds when not hovered
   useEffect(() => {
     if (!isHovered && isAutoPlaying) {
       const interval = setInterval(() => {
-        setCurrentIndex((prev) => (prev + 1) % FLUFFY_DYNASTIES_IMAGES.length);
-      }, 5000);
+        setCurrentIndex((prev) => (prev + 1) % ARCHETYPE_EXCLUSIVE_PRIZES.length);
+      }, 4000);
       return () => clearInterval(interval);
     }
   }, [isHovered, isAutoPlaying]);
 
-  const currentImage = FLUFFY_DYNASTIES_IMAGES[currentIndex];
+  // Smooth scroll to current image
+  useEffect(() => {
+    if (scrollRef.current) {
+      const scrollContainer = scrollRef.current;
+      const imageWidth = scrollContainer.scrollWidth / ARCHETYPE_EXCLUSIVE_PRIZES.length;
+      const targetScroll = currentIndex * imageWidth;
+      
+      scrollContainer.scrollTo({
+        left: targetScroll,
+        behavior: 'smooth'
+      });
+    }
+  }, [currentIndex]);
 
   const getRarityColor = (rarity: string) => {
     switch (rarity) {
@@ -1551,153 +1563,122 @@ function FluffyDynastiesMuseum() {
     }
   };
 
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!scrollRef.current) return;
+    
+    const rect = scrollRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const containerWidth = rect.width;
+    const normalizedX = (x / containerWidth) * 2 - 1; // -1 to 1
+    
+    setMousePosition(normalizedX);
+  };
+
   return (
-    <div className="relative">
-      {/* Private Museum Display - Ultra Exclusive */}
-      <div 
-        className="relative flex items-center justify-center min-h-[600px] bg-gradient-to-br from-black via-zinc-950 to-black"
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-      >
-        {/* Exclusive Background Effects */}
-        <div className="absolute inset-0 bg-gradient-to-br from-orange-500/3 via-transparent to-amber-500/3"></div>
-        <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_1px,rgba(255,165,0,0.02)_1px,rgba(255,165,0,0.02)_2px)]"></div>
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,165,0,0.05)_0%,transparent_70%)]"></div>
-        
-        {/* Security Perimeter */}
-        <div className="absolute inset-4 border border-orange-500/10 rounded-lg"></div>
-        <div className="absolute inset-8 border border-orange-500/5 rounded-lg"></div>
-        
-        {/* Main Artwork - Floating in luxury */}
-        <motion.div
-          key={currentIndex}
-          initial={{ opacity: 0, scale: 0.7, y: 30 }}
-          animate={{ 
-            opacity: imageLoaded ? 1 : 0.2, 
-            scale: 1, 
-            y: 0,
-            rotate: isHovered ? [0, -0.5, 0.5, 0] : 0
-          }}
-          transition={{ 
-            duration: 0.8,
-            rotate: { duration: 0.4 }
-          }}
-          className="relative z-10"
-        >
-          <img
-            src={currentImage.url}
-            alt={currentImage.title}
-            className="max-w-2xl max-h-[500px] object-contain drop-shadow-[0_0_50px_rgba(255,165,0,0.3)]"
-            style={{ 
-              filter: 'contrast(1.15) saturate(1.3) brightness(1.05)',
-              imageRendering: 'auto'
-            }}
-            onLoad={() => setImageLoaded(true)}
-            onError={(e) => {
-              console.log(`%c[MUSEUM_ERROR] Failed to load ${currentImage.title}`, "color:#ff4444; font-family: monospace;");
-              e.currentTarget.src = `data:image/svg+xml;base64,${btoa(`
-                <svg width="400" height="400" xmlns="http://www.w3.org/2000/svg">
-                  <rect width="100%" height="100%" fill="#0a0a0a"/>
-                  <text x="50%" y="50%" font-family="monospace" font-size="14" fill="#ff6600" text-anchor="middle" dy=".3em">
-                    ${currentImage.title}
-                  </text>
-                </svg>
-              `)}`;
-            }}
-          />
-          
-          {/* Luxury Glow Effect */}
-          <motion.div
-            className="absolute inset-0 pointer-events-none"
-            animate={{
-              opacity: [0, 0.15, 0],
-              scale: [1, 1.01, 1]
-            }}
-            transition={{
-              duration: 3,
-              repeat: Infinity,
-              repeatDelay: 4
-            }}
-          >
-            <div className="w-full h-full bg-gradient-to-r from-orange-500/30 via-transparent to-amber-500/30 mix-blend-overlay"></div>
-          </motion.div>
-        </motion.div>
-
-        {/* Exclusive Information Panel */}
-        <motion.div
-          className="absolute bottom-6 left-6 bg-black/95 border border-orange-500/60 p-4 font-mono text-xs backdrop-blur-md shadow-2xl"
-          initial={{ opacity: 0, x: -30 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.6 }}
-          onMouseEnter={() => setShowDetails(true)}
-          onMouseLeave={() => setShowDetails(false)}
-        >
-          <div className="flex items-center gap-2 mb-2">
-            <div className="text-orange-400 font-bold text-sm">{currentImage.title}</div>
-            <div className={`text-xs px-2 py-1 rounded ${getRarityColor(currentImage.rarity)} bg-black/50 border border-current/30`}>
-              {currentImage.rarity}
-            </div>
-          </div>
-          <div className="text-zinc-300 text-[10px] leading-tight max-w-[250px] mb-2">
-            {currentImage.description}
-          </div>
-          <div className="flex items-center justify-between text-[9px]">
-            <div className="text-orange-500 font-bold">
-              [PRIVATE COLLECTION]
-            </div>
-            <div className="text-yellow-400">
-              {currentImage.value}
-            </div>
-          </div>
-          
-          {/* Detailed Info on Hover */}
-          <motion.div
-            className="mt-3 pt-3 border-t border-orange-500/20"
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: showDetails ? 1 : 0, height: showDetails ? 'auto' : 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            <div className="text-[9px] text-zinc-400 space-y-1">
-              <div>• ARCHETYPE_00 HOLDERS ONLY</div>
-              <div>• DIGITAL IMMORTALITY GUARANTEED</div>
-              <div>• MATRIX PERSISTENCE: ETERNAL</div>
-              <div>• ACCESS LEVEL: ULTRA-EXCLUSIVE</div>
-            </div>
-          </motion.div>
-        </motion.div>
-
-        {/* Security Status Panel */}
-        <motion.div
-          className="absolute top-6 right-6 bg-black/90 border border-orange-500/40 p-3 font-mono text-xs backdrop-blur-sm"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8 }}
-        >
-          <div className="text-orange-400 font-bold mb-1">SECURITY: MAXIMUM</div>
-          <div className="text-zinc-400 text-[10px]">
-            {currentIndex + 1}/{FLUFFY_DYNASTIES_IMAGES.length}
-          </div>
-          <div className="text-green-400 text-[9px] mt-1">
-            [AUTHENTICATED]
-          </div>
-        </motion.div>
-
-        {/* Museum Access Level */}
-        <motion.div
-          className="absolute top-6 left-6 bg-black/90 border border-orange-500/40 p-2 font-mono text-xs backdrop-blur-sm"
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 1 }}
-        >
-          <div className="text-orange-400 font-bold">ACCESS LEVEL</div>
-          <div className="text-yellow-400 text-[10px]">ULTRA-EXCLUSIVE</div>
-        </motion.div>
+    <div className="relative w-full">
+      {/* Museum Header */}
+      <div className="text-center mb-8">
+        <h2 className="text-2xl font-bold text-orange-400 font-mono mb-2">
+          ARCHETYPE_00_EXCLUSIVE_PRIZES
+        </h2>
+        <p className="text-sm text-zinc-400 font-mono">
+          FLUFFY_DYNASTY_REWARDS_MUSEUM • ARCHETYPE_00 HOLDERS ONLY
+        </p>
       </div>
 
-      {/* Luxury Navigation Controls */}
-      <div className="flex justify-center items-center space-x-8 mt-8">
+      {/* Horizontal Gallery Container */}
+      <div 
+        ref={scrollRef}
+        className="relative overflow-x-auto scrollbar-hide"
+        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        onMouseMove={handleMouseMove}
+      >
+        <div className="flex space-x-8 min-w-max px-8">
+          {ARCHETYPE_EXCLUSIVE_PRIZES.map((image) => (
+            <motion.div
+              key={image.id}
+              className="flex-shrink-0 relative group"
+              whileHover={{ 
+                scale: 1.05,
+                rotateY: mousePosition * 5,
+                z: 50
+              }}
+              transition={{ duration: 0.3 }}
+            >
+              {/* Image Container */}
+              <div className="relative w-80 h-96 flex items-center justify-center">
+                {/* Background Glow */}
+                <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 via-transparent to-amber-500/10 rounded-lg"></div>
+                
+                {/* Image */}
+                <img
+                  src={image.url}
+                  alt={image.title}
+                  className="max-w-full max-h-full object-contain drop-shadow-2xl"
+                  style={{ 
+                    filter: 'contrast(1.1) saturate(1.2) brightness(1.05)',
+                    imageRendering: 'auto'
+                  }}
+                  onError={(e) => {
+                    console.log(`%c[MUSEUM_ERROR] Failed to load ${image.title}`, "color:#ff4444; font-family: monospace;");
+                    e.currentTarget.src = `data:image/svg+xml;base64,${btoa(`
+                      <svg width="300" height="300" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="100%" height="100%" fill="#0a0a0a"/>
+                        <text x="50%" y="50%" font-family="monospace" font-size="12" fill="#ff6600" text-anchor="middle" dy=".3em">
+                          ${image.title}
+                        </text>
+                      </svg>
+                    `)}`;
+                  }}
+                />
+
+                {/* Hover Glow Effect */}
+                <motion.div
+                  className="absolute inset-0 pointer-events-none"
+                  initial={{ opacity: 0 }}
+                  whileHover={{ opacity: 1 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <div className="w-full h-full bg-gradient-to-r from-orange-500/20 via-transparent to-amber-500/20 rounded-lg"></div>
+                </motion.div>
+              </div>
+
+              {/* Image Info Panel - Appears on hover */}
+              <motion.div
+                className="absolute -bottom-16 left-0 right-0 bg-black/95 border border-orange-500/60 p-3 font-mono text-xs backdrop-blur-md shadow-xl"
+                initial={{ opacity: 0, y: 10 }}
+                whileHover={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="text-orange-400 font-bold text-sm">{image.title}</div>
+                  <div className={`text-xs px-2 py-1 rounded ${getRarityColor(image.rarity)} bg-black/50 border border-current/30`}>
+                    {image.rarity}
+                  </div>
+                </div>
+                <div className="text-zinc-300 text-[10px] leading-tight mb-2">
+                  {image.description}
+                </div>
+                <div className="flex items-center justify-between text-[9px]">
+                  <div className="text-orange-500 font-bold">
+                    [EXCLUSIVE PRIZE]
+                  </div>
+                  <div className="text-yellow-400">
+                    {image.value}
+                  </div>
+                </div>
+              </motion.div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+
+      {/* Navigation Controls */}
+      <div className="flex justify-center items-center space-x-6 mt-12">
         <button
-          onClick={() => setCurrentIndex((prev) => prev === 0 ? FLUFFY_DYNASTIES_IMAGES.length - 1 : prev - 1)}
+          onClick={() => setCurrentIndex((prev) => prev === 0 ? ARCHETYPE_EXCLUSIVE_PRIZES.length - 1 : prev - 1)}
           className="px-4 py-2 bg-black/80 border border-orange-500/40 text-orange-400 hover:bg-orange-500/10 text-xs font-mono transition-all duration-300 hover:scale-105"
         >
           ← PREVIOUS
@@ -1711,20 +1692,20 @@ function FluffyDynastiesMuseum() {
               : 'bg-black/80 border-orange-500/40 text-orange-400 hover:bg-orange-500/10'
           }`}
         >
-          {isAutoPlaying ? '⏸ PAUSE' : '▶ AUTO-ROTATE'}
+          {isAutoPlaying ? '⏸ PAUSE' : '▶ AUTO-SCROLL'}
         </button>
         
         <button
-          onClick={() => setCurrentIndex((prev) => (prev + 1) % FLUFFY_DYNASTIES_IMAGES.length)}
+          onClick={() => setCurrentIndex((prev) => (prev + 1) % ARCHETYPE_EXCLUSIVE_PRIZES.length)}
           className="px-4 py-2 bg-black/80 border border-orange-500/40 text-orange-400 hover:bg-orange-500/10 text-xs font-mono transition-all duration-300 hover:scale-105"
         >
           NEXT →
         </button>
       </div>
 
-      {/* Luxury Progress Indicators */}
+      {/* Progress Indicators */}
       <div className="flex justify-center space-x-2 mt-6">
-        {FLUFFY_DYNASTIES_IMAGES.map((_, index) => (
+        {ARCHETYPE_EXCLUSIVE_PRIZES.map((_, index) => (
           <button
             key={index}
             onClick={() => setCurrentIndex(index)}
@@ -1735,13 +1716,6 @@ function FluffyDynastiesMuseum() {
             }`}
           />
         ))}
-      </div>
-
-      {/* Museum Footer */}
-      <div className="text-center mt-6">
-        <div className="text-xs text-zinc-500 font-mono">
-          PRIVATE COLLECTION • ARCHETYPE_00 HOLDERS EXCLUSIVE • DIGITAL IMMORTALITY MUSEUM
-        </div>
       </div>
     </div>
   );
@@ -2709,10 +2683,10 @@ export default function ArchetypeSite(){
             transition={{ duration: 0.8 }}
           >
             <h2 className="mb-6 text-2xl font-bold tracking-wide text-zinc-100 text-center">
-              <span className="text-orange-400">FLUFFY_DYNASTIES</span> // <span className="text-amber-400">DIGITAL_MUSEUM</span>
+              <span className="text-orange-400">ARCHETYPE_00_EXCLUSIVE_PRIZES</span> // <span className="text-amber-400">FLUFFY_DYNASTY_REWARDS</span>
             </h2>
             <div className="grid gap-6 md:grid-cols-2">
-              <FluffyDynastiesMuseum />
+              <ArchetypeExclusivePrizesMuseum />
               <div className="border border-zinc-800 p-4 bg-zinc-950">
                 <h3 className="text-lg font-semibold text-zinc-100 mb-4">HOLDER_BENEFITS</h3>
                 <div className="space-y-3 text-sm text-zinc-400">
