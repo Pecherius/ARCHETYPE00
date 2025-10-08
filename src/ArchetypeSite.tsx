@@ -1926,221 +1926,116 @@ export default function ArchetypeSite(){
 
         {/* HERO */}
         <section className="mx-auto flex max-w-6xl flex-col items-center gap-6 px-6 py-16 text-center relative">
-          {/* Left Side Processing Elements - More subtle and better positioned */}
-          <div className="absolute left-4 top-1/2 transform -translate-y-1/2 hidden lg:block">
-            <div className="space-y-6">
-              {/* Loading NFTs - More cryptic */}
+          {/* Left Side Processing Elements - Aligned to title sides, no background */}
+          <div className="absolute left-4 top-1/3 hidden lg:block">
+            <div className="space-y-4">
+              {/* Loading NFTs - More cryptic, no background */}
               <motion.div
-                className="bg-zinc-900/60 border border-pink-500/20 rounded-lg p-3 backdrop-blur-sm"
+                className="opacity-40"
                 initial={{ opacity: 0, x: -30 }}
-                animate={{ opacity: 0.7, x: 0 }}
+                animate={{ opacity: 0.4, x: 0 }}
                 transition={{ duration: 0.8, delay: 0.5 }}
               >
-                <div className="flex items-center gap-2 mb-1">
-                  <div className="w-1.5 h-1.5 bg-pink-500 rounded-full animate-pulse"></div>
-                  <span className="text-pink-400 text-xs font-mono">FRAGMENT_SYNC</span>
-                </div>
-                <div className="text-xs text-zinc-500 font-mono">
+                <div className="text-xs text-pink-400 font-mono mb-1">FRAGMENT_SYNC</div>
+                <div className="text-xs text-zinc-600 font-mono">
                   <div>• Data corruption detected</div>
                   <div>• Resonance frequency: 38Hz</div>
                   <div>• Neural patterns: [REDACTED]</div>
                 </div>
-                <motion.div
-                  className="mt-1 h-0.5 bg-zinc-700 rounded-full overflow-hidden"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 1 }}
-                >
-                  <motion.div
-                    className="h-full bg-gradient-to-r from-pink-500 to-purple-500"
-                    animate={{ width: ["0%", "100%", "0%"] }}
-                    transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                  />
-                </motion.div>
               </motion.div>
 
               {/* Universal Profiles - More mysterious */}
               <motion.div
-                className="bg-zinc-900/60 border border-cyan-500/20 rounded-lg p-3 backdrop-blur-sm"
+                className="opacity-40"
                 initial={{ opacity: 0, x: -30 }}
-                animate={{ opacity: 0.7, x: 0 }}
+                animate={{ opacity: 0.4, x: 0 }}
                 transition={{ duration: 0.8, delay: 0.8 }}
               >
-                <div className="flex items-center gap-2 mb-1">
-                  <div className="w-1.5 h-1.5 bg-cyan-500 rounded-full animate-pulse"></div>
-                  <span className="text-cyan-400 text-xs font-mono">IDENTITY_MATRIX</span>
-                </div>
-                <div className="text-xs text-zinc-500 font-mono">
+                <div className="text-xs text-cyan-400 font-mono mb-1">IDENTITY_MATRIX</div>
+                <div className="text-xs text-zinc-600 font-mono">
                   <div>• Universal Profiles detected</div>
                   <div>• LUKSO network sync active</div>
                   <div>• Pebubu ecosystem: [CONNECTED]</div>
                 </div>
-                <motion.div
-                  className="mt-1 h-0.5 bg-zinc-700 rounded-full overflow-hidden"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 1.2 }}
-                >
-                  <motion.div
-                    className="h-full bg-gradient-to-r from-cyan-500 to-blue-500"
-                    animate={{ width: ["0%", "85%", "0%"] }}
-                    transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
-                  />
-                </motion.div>
               </motion.div>
 
               {/* Pepitoverse 2026 - Corrected */}
               <motion.div
-                className="bg-zinc-900/60 border border-purple-500/20 rounded-lg p-3 backdrop-blur-sm"
+                className="opacity-40"
                 initial={{ opacity: 0, x: -30 }}
-                animate={{ opacity: 0.7, x: 0 }}
+                animate={{ opacity: 0.4, x: 0 }}
                 transition={{ duration: 0.8, delay: 1.1 }}
               >
-                <div className="flex items-center gap-2 mb-1">
-                  <div className="w-1.5 h-1.5 bg-purple-500 rounded-full animate-pulse"></div>
-                  <span className="text-purple-400 text-xs font-mono">PEPITOVERSE_2026</span>
-                </div>
-                <div className="text-xs text-zinc-500 font-mono">
+                <div className="text-xs text-purple-400 font-mono mb-1">PEPITOVERSE_2026</div>
+                <div className="text-xs text-zinc-600 font-mono">
                   <div>• Collection exists: [VERIFIED]</div>
                   <div>• Major updates: 2026</div>
                   <div>• Ecosystem expansion: [ACTIVE]</div>
                 </div>
-                <motion.div
-                  className="mt-1 h-0.5 bg-zinc-700 rounded-full overflow-hidden"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 1.4 }}
-                >
-                  <motion.div
-                    className="h-full bg-gradient-to-r from-purple-500 to-pink-500"
-                    animate={{ width: ["0%", "60%", "0%"] }}
-                    transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-                  />
-                </motion.div>
               </motion.div>
             </div>
           </div>
 
-          {/* Right Side Processing Elements - Better positioned to avoid collision */}
-          <div className="absolute right-4 top-1/2 transform -translate-y-1/2 hidden lg:block">
-            <div className="space-y-6">
-              {/* Fluffy Dynasties - Digital Immortality in Matrix */}
+          {/* Right Side Processing Elements - Aligned to title sides, no background */}
+          <div className="absolute right-4 top-1/3 hidden lg:block">
+            <div className="space-y-4">
+              {/* Fluffy Dynasties - Digital Immortality in Matrix, no background */}
               <motion.div
-                className="bg-zinc-900/60 border border-orange-500/20 rounded-lg p-3 backdrop-blur-sm"
+                className="opacity-40"
                 initial={{ opacity: 0, x: 30 }}
-                animate={{ opacity: 0.7, x: 0 }}
+                animate={{ opacity: 0.4, x: 0 }}
                 transition={{ duration: 0.8, delay: 0.4 }}
               >
-                <div className="flex items-center gap-2 mb-1">
-                  <div className="w-1.5 h-1.5 bg-orange-500 rounded-full animate-pulse"></div>
-                  <span className="text-orange-400 text-xs font-mono">FLUFFY_DYNASTIES</span>
-                </div>
-                <div className="text-xs text-zinc-500 font-mono">
+                <div className="text-xs text-orange-400 font-mono mb-1">FLUFFY_DYNASTIES</div>
+                <div className="text-xs text-zinc-600 font-mono">
                   <div>• Digital immortality: [ACTIVE]</div>
                   <div>• Matrix persistence: [ETERNAL]</div>
                   <div>• Holder consciousness: [PRESERVED]</div>
                 </div>
-                <motion.div
-                  className="mt-1 h-0.5 bg-zinc-700 rounded-full overflow-hidden"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.9 }}
-                >
-                  <motion.div
-                    className="h-full bg-gradient-to-r from-orange-500 to-amber-500"
-                    animate={{ width: ["0%", "60%", "0%"] }}
-                    transition={{ duration: 4.2, repeat: Infinity, ease: "easeInOut", delay: 0.1 }}
-                  />
-                </motion.div>
               </motion.div>
-              {/* Calculating Benefits - Moved down to avoid collision */}
+              {/* Calculating Benefits - Moved down to avoid collision, no background */}
               <motion.div
-                className="bg-zinc-900/60 border border-green-500/20 rounded-lg p-3 backdrop-blur-sm"
+                className="opacity-40"
                 initial={{ opacity: 0, x: 30 }}
-                animate={{ opacity: 0.7, x: 0 }}
+                animate={{ opacity: 0.4, x: 0 }}
                 transition={{ duration: 0.8, delay: 0.6 }}
               >
-                <div className="flex items-center gap-2 mb-1">
-                  <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>
-                  <span className="text-green-400 text-xs font-mono">BENEFIT_CALC</span>
-                </div>
-                <div className="text-xs text-zinc-500 font-mono">
+                <div className="text-xs text-green-400 font-mono mb-1">BENEFIT_CALC</div>
+                <div className="text-xs text-zinc-600 font-mono">
                   <div>• Retroactive rewards: [CALCULATING]</div>
                   <div>• Fragment density: [ANALYZING]</div>
                   <div>• Resonance bonus: [PENDING]</div>
                 </div>
-                <motion.div
-                  className="mt-1 h-0.5 bg-zinc-700 rounded-full overflow-hidden"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 1.1 }}
-                >
-                  <motion.div
-                    className="h-full bg-gradient-to-r from-green-500 to-emerald-500"
-                    animate={{ width: ["0%", "75%", "0%"] }}
-                    transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut", delay: 0.3 }}
-                  />
-                </motion.div>
               </motion.div>
 
               {/* Neural Network - More subtle */}
               <motion.div
-                className="bg-zinc-900/60 border border-yellow-500/20 rounded-lg p-3 backdrop-blur-sm"
+                className="opacity-40"
                 initial={{ opacity: 0, x: 30 }}
-                animate={{ opacity: 0.7, x: 0 }}
+                animate={{ opacity: 0.4, x: 0 }}
                 transition={{ duration: 0.8, delay: 0.9 }}
               >
-                <div className="flex items-center gap-2 mb-1">
-                  <div className="w-1.5 h-1.5 bg-yellow-500 rounded-full animate-pulse"></div>
-                  <span className="text-yellow-400 text-xs font-mono">NEURAL_SYNC</span>
-                </div>
-                <div className="text-xs text-zinc-500 font-mono">
+                <div className="text-xs text-yellow-400 font-mono mb-1">NEURAL_SYNC</div>
+                <div className="text-xs text-zinc-600 font-mono">
                   <div>• Synaptic connections: [ACTIVE]</div>
                   <div>• Data processing: [RUNNING]</div>
                   <div>• Pattern recognition: [LEARNING]</div>
                 </div>
-                <motion.div
-                  className="mt-1 h-0.5 bg-zinc-700 rounded-full overflow-hidden"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 1.3 }}
-                >
-                  <motion.div
-                    className="h-full bg-gradient-to-r from-yellow-500 to-orange-500"
-                    animate={{ width: ["0%", "90%", "0%"] }}
-                    transition={{ duration: 2.8, repeat: Infinity, ease: "easeInOut", delay: 0.8 }}
-                  />
-                </motion.div>
               </motion.div>
 
               {/* Quantum Selection - More mysterious */}
               <motion.div
-                className="bg-zinc-900/60 border border-rose-500/20 rounded-lg p-3 backdrop-blur-sm"
+                className="opacity-40"
                 initial={{ opacity: 0, x: 30 }}
-                animate={{ opacity: 0.7, x: 0 }}
+                animate={{ opacity: 0.4, x: 0 }}
                 transition={{ duration: 0.8, delay: 1.2 }}
               >
-                <div className="flex items-center gap-2 mb-1">
-                  <div className="w-1.5 h-1.5 bg-rose-500 rounded-full animate-pulse"></div>
-                  <span className="text-rose-400 text-xs font-mono">QUANTUM_MATRIX</span>
-                </div>
-                <div className="text-xs text-zinc-500 font-mono">
+                <div className="text-xs text-rose-400 font-mono mb-1">QUANTUM_MATRIX</div>
+                <div className="text-xs text-zinc-600 font-mono">
                   <div>• Probability: [UNKNOWN]</div>
                   <div>• Entropy level: [CRITICAL]</div>
                   <div>• Randomness: [CHAOTIC]</div>
                 </div>
-                <motion.div
-                  className="mt-1 h-0.5 bg-zinc-700 rounded-full overflow-hidden"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 1.5 }}
-                >
-                  <motion.div
-                    className="h-full bg-gradient-to-r from-rose-500 to-pink-500"
-                    animate={{ width: ["0%", "45%", "0%"] }}
-                    transition={{ duration: 4.2, repeat: Infinity, ease: "easeInOut", delay: 1.2 }}
-                  />
-                </motion.div>
               </motion.div>
             </div>
           </div>
