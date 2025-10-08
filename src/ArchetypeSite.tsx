@@ -2560,7 +2560,7 @@ export default function ArchetypeSite(){
             transition={{ duration: 1, delay: 0.2 }}
           >
             <motion.p 
-              className="text-lg md:text-xl font-light text-zinc-300 mb-3 tracking-widest"
+              className="text-sm text-zinc-400 font-mono mb-3"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.8 }}
@@ -2587,13 +2587,18 @@ export default function ArchetypeSite(){
           </motion.div>
 
           <motion.h1 
-            className={`${isMobile ? 'text-2xl' : 'text-4xl md:text-7xl'} font-bold tracking-tight text-zinc-100 mb-4 ${glitch ? "animate-pulse" : ""}`}
-            initial={{ opacity: 0, y: 16, letterSpacing: "0.05em" }}
+            className={`${isMobile ? 'text-3xl' : 'text-5xl md:text-8xl'} font-mono font-bold tracking-wider text-zinc-100 mb-4 ${glitch ? "animate-pulse" : ""}`}
+            style={{ 
+              fontFamily: 'monospace',
+              textShadow: '2px 2px 0px #ff00b4, -2px -2px 0px #00ff88, 2px -2px 0px #ff0088, -2px 2px 0px #00ffff',
+              imageRendering: 'pixelated'
+            }}
+            initial={{ opacity: 0, y: 16, letterSpacing: "0.1em" }}
             animate={{ 
               opacity: 1, 
               y: 0, 
-              letterSpacing: ["0.05em","0.1em","0.05em"],
-              textShadow: glitch ? ["0 0 0px #ff00b4", "2px 0 0px #00ff88", "-2px 0 0px #ff0088", "0 0 0px #ff00b4"] : "0 0 0px transparent"
+              letterSpacing: ["0.1em","0.15em","0.1em"],
+              textShadow: glitch ? ["2px 2px 0px #ff00b4, -2px -2px 0px #00ff88, 2px -2px 0px #ff0088, -2px 2px 0px #00ffff", "4px 4px 0px #ff00b4, -4px -4px 0px #00ff88, 4px -4px 0px #ff0088, -4px 4px 0px #00ffff", "2px 2px 0px #ff00b4, -2px -2px 0px #00ff88, 2px -2px 0px #ff0088, -2px 2px 0px #00ffff"] : "2px 2px 0px #ff00b4, -2px -2px 0px #00ff88, 2px -2px 0px #ff0088, -2px 2px 0px #00ffff"
             }} 
             transition={{ duration: 1.2 }}>
             ARCHETYPE_00
