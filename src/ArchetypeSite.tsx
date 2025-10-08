@@ -1520,37 +1520,11 @@ function NeuralPingPong() {
   );
 }
 
-// 🏛️ ARCHETYPE_EXCLUSIVE_PRIZES_MUSEUM: Horizontal gallery with smooth scroll
+// 🏛️ ARCHETYPE_EXCLUSIVE_PRIZES_MUSEUM: Continuous moving gallery like a real museum
 function ArchetypeExclusivePrizesMuseum() {
-  const [currentIndex, setCurrentIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
-  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
-  const [mousePosition, setMousePosition] = useState(0);
-  const scrollRef = useRef<HTMLDivElement>(null);
-
-  // Auto-scroll every 3 seconds when not hovered
-  useEffect(() => {
-    if (!isHovered && isAutoPlaying) {
-      const interval = setInterval(() => {
-        setCurrentIndex((prev) => (prev + 1) % ARCHETYPE_EXCLUSIVE_PRIZES.length);
-      }, 3000);
-      return () => clearInterval(interval);
-    }
-  }, [isHovered, isAutoPlaying]);
-
-  // Smooth scroll to current image
-  useEffect(() => {
-    if (scrollRef.current) {
-      const scrollContainer = scrollRef.current;
-      const imageWidth = scrollContainer.scrollWidth / ARCHETYPE_EXCLUSIVE_PRIZES.length;
-      const targetScroll = currentIndex * imageWidth;
-      
-      scrollContainer.scrollTo({
-        left: targetScroll,
-        behavior: 'smooth'
-      });
-    }
-  }, [currentIndex]);
+  const [isPaused, setIsPaused] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const getRarityColor = (rarity: string) => {
     switch (rarity) {
@@ -1561,17 +1535,6 @@ function ArchetypeExclusivePrizesMuseum() {
       case 'COMMON': return 'text-green-400';
       default: return 'text-zinc-400';
     }
-  };
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!scrollRef.current) return;
-    
-    const rect = scrollRef.current.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const containerWidth = rect.width;
-    const normalizedX = (x / containerWidth) * 2 - 1; // -1 to 1
-    
-    setMousePosition(normalizedX);
   };
 
   return (
@@ -1586,58 +1549,66 @@ function ArchetypeExclusivePrizesMuseum() {
         </p>
       </div>
 
-      {/* Horizontal Gallery Container - Full Width */}
-      <div 
-        ref={scrollRef}
-        className="relative overflow-hidden w-full"
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-        onMouseMove={handleMouseMove}
-      >
-        <div className="flex transition-transform duration-1000 ease-in-out" 
-             style={{ transform: `translateX(-${currentIndex * 100}%)` }}>
-          {ARCHETYPE_EXCLUSIVE_PRIZES.map((image) => (
+      {/* Museum Wall - Fixed Background */}
+      <div className="relative w-full h-[600px] bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950 border border-zinc-800 overflow-hidden">
+        {/* Museum Wall Pattern */}
+        <div className="absolute inset-0 bg-[repeating-linear-gradient(90deg,transparent,transparent_98px,rgba(255,165,0,0.03)_98px,rgba(255,165,0,0.03)_100px)]"></div>
+        <div className="absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_98px,rgba(255,165,0,0.02)_98px,rgba(255,165,0,0.02)_100px)]"></div>
+        
+        {/* Moving Gallery - Continuous Right to Left */}
+        <div 
+          ref={containerRef}
+          className={`absolute top-0 left-0 h-full flex items-center ${isHovered || isPaused ? '' : 'animate-scroll'}`}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+          style={{
+            animation: isHovered || isPaused ? 'none' : 'scrollRightToLeft 20s linear infinite'
+          }}
+        >
+          {/* Duplicate images for seamless loop */}
+          {[...ARCHETYPE_EXCLUSIVE_PRIZES, ...ARCHETYPE_EXCLUSIVE_PRIZES].map((image, index) => (
             <motion.div
-              key={image.id}
-              className="flex-shrink-0 relative group w-full"
+              key={`${image.id}-${index}`}
+              className="flex-shrink-0 relative group mx-4"
+              style={{ width: '300px', height: '400px' }}
+              onMouseEnter={() => {}}
+              onMouseLeave={() => {}}
               whileHover={{ 
-                scale: 1.02,
-                rotateY: mousePosition * 3,
+                scale: 1.05,
                 z: 50
               }}
-              transition={{ duration: 0.4 }}
+              transition={{ duration: 0.3 }}
             >
-              {/* Image Container - Full Width */}
-              <div className="relative w-full h-[500px] flex items-center justify-center">
-                {/* Background Glow */}
-                <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 via-transparent to-amber-500/5"></div>
-                
+              {/* Picture Frame */}
+              <div className="relative w-full h-full bg-black border-4 border-orange-500/30 shadow-2xl">
                 {/* Image Number Badge */}
-                <div className="absolute top-4 left-4 bg-black/80 border border-orange-500/40 p-2 font-mono text-xs backdrop-blur-sm z-10">
-                  <div className="text-orange-400 font-bold">#{image.id}</div>
+                <div className="absolute -top-2 -left-2 bg-orange-500 text-black font-bold text-sm px-2 py-1 font-mono z-20">
+                  #{image.id}
                 </div>
 
                 {/* Image */}
-                <img
-                  src={image.url}
-                  alt={image.title}
-                  className="max-w-full max-h-full object-contain drop-shadow-2xl"
-                  style={{ 
-                    filter: 'contrast(1.1) saturate(1.2) brightness(1.05)',
-                    imageRendering: 'auto'
-                  }}
-                  onError={(e) => {
-                    console.log(`%c[MUSEUM_ERROR] Failed to load ${image.title}`, "color:#ff4444; font-family: monospace;");
-                    e.currentTarget.src = `data:image/svg+xml;base64,${btoa(`
-                      <svg width="400" height="400" xmlns="http://www.w3.org/2000/svg">
-                        <rect width="100%" height="100%" fill="#0a0a0a"/>
-                        <text x="50%" y="50%" font-family="monospace" font-size="14" fill="#ff6600" text-anchor="middle" dy=".3em">
-                          ${image.title}
-                        </text>
-                      </svg>
-                    `)}`;
-                  }}
-                />
+                <div className="relative w-full h-full flex items-center justify-center p-4">
+                  <img
+                    src={image.url}
+                    alt={image.title}
+                    className="max-w-full max-h-full object-contain"
+                    style={{ 
+                      filter: 'contrast(1.1) saturate(1.2) brightness(1.05)',
+                      imageRendering: 'auto'
+                    }}
+                    onError={(e) => {
+                      console.log(`%c[MUSEUM_ERROR] Failed to load ${image.title}`, "color:#ff4444; font-family: monospace;");
+                      e.currentTarget.src = `data:image/svg+xml;base64,${btoa(`
+                        <svg width="250" height="250" xmlns="http://www.w3.org/2000/svg">
+                          <rect width="100%" height="100%" fill="#0a0a0a"/>
+                          <text x="50%" y="50%" font-family="monospace" font-size="12" fill="#ff6600" text-anchor="middle" dy=".3em">
+                            ${image.title}
+                          </text>
+                        </svg>
+                      `)}`;
+                    }}
+                  />
+                </div>
 
                 {/* Hover Glow Effect */}
                 <motion.div
@@ -1646,76 +1617,60 @@ function ArchetypeExclusivePrizesMuseum() {
                   whileHover={{ opacity: 1 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <div className="w-full h-full bg-gradient-to-r from-orange-500/15 via-transparent to-amber-500/15"></div>
+                  <div className="w-full h-full bg-gradient-to-r from-orange-500/20 via-transparent to-amber-500/20"></div>
                 </motion.div>
-              </div>
 
-              {/* Image Info Panel - Fixed at bottom */}
-              <div className="absolute bottom-0 left-0 right-0 bg-black/95 border border-orange-500/60 p-4 font-mono text-xs backdrop-blur-md shadow-xl">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="text-orange-400 font-bold text-lg">#{image.id} {image.title}</div>
-                  <div className={`text-xs px-3 py-1 rounded ${getRarityColor(image.rarity)} bg-black/50 border border-current/30`}>
-                    {image.rarity}
+                {/* Image Info Panel - Appears on hover */}
+                <motion.div
+                  className="absolute -bottom-20 left-0 right-0 bg-black/95 border border-orange-500/60 p-3 font-mono text-xs backdrop-blur-md shadow-xl z-30"
+                  initial={{ opacity: 0, y: 10 }}
+                  whileHover={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="text-orange-400 font-bold text-sm">#{image.id} {image.title}</div>
+                    <div className={`text-xs px-2 py-1 rounded ${getRarityColor(image.rarity)} bg-black/50 border border-current/30`}>
+                      {image.rarity}
+                    </div>
                   </div>
-                </div>
-                <div className="text-zinc-300 text-sm leading-relaxed mb-3 max-w-4xl">
-                  {image.description}
-                </div>
-                <div className="flex items-center justify-between text-xs">
-                  <div className="text-orange-500 font-bold">
-                    [EXCLUSIVE PRIZE FOR ARCHETYPE_00 HOLDERS]
+                  <div className="text-zinc-300 text-[10px] leading-tight mb-2">
+                    {image.description}
                   </div>
-                  <div className="text-yellow-400 font-semibold">
-                    {image.value}
+                  <div className="flex items-center justify-between text-[9px]">
+                    <div className="text-orange-500 font-bold">
+                      [EXCLUSIVE PRIZE]
+                    </div>
+                    <div className="text-yellow-400">
+                      {image.value}
+                    </div>
                   </div>
-                </div>
+                </motion.div>
               </div>
             </motion.div>
           ))}
         </div>
-      </div>
 
-      {/* Navigation Controls */}
-      <div className="flex justify-center items-center space-x-6 mt-12">
-        <button
-          onClick={() => setCurrentIndex((prev) => prev === 0 ? ARCHETYPE_EXCLUSIVE_PRIZES.length - 1 : prev - 1)}
-          className="px-4 py-2 bg-black/80 border border-orange-500/40 text-orange-400 hover:bg-orange-500/10 text-xs font-mono transition-all duration-300 hover:scale-105"
-        >
-          ← PREVIOUS
-        </button>
-        
-        <button
-          onClick={() => setIsAutoPlaying(!isAutoPlaying)}
-          className={`px-4 py-2 border text-xs font-mono transition-all duration-300 hover:scale-105 ${
-            isAutoPlaying 
-              ? 'bg-orange-500/20 border-orange-500 text-orange-400' 
-              : 'bg-black/80 border-orange-500/40 text-orange-400 hover:bg-orange-500/10'
-          }`}
-        >
-          {isAutoPlaying ? '⏸ PAUSE' : '▶ AUTO-SCROLL'}
-        </button>
-        
-        <button
-          onClick={() => setCurrentIndex((prev) => (prev + 1) % ARCHETYPE_EXCLUSIVE_PRIZES.length)}
-          className="px-4 py-2 bg-black/80 border border-orange-500/40 text-orange-400 hover:bg-orange-500/10 text-xs font-mono transition-all duration-300 hover:scale-105"
-        >
-          NEXT →
-        </button>
-      </div>
-
-      {/* Progress Indicators */}
-      <div className="flex justify-center space-x-2 mt-6">
-        {ARCHETYPE_EXCLUSIVE_PRIZES.map((_, index) => (
+        {/* Museum Controls */}
+        <div className="absolute bottom-4 right-4 flex gap-2">
           <button
-            key={index}
-            onClick={() => setCurrentIndex(index)}
-            className={`w-3 h-3 transition-all duration-300 rounded-full ${
-              index === currentIndex 
-                ? 'bg-orange-400 scale-125 shadow-lg shadow-orange-400/50' 
-                : 'bg-zinc-600 hover:bg-zinc-500 hover:scale-110'
+            onClick={() => setIsPaused(!isPaused)}
+            className={`px-3 py-2 border text-xs font-mono transition-all duration-300 ${
+              isPaused 
+                ? 'bg-orange-500/20 border-orange-500 text-orange-400' 
+                : 'bg-black/80 border-orange-500/40 text-orange-400 hover:bg-orange-500/10'
             }`}
-          />
-        ))}
+          >
+            {isPaused ? '▶ PLAY' : '⏸ PAUSE'}
+          </button>
+        </div>
+
+        {/* Museum Status */}
+        <div className="absolute top-4 left-4 bg-black/80 border border-orange-500/40 p-2 font-mono text-xs backdrop-blur-sm">
+          <div className="text-orange-400 font-bold">MUSEUM STATUS</div>
+          <div className="text-zinc-400 text-[10px]">
+            {isHovered ? 'PAUSED - HOVER DETECTED' : isPaused ? 'PAUSED - MANUAL' : 'ACTIVE - SCROLLING'}
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -3172,6 +3127,11 @@ export default function ArchetypeSite(){
                       0% { transform: translateY(-100%) translateZ(5px); opacity: 0; }
                       50% { opacity: 1; }
                       100% { transform: translateY(100%) translateZ(5px); opacity: 0; }
+                    }
+                    
+                    @keyframes scrollRightToLeft {
+                      0% { transform: translateX(100%); }
+                      100% { transform: translateX(-100%); }
                     }
                   `
                 }} />
