@@ -93,17 +93,17 @@ function createManualCanvas(winnerData: WinnerExport): void {
   ctx.fillStyle = '#ff69b4'
   ctx.font = 'bold 36px monospace'
   ctx.textAlign = 'center'
-  ctx.fillText('ARCHETYPE_00 // RAFFLE_RESULTS', canvas.width / 2, 100)
-
-  // Raffle name with better styling
-  ctx.fillStyle = '#ffffff'
-  ctx.font = 'bold 28px monospace'
-  ctx.fillText(winnerData.raffleName, canvas.width / 2, 130)
+  ctx.fillText('PUNKABLE ETHEREAL RAFFLE SYSTEM', canvas.width / 2, 100)
 
   // PERS branding with icon
   ctx.fillStyle = '#a1a1aa'
-  ctx.font = '16px monospace'
-  ctx.fillText('⚡ Punkable Ethereal Raffle System (P.E.R.S.)', canvas.width / 2, 160)
+  ctx.font = 'bold 20px monospace'
+  ctx.fillText('P.E.R.S. // RAFFLE_RESULTS', canvas.width / 2, 130)
+
+  // Raffle name with better styling
+  ctx.fillStyle = '#ffffff'
+  ctx.font = 'bold 24px monospace'
+  ctx.fillText(winnerData.raffleName, canvas.width / 2, 160)
 
   // Winners section header with background
   ctx.fillStyle = '#2a2a2a'
