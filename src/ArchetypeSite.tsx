@@ -1663,199 +1663,204 @@ function ArchetypeExclusivePrizesMuseum() {
         </p>
       </div>
 
-      {/* Main Gallery Container */}
-      <div className="relative w-full max-w-4xl mx-auto">
-        {/* Navigation Controls */}
-        <div className="flex items-center justify-between mb-4">
-          <button
-            onClick={goToPrevious}
-            className="p-3 bg-zinc-800/50 hover:bg-zinc-700/50 border border-zinc-600/50 hover:border-orange-500/50 rounded-lg transition-all duration-300 group"
-          >
-            <svg className="w-5 h-5 text-zinc-400 group-hover:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-          </button>
-
-          <div className="flex items-center gap-4">
-            <button
-              onClick={isAutoPlaying ? stopAutoPlay : startAutoPlay}
-              className={`px-4 py-2 rounded-lg font-mono text-sm transition-all duration-300 ${
-                isAutoPlaying 
-                  ? 'bg-red-500/20 text-red-400 border border-red-500/40 hover:bg-red-500/30' 
-                  : 'bg-green-500/20 text-green-400 border border-green-500/40 hover:bg-green-500/30'
-              }`}
-            >
-              {isAutoPlaying ? 'PAUSE' : 'AUTO'}
-            </button>
-            
-            <div className="text-sm font-mono text-zinc-400">
-              {currentIndex + 1} / {ARCHETYPE_EXCLUSIVE_PRIZES.length}
+      {/* Two Column Layout */}
+      <div className="grid md:grid-cols-2 gap-6 items-start">
+        {/* Left Column - Prize Description */}
+        <div className="space-y-4">
+          {/* Museum Description Section - Optimized for Prize Concept */}
+          <div className="bg-gradient-to-r from-zinc-900/50 to-zinc-800/30 border border-zinc-700/50 rounded-lg p-4 backdrop-blur-sm">
+            <div className="text-center mb-4">
+              <h3 className="text-base font-bold text-orange-400 font-mono mb-2">PRIZE_SAMPLE_EXHIBITION</h3>
+              <p className="text-xs text-zinc-400 font-mono">
+                Sample of exclusive Fluffy Dynasty rewards • ARCHETYPE_00 holders receive retroactive benefits through quantum raffle system
+              </p>
             </div>
-          </div>
-
-          <button
-            onClick={goToNext}
-            className="p-3 bg-zinc-800/50 hover:bg-zinc-700/50 border border-zinc-600/50 hover:border-orange-500/50 rounded-lg transition-all duration-300 group"
-          >
-            <svg className="w-5 h-5 text-zinc-400 group-hover:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
-          </button>
-        </div>
-
-        {/* Main Display Area */}
-        <div 
-          ref={containerRef}
-          className="relative w-full h-[300px] md:h-[400px] bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950 border border-zinc-800 rounded-xl overflow-hidden cursor-grab active:cursor-grabbing select-none"
-          onMouseDown={handleDragStart}
-          onMouseMove={isDragging ? handleDragMove : undefined}
-          onMouseUp={handleDragEnd}
-          onTouchStart={handleTouchStart}
-          onTouchMove={isDragging ? handleTouchMove : undefined}
-          onTouchEnd={handleTouchEnd}
-        >
-          {/* Background Pattern */}
-          <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_20px,rgba(255,165,0,0.02)_20px,rgba(255,165,0,0.02)_40px)]"></div>
-          
-          {/* Main Image Display */}
-          <div className="relative w-full h-full flex items-center justify-center p-8">
-            <motion.div
-              key={currentIndex}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              transition={{ duration: 0.5, ease: "easeOut" }}
-              className="relative max-w-full max-h-full"
-            >
-              {/* Image Frame */}
-              <div className="relative bg-gradient-to-br from-zinc-900/90 to-zinc-800/70 backdrop-blur-sm border border-zinc-700/50 rounded-lg p-4 shadow-2xl">
-                {/* Number Badge */}
-                <div className="absolute -top-2 -left-2 bg-orange-500 text-black font-bold text-sm px-3 py-1 rounded-full font-mono z-20">
-                  #{currentImage.id}
-                </div>
-
-                {/* Rarity Badge */}
-                <div className={`absolute -top-2 -right-2 px-3 py-1 rounded-full text-xs font-mono font-bold ${getRarityStyle(currentImage.rarity)}`}>
-                  {currentImage.rarity}
-                </div>
-
-                {/* Image */}
-                <img
-                  src={currentImage.url}
-                  alt={currentImage.title}
-                  className="max-w-full max-h-[200px] md:max-h-[300px] object-contain drop-shadow-lg"
-                  style={{ 
-                    filter: 'contrast(1.05) saturate(1.1) brightness(1.02)',
-                    imageRendering: 'auto'
-                  }}
-                  onError={(e) => {
-                    e.currentTarget.src = `data:image/svg+xml;base64,${btoa(`
-                      <svg width="400" height="300" xmlns="http://www.w3.org/2000/svg">
-                        <rect width="100%" height="100%" fill="#1a1a1a"/>
-                        <text x="50%" y="50%" font-family="monospace" font-size="14" fill="#ff6600" text-anchor="middle" dy=".3em">
-                          ${currentImage.title}
-                        </text>
-                      </svg>
-                    `)}`;
-                  }}
-                />
+            
+            {/* Prize Info Grid - Compact */}
+            <div className="grid grid-cols-2 gap-3 mt-4">
+              <div className="text-center p-2 bg-zinc-800/30 rounded border border-zinc-700/30">
+                <div className="text-orange-400 font-bold text-xs mb-1">SAMPLE_SIZE</div>
+                <div className="text-lg font-mono text-zinc-300">6</div>
+                <div className="text-xs text-zinc-500">Fluffy Dynasty</div>
               </div>
-            </motion.div>
-          </div>
+              
+              <div className="text-center p-2 bg-zinc-800/30 rounded border border-zinc-700/30">
+                <div className="text-orange-400 font-bold text-xs mb-1">RARITY_LEVELS</div>
+                <div className="text-xs text-zinc-300 space-y-1">
+                  <div className="flex justify-between items-center"><span className="text-green-400 text-xs">COMMON:</span> <span className="text-xs">2</span></div>
+                  <div className="flex justify-between items-center"><span className="text-blue-400 text-xs">RARE:</span> <span className="text-xs">2</span></div>
+                  <div className="flex justify-between items-center"><span className="text-yellow-400 text-xs">LEGENDARY:</span> <span className="text-xs">2</span></div>
+                </div>
+              </div>
+              
+              <div className="text-center p-2 bg-zinc-800/30 rounded border border-zinc-700/30">
+                <div className="text-orange-400 font-bold text-xs mb-1">BENEFIT_TYPE</div>
+                <div className="text-xs font-mono text-zinc-300">RETROACTIVE</div>
+                <div className="text-xs text-zinc-500">Fragment Holders</div>
+              </div>
 
-          {/* Image Info Overlay */}
-          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
-            <div className="text-center">
-              <h3 className="text-lg font-bold text-orange-400 font-mono mb-1">
-                #{currentImage.id} {currentImage.title}
-              </h3>
-              <p className="text-xs text-zinc-300 font-mono max-w-2xl mx-auto">
-                {currentImage.description}
+              <div className="text-center p-2 bg-zinc-800/30 rounded border border-zinc-700/30">
+                <div className="text-orange-400 font-bold text-xs mb-1">MORE_REWARDS</div>
+                <div className="text-xs font-mono text-zinc-300">∞</div>
+                <div className="text-xs text-zinc-500">Additional Benefits</div>
+              </div>
+            </div>
+
+            {/* Additional Info */}
+            <div className="mt-4 p-3 bg-zinc-800/20 rounded border border-zinc-700/20">
+              <p className="text-xs text-zinc-400 font-mono text-center">
+                This is just a sample of the exclusive rewards. ARCHETYPE_00 holders receive continuous retroactive benefits beyond these Fluffy Dynasty pieces. The quantum raffle system distributes rewards based on fragment density and resonance frequency.
               </p>
             </div>
           </div>
         </div>
 
-        {/* Thumbnail Navigation */}
-        <div className="mt-6 flex justify-center gap-2 overflow-x-auto pb-2">
-          {ARCHETYPE_EXCLUSIVE_PRIZES.map((image, index) => (
+        {/* Right Column - Museum Gallery */}
+        <div className="relative w-full">
+          {/* Navigation Controls - Compact */}
+          <div className="flex items-center justify-between mb-3">
             <button
-              key={image.id}
-              onClick={() => goToSlide(index)}
-              className={`flex-shrink-0 w-16 h-16 rounded-lg border-2 transition-all duration-300 ${
-                index === currentIndex
-                  ? 'border-orange-500 scale-110'
-                  : 'border-zinc-600 hover:border-zinc-500'
-              }`}
+              onClick={goToPrevious}
+              className="p-2 bg-zinc-800/50 hover:bg-zinc-700/50 border border-zinc-600/50 hover:border-orange-500/50 rounded-lg transition-all duration-300 group"
             >
-              <img
-                src={image.url}
-                alt={image.title}
-                className="w-full h-full object-cover rounded-md"
-                onError={(e) => {
-                  e.currentTarget.src = `data:image/svg+xml;base64,${btoa(`
-                    <svg width="64" height="64" xmlns="http://www.w3.org/2000/svg">
-                      <rect width="100%" height="100%" fill="#1a1a1a"/>
-                      <text x="50%" y="50%" font-family="monospace" font-size="8" fill="#ff6600" text-anchor="middle" dy=".3em">
-                        ${image.id}
-                      </text>
-                    </svg>
-                  `)}`;
-                }}
-              />
+              <svg className="w-4 h-4 text-zinc-400 group-hover:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
             </button>
-          ))}
-        </div>
-      </div>
 
-      {/* Museum Description Section - Optimized for Prize Concept */}
-      <div className="mt-6 bg-gradient-to-r from-zinc-900/50 to-zinc-800/30 border border-zinc-700/50 rounded-lg p-4 md:p-6 backdrop-blur-sm">
-        <div className="text-center mb-4">
-          <h3 className="text-lg font-bold text-orange-400 font-mono mb-2">PRIZE_SAMPLE_EXHIBITION</h3>
-          <p className="text-sm text-zinc-400 font-mono">
-            Sample of exclusive Fluffy Dynasty rewards • ARCHETYPE_00 holders receive retroactive benefits through quantum raffle system
-          </p>
-        </div>
-        
-        {/* Prize Info Grid - Optimized */}
-        <div className="grid md:grid-cols-4 gap-3 md:gap-4 mt-4">
-          <div className="text-center p-3 bg-zinc-800/30 rounded border border-zinc-700/30">
-            <div className="text-orange-400 font-bold text-xs mb-1">SAMPLE_SIZE</div>
-            <div className="text-xl font-mono text-zinc-300">6</div>
-            <div className="text-xs text-zinc-500">Fluffy Dynasty</div>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={isAutoPlaying ? stopAutoPlay : startAutoPlay}
+                className={`px-3 py-1 rounded-lg font-mono text-xs transition-all duration-300 ${
+                  isAutoPlaying 
+                    ? 'bg-red-500/20 text-red-400 border border-red-500/40 hover:bg-red-500/30' 
+                    : 'bg-green-500/20 text-green-400 border border-green-500/40 hover:bg-green-500/30'
+                }`}
+              >
+                {isAutoPlaying ? 'PAUSE' : 'AUTO'}
+              </button>
+              
+              <div className="text-xs font-mono text-zinc-400">
+                {currentIndex + 1} / {ARCHETYPE_EXCLUSIVE_PRIZES.length}
+              </div>
+            </div>
+
+            <button
+              onClick={goToNext}
+              className="p-2 bg-zinc-800/50 hover:bg-zinc-700/50 border border-zinc-600/50 hover:border-orange-500/50 rounded-lg transition-all duration-300 group"
+            >
+              <svg className="w-4 h-4 text-zinc-400 group-hover:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
           </div>
-          
-          <div className="text-center p-3 bg-zinc-800/30 rounded border border-zinc-700/30">
-            <div className="text-orange-400 font-bold text-xs mb-1">RARITY_LEVELS</div>
-            <div className="text-xs text-zinc-300 space-y-1">
-              <div className="flex justify-between items-center"><span className="text-green-400 text-xs">COMMON:</span> <span className="text-xs">2</span></div>
-              <div className="flex justify-between items-center"><span className="text-blue-400 text-xs">RARE:</span> <span className="text-xs">2</span></div>
-              <div className="flex justify-between items-center"><span className="text-yellow-400 text-xs">LEGENDARY:</span> <span className="text-xs">2</span></div>
+
+          {/* Main Display Area - Compact */}
+          <div 
+            ref={containerRef}
+            className="relative w-full h-[250px] bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950 border border-zinc-800 rounded-lg overflow-hidden cursor-grab active:cursor-grabbing select-none"
+            onMouseDown={handleDragStart}
+            onMouseMove={isDragging ? handleDragMove : undefined}
+            onMouseUp={handleDragEnd}
+            onTouchStart={handleTouchStart}
+            onTouchMove={isDragging ? handleTouchMove : undefined}
+            onTouchEnd={handleTouchEnd}
+          >
+            {/* Background Pattern */}
+            <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_20px,rgba(255,165,0,0.02)_20px,rgba(255,165,0,0.02)_40px)]"></div>
+            
+            {/* Main Image Display */}
+            <div className="relative w-full h-full flex items-center justify-center p-4">
+              <motion.div
+                key={currentIndex}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
+                className="relative max-w-full max-h-full"
+              >
+                {/* Image Frame - Compact */}
+                <div className="relative bg-gradient-to-br from-zinc-900/90 to-zinc-800/70 backdrop-blur-sm border border-zinc-700/50 rounded-lg p-3 shadow-2xl">
+                  {/* Number Badge */}
+                  <div className="absolute -top-1 -left-1 bg-orange-500 text-black font-bold text-xs px-2 py-1 rounded-full font-mono z-20">
+                    #{currentImage.id}
+                  </div>
+
+                  {/* Rarity Badge */}
+                  <div className={`absolute -top-1 -right-1 px-2 py-1 rounded-full text-xs font-mono font-bold ${getRarityStyle(currentImage.rarity)}`}>
+                    {currentImage.rarity}
+                  </div>
+
+                  {/* Image */}
+                  <img
+                    src={currentImage.url}
+                    alt={currentImage.title}
+                    className="max-w-full max-h-[150px] object-contain drop-shadow-lg"
+                    style={{ 
+                      filter: 'contrast(1.05) saturate(1.1) brightness(1.02)',
+                      imageRendering: 'auto'
+                    }}
+                    onError={(e) => {
+                      e.currentTarget.src = `data:image/svg+xml;base64,${btoa(`
+                        <svg width="300" height="200" xmlns="http://www.w3.org/2000/svg">
+                          <rect width="100%" height="100%" fill="#1a1a1a"/>
+                          <text x="50%" y="50%" font-family="monospace" font-size="12" fill="#ff6600" text-anchor="middle" dy=".3em">
+                            ${currentImage.title}
+                          </text>
+                        </svg>
+                      `)}`;
+                    }}
+                  />
+                </div>
+              </motion.div>
             </div>
           </div>
-          
-          <div className="text-center p-3 bg-zinc-800/30 rounded border border-zinc-700/30">
-            <div className="text-orange-400 font-bold text-xs mb-1">BENEFIT_TYPE</div>
-            <div className="text-xs font-mono text-zinc-300">RETROACTIVE</div>
-            <div className="text-xs text-zinc-500">Fragment Holders</div>
+
+          {/* Image Info - Below the card */}
+          <div className="mt-3 p-3 bg-gradient-to-r from-zinc-900/50 to-zinc-800/30 border border-zinc-700/50 rounded-lg backdrop-blur-sm">
+            <div className="text-center">
+              <h3 className="text-sm font-bold text-orange-400 font-mono mb-1">
+                #{currentImage.id} {currentImage.title}
+              </h3>
+              <p className="text-xs text-zinc-300 font-mono">
+                {currentImage.description}
+              </p>
+            </div>
           </div>
 
-          <div className="text-center p-3 bg-zinc-800/30 rounded border border-zinc-700/30">
-            <div className="text-orange-400 font-bold text-xs mb-1">MORE_REWARDS</div>
-            <div className="text-xs font-mono text-zinc-300">∞</div>
-            <div className="text-xs text-zinc-500">Additional Benefits</div>
-          </div>
-        </div>
-
-        {/* Additional Info */}
-        <div className="mt-4 p-3 bg-zinc-800/20 rounded border border-zinc-700/30">
-          <div className="text-xs text-zinc-400 font-mono text-center">
-            <span className="text-orange-400">[ARCHETYPE_00_BENEFITS]</span> This is just a sample of the exclusive rewards. 
-            ARCHETYPE_00 holders receive continuous retroactive benefits beyond these Fluffy Dynasty pieces. 
-            The quantum raffle system distributes rewards based on fragment density and resonance frequency.
+          {/* Thumbnail Navigation - Compact */}
+          <div className="mt-4 flex justify-center gap-1 overflow-x-auto pb-2">
+            {ARCHETYPE_EXCLUSIVE_PRIZES.map((image, index) => (
+              <button
+                key={image.id}
+                onClick={() => goToSlide(index)}
+                className={`flex-shrink-0 w-12 h-12 rounded-lg border-2 transition-all duration-300 ${
+                  index === currentIndex
+                    ? 'border-orange-500 scale-110'
+                    : 'border-zinc-600 hover:border-zinc-500'
+                }`}
+              >
+                <img
+                  src={image.url}
+                  alt={image.title}
+                  className="w-full h-full object-cover rounded-md"
+                  onError={(e) => {
+                    e.currentTarget.src = `data:image/svg+xml;base64,${btoa(`
+                      <svg width="48" height="48" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="100%" height="100%" fill="#1a1a1a"/>
+                        <text x="50%" y="50%" font-family="monospace" font-size="6" fill="#ff6600" text-anchor="middle" dy=".3em">
+                          ${image.id}
+                        </text>
+                      </svg>
+                    `)}`;
+                  }}
+                />
+              </button>
+            ))}
           </div>
         </div>
       </div>
+
     </div>
   );
 }
