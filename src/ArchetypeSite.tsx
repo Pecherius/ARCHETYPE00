@@ -328,17 +328,17 @@ function useGlobalKeys(
   }, [toggleGlitch, pulse, toggleVHS, onD34D]);
 }
 
-// 🎵 AUDIO_HOOK: The sub-bass hum that makes your speakers vibrate
-// 38Hz because it's the frequency of the universe (or something like that)
-function useHum() {
+// 🎵 THEMATIC_AUDIO_HOOK: 8-bit cyberpunk ambient soundtrack
+// Creates a layered 8-bit style ambient track related to the ARCHETYPE lore
+function useThematicAudio() {
   const ctxRef = useRef<AudioContext | null>(null);
-  const oscRef = useRef<OscillatorNode | null>(null);
+  const oscillatorsRef = useRef<OscillatorNode[]>([]);
   const gainRef = useRef<GainNode | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
   const [active, setActive] = useState(false);
-  const [level, setLevel] = useState(0.1); // visual amplitude proxy (totally scientific)
+  const [level, setLevel] = useState(0.1);
 
-  // Drive visuals from audio (or fallback to gentle noise if off)
+  // Drive visuals from audio
   useEffect(() => {
     let raf = 0;
     const sample = () => {
@@ -346,12 +346,15 @@ function useHum() {
       if (active && analyser) {
         const arr = new Uint8Array(analyser.frequencyBinCount);
         analyser.getByteTimeDomainData(arr);
-        // Normalize around center 128
-        let sum = 0; for (let i = 0; i < arr.length; i++) { const v = (arr[i] - 128) / 128; sum += v * v; }
+        let sum = 0; 
+        for (let i = 0; i < arr.length; i++) { 
+          const v = (arr[i] - 128) / 128; 
+          sum += v * v; 
+        }
         const rms = Math.sqrt(sum / arr.length);
-        setLevel(0.1 + rms * 1.2);
+        setLevel(0.1 + rms * 0.8);
       } else {
-        // idle breathing
+        // Gentle breathing when off
         const t = Date.now() / 1000;
         setLevel(0.12 + 0.04 * Math.sin(t * 1.4));
       }
@@ -361,6 +364,77 @@ function useHum() {
     return () => cancelAnimationFrame(raf);
   }, [active]);
 
+  const create8BitMelody = (ctx: AudioContext, gain: GainNode) => {
+    const oscillators: OscillatorNode[] = [];
+    
+    // Main melody - cyberpunk theme
+    const melody = [
+      { freq: 220, duration: 0.5 }, // A3
+      { freq: 246.94, duration: 0.5 }, // B3
+      { freq: 261.63, duration: 0.5 }, // C4
+      { freq: 293.66, duration: 0.5 }, // D4
+      { freq: 329.63, duration: 0.5 }, // E4
+      { freq: 349.23, duration: 0.5 }, // F4
+      { freq: 392.00, duration: 0.5 }, // G4
+      { freq: 440.00, duration: 1.0 }, // A4
+    ];
+
+    // Bass line
+    const bass = [
+      { freq: 55, duration: 1.0 }, // A1
+      { freq: 61.74, duration: 1.0 }, // B1
+      { freq: 65.41, duration: 1.0 }, // C2
+      { freq: 73.42, duration: 1.0 }, // D2
+    ];
+
+    // Create melody oscillators
+    melody.forEach((note, index) => {
+      const osc = ctx.createOscillator();
+      const noteGain = ctx.createGain();
+      
+      osc.type = "square"; // 8-bit sound
+      osc.frequency.value = note.freq;
+      noteGain.gain.value = 0.1;
+      
+      osc.connect(noteGain).connect(gain);
+      
+      // Stagger the start times for melody effect
+      setTimeout(() => {
+        osc.start();
+        oscillators.push(osc);
+      }, index * 500);
+    });
+
+    // Create bass oscillators
+    bass.forEach((note, index) => {
+      const osc = ctx.createOscillator();
+      const noteGain = ctx.createGain();
+      
+      osc.type = "sawtooth"; // Deeper bass
+      osc.frequency.value = note.freq;
+      noteGain.gain.value = 0.15;
+      
+      osc.connect(noteGain).connect(gain);
+      
+      setTimeout(() => {
+        osc.start();
+        oscillators.push(osc);
+      }, index * 1000);
+    });
+
+    // Ambient pad
+    const pad = ctx.createOscillator();
+    const padGain = ctx.createGain();
+    pad.type = "triangle";
+    pad.frequency.value = 110; // A2
+    padGain.gain.value = 0.05;
+    pad.connect(padGain).connect(gain);
+    pad.start();
+    oscillators.push(pad);
+
+    return oscillators;
+  };
+
   const toggle = async () => {
     if (!ctxRef.current) {
       // @ts-ignore
@@ -368,32 +442,44 @@ function useHum() {
     }
     const ctx = ctxRef.current!;
     
-    // Resume context if suspended (required for autoplay policy)
     if (ctx.state === 'suspended') {
       await ctx.resume();
     }
+    
     if (!active) {
-      const osc = ctx.createOscillator();
       const gain = ctx.createGain();
       const analyser = ctx.createAnalyser();
       analyser.fftSize = 1024;
-      osc.type = "sine";
-      osc.frequency.value = 38; // sub-hum
-      gain.gain.value = 0.02;
-      osc.connect(gain).connect(analyser).connect(ctx.destination);
-      osc.start();
-      oscRef.current = osc; gainRef.current = gain; analyserRef.current = analyser; setActive(true);
-      // Console trolleo
+      gain.gain.value = 0.3; // Lower volume for ambient
+      
+      const oscillators = create8BitMelody(ctx, gain);
+      oscillators.forEach(osc => osc.connect(analyser));
+      analyser.connect(ctx.destination);
+      
+      oscillatorsRef.current = oscillators;
+      gainRef.current = gain;
+      analyserRef.current = analyser;
+      setActive(true);
+      
       // eslint-disable-next-line no-console
-      console.log("%c[RESONANCE_ENGINE] 38Hz sub-bass frequency activated. Visual sync established.", "color:#00ff88; font-family: monospace;");
+      console.log("%c[THEMATIC_AUDIO] 8-bit cyberpunk ambient activated. Resonance field established.", "color:#ff69b4; font-family: monospace;");
     } else {
-      oscRef.current?.stop(); oscRef.current?.disconnect();
-      gainRef.current?.disconnect(); analyserRef.current?.disconnect();
-      oscRef.current = null; gainRef.current = null; analyserRef.current = null; setActive(false);
+      oscillatorsRef.current.forEach(osc => {
+        osc.stop();
+        osc.disconnect();
+      });
+      gainRef.current?.disconnect();
+      analyserRef.current?.disconnect();
+      oscillatorsRef.current = [];
+      gainRef.current = null;
+      analyserRef.current = null;
+      setActive(false);
+      
       // eslint-disable-next-line no-console
-      console.log("%c[RESONANCE_ENGINE] Frequency terminated. Switching to idle state.", "color:#666; font-family: monospace;");
+      console.log("%c[THEMATIC_AUDIO] Ambient track terminated. Switching to silence.", "color:#666; font-family: monospace;");
     }
   };
+  
   return { active, toggle, level };
 }
 
@@ -1382,19 +1468,72 @@ function NeuralPingPong() {
   
   if (gameState === 'menu') {
     return (
-      <div className="border border-zinc-800 p-4 bg-zinc-950">
-        <h3 className="text-lg font-semibold text-zinc-100 mb-4">NEURAL_PING_PONG // RESONANCE_MODE</h3>
-        <div className="space-y-4">
-          <p className="text-sm text-zinc-400">
-            Use ← → arrow keys, mouse movement, or touch to control the paddle. 
-            Ball gets faster with each hit. Warning: Neural overload effects at high speeds.
-          </p>
-          <button 
-            onClick={startGame}
-            className="w-full px-4 py-2 border border-zinc-700 bg-zinc-800 text-zinc-100 hover:bg-zinc-700"
+      <div className="border border-zinc-800 p-4 sm:p-6 bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950 relative overflow-hidden">
+        {/* Neon background effects */}
+        <div className="absolute inset-0 bg-gradient-to-r from-pink-500/5 via-cyan-500/5 to-pink-500/5 animate-pulse"></div>
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-pink-500 to-transparent"></div>
+        <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-cyan-500 to-transparent"></div>
+        
+        {/* Fictitious Ping Pong Logo */}
+        <div className="text-center mb-8 relative z-10">
+          <motion.div
+            className="inline-block"
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
           >
-            INITIALIZE_NEURAL_LINK
-          </button>
+            <div className="text-3xl sm:text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-cyan-400 to-pink-400 mb-2 tracking-wider">
+              PING
+            </div>
+            <div className="text-3xl sm:text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-pink-400 to-cyan-400 tracking-wider">
+              PONG
+            </div>
+            <motion.div
+              className="text-lg sm:text-2xl md:text-3xl font-bold text-pink-400 mt-2 tracking-widest"
+              animate={{ opacity: [1, 0.5, 1] }}
+              transition={{ duration: 2, repeat: Infinity }}
+            >
+              NEURAL EDITION
+            </motion.div>
+          </motion.div>
+        </div>
+
+        {/* Game description with neon styling */}
+        <div className="space-y-6 relative z-10">
+          <div className="text-center">
+            <h3 className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-cyan-400 mb-4 tracking-wider">
+              RESONANCE_MODE
+            </h3>
+            <div className="bg-zinc-800/50 border border-pink-500/30 rounded-lg p-4 backdrop-blur-sm">
+              <p className="text-sm text-zinc-300 leading-relaxed">
+                Use ← → arrow keys, mouse movement, or touch to control the paddle.<br/>
+                Ball gets faster with each hit. Warning: Neural overload effects at high speeds.
+              </p>
+            </div>
+          </div>
+          
+          {/* Neon start button */}
+          <motion.button 
+            onClick={startGame}
+            className="w-full relative group"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+          >
+            <div className="bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500 p-[2px] rounded-lg">
+              <div className="bg-zinc-900 rounded-lg px-4 sm:px-6 py-3 sm:py-4 text-center">
+                <span className="text-sm sm:text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-cyan-400 tracking-wider break-words">
+                  INITIALIZE_NEURAL_LINK
+                </span>
+                <motion.div
+                  className="mt-2 text-pink-400 text-xs sm:text-sm"
+                  animate={{ opacity: [1, 0.3, 1] }}
+                  transition={{ duration: 1.5, repeat: Infinity }}
+                >
+                  ✦ CLICK TO START ✦
+                </motion.div>
+              </div>
+            </div>
+          </motion.button>
         </div>
       </div>
     );
@@ -1497,7 +1636,7 @@ export default function ArchetypeSite(){
   const [matrixMessage, setMatrixMessage] = useState('');
   const [matrixChatHistory, setMatrixChatHistory] = useState<Array<{type: 'user' | 'matrix', message: string, timestamp: number}>>([]);
   const [isMatrixSpeaking, setIsMatrixSpeaking] = useState(false);
-  const { active: humOn, toggle: toggleHum, level } = useHum();
+  const { active: humOn, toggle: toggleHum, level } = useThematicAudio();
   const upProfile = useUniversalProfile();
   const artControls = useAnimation();
 
@@ -1906,6 +2045,40 @@ export default function ArchetypeSite(){
 
         {/* HERO */}
         <section className="mx-auto flex max-w-6xl flex-col items-center gap-6 px-6 py-16 text-center">
+          {/* Epic Presentation */}
+          <motion.div
+            className="mb-8"
+            initial={{ opacity: 0, y: -30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.2 }}
+          >
+            <motion.p 
+              className="text-lg md:text-xl font-light text-zinc-300 mb-3 tracking-widest"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.8, delay: 0.8 }}
+            >
+              And now, presented by
+            </motion.p>
+            <motion.div
+              className="inline-block"
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.6, delay: 1.2 }}
+            >
+              <span className="text-2xl md:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-rose-400 to-pink-600 tracking-wider">
+                PUNKABLE
+              </span>
+              <motion.span
+                className="text-pink-400 ml-2"
+                animate={{ opacity: [1, 0.3, 1] }}
+                transition={{ duration: 2, repeat: Infinity }}
+              >
+                ✦
+              </motion.span>
+            </motion.div>
+          </motion.div>
+
           <motion.h1 
             className={`${isMobile ? 'text-3xl' : 'text-4xl md:text-7xl'} font-bold tracking-tight text-zinc-100 mb-4 ${glitch ? "animate-pulse" : ""}`}
             initial={{ opacity: 0, y: 16, letterSpacing: "0.05em" }}
@@ -2850,15 +3023,15 @@ export default function ArchetypeSite(){
 
         {/* FOOTER with hum */}
         <footer className="mx-auto max-w-6xl px-4 pb-20 text-center text-xs text-zinc-600 sm:px-6">
-          <div className="mb-3">The system doesn't reward. It reacts. • <Binary label="binary" text="resonance accumulating"/></div>
+          <div className="mb-3 break-words">The system doesn't reward. It reacts. • <Binary label="binary" text="resonance accumulating"/></div>
           
           {/* Universal Profile Status */}
           {upProfile.isConnected && (
-            <div className="mb-3 text-zinc-500">
+            <div className="mb-3 text-zinc-500 break-words">
               <span className="text-zinc-400">Neural Network Status:</span> Connected • 
-              <span className="ml-1 text-zinc-300">{upProfile.name}</span>
+              <span className="ml-1 text-zinc-300 break-all">{upProfile.name}</span>
               {upProfile.address && (
-                <span className="ml-2 text-zinc-600 font-mono text-[10px]">
+                <span className="ml-2 text-zinc-600 font-mono text-[10px] break-all">
                   {upProfile.address.slice(0, 6)}...{upProfile.address.slice(-4)}
                 </span>
               )}
@@ -2871,7 +3044,7 @@ export default function ArchetypeSite(){
               href="https://universal.page/drops/archetype_00" 
               target="_blank" 
               rel="noreferrer" 
-              className="group relative inline-block overflow-hidden border-2 border-cyan-500 bg-gradient-to-r from-cyan-900/20 to-blue-900/20 px-4 py-2 text-cyan-400 hover:from-cyan-800/30 hover:to-blue-800/30 transition-all duration-300 hover:scale-105"
+              className="group relative inline-block overflow-hidden border-2 border-cyan-500 bg-gradient-to-r from-cyan-900/20 to-blue-900/20 px-3 py-2 text-cyan-400 hover:from-cyan-800/30 hover:to-blue-800/30 transition-all duration-300 hover:scale-105 text-xs sm:text-sm break-words"
             >
               <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <div className="relative flex items-center gap-2">
@@ -2898,8 +3071,8 @@ export default function ArchetypeSite(){
             </div>
           </div>
           
-          <button onClick={toggleHum} className="inline-flex items-center gap-2 border border-zinc-800 px-3 py-1 hover:bg-zinc-900">
-            <span className={`h-2 w-2 ${humOn ? "bg-pink-500" : "bg-zinc-400"}`}/> {humOn ? "res_hum: on" : "res_hum: off"}
+          <button onClick={toggleHum} className="inline-flex items-center gap-2 border border-zinc-800 px-3 py-1 hover:bg-zinc-900 text-xs break-words">
+            <span className={`h-2 w-2 ${humOn ? "bg-pink-500" : "bg-zinc-400"}`}/> {humOn ? "8bit_audio: on" : "8bit_audio: off"}
           </button>
         </footer>
       </div>
