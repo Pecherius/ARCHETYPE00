@@ -407,31 +407,33 @@ const TerminalInterface = () => {
     }
   }, [terminalOutput]);
 
-  // Initial terminal boot sequence
+  // Initial terminal boot sequence - only run once
   useEffect(() => {
-    const bootSequence = [
-      "Initializing ARCHETYPE_00 Terminal...",
-      "Loading neural interface protocols...",
-      "Establishing secure connection...",
-      "Accessing quarantine database...",
-      "WARNING: Unauthorized access detected!",
-      "Activating countermeasures...",
-      "Terminal ready. Type 'help' for available commands.",
-      ""
-    ];
+    if (terminalOutput.length === 0) {
+      const bootSequence = [
+        "Initializing ARCHETYPE_00 Terminal...",
+        "Loading neural interface protocols...",
+        "Establishing secure connection...",
+        "Accessing quarantine database...",
+        "WARNING: Unauthorized access detected!",
+        "Activating countermeasures...",
+        "Terminal ready. Type 'help' for available commands.",
+        ""
+      ];
 
-    let index = 0;
-    const interval = setInterval(() => {
-      if (index < bootSequence.length) {
-        setTerminalOutput(prev => [...prev, bootSequence[index]]);
-        index++;
-      } else {
-        clearInterval(interval);
-      }
-    }, 300);
+      let index = 0;
+      const interval = setInterval(() => {
+        if (index < bootSequence.length) {
+          setTerminalOutput(prev => [...prev, bootSequence[index]]);
+          index++;
+        } else {
+          clearInterval(interval);
+        }
+      }, 300);
 
-    return () => clearInterval(interval);
-  }, []);
+      return () => clearInterval(interval);
+    }
+  }, [terminalOutput.length]);
 
   const executeCommand = (cmd: string) => {
     const command = cmd.trim().toLowerCase();
@@ -1389,19 +1391,35 @@ function NeuralPingPong() {
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            <div className="text-2xl sm:text-3xl md:text-4xl font-mono font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-cyan-400 to-pink-400 mb-2 tracking-wider">
-              PING
+            <div className="relative">
+              <div className="text-3xl sm:text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-cyan-400 to-pink-400 mb-2 tracking-wider drop-shadow-[0_0_10px_rgba(255,20,147,0.8)]">
+                PING
+              </div>
+              <div className="text-3xl sm:text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-pink-400 to-cyan-400 tracking-wider drop-shadow-[0_0_10px_rgba(0,255,255,0.8)]">
+                PONG
+              </div>
+              <motion.div
+                className="text-sm sm:text-lg md:text-xl font-bold text-pink-400 mt-2 tracking-widest drop-shadow-[0_0_5px_rgba(255,20,147,0.6)]"
+                animate={{ 
+                  opacity: [1, 0.5, 1],
+                  textShadow: [
+                    "0 0 5px rgba(255,20,147,0.6)",
+                    "0 0 20px rgba(255,20,147,0.8), 0 0 30px rgba(255,20,147,0.4)",
+                    "0 0 5px rgba(255,20,147,0.6)"
+                  ]
+                }}
+                transition={{ duration: 2, repeat: Infinity }}
+              >
+                NEURAL EDITION
+              </motion.div>
+              {/* Neon glow effects */}
+              <div className="absolute inset-0 text-3xl sm:text-4xl md:text-5xl font-black text-pink-400/20 tracking-wider blur-sm">
+                PING
+              </div>
+              <div className="absolute inset-0 text-3xl sm:text-4xl md:text-5xl font-black text-cyan-400/20 tracking-wider blur-sm mt-8">
+                PONG
+              </div>
             </div>
-            <div className="text-2xl sm:text-3xl md:text-4xl font-mono font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-pink-400 to-cyan-400 tracking-wider">
-              PONG
-            </div>
-            <motion.div
-              className="text-sm sm:text-lg md:text-xl font-mono font-bold text-pink-400 mt-2 tracking-widest"
-              animate={{ opacity: [1, 0.5, 1] }}
-              transition={{ duration: 2, repeat: Infinity }}
-            >
-              NEURAL EDITION
-            </motion.div>
           </motion.div>
         </div>
 
@@ -1426,13 +1444,14 @@ function NeuralPingPong() {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
-            <div className="bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500 p-[2px] rounded-lg">
-              <div className="bg-zinc-900 rounded-lg px-4 sm:px-6 py-3 sm:py-4 text-center">
-                <span className="text-sm font-mono font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-cyan-400 tracking-wider break-words">
+            <div className="group relative overflow-hidden border-2 border-pink-500 bg-gradient-to-r from-pink-900/30 to-purple-900/30 px-6 py-3 text-pink-400 hover:from-pink-800/40 hover:to-purple-800/40 transition-all duration-300 hover:scale-105 rounded-lg">
+              <div className="absolute inset-0 bg-gradient-to-r from-pink-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <div className="relative text-center">
+                <span className="text-sm font-mono font-bold tracking-wider break-words">
                   INITIALIZE_NEURAL_LINK
                 </span>
                 <motion.div
-                  className="mt-2 text-pink-400 text-xs font-mono"
+                  className="mt-2 text-pink-300 text-xs font-mono"
                   animate={{ opacity: [1, 0.3, 1] }}
                   transition={{ duration: 1.5, repeat: Infinity }}
                 >
@@ -1494,13 +1513,13 @@ function NeuralPingPong() {
               <div className="flex gap-4">
                 <button 
                   onClick={startGame}
-                  className="flex-1 px-4 py-3 border border-red-500 bg-red-500/20 text-red-400 hover:bg-red-500/30 font-mono font-bold text-sm"
+                  className="flex-1 px-4 py-3 border-2 border-red-500 bg-gradient-to-r from-red-900/30 to-red-800/30 text-red-400 hover:from-red-800/40 hover:to-red-700/40 transition-all duration-300 hover:scale-105 font-mono font-bold text-sm"
                 >
                   TRY AGAIN
                 </button>
                 <button 
                   onClick={() => setGameState('menu')}
-                  className="flex-1 px-4 py-3 border border-zinc-600 bg-zinc-800 text-zinc-300 hover:bg-zinc-700 font-mono text-sm"
+                  className="flex-1 px-4 py-3 border-2 border-zinc-600 bg-gradient-to-r from-zinc-800/30 to-zinc-700/30 text-zinc-300 hover:from-zinc-700/40 hover:to-zinc-600/40 transition-all duration-300 hover:scale-105 font-mono text-sm"
                 >
                   MAIN MENU
                 </button>
@@ -2643,6 +2662,24 @@ export default function ArchetypeSite(){
 
           {/* Artifact (levitating + glitch layers, audio reactive) */}
           <div className="relative mt-2 w-full select-none sm:max-w-lg md:max-w-xl">
+            {/* Purple pixel art arrows pointing to the relic */}
+            <div className="absolute -left-8 top-1/2 -translate-y-1/2 z-10 hidden md:block">
+              <div className="text-purple-400/60 text-2xl font-mono animate-pulse" style={{ textShadow: '2px 2px 0px rgba(147, 51, 234, 0.8)' }}>
+                ◀◀◀
+              </div>
+              <div className="text-purple-400/40 text-xs font-mono mt-1 text-center">
+                RELIC
+              </div>
+            </div>
+            <div className="absolute -right-8 top-1/2 -translate-y-1/2 z-10 hidden md:block">
+              <div className="text-purple-400/60 text-2xl font-mono animate-pulse" style={{ textShadow: '2px 2px 0px rgba(147, 51, 234, 0.8)' }}>
+                ▶▶▶
+              </div>
+              <div className="text-purple-400/40 text-xs font-mono mt-1 text-center">
+                RELIC
+              </div>
+            </div>
+            
             <motion.div animate={artControls} initial={{ y: 0, rotate: -1 }}
               whileInView={{ y: [-4, 2, -4], rotate: [-1, 0.5, -1] }}
               transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
@@ -2997,6 +3034,12 @@ export default function ArchetypeSite(){
                     <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                   </div>
                 </DialogTitle>
+                <button
+                  onClick={() => setObitOpen(false)}
+                  className="absolute top-4 right-4 text-green-400 hover:text-green-300 text-xl font-bold"
+                >
+                  ×
+                </button>
               </div>
             </DialogHeader>
             

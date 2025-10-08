@@ -778,7 +778,7 @@ const PunkableRaffleSystem = () => {
                   onClick={() => setShowCreateForm(true)}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="group relative px-4 md:px-6 py-3 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-mono font-bold rounded-lg transition-all duration-300 shadow-lg hover:shadow-pink-500/30 border border-pink-400/50 overflow-hidden text-sm"
+                  className="group relative overflow-hidden border-2 border-pink-500 bg-gradient-to-r from-pink-900/30 to-purple-900/30 px-6 py-3 text-pink-400 hover:from-pink-800/40 hover:to-purple-800/40 transition-all duration-300 hover:scale-105 font-mono font-bold text-sm rounded-lg"
                 >
                   <div className="absolute inset-0 bg-gradient-to-r from-pink-400/20 to-purple-400/20 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   <div className="relative flex items-center justify-center gap-2">
@@ -793,7 +793,7 @@ const PunkableRaffleSystem = () => {
                     onClick={() => setShowRaffleHistory(true)}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    className="group relative px-4 md:px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-mono font-bold rounded-lg transition-all duration-300 shadow-lg hover:shadow-green-500/30 border border-green-400/50 overflow-hidden text-sm"
+                    className="group relative overflow-hidden border-2 border-green-500 bg-gradient-to-r from-green-900/30 to-emerald-900/30 px-6 py-3 text-green-400 hover:from-green-800/40 hover:to-emerald-800/40 transition-all duration-300 hover:scale-105 font-mono font-bold text-sm rounded-lg"
                   >
                     <div className="absolute inset-0 bg-gradient-to-r from-green-400/20 to-emerald-400/20 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     <div className="relative flex items-center justify-center gap-2">
