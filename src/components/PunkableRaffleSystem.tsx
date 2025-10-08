@@ -662,31 +662,41 @@ const PunkableRaffleSystem = () => {
           </div>
 
           {/* Winners Grid - Grouped by Participant */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+          <div data-section="winners" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             {(() => {
-              // Group winners by participant
+              // Group winners by participant and consolidate duplicate prizes
               const groupedWinners = winners.reduce((acc, winner) => {
                 const key = `${winner.participant_name}-${winner.up_address}`;
                 if (!acc[key]) {
                   acc[key] = {
                     participantName: winner.participant_name,
                     upAddress: winner.up_address,
-                    prizes: [],
+                    prizes: {},
                     participant: participants.find(p => 
                       p.name === winner.participant_name && p.up_address === winner.up_address
                     )
                   };
                 }
-                acc[key].prizes.push({
-                  name: winner.prize_name,
-                  wonAt: winner.won_at
-                });
+                
+                // Consolidate duplicate prizes
+                if (acc[key].prizes[winner.prize_name]) {
+                  acc[key].prizes[winner.prize_name].count++;
+                  acc[key].prizes[winner.prize_name].wonAt = winner.won_at; // Keep latest time
+                } else {
+                  acc[key].prizes[winner.prize_name] = {
+                    name: winner.prize_name,
+                    count: 1,
+                    wonAt: winner.won_at
+                  };
+                }
                 return acc;
               }, {} as Record<string, any>);
 
               return Object.values(groupedWinners).map((group: any, index) => {
                 const participant = group.participant;
                 const ticketCount = participant?.tickets || 0;
+                const prizeList = Object.values(group.prizes);
+                const totalPrizes = prizeList.reduce((sum: number, prize: any) => sum + prize.count, 0);
                 
                 // Get emoji based on ticket count
                 const getEmoji = () => {
@@ -704,6 +714,14 @@ const PunkableRaffleSystem = () => {
                   return 'from-pink-500/10 to-purple-500/10 border-pink-500/20';
                 };
 
+                // Calculate dynamic height based on number of prizes
+                const getCardHeight = () => {
+                  const baseHeight = 200; // Base height for name and basic info
+                  const prizeHeight = 60; // Height per prize
+                  const maxHeight = 500; // Maximum height to prevent too tall cards
+                  return Math.min(baseHeight + (prizeList.length * prizeHeight), maxHeight);
+                };
+
                 return (
                   <motion.div
                     key={`${group.participantName}-${group.upAddress}`}
@@ -711,9 +729,10 @@ const PunkableRaffleSystem = () => {
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     transition={{ delay: index * 0.1, duration: 0.5 }}
                     className={`bg-gradient-to-br ${getColorClass()} p-6 rounded-xl border relative overflow-hidden`}
+                    style={{ minHeight: `${getCardHeight()}px` }}
                   >
                     <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-pink-500/20 to-purple-500/20 rounded-full -translate-y-10 translate-x-10"></div>
-                    <div className="relative z-10">
+                    <div className="relative z-10 h-full flex flex-col">
                       <div className="flex items-center gap-3 mb-4">
                         <div 
                           className="w-12 h-12 rounded-full flex items-center justify-center text-white text-xl font-bold"
@@ -724,14 +743,21 @@ const PunkableRaffleSystem = () => {
                         <div>
                           <h3 className="text-xl font-bold text-pink-400">{group.participantName}</h3>
                           <p className="text-zinc-400 text-sm">
-                            {group.prizes.length} prize{group.prizes.length > 1 ? 's' : ''} • {ticketCount} tickets
+                            {totalPrizes} prize{totalPrizes > 1 ? 's' : ''} • {ticketCount} tickets
                           </p>
                         </div>
                       </div>
-                      <div className="space-y-2">
-                        {group.prizes.map((prize: any, prizeIndex: number) => (
+                      <div className="space-y-2 flex-1">
+                        {prizeList.map((prize: any, prizeIndex: number) => (
                           <div key={prizeIndex} className="bg-zinc-800/50 p-3 rounded-lg border border-zinc-700">
-                            <p className="text-zinc-300 font-medium">🎁 {prize.name}</p>
+                            <p className="text-zinc-300 font-medium">
+                              🎁 {prize.name}
+                              {prize.count > 1 && (
+                                <span className="ml-2 px-2 py-1 bg-pink-500/20 text-pink-400 text-xs rounded-full">
+                                  x{prize.count}
+                                </span>
+                              )}
+                            </p>
                             <p className="text-zinc-500 text-xs font-mono">
                               Won: {new Date(prize.wonAt).toLocaleString()}
                             </p>
