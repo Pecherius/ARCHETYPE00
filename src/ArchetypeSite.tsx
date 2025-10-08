@@ -367,48 +367,60 @@ function useThematicAudio() {
   const createAmbientSoundscape = (ctx: AudioContext, gain: GainNode) => {
     const oscillators: OscillatorNode[] = [];
     
-    // Soft ambient pad - very low volume
+    // Ultra-subtle ambient pad - barely perceptible
     const ambientPad = ctx.createOscillator();
     const padGain = ctx.createGain();
     ambientPad.type = "sine";
-    ambientPad.frequency.value = 82.41; // E2 - very low and soft
-    padGain.gain.value = 0.02; // Very quiet
+    ambientPad.frequency.value = 55; // A1 - very low
+    padGain.gain.value = 0.003; // Extremely quiet
     ambientPad.connect(padGain).connect(gain);
     ambientPad.start();
     oscillators.push(ambientPad);
 
-    // Subtle harmonic layer
+    // Whisper-thin harmonic layer
     const harmonic = ctx.createOscillator();
     const harmonicGain = ctx.createGain();
     harmonic.type = "sine";
-    harmonic.frequency.value = 164.81; // E3 - one octave higher
-    harmonicGain.gain.value = 0.015; // Even quieter
+    harmonic.frequency.value = 110; // A2 - one octave higher
+    harmonicGain.gain.value = 0.002; // Almost inaudible
     harmonic.connect(harmonicGain).connect(gain);
     harmonic.start();
     oscillators.push(harmonic);
 
-    // Very subtle high frequency shimmer
+    // Ghost-like high frequency
     const shimmer = ctx.createOscillator();
     const shimmerGain = ctx.createGain();
     shimmer.type = "sine";
-    shimmer.frequency.value = 329.63; // E4
-    shimmerGain.gain.value = 0.01; // Barely audible
+    shimmer.frequency.value = 220; // A3
+    shimmerGain.gain.value = 0.001; // Barely there
     shimmer.connect(shimmerGain).connect(gain);
     shimmer.start();
     oscillators.push(shimmer);
 
-    // Add gentle modulation to create movement
+    // Ultra-slow modulation for breathing effect
     const lfo = ctx.createOscillator();
     const lfoGain = ctx.createGain();
     lfo.type = "sine";
-    lfo.frequency.value = 0.1; // Very slow modulation
-    lfoGain.gain.value = 5; // Small frequency variation
+    lfo.frequency.value = 0.05; // Extremely slow - 20 second cycle
+    lfoGain.gain.value = 2; // Very small frequency variation
     
-    // Apply LFO to the ambient pad
+    // Apply LFO to create gentle breathing
     lfo.connect(lfoGain);
     lfoGain.connect(ambientPad.frequency);
     lfo.start();
     oscillators.push(lfo);
+
+    // Add a second LFO for the harmonic layer
+    const lfo2 = ctx.createOscillator();
+    const lfo2Gain = ctx.createGain();
+    lfo2.type = "sine";
+    lfo2.frequency.value = 0.07; // Slightly different cycle
+    lfo2Gain.gain.value = 1.5;
+    
+    lfo2.connect(lfo2Gain);
+    lfo2Gain.connect(harmonic.frequency);
+    lfo2.start();
+    oscillators.push(lfo2);
 
     return oscillators;
   };
@@ -428,7 +440,7 @@ function useThematicAudio() {
       const gain = ctx.createGain();
       const analyser = ctx.createAnalyser();
       analyser.fftSize = 1024;
-      gain.gain.value = 0.1; // Very low volume for ambient
+      gain.gain.value = 0.02; // Ultra-low volume for ambient
       
       const oscillators = createAmbientSoundscape(ctx, gain);
       oscillators.forEach(osc => osc.connect(analyser));
