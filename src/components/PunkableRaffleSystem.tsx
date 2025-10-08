@@ -689,7 +689,7 @@ const PunkableRaffleSystem = () => {
               PUNKABLE_ETHEREAL_RAFFLE_SYSTEM v2.1
             </div>
             <h3 className="text-2xl md:text-4xl font-bold text-zinc-100 mb-4 md:mb-6 bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent text-center">
-              <span className="text-red-500">P.E.R.S.</span> // <span className="text-green-400">FAIR_RAFFLE_SYSTEM</span>
+              <span className="text-red-500">P.E.R.S.</span>
             </h3>
             <div className="max-w-4xl mx-auto space-y-4">
               <p className="text-zinc-300 text-sm md:text-lg leading-relaxed px-2 md:px-0">

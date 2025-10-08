@@ -1568,27 +1568,7 @@ function ArchetypeExclusivePrizesMuseum() {
     return rarityColors.bg[rarity as keyof typeof rarityColors.bg] || rarityColors.bg.default;
   }, [rarityColors]);
 
-  // Smooth continuous scroll animation - Desktop only, mobile drag only
-  const animateScroll = useCallback(() => {
-    const isMobile = window.innerWidth < 768;
-    if (!isMobile && !isHovered && !isPaused && !isDragging && containerRef.current) {
-      setScrollPosition(prev => {
-        const newPos = prev + 0.15; // Much slower, smoother movement
-        return newPos >= 100 ? 0 : newPos; // Reset when reaching 100%
-      });
-      animationRef.current = requestAnimationFrame(animateScroll);
-    }
-  }, [isHovered, isPaused, isDragging]);
-
-  // Start animation
-  useEffect(() => {
-    animationRef.current = requestAnimationFrame(animateScroll);
-    return () => {
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current);
-      }
-    };
-  }, [isHovered, isPaused, isDragging]);
+  // No automatic animation - drag only
 
   // Handle drag start - Optimized with useCallback
   const handleDragStart = useCallback((e: React.MouseEvent) => {
@@ -1597,12 +1577,14 @@ function ArchetypeExclusivePrizesMuseum() {
     setDragOffset(scrollPosition);
   }, [scrollPosition]);
 
-  // Handle drag move - Optimized with useCallback
+  // Handle drag move - Optimized with useCallback and limits
   const handleDragMove = useCallback((e: React.MouseEvent) => {
     if (isDragging) {
       const deltaX = e.clientX - dragStart;
-      const newPosition = dragOffset + (deltaX / 10); // Scale down for smoother feel
-      setScrollPosition(Math.max(0, Math.min(100, newPosition)));
+      const newPosition = dragOffset + (deltaX / 8); // Scale down for smoother feel
+      // Limit drag to prevent infinite scrolling
+      const limitedPosition = Math.max(-20, Math.min(80, newPosition));
+      setScrollPosition(limitedPosition);
     }
   }, [isDragging, dragStart, dragOffset]);
 
@@ -1621,8 +1603,10 @@ function ArchetypeExclusivePrizesMuseum() {
   const handleTouchMove = useCallback((e: React.TouchEvent) => {
     if (isDragging) {
       const deltaX = e.touches[0].clientX - dragStart;
-      const newPosition = dragOffset + (deltaX / 10);
-      setScrollPosition(Math.max(0, Math.min(100, newPosition)));
+      const newPosition = dragOffset + (deltaX / 8);
+      // Limit drag to prevent infinite scrolling
+      const limitedPosition = Math.max(-20, Math.min(80, newPosition));
+      setScrollPosition(limitedPosition);
     }
   }, [isDragging, dragStart, dragOffset]);
 
@@ -1760,32 +1744,9 @@ function ArchetypeExclusivePrizesMuseum() {
           ))}
         </div>
 
-        {/* Museum Controls - Mobile Responsive */}
-        <div className="absolute bottom-2 right-2 md:bottom-4 md:right-4 flex gap-2">
-          <button
-            onClick={() => setIsPaused(!isPaused)}
-            className={`px-2 py-1 md:px-3 md:py-2 border text-xs font-mono transition-all duration-300 ${
-              isPaused 
-                ? 'bg-orange-500/20 border-orange-500 text-orange-400' 
-                : 'bg-black/80 border-orange-500/40 text-orange-400 hover:bg-orange-500/10'
-            }`}
-          >
-            {isPaused ? '▶' : '⏸'}
-          </button>
-        </div>
-
-        {/* Museum Status - Mobile Responsive */}
-        <div className="absolute top-2 left-2 md:top-4 md:left-4 bg-black/80 border border-orange-500/40 p-1 md:p-2 font-mono text-xs backdrop-blur-sm">
-          <div className="text-orange-400 font-bold text-xs">STATUS</div>
-          <div className="text-zinc-400 text-[10px] hidden md:block">
-            {isDragging ? 'DRAGGING - MANUAL CONTROL' : 
-             isHovered ? 'PAUSED - HOVER DETECTED' : 
-             isPaused ? 'PAUSED - MANUAL' : 
-             'ACTIVE - SCROLLING'}
-          </div>
-          <div className="text-zinc-400 text-[10px] md:hidden">
-            {isDragging ? 'DRAGGING' : 'DRAG TO VIEW'}
-          </div>
+        {/* Drag Indicator - Simple and Clean */}
+        <div className="absolute bottom-3 right-3 bg-black/60 border border-orange-500/30 px-2 py-1 rounded text-xs font-mono text-orange-400 backdrop-blur-sm">
+          {isDragging ? 'DRAGGING' : 'DRAG TO VIEW'}
         </div>
       </div>
 
@@ -1809,9 +1770,9 @@ function ArchetypeExclusivePrizesMuseum() {
           <div className="text-center p-3 bg-zinc-800/30 rounded border border-zinc-700/30">
             <div className="text-orange-400 font-bold text-xs mb-1">RARITY_LEVELS</div>
             <div className="text-xs text-zinc-300 space-y-1">
-              <div className="flex justify-between"><span className="text-green-400">COMMON:</span> <span>2</span></div>
-              <div className="flex justify-between"><span className="text-blue-400">RARE:</span> <span>2</span></div>
-              <div className="flex justify-between"><span className="text-yellow-400">LEGENDARY:</span> <span>2</span></div>
+              <div className="flex justify-between items-center"><span className="text-green-400 text-xs">COMMON:</span> <span className="text-xs">2</span></div>
+              <div className="flex justify-between items-center"><span className="text-blue-400 text-xs">RARE:</span> <span className="text-xs">2</span></div>
+              <div className="flex justify-between items-center"><span className="text-yellow-400 text-xs">LEGENDARY:</span> <span className="text-xs">2</span></div>
             </div>
           </div>
           
