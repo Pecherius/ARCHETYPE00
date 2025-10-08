@@ -778,7 +778,7 @@ const PunkableRaffleSystem = () => {
                   onClick={() => setShowCreateForm(true)}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="group relative px-4 md:px-6 py-3 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-bold rounded-lg transition-all duration-300 shadow-lg hover:shadow-pink-500/30 border border-pink-400/50 overflow-hidden text-sm md:text-base"
+                  className="group relative px-4 md:px-6 py-3 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-mono font-bold rounded-lg transition-all duration-300 shadow-lg hover:shadow-pink-500/30 border border-pink-400/50 overflow-hidden text-sm"
                 >
                   <div className="absolute inset-0 bg-gradient-to-r from-pink-400/20 to-purple-400/20 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   <div className="relative flex items-center justify-center gap-2">
@@ -793,7 +793,7 @@ const PunkableRaffleSystem = () => {
                     onClick={() => setShowRaffleHistory(true)}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    className="group relative px-4 md:px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold rounded-lg transition-all duration-300 shadow-lg hover:shadow-green-500/30 border border-green-400/50 overflow-hidden text-sm md:text-base"
+                    className="group relative px-4 md:px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-mono font-bold rounded-lg transition-all duration-300 shadow-lg hover:shadow-green-500/30 border border-green-400/50 overflow-hidden text-sm"
                   >
                     <div className="absolute inset-0 bg-gradient-to-r from-green-400/20 to-emerald-400/20 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     <div className="relative flex items-center justify-center gap-2">

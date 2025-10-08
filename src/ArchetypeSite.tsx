@@ -1389,14 +1389,14 @@ function NeuralPingPong() {
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            <div className="text-3xl sm:text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-cyan-400 to-pink-400 mb-2 tracking-wider">
+            <div className="text-2xl sm:text-3xl md:text-4xl font-mono font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-cyan-400 to-pink-400 mb-2 tracking-wider">
               PING
             </div>
-            <div className="text-3xl sm:text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-pink-400 to-cyan-400 tracking-wider">
+            <div className="text-2xl sm:text-3xl md:text-4xl font-mono font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-pink-400 to-cyan-400 tracking-wider">
               PONG
             </div>
             <motion.div
-              className="text-lg sm:text-2xl md:text-3xl font-bold text-pink-400 mt-2 tracking-widest"
+              className="text-sm sm:text-lg md:text-xl font-mono font-bold text-pink-400 mt-2 tracking-widest"
               animate={{ opacity: [1, 0.5, 1] }}
               transition={{ duration: 2, repeat: Infinity }}
             >
@@ -1408,11 +1408,11 @@ function NeuralPingPong() {
         {/* Game description with neon styling */}
         <div className="space-y-6 relative z-10">
           <div className="text-center">
-            <h3 className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-cyan-400 mb-4 tracking-wider">
+            <h3 className="text-lg font-mono font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-cyan-400 mb-4 tracking-wider">
               RESONANCE_MODE
             </h3>
             <div className="bg-zinc-800/50 border border-pink-500/30 rounded-lg p-4 backdrop-blur-sm">
-              <p className="text-sm text-zinc-300 leading-relaxed">
+              <p className="text-sm text-zinc-300 leading-relaxed font-mono">
                 Use ← → arrow keys, mouse movement, or touch to control the paddle.<br/>
                 Ball gets faster with each hit. Warning: Neural overload effects at high speeds.
               </p>
@@ -1428,11 +1428,11 @@ function NeuralPingPong() {
           >
             <div className="bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500 p-[2px] rounded-lg">
               <div className="bg-zinc-900 rounded-lg px-4 sm:px-6 py-3 sm:py-4 text-center">
-                <span className="text-sm sm:text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-cyan-400 tracking-wider break-words">
+                <span className="text-sm font-mono font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-cyan-400 tracking-wider break-words">
                   INITIALIZE_NEURAL_LINK
                 </span>
                 <motion.div
-                  className="mt-2 text-pink-400 text-xs sm:text-sm"
+                  className="mt-2 text-pink-400 text-xs font-mono"
                   animate={{ opacity: [1, 0.3, 1] }}
                   transition={{ duration: 1.5, repeat: Infinity }}
                 >
@@ -1494,13 +1494,13 @@ function NeuralPingPong() {
               <div className="flex gap-4">
                 <button 
                   onClick={startGame}
-                  className="flex-1 px-4 py-3 border border-red-500 bg-red-500/20 text-red-400 hover:bg-red-500/30 font-bold"
+                  className="flex-1 px-4 py-3 border border-red-500 bg-red-500/20 text-red-400 hover:bg-red-500/30 font-mono font-bold text-sm"
                 >
                   TRY AGAIN
                 </button>
                 <button 
                   onClick={() => setGameState('menu')}
-                  className="flex-1 px-4 py-3 border border-zinc-600 bg-zinc-800 text-zinc-300 hover:bg-zinc-700"
+                  className="flex-1 px-4 py-3 border border-zinc-600 bg-zinc-800 text-zinc-300 hover:bg-zinc-700 font-mono text-sm"
                 >
                   MAIN MENU
                 </button>
@@ -1521,8 +1521,13 @@ function NeuralPingPong() {
           width={800}
           height={600}
           onMouseMove={handleMouseMove}
-          className="w-full h-full border border-zinc-700 bg-black cursor-none object-contain"
-          style={{ imageRendering: 'pixelated' }}
+          className="w-full h-full border border-zinc-700 bg-black cursor-none"
+          style={{ 
+            imageRendering: 'pixelated',
+            objectFit: 'fill',
+            width: '100%',
+            height: '100%'
+          }}
         />
       </div>
     </div>
