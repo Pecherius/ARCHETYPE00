@@ -18,42 +18,42 @@ export interface WinnerExport {
 }
 
 export function exportWinnersAsImage(winnerData: WinnerExport): void {
-  // Find the winners section element - try multiple selectors
-  let winnersSection = document.querySelector('[data-section="winners"]') as HTMLElement
+  // Find the complete results section - try multiple selectors
+  let resultsSection = document.querySelector('[data-section="results"]') as HTMLElement
   
-  if (!winnersSection) {
-    // Try alternative selectors
-    winnersSection = document.querySelector('.winners-section') as HTMLElement
+  if (!resultsSection) {
+    // Try finding the results view container
+    resultsSection = document.querySelector('.results-view') as HTMLElement
   }
   
-  if (!winnersSection) {
-    // Try finding by text content
+  if (!resultsSection) {
+    // Try finding by text content - look for "Raffle Results"
     const sections = document.querySelectorAll('div')
     for (const section of sections) {
-      if (section.textContent?.includes('Winners') && section.textContent?.includes('Export as Image')) {
-        winnersSection = section as HTMLElement
+      if (section.textContent?.includes('Raffle Results') && section.textContent?.includes('Export as Image')) {
+        resultsSection = section as HTMLElement
         break
       }
     }
   }
   
-  if (!winnersSection) {
-    console.error('Winners section not found, using fallback')
+  if (!resultsSection) {
+    console.error('Results section not found, using fallback')
     createManualCanvas(winnerData)
     return
   }
 
-  console.log('Found winners section:', winnersSection)
+  console.log('Found results section:', resultsSection)
 
   // Use html2canvas to capture the actual element
   import('html2canvas').then((html2canvas) => {
-    html2canvas.default(winnersSection, {
-      backgroundColor: null, // Transparent background
+    html2canvas.default(resultsSection, {
+      backgroundColor: '#0a0a0a', // Dark background
       scale: 2, // Higher resolution
       useCORS: true,
       allowTaint: true,
-      width: winnersSection.offsetWidth,
-      height: winnersSection.offsetHeight,
+      width: resultsSection.offsetWidth,
+      height: resultsSection.offsetHeight,
       logging: true // Enable logging for debugging
     }).then((canvas) => {
       console.log('Canvas created successfully:', canvas)

@@ -655,10 +655,10 @@ const PunkableRaffleSystem = () => {
               <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
               RAFFLE COMPLETED
             </div>
-            <h2 className="text-4xl font-bold text-zinc-100 mb-2 bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">
-              🏆 Raffle Results
+            <h2 className="text-2xl font-bold text-zinc-100 mb-2 font-mono">
+              🏆 RAFFLE_RESULTS
             </h2>
-            <p className="text-zinc-400 text-lg">{currentRaffle.title}</p>
+            <p className="text-zinc-400 text-sm font-mono">{currentRaffle.title}</p>
           </div>
 
           {/* Winners Grid - Grouped by Participant */}
@@ -781,34 +781,46 @@ const PunkableRaffleSystem = () => {
             <div className="flex gap-3">
               <button
                 onClick={() => handleExportWinners('image')}
-                className="px-6 py-3 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-semibold rounded-lg shadow-lg hover:shadow-pink-500/25 transition-all duration-200 hover:scale-105 flex items-center gap-2"
+                className="group relative overflow-hidden border-2 border-pink-500 bg-gradient-to-r from-pink-900/30 to-rose-900/30 px-6 py-3 text-pink-400 hover:from-pink-800/40 hover:to-rose-800/40 transition-all duration-300 hover:scale-105 font-mono font-bold text-sm rounded-lg"
               >
-                <span>📸</span>
-                Export as Image
+                <div className="absolute inset-0 bg-gradient-to-r from-pink-500/10 to-rose-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="relative flex items-center gap-2">
+                  <span>📸</span>
+                  <span>EXPORT_IMAGE</span>
+                </div>
               </button>
               <button
                 onClick={() => handleExportWinners('json')}
-                className="px-6 py-3 bg-gradient-to-r from-zinc-600 to-zinc-700 hover:from-zinc-700 hover:to-zinc-800 text-white font-semibold rounded-lg shadow-lg transition-all duration-200 hover:scale-105 flex items-center gap-2"
+                className="group relative overflow-hidden border-2 border-zinc-500 bg-gradient-to-r from-zinc-900/30 to-zinc-800/30 px-6 py-3 text-zinc-400 hover:from-zinc-800/40 hover:to-zinc-700/40 transition-all duration-300 hover:scale-105 font-mono font-bold text-sm rounded-lg"
               >
-                <span>📄</span>
-                Export as JSON
+                <div className="absolute inset-0 bg-gradient-to-r from-zinc-500/10 to-zinc-400/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="relative flex items-center gap-2">
+                  <span>📄</span>
+                  <span>EXPORT_JSON</span>
+                </div>
               </button>
             </div>
             
             <div className="flex gap-3">
               <button
                 onClick={() => setCurrentView("raffle")}
-                className="px-6 py-3 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-semibold rounded-lg shadow-lg hover:shadow-blue-500/25 transition-all duration-200 hover:scale-105 flex items-center gap-2"
+                className="group relative overflow-hidden border-2 border-blue-500 bg-gradient-to-r from-blue-900/30 to-cyan-900/30 px-6 py-3 text-blue-400 hover:from-blue-800/40 hover:to-cyan-800/40 transition-all duration-300 hover:scale-105 font-mono font-bold text-sm rounded-lg"
               >
-                <span>✏️</span>
-                Back to Edit
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="relative flex items-center gap-2">
+                  <span>✏️</span>
+                  <span>BACK_TO_EDIT</span>
+                </div>
               </button>
               <button
                 onClick={() => setCurrentView("selector")}
-                className="px-6 py-3 border border-zinc-600 text-zinc-300 hover:bg-zinc-800 hover:border-zinc-500 rounded-lg transition-all duration-200 flex items-center gap-2"
+                className="group relative overflow-hidden border-2 border-zinc-500 bg-gradient-to-r from-zinc-900/30 to-zinc-800/30 px-6 py-3 text-zinc-400 hover:from-zinc-800/40 hover:to-zinc-700/40 transition-all duration-300 hover:scale-105 font-mono font-bold text-sm rounded-lg"
               >
-                <span>🏠</span>
-                New Raffle
+                <div className="absolute inset-0 bg-gradient-to-r from-zinc-500/10 to-zinc-400/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="relative flex items-center gap-2">
+                  <span>🏠</span>
+                  <span>NEW_RAFFLE</span>
+                </div>
               </button>
             </div>
           </div>
@@ -916,12 +928,12 @@ const PunkableRaffleSystem = () => {
 
           <div className="text-center">
             <div className="inline-flex flex-col items-center gap-4">
-              <div className={`flex flex-col gap-3 md:gap-4 w-full ${savedRaffles.length === 0 ? 'max-w-md justify-center' : 'max-w-md md:max-w-none'}`}>
+              <div className={`flex gap-3 w-full ${savedRaffles.length === 0 ? 'max-w-md justify-center' : 'max-w-md md:max-w-none'}`}>
                 <motion.button
                   onClick={() => setShowCreateForm(true)}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="group relative overflow-hidden border-2 border-pink-500 bg-gradient-to-r from-pink-900/30 to-purple-900/30 px-6 py-3 text-pink-400 hover:from-pink-800/40 hover:to-purple-800/40 transition-all duration-300 hover:scale-105 font-mono font-bold text-sm rounded-lg"
+                  className="group relative overflow-hidden border-2 border-pink-500 bg-gradient-to-r from-pink-900/30 to-purple-900/30 px-6 py-3 text-pink-400 hover:from-pink-800/40 hover:to-purple-800/40 transition-all duration-300 hover:scale-105 font-mono font-bold text-sm rounded-lg flex-1"
                 >
                   <div className="absolute inset-0 bg-gradient-to-r from-pink-400/20 to-purple-400/20 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   <div className="relative flex items-center justify-center gap-2">
@@ -936,7 +948,7 @@ const PunkableRaffleSystem = () => {
                     onClick={() => setShowRaffleHistory(true)}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    className="group relative overflow-hidden border-2 border-green-500 bg-gradient-to-r from-green-900/30 to-emerald-900/30 px-6 py-3 text-green-400 hover:from-green-800/40 hover:to-emerald-800/40 transition-all duration-300 hover:scale-105 font-mono font-bold text-sm rounded-lg"
+                    className="group relative overflow-hidden border-2 border-green-500 bg-gradient-to-r from-green-900/30 to-emerald-900/30 px-6 py-3 text-green-400 hover:from-green-800/40 hover:to-emerald-800/40 transition-all duration-300 hover:scale-105 font-mono font-bold text-sm rounded-lg flex-1"
                   >
                     <div className="absolute inset-0 bg-gradient-to-r from-green-400/20 to-emerald-400/20 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     <div className="relative flex items-center justify-center gap-2">
@@ -1506,7 +1518,7 @@ const PunkableRaffleSystem = () => {
 
           {/* Main Selection Area */}
           <div className="flex flex-col items-center justify-center order-2 xl:order-1">
-            <div className="bg-gradient-to-br from-zinc-800/50 to-zinc-900/50 rounded-2xl p-8 border border-zinc-700 w-full text-center">
+            <div data-section="results" className="bg-gradient-to-br from-zinc-800/50 to-zinc-900/50 rounded-2xl p-8 border border-zinc-700 w-full text-center">
               <AnimatePresence mode="wait">
                 {currentParticipant ? (
                   <motion.div
