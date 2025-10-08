@@ -741,8 +741,8 @@ const PunkableRaffleSystem = () => {
                           {getEmoji()}
                         </div>
                         <div>
-                          <h3 className="text-xl font-bold text-pink-400">{group.participantName}</h3>
-                          <p className="text-zinc-400 text-sm">
+                          <h3 className="text-lg font-bold text-pink-400 font-mono">{group.participantName}</h3>
+                          <p className="text-zinc-400 text-sm font-mono">
                             {totalPrizes} prize{totalPrizes > 1 ? 's' : ''} • {ticketCount} tickets
                           </p>
                         </div>

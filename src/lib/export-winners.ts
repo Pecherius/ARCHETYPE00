@@ -69,96 +69,132 @@ function createManualCanvas(winnerData: WinnerExport): void {
   ctx.lineWidth = 3
   ctx.strokeRect(20, 20, canvas.width - 40, canvas.height - 40)
 
-  // Header section
-  ctx.fillStyle = '#1a1a1a'
+  // Header section with gradient background
+  const headerGradient = ctx.createLinearGradient(30, 30, 30, 180)
+  headerGradient.addColorStop(0, '#1a1a1a')
+  headerGradient.addColorStop(1, '#2a2a2a')
+  ctx.fillStyle = headerGradient
   ctx.fillRect(30, 30, canvas.width - 60, 150)
 
-  // Title
-  ctx.fillStyle = '#ff69b4'
-  ctx.font = 'bold 42px monospace'
-  ctx.textAlign = 'center'
-  ctx.fillText('ARCHETYPE_00 // RAFFLE_RESULTS', canvas.width / 2, 80)
+  // Header border
+  ctx.strokeStyle = '#ff69b4'
+  ctx.lineWidth = 2
+  ctx.strokeRect(30, 30, canvas.width - 60, 150)
 
-  // Raffle name
-  ctx.fillStyle = '#ffffff'
-  ctx.font = 'bold 32px monospace'
-  ctx.fillText(winnerData.raffleName, canvas.width / 2, 120)
-
-  // Status badge
+  // Status badge background
   ctx.fillStyle = '#00ff88'
-  ctx.font = 'bold 18px monospace'
-  ctx.fillText('RAFFLE COMPLETED', canvas.width / 2, 150)
+  ctx.fillRect(50, 50, 200, 30)
+  ctx.fillStyle = '#000000'
+  ctx.font = 'bold 14px monospace'
+  ctx.textAlign = 'center'
+  ctx.fillText('RAFFLE COMPLETED', 150, 70)
 
-  // PERS branding
+  // Title with glow effect
+  ctx.fillStyle = '#ff69b4'
+  ctx.font = 'bold 36px monospace'
+  ctx.textAlign = 'center'
+  ctx.fillText('ARCHETYPE_00 // RAFFLE_RESULTS', canvas.width / 2, 100)
+
+  // Raffle name with better styling
+  ctx.fillStyle = '#ffffff'
+  ctx.font = 'bold 28px monospace'
+  ctx.fillText(winnerData.raffleName, canvas.width / 2, 130)
+
+  // PERS branding with icon
   ctx.fillStyle = '#a1a1aa'
   ctx.font = '16px monospace'
-  ctx.fillText('Punkable Ethereal Raffle System (P.E.R.S.)', canvas.width / 2, 170)
+  ctx.fillText('⚡ Punkable Ethereal Raffle System (P.E.R.S.)', canvas.width / 2, 160)
 
-  // Winners section header
+  // Winners section header with background
+  ctx.fillStyle = '#2a2a2a'
+  ctx.fillRect(50, 200, canvas.width - 100, 40)
+  ctx.strokeStyle = '#ff69b4'
+  ctx.lineWidth = 2
+  ctx.strokeRect(50, 200, canvas.width - 100, 40)
+  
   ctx.fillStyle = '#ff69b4'
-  ctx.font = 'bold 28px monospace'
+  ctx.font = 'bold 24px monospace'
   ctx.textAlign = 'left'
-  ctx.fillText('WINNERS:', 60, 220)
+  ctx.fillText('🏆 WINNERS:', 70, 225)
 
-  // Draw grouped winners
+  // Draw grouped winners with enhanced UI
   let yPosition = 280
   groupedWinnersArray.forEach((group: any, index) => {
     if (yPosition > canvas.height - 100) return
 
-    // Winner card background
-    ctx.fillStyle = '#1a1a1a'
+    // Winner card background with gradient
+    const cardGradient = ctx.createLinearGradient(50, yPosition - 40, 50, yPosition + 80)
+    cardGradient.addColorStop(0, '#1a1a1a')
+    cardGradient.addColorStop(1, '#2a2a2a')
+    ctx.fillStyle = cardGradient
     ctx.fillRect(50, yPosition - 40, canvas.width - 100, 120)
 
-    // Winner card border
+    // Winner card border with glow effect
     ctx.strokeStyle = '#ff69b4'
     ctx.lineWidth = 2
     ctx.strokeRect(50, yPosition - 40, canvas.width - 100, 120)
 
-    // Winner number and name
+    // Winner number badge
     ctx.fillStyle = '#ff69b4'
-    ctx.font = 'bold 24px monospace'
-    ctx.fillText(`${index + 1}.`, 70, yPosition)
+    ctx.fillRect(60, yPosition - 35, 30, 25)
+    ctx.fillStyle = '#000000'
+    ctx.font = 'bold 16px monospace'
+    ctx.textAlign = 'center'
+    ctx.fillText(`${index + 1}`, 75, yPosition - 18)
 
+    // Winner name with better styling
     ctx.fillStyle = '#ffffff'
-    ctx.font = 'bold 22px monospace'
-    ctx.fillText(group.participantName, 120, yPosition)
+    ctx.font = 'bold 20px monospace'
+    ctx.textAlign = 'left'
+    ctx.fillText(group.participantName, 100, yPosition - 10)
 
-    // Ticket count
+    // Ticket count badge
     ctx.fillStyle = '#a1a1aa'
-    ctx.font = '16px monospace'
-    ctx.fillText(`${group.totalTickets} tickets`, 120, yPosition + 30)
+    ctx.fillRect(100, yPosition + 5, 120, 20)
+    ctx.fillStyle = '#000000'
+    ctx.font = 'bold 12px monospace'
+    ctx.fillText(`${group.totalTickets} tickets`, 110, yPosition + 18)
 
-    // Prizes won
+    // Prizes won section
     ctx.fillStyle = '#00ff88'
-    ctx.font = 'bold 18px monospace'
-    ctx.fillText('PRIZES WON:', 120, yPosition + 55)
+    ctx.font = 'bold 16px monospace'
+    ctx.fillText('PRIZES WON:', 100, yPosition + 40)
 
-    // List prizes
-    let prizeY = yPosition + 80
+    // List prizes with better styling
+    let prizeY = yPosition + 60
     group.prizes.forEach((prize: any) => {
       ctx.fillStyle = '#a1a1aa'
-      ctx.font = '16px monospace'
+      ctx.font = '14px monospace'
       const prizeText = prize.count > 1 ? `🏆 ${prize.name} x${prize.count}` : `🏆 ${prize.name}`
-      ctx.fillText(prizeText, 140, prizeY)
-      prizeY += 20
+      ctx.fillText(prizeText, 120, prizeY)
+      prizeY += 18
     })
 
-    // UP Address (truncated)
-    const truncatedUp = group.participantUpAddress.length > 30 
-      ? group.participantUpAddress.substring(0, 30) + '...'
+    // UP Address with background
+    const truncatedUp = group.participantUpAddress.length > 25 
+      ? group.participantUpAddress.substring(0, 25) + '...'
       : group.participantUpAddress
+    ctx.fillStyle = '#2a2a2a'
+    ctx.fillRect(100, prizeY + 5, 300, 18)
     ctx.fillStyle = '#71717a'
-    ctx.font = '14px monospace'
-    ctx.fillText(`📍 UP: ${truncatedUp}`, 120, prizeY + 10)
+    ctx.font = '12px monospace'
+    ctx.fillText(`📍 UP: ${truncatedUp}`, 105, prizeY + 17)
 
     yPosition += 140
   })
 
-  // Footer
+  // Footer with background
+  ctx.fillStyle = '#1a1a1a'
+  ctx.fillRect(50, canvas.height - 60, canvas.width - 100, 40)
+  ctx.strokeStyle = '#ff69b4'
+  ctx.lineWidth = 1
+  ctx.strokeRect(50, canvas.height - 60, canvas.width - 100, 40)
+  
   ctx.fillStyle = '#71717a'
-  ctx.font = '16px monospace'
+  ctx.font = '14px monospace'
   ctx.textAlign = 'center'
-  ctx.fillText(`Exported on ${winnerData.exportDate} | Total Winners: ${groupedWinnersArray.length}`, canvas.width / 2, canvas.height - 30)
+  ctx.fillText(`📅 Exported on ${winnerData.exportDate}`, canvas.width / 2, canvas.height - 40)
+  ctx.fillText(`👥 Total Winners: ${groupedWinnersArray.length}`, canvas.width / 2, canvas.height - 25)
 
   // Convert to image and download
   canvas.toBlob((blob) => {
