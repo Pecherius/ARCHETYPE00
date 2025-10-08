@@ -2117,9 +2117,9 @@ export default function ArchetypeSite(){
             </motion.div>
           </div>
 
-          {/* Character Loading Benefits */}
+          {/* Character Loading Benefits - Aligned with artifact image */}
           <motion.div
-            className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 hidden lg:block"
+            className="absolute left-1/2 top-3/4 transform -translate-x-1/2 -translate-y-1/2 hidden lg:block"
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1, delay: 2 }}
