@@ -1576,6 +1576,30 @@ function NeuralPingPong() {
             height: '100%'
           }}
         />
+        
+        {/* 40 Points Achievement Popup */}
+        {show40Achievement && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8, y: -20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.8, y: -20 }}
+            className="absolute top-4 right-4 bg-gradient-to-r from-yellow-900/90 to-amber-900/90 border-2 border-yellow-500 rounded-lg p-4 backdrop-blur-sm z-10 max-w-xs"
+          >
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-2xl">🏆</span>
+              <h4 className="text-yellow-400 font-mono font-bold text-sm">ACHIEVEMENT_UNLOCKED</h4>
+            </div>
+            <p className="text-yellow-300 text-xs font-mono">
+              DESBLOQUEASTE EL PREMIO
+            </p>
+            <p className="text-yellow-200 text-xs font-mono mt-1">
+              40+ PUNTOS ALCANZADOS
+            </p>
+            <div className="mt-2 text-xs text-yellow-400 font-mono">
+              RESONANCE_LEVEL: LEGENDARY
+            </div>
+          </motion.div>
+        )}
       </div>
     </div>
   );
