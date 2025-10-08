@@ -661,38 +661,93 @@ const PunkableRaffleSystem = () => {
             <p className="text-zinc-400 text-lg">{currentRaffle.title}</p>
           </div>
 
-          {/* Winners Grid */}
+          {/* Winners Grid - Grouped by Participant */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-            {winners.map((winner, index) => (
-              <motion.div
-                key={winner.id}
-                initial={{ opacity: 0, y: 20, scale: 0.9 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                transition={{ delay: index * 0.1, duration: 0.5 }}
-                className="bg-gradient-to-br from-pink-500/10 to-purple-500/10 p-6 rounded-xl border border-pink-500/20 relative overflow-hidden"
-              >
-                <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-pink-500/20 to-purple-500/20 rounded-full -translate-y-10 translate-x-10"></div>
-                <div className="relative z-10">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-pink-500 to-purple-500 flex items-center justify-center text-white text-xl font-bold">
-                      {index + 1}
+            {(() => {
+              // Group winners by participant
+              const groupedWinners = winners.reduce((acc, winner) => {
+                const key = `${winner.participant_name}-${winner.up_address}`;
+                if (!acc[key]) {
+                  acc[key] = {
+                    participantName: winner.participant_name,
+                    upAddress: winner.up_address,
+                    prizes: [],
+                    participant: participants.find(p => 
+                      p.name === winner.participant_name && p.up_address === winner.up_address
+                    )
+                  };
+                }
+                acc[key].prizes.push({
+                  name: winner.prize_name,
+                  wonAt: winner.won_at
+                });
+                return acc;
+              }, {} as Record<string, any>);
+
+              return Object.values(groupedWinners).map((group: any, index) => {
+                const participant = group.participant;
+                const ticketCount = participant?.tickets || 0;
+                
+                // Get emoji based on ticket count
+                const getEmoji = () => {
+                  if (ticketCount >= 20) return '🐋';
+                  if (ticketCount >= 10) return '💎';
+                  if (ticketCount >= 5) return '⭐';
+                  return '🎫';
+                };
+
+                // Get color based on ticket count
+                const getColorClass = () => {
+                  if (ticketCount >= 20) return 'from-purple-500/10 to-pink-500/10 border-purple-500/20';
+                  if (ticketCount >= 10) return 'from-yellow-500/10 to-orange-500/10 border-yellow-500/20';
+                  if (ticketCount >= 5) return 'from-blue-500/10 to-cyan-500/10 border-blue-500/20';
+                  return 'from-pink-500/10 to-purple-500/10 border-pink-500/20';
+                };
+
+                return (
+                  <motion.div
+                    key={`${group.participantName}-${group.upAddress}`}
+                    initial={{ opacity: 0, y: 20, scale: 0.9 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    transition={{ delay: index * 0.1, duration: 0.5 }}
+                    className={`bg-gradient-to-br ${getColorClass()} p-6 rounded-xl border relative overflow-hidden`}
+                  >
+                    <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-pink-500/20 to-purple-500/20 rounded-full -translate-y-10 translate-x-10"></div>
+                    <div className="relative z-10">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div 
+                          className="w-12 h-12 rounded-full flex items-center justify-center text-white text-xl font-bold"
+                          style={{ backgroundColor: participant?.color || '#8B5CF6' }}
+                        >
+                          {getEmoji()}
+                        </div>
+                        <div>
+                          <h3 className="text-xl font-bold text-pink-400">{group.participantName}</h3>
+                          <p className="text-zinc-400 text-sm">
+                            {group.prizes.length} prize{group.prizes.length > 1 ? 's' : ''} • {ticketCount} tickets
+                          </p>
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        {group.prizes.map((prize: any, prizeIndex: number) => (
+                          <div key={prizeIndex} className="bg-zinc-800/50 p-3 rounded-lg border border-zinc-700">
+                            <p className="text-zinc-300 font-medium">🎁 {prize.name}</p>
+                            <p className="text-zinc-500 text-xs font-mono">
+                              Won: {new Date(prize.wonAt).toLocaleString()}
+                            </p>
+                          </div>
+                        ))}
+                        {group.upAddress && (
+                          <p className="text-zinc-500 text-sm font-mono mt-2">
+                            UP: {group.upAddress.slice(0, 20)}...
+                          </p>
+                        )}
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="text-xl font-bold text-pink-400">{winner.participant_name}</h3>
-                      <p className="text-zinc-400 text-sm">Winner #{index + 1}</p>
-                    </div>
-                  </div>
-                  <div className="bg-zinc-800/50 p-4 rounded-lg border border-zinc-700">
-                    <p className="text-zinc-300 font-medium">🎁 {winner.prize_name}</p>
-                    {winner.up_address && (
-                      <p className="text-zinc-500 text-sm font-mono mt-2">
-                        UP: {winner.up_address.slice(0, 20)}...
-                      </p>
-                    )}
-                  </div>
-                </div>
-              </motion.div>
-            ))}
+                  </motion.div>
+                );
+              });
+            })()}
           </div>
 
           {/* Export and Actions */}
