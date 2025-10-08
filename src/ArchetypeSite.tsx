@@ -1579,9 +1579,9 @@ function ArchetypeExclusivePrizesMuseum() {
     if (isDragging) {
       e.preventDefault(); // Prevent text selection
       const deltaX = e.clientX - dragStart;
-      const newPosition = dragOffset + (deltaX / 6); // Smoother feel
+      const newPosition = dragOffset - (deltaX / 4); // Inverted for natural drag
       // Better limits for natural scrolling
-      const limitedPosition = Math.max(-30, Math.min(100, newPosition));
+      const limitedPosition = Math.max(-50, Math.min(50, newPosition));
       setScrollPosition(limitedPosition);
     }
   }, [isDragging, dragStart, dragOffset]);
@@ -1602,9 +1602,9 @@ function ArchetypeExclusivePrizesMuseum() {
     if (isDragging) {
       e.preventDefault(); // Prevent scrolling
       const deltaX = e.touches[0].clientX - dragStart;
-      const newPosition = dragOffset + (deltaX / 6);
+      const newPosition = dragOffset - (deltaX / 4); // Inverted for natural drag
       // Better limits for natural scrolling
-      const limitedPosition = Math.max(-30, Math.min(100, newPosition));
+      const limitedPosition = Math.max(-50, Math.min(50, newPosition));
       setScrollPosition(limitedPosition);
     }
   }, [isDragging, dragStart, dragOffset]);
@@ -1636,10 +1636,8 @@ function ArchetypeExclusivePrizesMuseum() {
           ref={containerRef}
           className="absolute top-0 left-0 h-full flex items-center cursor-grab active:cursor-grabbing select-none"
           onMouseLeave={handleDragEnd}
-          onMouseDown={handleDragStart}
           onMouseMove={isDragging ? handleDragMove : undefined}
           onMouseUp={handleDragEnd}
-          onTouchStart={handleTouchStart}
           onTouchMove={isDragging ? handleTouchMove : undefined}
           onTouchEnd={handleTouchEnd}
           style={{
@@ -1652,13 +1650,15 @@ function ArchetypeExclusivePrizesMuseum() {
           {[...ARCHETYPE_EXCLUSIVE_PRIZES, ...ARCHETYPE_EXCLUSIVE_PRIZES].map((image, index) => (
             <motion.div
               key={`${image.id}-${index}`}
-              className="flex-shrink-0 relative group mx-2 md:mx-4 w-[150px] h-[240px] md:w-[200px] md:h-[320px]"
+              className="flex-shrink-0 relative group mx-2 md:mx-4 w-[150px] h-[240px] md:w-[200px] md:h-[320px] cursor-grab active:cursor-grabbing"
               whileHover={{ 
                 scale: 1.02,
                 y: -5,
                 z: 50
               }}
               transition={{ duration: 0.4, ease: "easeOut" }}
+              onMouseDown={handleDragStart}
+              onTouchStart={handleTouchStart}
             >
               {/* Elegant Museum Frame - Optimized Space */}
               <div className="relative w-full h-[200px] md:h-[280px] bg-gradient-to-br from-zinc-900/80 to-zinc-800/60 backdrop-blur-sm border border-zinc-700/50 shadow-2xl overflow-hidden group-hover:border-orange-500/40 transition-all duration-500">
@@ -1723,16 +1723,11 @@ function ArchetypeExclusivePrizesMuseum() {
 
               {/* Name and Rarity Button - Mobile Responsive */}
               <div className="mt-2 md:mt-4 w-full">
-                <button className="w-full bg-gradient-to-r from-zinc-800/80 to-zinc-700/60 border border-zinc-600/50 hover:border-orange-500/60 p-2 md:p-3 rounded-lg backdrop-blur-sm transition-all duration-300 hover:scale-105 group">
-                  <div className="flex flex-col items-center gap-2">
-                    <div className="text-center">
-                      <div className="text-orange-400 font-bold text-xs font-mono truncate max-w-full">#{image.id} {image.title}</div>
-                      <div className="text-xs text-zinc-400 font-mono">Exclusive Prize</div>
-                    </div>
-                    <div className={`px-2 py-1 rounded text-xs font-mono font-bold ${getRarityColor(image.rarity)} bg-black/50 border border-current/30`}>
-                      {image.rarity}
-                    </div>
-                  </div>
+                <div className="text-center mb-2">
+                  <div className="text-orange-400 font-bold text-xs font-mono truncate max-w-full">#{image.id} {image.title}</div>
+                </div>
+                <button className={`w-full px-3 py-2 rounded text-xs font-mono font-bold ${getRarityColor(image.rarity)} bg-black/50 border border-current/30 hover:scale-105 transition-all duration-300`}>
+                  {image.rarity}
                 </button>
               </div>
             </motion.div>
