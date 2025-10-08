@@ -694,6 +694,8 @@ function NeuralPingPong() {
   const [lossCount, setLossCount] = useState(0);
   const [gameHistory, setGameHistory] = useState<Array<{score: number, timestamp: number}>>([]);
   const [lastHitTime, setLastHitTime] = useState(0);
+  const [hasReached40, setHasReached40] = useState(false);
+  const [show40Achievement, setShow40Achievement] = useState(false);
   
   // Game objects - enhanced
   const [ball, setBall] = useState({ 
@@ -835,6 +837,8 @@ function NeuralPingPong() {
     setSpeed(1);
     setGlitchIntensity(0);
     setShowWinMessage(false);
+    setHasReached40(false);
+    setShow40Achievement(false);
     setGameStartTime(Date.now());
     setLastHitTime(0);
     
@@ -942,7 +946,19 @@ function NeuralPingPong() {
             newBall.y = paddle.y - newBall.radius;
             
             // Update score - NO WIN LIMIT
-            setScore(prev => prev + 1);
+            setScore(prev => {
+              const newScore = prev + 1;
+              
+              // Check for 40 points achievement
+              if (newScore === 40 && !hasReached40) {
+                setHasReached40(true);
+                setShow40Achievement(true);
+                // Auto-hide achievement after 5 seconds
+                setTimeout(() => setShow40Achievement(false), 5000);
+              }
+              
+              return newScore;
+            });
             
             // Enhanced effects based on score
             const particleCount = Math.min(8 + Math.floor(score / 5), 20);
@@ -1336,6 +1352,18 @@ function NeuralPingPong() {
   }, [gameState, paddle.width]);
 
   const getLossMessage = () => {
+    if (hasReached40) {
+      const specialMessages = [
+        "You transcended the impossible. Even destruction couldn't stop your resonance.",
+        "40+ points achieved. You've proven the impossible is possible. The system had to intervene.",
+        "Legendary performance detected. The matrix itself had to reset to contain your power.",
+        "You broke through the barrier. Even the neural network couldn't handle your resonance.",
+        "Incredible achievement unlocked. The system was forced to terminate your connection.",
+        "You reached the unreachable. The archetype itself had to reset to maintain balance."
+      ];
+      return specialMessages[Math.floor(Math.random() * specialMessages.length)];
+    }
+    
     const messages = [
       "Neural network overload detected. Try again, human.",
       "Resonance frequency disrupted. Your signal is weak.",

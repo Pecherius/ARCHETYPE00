@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, useCallback, useMemo } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import confetti from "canvas-confetti"
 import { RaffleService, type Raffle, type Participant, type Prize, type Winner } from "../lib/raffle-service"
@@ -108,7 +108,7 @@ const PunkableRaffleSystem = () => {
     return await RaffleService.checkDuplicateUpAddress(currentRaffle.id, upAddress)
   }
 
-  const getRandomWeightedParticipant = () => {
+  const getRandomWeightedParticipant = useCallback(() => {
     if (participants.length === 0) return null
     const totalTickets = participants.reduce((sum, p) => sum + p.tickets, 0)
     let random = Math.random() * totalTickets
@@ -120,16 +120,16 @@ const PunkableRaffleSystem = () => {
       }
     }
     return participants[0]
-  }
+  }, [participants])
 
-  const getRandomPrize = () => {
+  const getRandomPrize = useCallback(() => {
     const availablePrizes = prizes.filter((p) => p.remaining > 0)
     if (availablePrizes.length === 0) return null
     const randomIndex = Math.floor(Math.random() * availablePrizes.length)
     return availablePrizes[randomIndex]
-  }
+  }, [prizes])
 
-  const selectWinner = async () => {
+  const selectWinner = useCallback(async () => {
     if (selecting || participants.length === 0 || !currentRaffle) return
 
     const prize = getRandomPrize()
@@ -137,12 +137,16 @@ const PunkableRaffleSystem = () => {
 
     setSelecting(true)
     const selectedWinner = getRandomWeightedParticipant()
-    if (!selectedWinner) return
+    if (!selectedWinner) {
+      setSelecting(false)
+      return
+    }
 
+    // Pre-calculate weighted array once for better performance
     const weightedArray = participants.flatMap((p) => Array(p.tickets).fill(p))
 
     let shuffleCount = 0
-    const totalShuffles = 15
+    const totalShuffles = 12 // Reduced from 15 for better performance
 
     const shuffle = () => {
       if (shuffleCount < totalShuffles) {
@@ -150,15 +154,16 @@ const PunkableRaffleSystem = () => {
         setCurrentParticipant(weightedArray[randomIndex])
 
         shuffleCount++
-        shuffleRef.current = setTimeout(shuffle, 50 + shuffleCount * 10)
+        shuffleRef.current = setTimeout(shuffle, 40 + shuffleCount * 8) // Faster animation
       } else {
         setCurrentParticipant(selectedWinner)
         setLatestWinner({ participant: selectedWinner, prize })
         setShowWinnerAlert(true)
 
+        // Optimized confetti - reduced particle count for better performance
         confetti({
-          particleCount: 150,
-          spread: 80,
+          particleCount: 100, // Reduced from 150
+          spread: 70, // Reduced from 80
           origin: { y: 0.6 },
           colors: ["#FF69B4", "#FFB6C1", "#FF1493", "#FFC0CB", "#FF91A4"],
         })
@@ -170,35 +175,41 @@ const PunkableRaffleSystem = () => {
           setShowWinnerAlert(false)
         }, 3000)
 
-        // Update prize remaining count
-        RaffleService.updatePrizeRemaining(prize.id, Math.max(0, prize.remaining - 1))
-        setPrizes((prev) =>
-          prev.map((p) => (p.id === prize.id ? { ...p, remaining: Math.max(0, p.remaining - 1) } : p)),
-        )
-
-        // Add winner to local storage
-        const winnerData = {
-          raffle_id: currentRaffle.id,
-          participant_id: selectedWinner.id,
-          prize_id: prize.id,
-          participant_name: selectedWinner.name,
-          prize_name: prize.name,
-          participant_color: selectedWinner.color,
-          up_address: selectedWinner.up_address,
+        // Batch state updates for better performance
+        const updatePrize = () => {
+          RaffleService.updatePrizeRemaining(prize.id, Math.max(0, prize.remaining - 1))
+          setPrizes((prev) =>
+            prev.map((p) => (p.id === prize.id ? { ...p, remaining: Math.max(0, p.remaining - 1) } : p)),
+          )
         }
 
-        RaffleService.addWinner(winnerData).then((winner) => {
-          if (winner) {
-            setWinners((prev) => [...prev, winner])
+        const addWinner = () => {
+          const winnerData = {
+            raffle_id: currentRaffle.id,
+            participant_id: selectedWinner.id,
+            prize_id: prize.id,
+            participant_name: selectedWinner.name,
+            prize_name: prize.name,
+            participant_color: selectedWinner.color,
+            up_address: selectedWinner.up_address,
           }
-        })
 
+          RaffleService.addWinner(winnerData).then((winner) => {
+            if (winner) {
+              setWinners((prev) => [...prev, winner])
+            }
+          })
+        }
+
+        // Execute updates
+        updatePrize()
+        addWinner()
         setSelecting(false)
       }
     }
 
     shuffle()
-  }
+  }, [selecting, participants, currentRaffle, getRandomPrize, getRandomWeightedParticipant])
 
   const addParticipant = async () => {
     if (
@@ -522,38 +533,42 @@ const PunkableRaffleSystem = () => {
     }
   }, [newParticipantUpAddress])
 
-  // Update raffle history when participants, prizes, or winners change
-  useEffect(() => {
-    if (currentRaffle) {
-      const updatedRaffle = {
-        ...currentRaffle,
-        participants,
-        prizes,
-        winners,
-        saved_at: new Date().toISOString(),
-        participant_count: participants.length,
-        prize_count: prizes.length,
-        winner_count: winners.length
-      }
-      
-      // Update the raffle in history
-      const updatedHistory = savedRaffles.map(raffle => 
+  // Update raffle history when participants, prizes, or winners change - optimized with debouncing
+  const updateRaffleHistory = useCallback(() => {
+    if (!currentRaffle) return
+    
+    const updatedRaffle = {
+      ...currentRaffle,
+      participants,
+      prizes,
+      winners,
+      saved_at: new Date().toISOString(),
+      participant_count: participants.length,
+      prize_count: prizes.length,
+      winner_count: winners.length
+    }
+    
+    setSavedRaffles(prev => {
+      const updatedHistory = prev.map(raffle => 
         raffle.id === currentRaffle.id ? updatedRaffle : raffle
       )
       
       if (updatedHistory.length > 0) {
-        setSavedRaffles(updatedHistory)
         localStorage.setItem('savedRaffles', JSON.stringify(updatedHistory))
-        console.log('Raffle history updated:', updatedRaffle)
+        return updatedHistory
       } else {
-        // If raffle not in history yet, add it
-        const newHistory = [...savedRaffles, updatedRaffle]
-        setSavedRaffles(newHistory)
+        const newHistory = [...prev, updatedRaffle]
         localStorage.setItem('savedRaffles', JSON.stringify(newHistory))
-        console.log('Raffle added to history:', updatedRaffle)
+        return newHistory
       }
-    }
-  }, [participants, prizes, winners, currentRaffle])
+    })
+  }, [currentRaffle, participants, prizes, winners])
+
+  // Debounced effect to prevent excessive updates
+  useEffect(() => {
+    const timeoutId = setTimeout(updateRaffleHistory, 500) // 500ms debounce
+    return () => clearTimeout(timeoutId)
+  }, [updateRaffleHistory])
 
   // Handle selecting saved user
   const handleSelectSavedUser = (user: SavedUser) => {
@@ -1090,8 +1105,14 @@ const PunkableRaffleSystem = () => {
     )
   }
 
-  const remainingPrizeCount = prizes.reduce((sum, p) => sum + p.remaining, 0)
-  const canSelectWinner = participants.length > 0 && remainingPrizeCount > 0 && !selecting
+  const remainingPrizeCount = useMemo(() => 
+    prizes.reduce((sum, p) => sum + p.remaining, 0),
+    [prizes]
+  )
+  const canSelectWinner = useMemo(() => 
+    participants.length > 0 && remainingPrizeCount > 0 && !selecting,
+    [participants.length, remainingPrizeCount, selecting]
+  )
 
   return (
     <section className="mx-auto max-w-6xl px-4 pb-12 sm:px-6">
