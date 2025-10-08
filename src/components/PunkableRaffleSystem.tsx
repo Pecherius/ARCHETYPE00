@@ -451,24 +451,59 @@ const PunkableRaffleSystem = () => {
     alert("Prize saved as template! You can reuse it in future raffles.")
   }
 
-  // Handle export winners
+  // Handle export winners - Group by participant
   const handleExportWinners = (format: 'image' | 'json') => {
     if (!currentRaffle || winners.length === 0) return
+
+    // Group winners by participant (name + address)
+    const groupedWinners = winners.reduce((acc, winner) => {
+      const key = `${winner.participant_name}-${winner.up_address}`
+      if (!acc[key]) {
+        acc[key] = {
+          participantName: winner.participant_name,
+          participantUpAddress: winner.up_address || '',
+          prizes: [],
+          totalTickets: 0
+        }
+      }
+      acc[key].prizes.push({
+        prizeName: winner.prize_name,
+        prizeDescription: '',
+        prizeImage: '',
+        selectedAt: new Date(winner.won_at).toLocaleString()
+      })
+      return acc
+    }, {} as Record<string, any>)
+
+    // Get ticket count for each participant
+    Object.values(groupedWinners).forEach((group: any) => {
+      const participant = participants.find(p => 
+        p.name === group.participantName && p.up_address === group.participantUpAddress
+      )
+      group.totalTickets = participant?.tickets || 0
+    })
+
+    // Convert to flat array for export
+    const exportWinners = Object.values(groupedWinners).flatMap((group: any) => 
+      group.prizes.map((prize: any) => ({
+        participantName: group.participantName,
+        participantUpAddress: group.participantUpAddress,
+        prizeName: prize.prizeName,
+        prizeDescription: prize.prizeDescription,
+        prizeImage: prize.prizeImage,
+        selectedAt: prize.selectedAt,
+        totalTickets: group.totalTickets,
+        prizeCount: group.prizes.length
+      }))
+    )
 
     const winnerData: WinnerExport = {
       raffleName: currentRaffle.title,
       raffleDescription: currentRaffle.description || '',
       raffleImage: currentRaffle.image_url || '',
-      winners: winners.map(winner => ({
-        participantName: winner.participant_name,
-        participantUpAddress: winner.up_address || '',
-        prizeName: winner.prize_name,
-        prizeDescription: '',
-        prizeImage: '',
-        selectedAt: new Date(winner.won_at).toLocaleString()
-      })),
+      winners: exportWinners,
       exportDate: new Date().toLocaleString(),
-      totalWinners: winners.length
+      totalWinners: Object.keys(groupedWinners).length
     }
 
     if (format === 'image') {
@@ -968,6 +1003,23 @@ const PunkableRaffleSystem = () => {
                     </div>
                   </motion.div>
                   
+                  {/* LocalStorage Warning */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 0 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3 }}
+                    className="mb-4 p-3 bg-yellow-900/20 border border-yellow-500/30 rounded-lg"
+                  >
+                    <div className="flex items-start gap-2">
+                      <span className="text-yellow-400 text-sm">⚠️</span>
+                      <div className="text-xs text-yellow-300">
+                        <p className="font-semibold mb-1">ATTENTION:</p>
+                        <p>Your raffles are saved in your browser's localStorage. If you clear cookies or use a different browser, your data will be lost.</p>
+                        <p className="mt-1 text-yellow-400">Consider exporting your raffles as backup!</p>
+                      </div>
+                    </div>
+                  </motion.div>
+
                   <motion.div 
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -1210,7 +1262,15 @@ const PunkableRaffleSystem = () => {
                   key={participant.id}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="bg-zinc-800/50 rounded-lg p-4 border border-zinc-700"
+                  className={`rounded-lg p-4 border ${
+                    participant.tickets >= 20 
+                      ? 'bg-gradient-to-r from-purple-900/30 to-pink-900/30 border-purple-500/50' 
+                      : participant.tickets >= 10 
+                        ? 'bg-gradient-to-r from-yellow-900/30 to-orange-900/30 border-yellow-500/50'
+                        : participant.tickets >= 5
+                          ? 'bg-gradient-to-r from-blue-900/30 to-cyan-900/30 border-blue-500/50'
+                          : 'bg-zinc-800/50 border-zinc-700'
+                  }`}
                   style={{ borderLeft: `4px solid ${participant.color}` }}
                 >
                   <div className="flex items-center justify-between">
@@ -1228,9 +1288,28 @@ const PunkableRaffleSystem = () => {
                       <span className="font-semibold text-zinc-100">{participant.name}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium text-pink-400 bg-pink-500/20 px-2 py-1 rounded-full">
-                        {participant.tickets} tickets
-                      </span>
+                      <div className="flex items-center gap-1">
+                        <input
+                          type="number"
+                          min="1"
+                          value={participant.tickets}
+                          onChange={(e) => {
+                            const newTickets = Math.max(1, parseInt(e.target.value) || 1);
+                            setParticipants(prev => 
+                              prev.map(p => 
+                                p.id === participant.id 
+                                  ? { ...p, tickets: newTickets }
+                                  : p
+                              )
+                            );
+                          }}
+                          className="w-16 px-2 py-1 text-sm bg-zinc-700 border border-zinc-600 rounded text-zinc-100 focus:border-pink-500 focus:outline-none"
+                        />
+                        <span className="text-sm text-zinc-400">tickets</span>
+                        {participant.tickets >= 10 && (
+                          <span className="text-lg" title="Whale alert! This participant has many tickets">🐋</span>
+                        )}
+                      </div>
                       {participant.up_address && !userStorageService.getUserByUpAddress(participant.up_address) && (
                         <button
                           onClick={() => {
@@ -1323,6 +1402,18 @@ const PunkableRaffleSystem = () => {
                     💾 Save User
                   </button>
                 )}
+              </div>
+              
+              {/* LocalStorage Warning */}
+              <div className="mt-4 p-3 bg-yellow-900/20 border border-yellow-500/30 rounded-lg">
+                <div className="flex items-start gap-2">
+                  <span className="text-yellow-400 text-sm">⚠️</span>
+                  <div className="text-xs text-yellow-300">
+                    <p className="font-semibold mb-1">ATTENTION:</p>
+                    <p>Your raffles are saved in your browser's localStorage. If you clear cookies or use a different browser, your data will be lost.</p>
+                    <p className="mt-1 text-yellow-400">Consider exporting your raffles as backup!</p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

@@ -10,6 +10,8 @@ export interface WinnerExport {
     prizeDescription: string
     prizeImage: string
     selectedAt: string
+    totalTickets?: number
+    prizeCount?: number
   }>
   exportDate: string
   totalWinners: number
