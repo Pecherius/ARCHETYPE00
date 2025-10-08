@@ -1542,14 +1542,14 @@ const PunkableRaffleSystem = () => {
                       />
                     </div>
                     <h3 className="text-xl font-bold text-zinc-100 mb-2 font-mono">{currentParticipant.name}</h3>
-                    <p className="text-lg text-pink-400 bg-pink-500/20 px-4 py-2 rounded-full">
+                    <p className="text-sm text-pink-400 bg-pink-500/20 px-4 py-2 rounded-full font-mono">
                       {currentParticipant.tickets} tickets
                     </p>
                   </motion.div>
                 ) : (
                   <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
                     <div className="w-24 h-24 rounded-full mx-auto mb-4 bg-gradient-to-br from-pink-500/20 to-purple-500/20 flex items-center justify-center">
-                      <span className="text-3xl">🎲</span>
+                      <span className="text-5xl">🎲</span>
                     </div>
                     <h3 className="text-lg font-bold text-zinc-400 mb-2 font-mono">READY_TO_DRAW</h3>
                     <p className="text-zinc-500">Click to select winner</p>
@@ -1560,16 +1560,22 @@ const PunkableRaffleSystem = () => {
               <button
                 onClick={selectWinner}
                 disabled={!canSelectWinner}
-                className="mt-4 lg:mt-6 px-4 lg:px-8 py-3 lg:py-4 text-base lg:text-lg font-bold bg-gradient-to-r from-pink-500 via-rose-500 to-purple-600 hover:from-pink-600 hover:via-rose-600 hover:to-purple-700 text-white rounded-xl shadow-2xl transform transition-all duration-200 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                className="group relative overflow-hidden border-2 border-pink-500 bg-gradient-to-r from-pink-900/30 to-purple-900/30 px-6 py-3 text-pink-400 hover:from-pink-800/40 hover:to-purple-800/40 transition-all duration-300 hover:scale-105 font-mono font-bold text-sm rounded-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
               >
-                {selecting ? (
-                  <span className="flex items-center gap-3">
-                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    Selecting...
-                  </span>
-                ) : (
-                  "Select Winner"
-                )}
+                <div className="absolute inset-0 bg-gradient-to-r from-pink-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="relative flex items-center justify-center gap-2">
+                  {selecting ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-pink-400 border-t-transparent rounded-full animate-spin" />
+                      <span>SELECTING...</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>🎲</span>
+                      <span>SELECT_WINNER</span>
+                    </>
+                  )}
+                </div>
               </button>
             </div>
           </div>
