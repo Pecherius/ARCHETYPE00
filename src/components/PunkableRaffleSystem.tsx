@@ -1290,14 +1290,29 @@ const PunkableRaffleSystem = () => {
       <div className="border border-zinc-800 p-3 text-xs leading-relaxed text-zinc-300 rounded-lg">
         {/* Header */}
         <div className="flex items-center justify-between mb-3">
+          <button
+            onClick={goBackToRaffles}
+            className="group relative overflow-hidden border-2 border-zinc-500 bg-gradient-to-r from-zinc-900/30 to-zinc-800/30 px-3 py-1.5 text-zinc-400 hover:from-zinc-800/40 hover:to-zinc-700/40 transition-all duration-300 hover:scale-105 font-mono font-bold text-xs rounded-lg"
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-zinc-500/10 to-zinc-400/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            <div className="relative flex items-center gap-1">
+              <span>←</span>
+              <span>Back to Raffles</span>
+            </div>
+          </button>
+          
           <div className="flex items-center gap-2">
-            {currentRaffle?.image_url && (
+            {currentRaffle?.image_url ? (
               <div className="w-8 h-8 rounded-lg overflow-hidden shadow-lg">
                 <img
                   src={currentRaffle.image_url || "/placeholder.svg"}
                   alt="Raffle"
                   className="w-full h-full object-cover"
                 />
+              </div>
+            ) : (
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-pink-500/20 to-purple-500/20 flex items-center justify-center">
+                <span className="text-lg">🎲</span>
               </div>
             )}
             <div>
@@ -1307,30 +1322,8 @@ const PunkableRaffleSystem = () => {
               <p className="text-xs text-zinc-400">{currentRaffle?.description || "A fair and transparent raffle system"}</p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            {winners.length > 0 && (
-              <button
-                onClick={() => setCurrentView("results")}
-                className="group relative overflow-hidden border-2 border-green-500 bg-gradient-to-r from-green-900/30 to-emerald-900/30 px-3 py-1.5 text-green-400 hover:from-green-800/40 hover:to-emerald-800/40 transition-all duration-300 hover:scale-105 font-mono font-bold text-xs rounded-lg"
-              >
-                <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 to-emerald-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                <div className="relative flex items-center gap-1">
-                  <span>🏆</span>
-                  <span>View Winners</span>
-                </div>
-              </button>
-            )}
-            <button
-              onClick={goBackToRaffles}
-              className="group relative overflow-hidden border-2 border-zinc-500 bg-gradient-to-r from-zinc-900/30 to-zinc-800/30 px-3 py-1.5 text-zinc-400 hover:from-zinc-800/40 hover:to-zinc-700/40 transition-all duration-300 hover:scale-105 font-mono font-bold text-xs rounded-lg"
-            >
-              <div className="absolute inset-0 bg-gradient-to-r from-zinc-500/10 to-zinc-400/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              <div className="relative flex items-center gap-1">
-                <span>←</span>
-                <span>Back to Raffles</span>
-              </div>
-            </button>
-          </div>
+          
+          <div className="w-24"></div> {/* Spacer for balance */}
         </div>
 
         {/* Winner Alert - Floating */}
@@ -1460,7 +1453,7 @@ const PunkableRaffleSystem = () => {
             </div>
 
             {/* Add Participant Form */}
-            <div className="bg-zinc-800/30 p-4 rounded border border-zinc-700 h-[200px] flex flex-col">
+            <div className="bg-zinc-800/30 p-3 rounded border border-zinc-700 h-[160px] flex flex-col">
               <div className="flex items-center justify-between mb-3">
                 <h5 className="text-sm font-semibold text-zinc-300">Add New Participant</h5>
                   <div className="flex gap-2">
@@ -1658,7 +1651,7 @@ const PunkableRaffleSystem = () => {
               </div>
 
               {/* Add Prize Form */}
-              <div className="mt-4 bg-gradient-to-br from-yellow-900/30 to-amber-900/30 p-4 rounded-lg border border-yellow-700 h-[200px] flex flex-col">
+              <div className="mt-4 bg-gradient-to-br from-yellow-900/30 to-amber-900/30 p-3 rounded-lg border border-yellow-700 h-[160px] flex flex-col">
                 <div className="flex items-center justify-between mb-3">
                   <h5 className="text-sm font-semibold text-zinc-300">Add New Prize</h5>
                   <div className="flex gap-2">
@@ -1737,9 +1730,9 @@ const PunkableRaffleSystem = () => {
               </button>
             )}
           </div>
-          <div className="space-y-2 h-32 overflow-y-auto border border-zinc-700 rounded-lg p-3 bg-zinc-800/30 scrollbar-thin scrollbar-thumb-zinc-600 scrollbar-track-zinc-800">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 h-32 overflow-y-auto border border-zinc-700 rounded-lg p-2 bg-zinc-800/30 scrollbar-thin scrollbar-thumb-zinc-600 scrollbar-track-zinc-800">
             {winners.length === 0 ? (
-              <div className="text-center text-zinc-500 py-4">
+              <div className="col-span-full text-center text-zinc-500 py-4">
                 <span className="text-2xl mb-2 block">🎉</span>
                 <p className="text-sm">No winners yet</p>
               </div>
@@ -1749,23 +1742,21 @@ const PunkableRaffleSystem = () => {
                   key={win.id}
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="bg-zinc-800/50 p-2 rounded border-l-4"
+                  className="bg-zinc-800/50 p-1.5 rounded border-l-2 flex flex-col items-center text-center"
                   style={{ borderLeftColor: win.participant_color }}
                 >
-                  <div className="flex items-center gap-2 mb-1">
-                    <div
-                      className="w-4 h-4 rounded-full shadow-sm flex items-center justify-center"
-                      style={{ backgroundColor: win.participant_color }}
-                    >
-                      <ParticipantIcon
-                        participantId={win.participant_id}
-                        participantName={win.participant_name}
-                        className="w-2 h-2 text-white"
-                      />
-                    </div>
-                    <span className="font-semibold text-zinc-100 text-xs">{win.participant_name}</span>
+                  <div
+                    className="w-4 h-4 rounded-full shadow-sm flex items-center justify-center mb-1"
+                    style={{ backgroundColor: win.participant_color }}
+                  >
+                    <ParticipantIcon
+                      participantId={win.participant_id}
+                      participantName={win.participant_name}
+                      className="w-2 h-2 text-white"
+                    />
                   </div>
-                  <span className="text-xs font-bold text-pink-400 bg-pink-500/20 px-1 py-0.5 rounded-full">
+                  <span className="font-semibold text-zinc-100 text-xs truncate w-full">{win.participant_name}</span>
+                  <span className="text-xs font-bold text-pink-400 bg-pink-500/20 px-1 py-0.5 rounded-full mt-1">
                     {win.prize_name}
                   </span>
                 </motion.div>
