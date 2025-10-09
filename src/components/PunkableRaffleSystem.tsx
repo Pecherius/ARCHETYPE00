@@ -492,6 +492,15 @@ const PunkableRaffleSystem = () => {
       const participant = participants.find(p => 
         p.name === group.participantName && p.up_address === group.participantUpAddress
       )
+      
+      // Debug logging
+      console.log('Looking for participant:', {
+        name: group.participantName,
+        upAddress: group.participantUpAddress,
+        found: participant,
+        allParticipants: participants.map(p => ({ name: p.name, up_address: p.up_address, tickets: p.tickets }))
+      })
+      
       group.totalTickets = participant?.tickets || 0
       
       // Convert prizes object to array
