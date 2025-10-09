@@ -55,7 +55,24 @@ npm run build
 npm run preview
 ```
 
-## 🌐 **Deploy en IPFS**
+## 🌐 **Deploy en GitHub Pages**
+
+Este sitio se despliega automáticamente usando **GitHub Actions** cada vez que se hace push a la rama `main`. El workflow:
+
+1. **Instala** dependencias con `npm ci`
+2. **Construye** el proyecto con `npm run build`
+3. **Despliega** la carpeta `dist/` a GitHub Pages
+4. **Actualiza** el sitio en vivo en `archetype00.click`
+
+### **Cómo Desplegar:**
+Solo haz push de tus cambios a la rama `main`. El workflow de GitHub Actions automáticamente:
+- Instala dependencias
+- Construye el proyecto
+- Despliega a GitHub Pages
+
+No se necesita intervención manual - solo `git add`, `git commit`, y `git push`. Después la automatización se encarga del resto.
+
+## 🌐 **Deploy en IPFS** (Opcional)
 
 ### **Configuración Inicial**
 ```bash

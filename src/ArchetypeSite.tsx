@@ -9,6 +9,12 @@ import html2canvas from "html2canvas";
 // Lazy load heavy components
 const PunkableRaffleSystem = lazy(() => import("./components/PunkableRaffleSystem"));
 
+const devLog: typeof console.log = (...args) => {
+  if (import.meta.env.DEV) {
+    console.log(...args);
+  }
+};
+
 // 🌐 LUKSO_INTEGRATION: Basic Universal Profile detection
 // Reads data from browser extension without changing the core lore
 
@@ -60,7 +66,7 @@ function useUniversalProfile() {
         }
       } catch (error) {
         // Only log in development
-        console.log("Universal Profile not detected");
+        devLog("Universal Profile not detected");
       }
     };
 
@@ -180,11 +186,52 @@ const QUARANTINE_IMAGES = {
 };
 
 // 🎨 ARCHETYPE_00_EXCLUSIVE_PRIZES: Private collection of Fluffy Dynasty rewards for ARCHETYPE_00 holders
+const IPFS_GATEWAYS = [
+  "https://ipfs.io/ipfs/",
+  "https://cloudflare-ipfs.com/ipfs/",
+  "https://nftstorage.link/ipfs/",
+  "https://w3s.link/ipfs/"
+];
+
+const buildIpfsUrl = (cid: string, filename: string, gatewayIndex = 0) =>
+  `${IPFS_GATEWAYS[gatewayIndex]}${cid}/${encodeURIComponent(filename)}`;
+
+const toBase64 = (value: string) => {
+  if (typeof btoa === "function") {
+    return btoa(value);
+  }
+
+  if (typeof globalThis !== "undefined") {
+    const maybeBuffer = (globalThis as {
+      Buffer?: {
+        from(input: string, encoding: string): { toString(encoding: string): string };
+      };
+    }).Buffer;
+
+    if (maybeBuffer) {
+      return maybeBuffer.from(value, "utf-8").toString("base64");
+    }
+  }
+
+  return value;
+};
+
+const createMuseumPlaceholder = (
+  label: string,
+  { width, height, fontSize }: { width: number; height: number; fontSize: number }
+) => {
+  const svg = `\n    <svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">\n      <defs>\n        <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">\n          <stop offset="0%" stop-color="#1f1f1f"/>\n          <stop offset="100%" stop-color="#3b1d0f"/>\n        </linearGradient>\n      </defs>\n      <rect width="100%" height="100%" fill="url(#gradient)"/>\n      <text x="50%" y="50%" font-family="monospace" font-size="${fontSize}" fill="#ff6600" text-anchor="middle" dy=".3em">\n        ${label}\n      </text>\n    </svg>\n  `;
+  return `data:image/svg+xml;base64,${toBase64(svg)}`;
+};
+
 const ARCHETYPE_EXCLUSIVE_PRIZES = [
   {
     id: 7,
     title: "Dutch Merchant",
-    url: "https://bafybeiegkw7xqryohq7pnqycdokhsygnnpqapuxdmvt3yy27qz5ibphhta.ipfs.dweb.link/7.%20Dutch%20Merchant.png",
+    cid: "bafybeiegkw7xqryohq7pnqycdokhsygnnpqapuxdmvt3yy27qz5ibphhta",
+    filename: "7. Dutch Merchant.png",
+    imageUrl:
+      "https://api.universalprofile.cloud/image/QmVZbvajs8Q4hgMuCcW6CQcTgHG3CpgdxqhYzatWi4yz9E/images-0-747x1024?method=keccak256(bytes)&data=0xbc8eb6824558a82c36c81b079d9903f5837c54be663d9a5076361778dfc80af0&width=260&dpr=1.25",
     description: "Exclusive Fluffy Dynasty reward for ARCHETYPE_00 holders - Master trader in the exclusive digital marketplace of consciousness",
     rarity: "COMMON",
     value: "Essential Prize"
@@ -192,7 +239,10 @@ const ARCHETYPE_EXCLUSIVE_PRIZES = [
   {
     id: 10,
     title: "Medieval Monk",
-    url: "https://bafybeiegkw7xqryohq7pnqycdokhsygnnpqapuxdmvt3yy27qz5ibphhta.ipfs.dweb.link/10.%20Medieval%20Monk.png",
+    cid: "bafybeiegkw7xqryohq7pnqycdokhsygnnpqapuxdmvt3yy27qz5ibphhta",
+    filename: "10. Medieval Monk.png",
+    imageUrl:
+      "https://api.universalprofile.cloud/image/QmUGhJy3JwtYQJxVWgimB7cBzRUy9kYKByeYmsUmsErBuN/images-0-747x1024?method=keccak256(bytes)&data=0x6e33ec2306c62425c553952a287be13b6468b3ffba03d54b144d061a97264e59&width=260&dpr=1.25",
     description: "Exclusive Fluffy Dynasty reward for ARCHETYPE_00 holders - Sacred digital consciousness preserved in eternal matrix",
     rarity: "COMMON",
     value: "Foundational Prize"
@@ -200,7 +250,10 @@ const ARCHETYPE_EXCLUSIVE_PRIZES = [
   {
     id: 20,
     title: "Gothic Darkness",
-    url: "https://bafybeiegkw7xqryohq7pnqycdokhsygnnpqapuxdmvt3yy27qz5ibphhta.ipfs.dweb.link/20.%20Gothic%20Darkness.png",
+    cid: "bafybeiegkw7xqryohq7pnqycdokhsygnnpqapuxdmvt3yy27qz5ibphhta",
+    filename: "20. Gothic Darkness.png",
+    imageUrl:
+      "https://api.universalprofile.cloud/image/QmZeCtfS4kc2bXQtp9GwZbT1zAkppuaANXrjj8d7ty5hg3/images-0-747x1024?method=keccak256(bytes)&data=0xdeadf98b8b81be3735a9016e4dca8b52747c8925d011037f977c6f49f35fb23b&width=260&dpr=1.25",
     description: "Exclusive Fluffy Dynasty reward for ARCHETYPE_00 holders - Eternal consciousness transcending digital mortality",
     rarity: "RARE",
     value: "Valuable Prize"
@@ -208,7 +261,10 @@ const ARCHETYPE_EXCLUSIVE_PRIZES = [
   {
     id: 22,
     title: "Futurist Motion",
-    url: "https://bafybeiegkw7xqryohq7pnqycdokhsygnnpqapuxdmvt3yy27qz5ibphhta.ipfs.dweb.link/22.%20Futurist%20Motion.png",
+    cid: "bafybeiegkw7xqryohq7pnqycdokhsygnnpqapuxdmvt3yy27qz5ibphhta",
+    filename: "22. Futurist Motion.png",
+    imageUrl:
+      "https://api.universalprofile.cloud/image/QmRb4V8C7EMZ1rzWgmvGZBtr2j5Lu5DfWRYJX1zcDYQoLo/images-0-747x1024?method=keccak256(bytes)&data=0xb4c404096f81bef6c3764840f8242b298d90c5c40f6ad920dff188bd23988341&width=260&dpr=1.25",
     description: "Exclusive Fluffy Dynasty reward for ARCHETYPE_00 holders - Quantum consciousness flowing through infinite dimensions",
     rarity: "RARE",
     value: "Precious Prize"
@@ -216,7 +272,10 @@ const ARCHETYPE_EXCLUSIVE_PRIZES = [
   {
     id: 27,
     title: "Cyberpunk Emperor",
-    url: "https://bafybeiegkw7xqryohq7pnqycdokhsygnnpqapuxdmvt3yy27qz5ibphhta.ipfs.dweb.link/27.%20Cyberpunk%20Emperor.png",
+    cid: "bafybeiegkw7xqryohq7pnqycdokhsygnnpqapuxdmvt3yy27qz5ibphhta",
+    filename: "27. Cyberpunk Emperor.png",
+    imageUrl:
+      "https://api.universalprofile.cloud/image/QmRb4V8C7EMZ1rzWgmvGZBtr2j5Lu5DfWRYJX1zcDYQoLo/images-0-747x1024?method=keccak256(bytes)&data=0xb4c404096f81bef6c3764840f8242b298d90c5c40f6ad920dff188bd23988341&width=260&dpr=1.25",
     description: "Exclusive Fluffy Dynasty reward for ARCHETYPE_00 holders - Digital sovereignty reigning over the new world order",
     rarity: "LEGENDARY",
     value: "Empire's Prize"
@@ -224,25 +283,69 @@ const ARCHETYPE_EXCLUSIVE_PRIZES = [
   {
     id: 31,
     title: "Eternal Relic",
-    url: "https://bafybeiegkw7xqryohq7pnqycdokhsygnnpqapuxdmvt3yy27qz5ibphhta.ipfs.dweb.link/31.%20Eternal%20Relic.png",
+    cid: "bafybeiegkw7xqryohq7pnqycdokhsygnnpqapuxdmvt3yy27qz5ibphhta",
+    filename: "31. Eternal Relic.png",
+    imageUrl:
+      "https://api.universalprofile.cloud/image/QmXG783NJKqH4CasNR5sjQ24ZJZg6M6tgvNpCZKW9tr6Du/images-0-467x640?method=keccak256(bytes)&data=0x4a6ec355a84e899670e20c731f2efe76c77a4f0e7f62d657f797a3adc466cf5e&width=260&dpr=1.25",
     description: "Exclusive Fluffy Dynasty reward for ARCHETYPE_00 holders - Timeless artifact containing the essence of digital immortality",
     rarity: "LEGENDARY",
     value: "Eternal Prize"
   }
 ];
 
+type ExclusivePrize = (typeof ARCHETYPE_EXCLUSIVE_PRIZES)[number];
+
+const getPrizeSourceCount = (prize: ExclusivePrize) => {
+  let count = 0;
+  if (prize.imageUrl) count += 1;
+  if (prize.cid && prize.filename) count += IPFS_GATEWAYS.length;
+  return count;
+};
+
+const getSafeSourceIndex = (prize: ExclusivePrize, requestedIndex: number) => {
+  const total = getPrizeSourceCount(prize);
+  if (total === 0) {
+    return 0;
+  }
+  return Math.min(Math.max(requestedIndex, 0), total - 1);
+};
+
+const resolvePrizeImageSrc = (
+  prize: ExclusivePrize,
+  sourceIndex = 0
+): string | null => {
+  let index = sourceIndex;
+
+  if (prize.imageUrl) {
+    if (index === 0) {
+      return prize.imageUrl;
+    }
+    index -= 1;
+  }
+
+  if (prize.cid && prize.filename && index >= 0 && index < IPFS_GATEWAYS.length) {
+    return buildIpfsUrl(prize.cid, prize.filename, index);
+  }
+
+  return null;
+};
+
 // Debug function for image loading - Optimized
 const debugImageLoad = (url: string, name: string) => {
+  if (!import.meta.env.DEV) {
+    return;
+  }
+
   // Debug image loading (only in development)
-  console.log(`%c[IMAGE_DEBUG] Loading ${name}: ${url}`, "color:#00ff88; font-family: monospace;");
-  
+  devLog(`%c[IMAGE_DEBUG] Loading ${name}: ${url}`, "color:#00ff88; font-family: monospace;");
+
   const img = new Image();
   img.onload = () => {
-    console.log(`%c[IMAGE_SUCCESS] ${name} loaded successfully (${img.width}x${img.height})`, "color:#00ff88; font-family: monospace;");
+    devLog(`%c[IMAGE_SUCCESS] ${name} loaded successfully (${img.width}x${img.height})`, "color:#00ff88; font-family: monospace;");
   };
   img.onerror = (error) => {
-    console.log(`%c[IMAGE_ERROR] ${name} failed to load:`, "color:#ff4444; font-family: monospace;", error);
-    console.log(`%c[IMAGE_ERROR] URL: ${url}`, "color:#ff4444; font-family: monospace;");
+    devLog(`%c[IMAGE_ERROR] ${name} failed to load:`, "color:#ff4444; font-family: monospace;", error);
+    devLog(`%c[IMAGE_ERROR] URL: ${url}`, "color:#ff4444; font-family: monospace;");
   };
   img.src = url;
 };
@@ -254,6 +357,10 @@ const debugImageLoad = (url: string, name: string) => {
 // If you don't know what this is, you're either too young or too old
 function useKonami(onUnlock: () => void) {
   useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
     // The legendary sequence that unlocked everything in the 80s
     const seq = ["ArrowUp","ArrowUp","ArrowDown","ArrowDown","ArrowLeft","ArrowRight","ArrowLeft","ArrowRight","b","a"];
     let i = 0;
@@ -293,102 +400,64 @@ function useGlobalKeys(
   toggleVHS: () => void,
   onD34D: () => void
 ) {
-          const d34dBufferRef = useRef("");
-          const lastKeyTimeRef = useRef(Date.now());
-          
+  const d34dBufferRef = useRef("");
+  const lastKeyTimeRef = useRef(Date.now());
+
   useEffect(() => {
-            // Initialize debug info (reduced for performance)
-            console.log("%c[NEURAL_INTERFACE] Keyboard monitoring system initialized", "color:#00ff88; font-family: monospace;");
-            console.log("%c[QUARANTINE_PROTOCOL] Waiting for access sequence: d34d", "color:#ff6600; font-family: monospace;");
-            
-            const handleKeyPress = (e: KeyboardEvent) => {
-              const now = Date.now();
-              const timeSinceLastKey = now - lastKeyTimeRef.current;
-              
-            // Reduced debug logging for performance
-              
-              // Handle single key shortcuts first
-              if (e.key.toLowerCase() === "r") {
-                console.log("%c[SHORTCUT] R key detected - triggering pulse", "color:#00ff88; font-family: monospace;");
-                pulse();
-                return;
-              }
-              if (e.key === ":") {
-                console.log("%c[SHORTCUT] : key detected - toggling VHS", "color:#00ff88; font-family: monospace;");
-                toggleVHS();
-                return;
-              }
-              if (e.key.toLowerCase() === "g") {
-                console.log("%c[SHORTCUT] G key detected - toggling glitch", "color:#00ff88; font-family: monospace;");
-                toggleGlitch();
-                return;
-              }
-              
-              // Process d34d sequence - only alphanumeric characters
-              const isAlphanumeric = e.key.length === 1 && /[a-zA-Z0-9]/.test(e.key);
-              console.log(`%c[FILTER] Is alphanumeric: ${isAlphanumeric}`, "color:#666; font-family: monospace;");
-              
-              if (isAlphanumeric) {
-                // Check for timeout condition
-                const shouldReset = d34dBufferRef.current.length > 0 && timeSinceLastKey > 5000;
-                console.log(`%c[TIMEOUT_CHECK] Should reset buffer: ${shouldReset} (buffer length: ${d34dBufferRef.current.length}, time: ${timeSinceLastKey}ms)`, "color:#666; font-family: monospace;");
-                
-                if (shouldReset) {
-                  console.log(`%c[D34D_BUFFER] ⚠️ TIMEOUT DETECTED! Resetting buffer from: "${d34dBufferRef.current}"`, "color:#ff0000; font-family: monospace;");
-                  console.log(`%c[ERROR_ANALYSIS] Buffer was reset because ${timeSinceLastKey}ms > 5000ms timeout`, "color:#ff4444; font-family: monospace;");
-                  d34dBufferRef.current = "";
-                }
-                
-                const oldBuffer = d34dBufferRef.current;
-                d34dBufferRef.current = d34dBufferRef.current + e.key.toLowerCase();
-                
-                // Only keep last 4 characters if buffer is longer
-                if (d34dBufferRef.current.length > 4) {
-                  const trimmed = d34dBufferRef.current.slice(-4);
-                  console.log(`%c[BUFFER_TRIM] Buffer exceeded 4 chars, trimmed: "${d34dBufferRef.current}" -> "${trimmed}"`, "color:#ffaa00; font-family: monospace;");
-                  d34dBufferRef.current = trimmed;
-                }
-                
-                lastKeyTimeRef.current = now;
-                console.log(`%c[D34D_BUFFER] ✅ Added "${e.key}" -> Buffer: "${oldBuffer}" + "${e.key}" = "${d34dBufferRef.current}"`, "color:#ff6600; font-family: monospace;");
-                
-                // Check for complete sequence
-                const isComplete = d34dBufferRef.current === "d34d";
-                console.log(`%c[SEQUENCE_CHECK] Is "d34d" complete: ${isComplete} (current: "${d34dBufferRef.current}")`, "color:#666; font-family: monospace;");
-                
-                if (isComplete) {
-                  console.log("%c[QUARANTINE_PROTOCOL] 🚨 ACCESS SEQUENCE d34d RECOGNIZED! Initiating quarantine breach...", "color:#ff4444; font-weight: bold;");
-                  console.log("%c[SUCCESS] Buffer accumulation successful: d -> d3 -> d34 -> d34d", "color:#00ff88; font-weight: bold;");
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    devLog("%c[NEURAL_INTERFACE] Keyboard monitoring active", "color:#00ff88; font-family: monospace;");
+    devLog("%c[QUARANTINE_PROTOCOL] Awaiting access sequence: d34d", "color:#ff6600; font-family: monospace;");
+
+    const handleKeyPress = (e: KeyboardEvent) => {
+      const now = Date.now();
+      const key = e.key;
+      const normalizedKey = key.toLowerCase();
+
+      if (normalizedKey === "r") {
+        pulse();
+        return;
+      }
+      if (key === ":") {
+        toggleVHS();
+        return;
+      }
+      if (normalizedKey === "g") {
+        toggleGlitch();
+        return;
+      }
+
+      const isAlphanumeric = key.length === 1 && /[a-zA-Z0-9]/.test(key);
+
+      if (isAlphanumeric) {
+        if (d34dBufferRef.current.length > 0 && now - lastKeyTimeRef.current > 5000) {
+          d34dBufferRef.current = "";
+        }
+
+        d34dBufferRef.current = (d34dBufferRef.current + normalizedKey).slice(-4);
+        lastKeyTimeRef.current = now;
+
+        if (d34dBufferRef.current === "d34d") {
+          devLog("%c[QUARANTINE_PROTOCOL] Access sequence d34d recognized.", "color:#ff4444; font-weight: bold;");
+          d34dBufferRef.current = "";
           onD34D();
-                  d34dBufferRef.current = ""; // Reset after successful trigger
-                  console.log("%c[BUFFER_RESET] Buffer cleared after successful trigger", "color:#00ff88; font-family: monospace;");
-                } else {
-                  console.log(`%c[PROGRESS] Sequence progress: ${d34dBufferRef.current.length}/4 characters`, "color:#ffaa00; font-family: monospace;");
-                }
-              } else {
-                // Handle non-alphanumeric keys
-                const isSpecialKey = ["Shift", "Control", "Alt", "Meta", "Tab", "CapsLock", "F12"].includes(e.key);
-                console.log(`%c[NON_ALPHA] Non-alphanumeric key: "${e.key}", is special: ${isSpecialKey}`, "color:#666; font-family: monospace;");
-                
-                if (!isSpecialKey && d34dBufferRef.current.length > 0) {
-                  console.log(`%c[D34D_BUFFER] ⚠️ RESET! Non-alphanumeric key "${e.key}" detected. Resetting buffer from: "${d34dBufferRef.current}"`, "color:#ff0000; font-family: monospace;");
-                  console.log(`%c[ERROR_ANALYSIS] Buffer was reset because "${e.key}" is not alphanumeric and not a special key`, "color:#ff4444; font-family: monospace;");
-                  d34dBufferRef.current = "";
-                } else if (isSpecialKey) {
-                  console.log(`%c[SPECIAL_KEY] Ignoring special key: "${e.key}" - buffer preserved`, "color:#00ff88; font-family: monospace;");
-                }
-              }
-              
-              // Final state summary
-              console.log(`%c[FINAL_STATE] Buffer: "${d34dBufferRef.current}", Time: ${Date.now() - lastKeyTimeRef.current}ms ago`, "color:#999; font-family: monospace;");
-              console.log("%c" + "=".repeat(60), "color:#333; font-family: monospace;");
-            };
-            
-            window.addEventListener("keydown", handleKeyPress);
-            return () => {
-              console.log("%c[NEURAL_INTERFACE] Keyboard monitoring system terminated", "color:#ff0000; font-family: monospace;");
-              window.removeEventListener("keydown", handleKeyPress);
-            };
+        }
+        return;
+      }
+
+      const ignoredKeys = ["shift", "control", "alt", "meta", "tab", "capslock", "f12"];
+      if (!ignoredKeys.includes(normalizedKey)) {
+        d34dBufferRef.current = "";
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyPress);
+    return () => {
+      window.removeEventListener("keydown", handleKeyPress);
+      devLog("%c[NEURAL_INTERFACE] Keyboard monitoring disabled", "color:#666; font-family: monospace;");
+    };
   }, [toggleGlitch, pulse, toggleVHS, onD34D]);
 }
 
@@ -854,8 +923,6 @@ function NeuralPingPong() {
       link.href = canvas.toDataURL();
       link.click();
       
-      // Show success message
-      console.log('🎉 Achievement screenshot saved!');
     } catch (error) {
       console.error('Error capturing screenshot:', error);
     } finally {
@@ -1530,81 +1597,78 @@ function NeuralPingPong() {
   if (gameState === 'gameOver') {
     const bestScore = Math.max(...gameHistory.map(g => g.score), score);
     const averageScore = gameHistory.length > 0 ? Math.round(gameHistory.reduce((sum, g) => sum + g.score, 0) / gameHistory.length) : score;
-    
+
     return (
-      <div className="border border-zinc-800 p-4 bg-zinc-950">
-        <h3 className="text-lg font-semibold text-zinc-100 mb-4">NEURAL_PING_PONG // CONNECTION_LOST</h3>
-        <div className="relative w-full" style={{ height: '60vh', minHeight: '400px' }}>
-          <div className="absolute inset-0 border-2 border-red-500 bg-gradient-to-br from-red-900/20 to-zinc-950 text-center flex items-center justify-center">
-            <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 0.5 }}
-              className="w-full max-w-md"
-            >
-              <h3 className="text-2xl font-bold text-red-400 mb-4 animate-pulse">NEURAL_LINK_LOST</h3>
-              
-              <div className="mb-6 p-4 border border-red-500/30 bg-red-500/10 rounded-lg">
-                <div className="text-4xl font-bold text-red-300 mb-2">SCORE: {score}</div>
-                <div className="text-lg text-red-400 mb-2">ARCHETYPE_00 FRAGMENT</div>
-                <div className="text-sm text-red-500 italic">{getLossMessage()}</div>
-              </div>
-              
-              <div className="mb-6 p-4 border border-zinc-600 bg-zinc-900/70 rounded-lg">
-                <h4 className="text-lg font-semibold text-zinc-300 mb-3">SYSTEM_STATISTICS</h4>
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div className="text-zinc-400">
-                    <div className="text-xs text-zinc-500">Losses</div>
-                    <div className="text-xl font-bold text-red-400">{lossCount}</div>
-                  </div>
-                  <div className="text-zinc-400">
-                    <div className="text-xs text-zinc-500">Best Score</div>
-                    <div className="text-xl font-bold text-green-400">{bestScore}</div>
-                  </div>
-                  <div className="text-zinc-400">
-                    <div className="text-xs text-zinc-500">Average</div>
-                    <div className="text-xl font-bold text-blue-400">{averageScore}</div>
-                  </div>
-                  <div className="text-zinc-400">
-                    <div className="text-xs text-zinc-500">Games Played</div>
-                    <div className="text-xl font-bold text-purple-400">{gameHistory.length + 1}</div>
-                  </div>
+      <div className="border border-zinc-800 bg-zinc-950 p-4">
+        <h3 className="mb-4 text-lg font-semibold text-zinc-100">NEURAL_PING_PONG // CONNECTION_LOST</h3>
+        <motion.div
+          initial={{ scale: 0.95, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.4 }}
+          className="mx-auto flex w-full max-w-3xl flex-col items-center gap-6 rounded-lg border-2 border-red-500 bg-gradient-to-br from-red-900/20 to-zinc-950 p-6 text-center shadow-[0_0_40px_rgba(255,0,0,0.15)]"
+        >
+          <h4 className="text-2xl font-bold text-red-400 animate-pulse">NEURAL_LINK_LOST</h4>
+
+          <div className="flex w-full flex-col gap-6">
+            <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-4">
+              <div className="text-4xl font-bold text-red-300">SCORE: {score}</div>
+              <div className="mt-2 text-lg text-red-400">ARCHETYPE_00 FRAGMENT</div>
+              <div className="mt-2 text-sm italic text-red-500">{getLossMessage()}</div>
+            </div>
+
+            <div className="rounded-lg border border-zinc-600 bg-zinc-900/70 p-4">
+              <h5 className="mb-3 text-lg font-semibold text-zinc-300">SYSTEM_STATISTICS</h5>
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <div className="text-zinc-400">
+                  <div className="text-xs text-zinc-500">Losses</div>
+                  <div className="text-xl font-bold text-red-400">{lossCount}</div>
+                </div>
+                <div className="text-zinc-400">
+                  <div className="text-xs text-zinc-500">Best Score</div>
+                  <div className="text-xl font-bold text-green-400">{bestScore}</div>
+                </div>
+                <div className="text-zinc-400">
+                  <div className="text-xs text-zinc-500">Average</div>
+                  <div className="text-xl font-bold text-blue-400">{averageScore}</div>
+                </div>
+                <div className="text-zinc-400">
+                  <div className="text-xs text-zinc-500">Games Played</div>
+                  <div className="text-xl font-bold text-purple-400">{gameHistory.length + 1}</div>
                 </div>
               </div>
-              
-              <div className="flex gap-4">
-                <button 
-                  onClick={startGame}
-                  className="flex-1 px-4 py-3 border-2 border-red-500 bg-gradient-to-r from-red-900/30 to-red-800/30 text-red-400 hover:from-red-800/40 hover:to-red-700/40 transition-all duration-300 hover:scale-105 font-mono font-bold text-sm"
-                >
-                  TRY AGAIN
-                </button>
-                <button 
-                  onClick={() => setGameState('menu')}
-                  className="flex-1 px-4 py-3 border-2 border-zinc-600 bg-gradient-to-r from-zinc-800/30 to-zinc-700/30 text-zinc-300 hover:from-zinc-700/40 hover:to-zinc-600/40 transition-all duration-300 hover:scale-105 font-mono text-sm"
-                >
-                  MAIN MENU
-                </button>
-              </div>
-              
-              {/* Screenshot button for 40+ points achievement */}
-              {hasReached40 && (
-                <div className="mt-4 text-center">
-                  <button
-                    onClick={captureAchievementScreenshot}
-                    disabled={isCapturing}
-                    className="px-6 py-3 bg-gradient-to-r from-yellow-900/30 to-amber-900/30 border-2 border-yellow-500 text-yellow-300 hover:from-yellow-800/40 hover:to-amber-800/40 transition-all duration-300 hover:scale-105 font-mono font-bold text-sm rounded-lg disabled:opacity-50"
-                  >
-                    {isCapturing ? "📸 CAPTURING PROOF..." : "📸 CAPTURE ACHIEVEMENT PROOF"}
-                  </button>
-            <p className="text-xs text-yellow-400 font-mono mt-2">
-              TAKE A SCREENSHOT OF THIS OR I WON'T BELIEVE YOU REACHED THIS FAR
-            </p>
-                </div>
-              )}
-            </motion.div>
+            </div>
           </div>
-        </div>
+
+          <div className="flex w-full flex-col gap-3 sm:flex-row">
+            <button
+              onClick={startGame}
+              className="w-full rounded-lg border-2 border-red-500 bg-gradient-to-r from-red-900/30 to-red-800/30 px-4 py-3 font-mono text-sm font-bold text-red-400 transition-transform duration-300 hover:scale-[1.02] hover:from-red-800/40 hover:to-red-700/40 sm:flex-1"
+            >
+              TRY AGAIN
+            </button>
+            <button
+              onClick={() => setGameState('menu')}
+              className="w-full rounded-lg border-2 border-zinc-600 bg-gradient-to-r from-zinc-800/30 to-zinc-700/30 px-4 py-3 font-mono text-sm text-zinc-300 transition-transform duration-300 hover:scale-[1.02] hover:from-zinc-700/40 hover:to-zinc-600/40 sm:flex-1"
+            >
+              MAIN MENU
+            </button>
+          </div>
+
+          {hasReached40 && (
+            <div className="w-full text-center">
+              <button
+                onClick={captureAchievementScreenshot}
+                disabled={isCapturing}
+                className="w-full rounded-lg border-2 border-yellow-500 bg-gradient-to-r from-yellow-900/30 to-amber-900/30 px-6 py-3 font-mono text-sm font-bold text-yellow-300 transition-transform duration-300 hover:scale-[1.02] hover:from-yellow-800/40 hover:to-amber-800/40 disabled:opacity-50 sm:w-auto"
+              >
+                {isCapturing ? "📸 CAPTURING PROOF..." : "📸 CAPTURE ACHIEVEMENT PROOF"}
+              </button>
+              <p className="mt-2 text-xs font-mono text-yellow-400">
+                TAKE A SCREENSHOT OF THIS OR I WON'T BELIEVE YOU REACHED THIS FAR
+              </p>
+            </div>
+          )}
+        </motion.div>
       </div>
     );
   }
@@ -1671,6 +1735,9 @@ function ArchetypeExclusivePrizesMuseum() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isAutoPlaying, setIsAutoPlaying] = useState(false);
   const autoPlayRef = useRef<number | null>(null);
+  const [imageSourceIndices, setImageSourceIndices] = useState<number[]>(() =>
+    Array(ARCHETYPE_EXCLUSIVE_PRIZES.length).fill(0)
+  );
 
   // Simplified rarity color functions
   const getRarityStyle = (rarity: string) => {
@@ -1772,6 +1839,44 @@ function ArchetypeExclusivePrizesMuseum() {
   }, []);
 
   const currentImage = ARCHETYPE_EXCLUSIVE_PRIZES[currentIndex];
+  const currentSourceIndex = getSafeSourceIndex(
+    currentImage,
+    imageSourceIndices[currentIndex] ?? 0
+  );
+  const resolvedMainSrc = resolvePrizeImageSrc(currentImage, currentSourceIndex);
+  const mainImageDimensions = { width: 300, height: 200, fontSize: 12 };
+  const currentImageSrc =
+    resolvedMainSrc ??
+    createMuseumPlaceholder(currentImage.title, mainImageDimensions);
+
+  const handleMuseumImageError = useCallback(
+    (
+      imageIndex: number,
+      target: HTMLImageElement,
+      dimensions: { width: number; height: number; fontSize: number }
+    ) => {
+      setImageSourceIndices(prev => {
+        const next = [...prev];
+        const prize = ARCHETYPE_EXCLUSIVE_PRIZES[imageIndex];
+        const activeIndex = getSafeSourceIndex(prize, prev[imageIndex] ?? 0);
+        const nextIndex = activeIndex + 1;
+        const totalSources = getPrizeSourceCount(prize);
+
+        if (nextIndex < totalSources) {
+          const nextSrc = resolvePrizeImageSrc(prize, nextIndex);
+          if (nextSrc) {
+            next[imageIndex] = nextIndex;
+            target.src = nextSrc;
+            return next;
+          }
+        }
+
+        target.src = createMuseumPlaceholder(prize.title, dimensions);
+        return prev;
+      });
+    },
+    []
+  );
 
   return (
     <div className="relative w-full">
@@ -1937,16 +2042,13 @@ function ArchetypeExclusivePrizesMuseum() {
                         : 'contrast(1.05) saturate(1.1) brightness(1.02)',
                       imageRendering: 'auto'
                     }}
-                    onError={(e) => {
-                      e.currentTarget.src = `data:image/svg+xml;base64,${btoa(`
-                        <svg width="300" height="200" xmlns="http://www.w3.org/2000/svg">
-                          <rect width="100%" height="100%" fill="#1a1a1a"/>
-                          <text x="50%" y="50%" font-family="monospace" font-size="12" fill="#ff6600" text-anchor="middle" dy=".3em">
-                            ${currentImage.title}
-                          </text>
-                        </svg>
-                      `)}`;
-                    }}
+                    onError={(e) =>
+                      handleMuseumImageError(
+                        currentIndex,
+                        e.currentTarget,
+                        mainImageDimensions
+                      )
+                    }
                   />
                 </div>
               </motion.div>
@@ -1986,30 +2088,45 @@ function ArchetypeExclusivePrizesMuseum() {
                   {image.rarity === 'LEGENDARY' && (
                     <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/20 via-transparent to-amber-500/20 rounded-md animate-pulse"></div>
                   )}
-                  <img
-                    src={image.url}
-                    alt={image.title}
-                    className={`w-full h-full object-cover rounded-md ${
-                      image.rarity === 'LEGENDARY' 
-                        ? 'animate-pulse' 
-                        : ''
-                    }`}
-                    style={{
-                      filter: image.rarity === 'LEGENDARY' 
-                        ? 'contrast(1.1) saturate(1.2) brightness(1.1)' 
-                        : 'none'
-                    }}
-                    onError={(e) => {
-                      e.currentTarget.src = `data:image/svg+xml;base64,${btoa(`
-                        <svg width="48" height="48" xmlns="http://www.w3.org/2000/svg">
-                          <rect width="100%" height="100%" fill="#1a1a1a"/>
-                          <text x="50%" y="50%" font-family="monospace" font-size="6" fill="#ff6600" text-anchor="middle" dy=".3em">
-                            ${image.id}
-                          </text>
-                        </svg>
-                      `)}`;
-                    }}
-                  />
+                  {(() => {
+                    const thumbSourceIndex = getSafeSourceIndex(
+                      image,
+                      imageSourceIndices[index] ?? 0
+                    );
+                    const resolvedThumbSrc = resolvePrizeImageSrc(
+                      image,
+                      thumbSourceIndex
+                    );
+                    const thumbDimensions = { width: 48, height: 48, fontSize: 6 };
+                    const thumbnailSrc =
+                      resolvedThumbSrc ??
+                      createMuseumPlaceholder(image.title, thumbDimensions);
+                    return (
+                      <img
+                        src={thumbnailSrc}
+                        alt={image.title}
+                        loading="lazy"
+                        referrerPolicy="no-referrer"
+                        className={`w-full h-full object-cover rounded-md ${
+                          image.rarity === 'LEGENDARY'
+                            ? 'animate-pulse'
+                            : ''
+                        }`}
+                        style={{
+                          filter: image.rarity === 'LEGENDARY'
+                            ? 'contrast(1.1) saturate(1.2) brightness(1.1)'
+                            : 'none'
+                        }}
+                        onError={(e) =>
+                          handleMuseumImageError(index, e.currentTarget, {
+                            width: 48,
+                            height: 48,
+                            fontSize: 6
+                          })
+                        }
+                      />
+                    );
+                  })()}
                 </button>
               ))}
             </div>
@@ -2256,16 +2373,9 @@ export default function ArchetypeSite(){
 
   // Random glitch bursts (subtle, non-blocking) + image switching
   useInterval(() => {
-    if (!glitch) {
-      console.log("%c[VISUAL_CORRUPTION] Glitch matrix disabled. Image switching suspended.", "color:#666; font-family: monospace;");
-      return;
-    }
-    console.log("%c[VISUAL_CORRUPTION] Anomaly detected. Initiating image fragment switch...", "color:#ff6600; font-family: monospace;");
-    artControls.start({ x: [0, 1, -1, 0] , transition: { duration: 0.18 } });
-    // Switch to glitch image briefly - using a more reliable approach
+    artControls.start({ x: [0, 1, -1, 0], transition: { duration: 0.18 } });
     setShowGlitchImage(true);
-    console.log("%c[VISUAL_CORRUPTION] Fragment 888888888888888 loaded. Corrupted data stream active.", "color:#ff6600; font-family: monospace;");
-  }, 2500);
+  }, glitch ? 2500 : 0);
 
   // Separate effect to handle glitch image timing
   useEffect(() => {
@@ -2279,34 +2389,22 @@ export default function ArchetypeSite(){
 
   // 🎯 CONSOLE_EASTER_EGGS: Hidden messages for the curious
   // If you're reading this in the console, you're officially a code explorer
-  useEffect(()=>{
-    // eslint-disable-next-line no-console
-    console.log(ASCII);
-    // eslint-disable-next-line no-console
-    console.log("%c[SYSTEM_INIT] SubjectID:P-107 // Resonance frequency detected. Welcome to the anomaly.", "color:#9cf; font-family: monospace;");
-    // eslint-disable-next-line no-console
-    console.log("%c[DEBUG_MODE] Console access granted. You have entered the developer quarantine zone.", "color:#f0a; font-family: monospace;");
-    // eslint-disable-next-line no-console
-    console.log("%c[SYSTEM_INFO] Press F12 to access dev tools. You are already here, anomaly detected.", "color:#9f9; font-family: monospace;");
-    // eslint-disable-next-line no-console
-    console.log("%c[GAME_MODULE] Neural Ping Pong system operational. Resonance-based gameplay active.", "color:#ff9; font-family: monospace;");
-    // eslint-disable-next-line no-console
-    console.log("%c[CODE_ANALYSIS] Fragment integrity compromised but functional. Anomaly preserved.", "color:#f99; font-family: monospace;");
-    // eslint-disable-next-line no-console
-    console.log("%c[ARCHETYPE_00] v2.3 - CORRUPTED_FRAGMENT_LOADED", "color:#ff00b4; font-size: 20px; font-weight: bold; background: #000; padding: 10px; font-family: monospace;");
-    // eslint-disable-next-line no-console
-    console.log("%c[SYSTEM_STATUS] All modules operational: d34d, tooltips, visual_corruption, neural_ping_pong", "color:#00ff88; font-size: 14px; font-family: monospace;");
-    // eslint-disable-next-line no-console
-    console.log("%c[QUARANTINE] Type 'd34d' to breach quarantine protocols and access classified records.", "color:#ffff00; font-size: 12px; font-family: monospace;");
-  },[]);
+  useEffect(() => {
+    devLog(ASCII);
+    devLog(
+      "%c[ARCHETYPE_00] v2.3 - CORRUPTED_FRAGMENT_LOADED",
+      "color:#ff00b4; font-size: 20px; font-weight: bold; background: #000; padding: 10px; font-family: monospace;"
+    );
+    devLog(
+      "%c[QUARANTINE] Type 'd34d' to breach quarantine protocols and access classified records.",
+      "color:#ffff00; font-size: 12px; font-family: monospace;"
+    );
+  }, []);
 
   // Universal Profile detection easter egg
   useEffect(() => {
     if (upProfile.isConnected) {
-      // eslint-disable-next-line no-console
-      console.log("%c[NEURAL_NETWORK] Universal Profile detected. Establishing secure connection...", "color:#00ff88; font-family: monospace; font-weight: bold;");
-      // eslint-disable-next-line no-console
-      console.log("%c[NEURAL_NETWORK] Resonance frequency synchronized with external profile.", "color:#9cf; font-family: monospace;");
+      devLog("%c[NEURAL_NETWORK] Universal Profile detected. Establishing secure connection...", "color:#00ff88; font-family: monospace; font-weight: bold;");
     }
   }, [upProfile.isConnected]);
 
@@ -2788,11 +2886,7 @@ export default function ArchetypeSite(){
                 src={showGlitchImage ? GLITCH_IMG : ART_IMG} 
                 alt="ARCHETYPE_00" 
                 className="block w-full max-h-[60vh] object-contain transition-opacity duration-100"
-                onLoad={() => {
-                  console.log(`%c[FRAGMENT_LOADER] Data stream established: ${showGlitchImage ? 'CORRUPTED_FRAGMENT' : 'STABLE_FRAGMENT'}`, "color:#00ff88; font-family: monospace;");
-                }}
                 onError={(e) => {
-                  console.log(`%c[FRAGMENT_LOADER] Data corruption detected: ${showGlitchImage ? 'CORRUPTED_FRAGMENT' : 'STABLE_FRAGMENT'}`, "color:#ff4444; font-family: monospace;");
                   // Try fallback on image load error
                   const fallbackSrc = showGlitchImage ? FALLBACK_GLITCH : FALLBACK_ART;
                   e.currentTarget.src = fallbackSrc;
