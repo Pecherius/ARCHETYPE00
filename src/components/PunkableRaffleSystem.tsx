@@ -76,7 +76,7 @@ const PunkableRaffleSystem = () => {
   // Removed unused loadRaffleData function
 
   const totalTickets = useMemo(
-    () => participants.reduce((sum, participant) => sum + participant.tickets, 0),
+    () => participants.reduce((sum, participant) => sum + Math.max(participant.tickets, 0), 0),
     [participants],
   )
 
@@ -190,21 +190,44 @@ const PunkableRaffleSystem = () => {
     [participants.length, prizes.length, winners.length, remainingPrizeCount],
   )
 
-  const participantProbabilities = useMemo(
-    () => (
-      totalTickets === 0
-        ? []
-        : participants.map((participant) => ({
-            id: participant.id,
-            name: participant.name,
-            tickets: participant.tickets,
-            color: participant.color,
-            upAddress: participant.up_address,
-            probability: participant.tickets / totalTickets,
-          }))
-    ),
-    [participants, totalTickets],
-  )
+  const baseSingleTicketChance = useMemo(() => {
+    if (participants.length === 0) {
+      return 0
+    }
+
+    if (totalTickets === 0) {
+      return 1 / participants.length
+    }
+
+    return 1 / totalTickets
+  }, [participants.length, totalTickets])
+
+  const participantProbabilities = useMemo(() => {
+    if (participants.length === 0) {
+      return []
+    }
+
+    if (totalTickets === 0) {
+      const evenChance = 1 / participants.length
+      return participants.map((participant) => ({
+        id: participant.id,
+        name: participant.name,
+        tickets: participant.tickets,
+        color: participant.color,
+        upAddress: participant.up_address,
+        probability: evenChance,
+      }))
+    }
+
+    return participants.map((participant) => ({
+      id: participant.id,
+      name: participant.name,
+      tickets: participant.tickets,
+      color: participant.color,
+      upAddress: participant.up_address,
+      probability: Math.max(participant.tickets, 0) / totalTickets,
+    }))
+  }, [participants, totalTickets])
 
   const handleCreateRaffle = async () => {
     if (!newRaffleTitle.trim()) return
@@ -251,17 +274,29 @@ const PunkableRaffleSystem = () => {
   }
 
   const getRandomWeightedParticipant = useCallback(() => {
-    if (participants.length === 0 || totalTickets === 0) return null
+    if (participants.length === 0) return null
+
+    if (totalTickets <= 0) {
+      const randomIndex = Math.floor(Math.random() * participants.length)
+      return participants[randomIndex] ?? null
+    }
+
     let random = Math.random() * totalTickets
 
     for (const participant of participants) {
-      random -= participant.tickets
+      const tickets = Math.max(participant.tickets, 0)
+      if (tickets === 0) {
+        continue
+      }
+
+      random -= tickets
       if (random <= 0) {
         return participant
       }
     }
 
-    return participants[participants.length - 1] ?? null
+    const fallback = participants.find((participant) => Math.max(participant.tickets, 0) > 0)
+    return fallback ?? participants[participants.length - 1] ?? null
   }, [participants, totalTickets])
 
   const getRandomPrize = useCallback(() => {
@@ -1547,17 +1582,32 @@ const PunkableRaffleSystem = () => {
             <div className="border border-blue-700/40 bg-blue-900/10 rounded-lg p-3 space-y-2">
               <h5 className="text-xs font-semibold text-blue-300 tracking-wide uppercase">Fair odds snapshot</h5>
               <p className="text-[11px] text-blue-100/80 leading-relaxed">
-                Each ticket equals one entry in the weighted draw. With
-                <span className="mx-1 font-semibold text-blue-200">{totalTickets}</span>
-                total tickets, even a single ticket holds a
-                <span className="mx-1 font-semibold text-blue-200">
-                  {totalTickets > 0 ? ((1 / totalTickets) * 100).toFixed(2) : '0.00'}%
-                </span>
-                chance in every selection.
+                Each ticket equals one entry in the weighted draw.
+                {totalTickets > 0 ? (
+                  <>
+                    {" "}With
+                    <span className="mx-1 font-semibold text-blue-200">{totalTickets}</span>
+                    total tickets, even a single ticket holds a
+                    <span className="mx-1 font-semibold text-blue-200">
+                      {(baseSingleTicketChance * 100).toFixed(2)}%
+                    </span>
+                    chance in every selection.
+                  </>
+                ) : participants.length > 0 ? (
+                  <>
+                    {" "}All stored ticket totals are zero, so everyone currently shares an equal
+                    <span className="mx-1 font-semibold text-blue-200">
+                      {(baseSingleTicketChance * 100).toFixed(2)}%
+                    </span>
+                    chance until you update the ticket counts.
+                  </>
+                ) : (
+                  <> Start by adding participants to calculate odds.</>
+                )}
               </p>
               <div className="space-y-1 max-h-24 overflow-y-auto pr-1">
                 {participantProbabilities.length === 0 ? (
-                  <p className="text-[11px] text-blue-200/70 font-mono">Add participants to calculate odds.</p>
+                  <p className="text-[11px] text-blue-200/70 font-mono">No participants yet.</p>
                 ) : (
                   participantProbabilities
                     .slice()
