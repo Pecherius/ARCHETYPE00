@@ -1359,7 +1359,7 @@ const PunkableRaffleSystem = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
           {/* Left Column - Participants */}
           <div className="lg:col-span-3 space-y-2 flex flex-col">
-            <h4 className="text-sm font-bold text-zinc-100 flex items-center gap-2">
+            <h4 className="text-sm font-bold text-zinc-100 flex items-center gap-2 font-mono">
               <span className="text-blue-500">👥</span> Participants ({participants.length})
             </h4>
             <div className="space-y-1 h-40 overflow-y-auto border border-blue-700/50 rounded-lg p-2 bg-blue-900/20 scrollbar-thin scrollbar-thumb-blue-600 scrollbar-track-zinc-800">
@@ -1455,7 +1455,7 @@ const PunkableRaffleSystem = () => {
             {/* Add Participant Form */}
             <div className="bg-zinc-800/30 p-3 rounded border border-zinc-700 flex-1 flex flex-col">
               <div className="flex items-center justify-between mb-3">
-                <h5 className="text-sm font-semibold text-zinc-300">Add New Participant</h5>
+                <h5 className="text-sm font-semibold text-zinc-300 font-mono">Add New Participant</h5>
                   <div className="flex gap-2">
                     <button
                       onClick={() => setShowSavedUsers(true)}
@@ -1556,7 +1556,7 @@ const PunkableRaffleSystem = () => {
                           <span className="text-3xl">🎲</span>
                         </div>
                         <h3 className="text-xl font-bold text-zinc-400 mb-2 font-mono">SELECT_WINNER</h3>
-                        <p className="text-sm text-zinc-500">Click to select winner</p>
+                        <p className="text-sm text-zinc-500 font-mono">Click to select winner</p>
                       </motion.div>
                     )}
                   </AnimatePresence>
@@ -1589,12 +1589,10 @@ const PunkableRaffleSystem = () => {
 
           {/* Right Column - Prizes */}
           <div className="lg:col-span-3 space-y-2 flex flex-col">
-            {/* Prizes */}
-            <div>
-              <h4 className="text-sm font-bold text-zinc-100 flex items-center gap-2 mb-2">
-                <span className="text-pink-500">🏆</span> Prizes ({remainingPrizeCount})
-              </h4>
-              <div className="space-y-1 h-40 overflow-y-auto border border-yellow-700 rounded-lg p-2 bg-gradient-to-br from-yellow-900/20 to-amber-900/20 scrollbar-thin scrollbar-thumb-yellow-600 scrollbar-track-zinc-800">
+            <h4 className="text-sm font-bold text-zinc-100 flex items-center gap-2 font-mono">
+              <span className="text-pink-500">🏆</span> Prizes ({remainingPrizeCount})
+            </h4>
+            <div className="space-y-1 h-40 overflow-y-auto border border-yellow-700 rounded-lg p-2 bg-gradient-to-br from-yellow-900/20 to-amber-900/20 scrollbar-thin scrollbar-thumb-yellow-600 scrollbar-track-zinc-800">
                 {prizes.map((prize) => (
                   <motion.div
                     key={prize.id}
@@ -1653,7 +1651,7 @@ const PunkableRaffleSystem = () => {
               {/* Add Prize Form */}
               <div className="mt-4 bg-gradient-to-br from-yellow-900/30 to-amber-900/30 p-3 rounded-lg border border-yellow-700 flex-1 flex flex-col">
                 <div className="flex items-center justify-between mb-3">
-                  <h5 className="text-sm font-semibold text-zinc-300">Add New Prize</h5>
+                  <h5 className="text-sm font-semibold text-zinc-300 font-mono">Add New Prize</h5>
                   <div className="flex gap-2">
                     <button
                       onClick={() => setShowSavedPrizes(true)}
@@ -1714,7 +1712,7 @@ const PunkableRaffleSystem = () => {
       <div className="mt-4">
         <div className="bg-gradient-to-br from-zinc-800/50 to-zinc-900/50 rounded-lg p-4 border border-zinc-700">
           <div className="flex items-center justify-between mb-3">
-            <h4 className="text-sm font-bold text-zinc-100 flex items-center gap-2">
+            <h4 className="text-sm font-bold text-zinc-100 flex items-center gap-2 font-mono">
               <span className="text-pink-500">🎉</span> Winners ({winners.length})
             </h4>
             {winners.length > 0 && (
@@ -1734,7 +1732,7 @@ const PunkableRaffleSystem = () => {
             {winners.length === 0 ? (
               <div className="col-span-full text-center text-zinc-500 py-4">
                 <span className="text-2xl mb-2 block">🎉</span>
-                <p className="text-sm">No winners yet</p>
+                <p className="text-sm font-mono">No winners yet</p>
               </div>
             ) : (
               winners.map((win) => (
@@ -1914,7 +1912,7 @@ const PunkableRaffleSystem = () => {
             >
               <div className="text-center mb-6">
                 <h3 className="text-xl font-bold text-zinc-100 mb-2 font-mono">SAVE_USER</h3>
-                <p className="text-sm text-zinc-400">Save this user for quick access in future raffles</p>
+                <p className="text-sm text-zinc-400 font-mono">Save this user for quick access in future raffles</p>
               </div>
 
               <div className="space-y-4">
@@ -1979,7 +1977,7 @@ const PunkableRaffleSystem = () => {
             >
               <div className="text-center mb-6">
                 <h3 className="text-xl font-bold text-zinc-100 mb-2 font-mono">SAVE_PRIZE</h3>
-                <p className="text-sm text-zinc-400">Save this prize for quick access in future raffles</p>
+                <p className="text-sm text-zinc-400 font-mono">Save this prize for quick access in future raffles</p>
               </div>
 
               <div className="space-y-4">
@@ -2061,13 +2059,13 @@ const PunkableRaffleSystem = () => {
       />
 
       {/* LocalStorage Warning - Full Width */}
-      <div className="mt-6 p-4 bg-yellow-900/20 border border-yellow-500/30 rounded-lg">
+      <div className="mt-6 p-3 bg-yellow-900/20 border border-yellow-500/30 rounded-lg">
         <div className="flex items-start gap-2">
-          <span className="text-yellow-400 text-sm">⚠️</span>
-          <div className="text-sm text-yellow-300">
-            <p className="font-semibold mb-2">ATTENTION:</p>
+          <span className="text-yellow-400 text-xs">⚠️</span>
+          <div className="text-xs text-yellow-300 font-mono">
+            <p className="font-semibold mb-1">ATTENTION:</p>
             <p>Your raffles are saved in your browser's localStorage. If you clear cookies or use a different browser, your data will be lost.</p>
-            <p className="mt-2 text-yellow-400 font-semibold">Consider exporting your raffles as backup!</p>
+            <p className="mt-1 text-yellow-400 font-semibold">Consider exporting your raffles as backup!</p>
           </div>
         </div>
       </div>
