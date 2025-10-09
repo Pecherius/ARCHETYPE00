@@ -2007,8 +2007,20 @@ function ArchetypeExclusivePrizesMuseum() {
                 className="relative max-w-full max-h-full"
               >
                 {/* Image Frame - Compact */}
+                <div className="flex items-center justify-between mb-2">
+                  {/* Number Badge */}
+                  <div className="bg-orange-500 text-black font-bold text-xs px-2 py-1 rounded-full font-mono shadow-[0_2px_6px_rgba(0,0,0,0.3)]">
+                    #{currentImage.id}
+                  </div>
+
+                  {/* Rarity Badge */}
+                  <div className={`px-2 py-1 rounded-full text-xs font-mono font-bold shadow-[0_2px_6px_rgba(0,0,0,0.35)] ${getRarityStyle(currentImage.rarity)}`}>
+                    {currentImage.rarity}
+                  </div>
+                </div>
+
                 <div
-                  className={`relative overflow-hidden bg-[#2596be] backdrop-blur-sm border rounded-xl p-3 shadow-2xl ${
+                  className={`relative overflow-hidden bg-[#D5D5D2] backdrop-blur-sm border rounded-xl p-3 shadow-2xl ${
                     currentImage.rarity === 'LEGENDARY'
                       ? 'border-yellow-400/60 shadow-yellow-400/30'
                       : 'border-white/30'
@@ -2019,23 +2031,13 @@ function ArchetypeExclusivePrizesMuseum() {
                     <div className="absolute inset-0 bg-gradient-to-br from-yellow-400/25 via-transparent to-amber-500/25 pointer-events-none z-10 animate-pulse"></div>
                   )}
 
-                  {/* Number Badge */}
-                  <div className="absolute -top-1 -left-1 bg-orange-500 text-black font-bold text-xs px-2 py-1 rounded-full font-mono z-30 shadow-[0_2px_6px_rgba(0,0,0,0.3)]">
-                    #{currentImage.id}
-                  </div>
-
-                  {/* Rarity Badge */}
-                  <div className={`absolute -top-1 -right-1 px-2 py-1 rounded-full text-xs font-mono font-bold z-30 shadow-[0_2px_6px_rgba(0,0,0,0.35)] ${getRarityStyle(currentImage.rarity)}`}>
-                    {currentImage.rarity}
-                  </div>
-
                   {/* Image */}
                   <img
                     src={currentImageSrc}
                     alt={currentImage.title}
                     loading="lazy"
                     referrerPolicy="no-referrer"
-                    className={`relative z-20 max-w-full max-h-[150px] object-contain drop-shadow-lg ${
+                    className={`relative z-20 max-w-full max-h-[150px] object-contain drop-shadow-lg rounded-lg ${
                       currentImage.rarity === 'LEGENDARY'
                         ? 'animate-pulse'
                         : ''
