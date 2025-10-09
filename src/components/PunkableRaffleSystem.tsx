@@ -1279,7 +1279,7 @@ const PunkableRaffleSystem = () => {
   const canSelectWinner = participants.length > 0 && remainingPrizeCount > 0 && !selecting;
 
   return (
-    <section className="mx-auto max-w-4xl px-4 pb-8 sm:px-6">
+    <section className="mx-auto max-w-6xl px-4 pb-8 sm:px-6">
       <div className="flex flex-col md:flex-row items-center justify-between mb-2 gap-2">
         <div className="text-center md:text-left">
           <h2 className="text-sm font-bold text-zinc-100 font-mono">P.E.R.S.</h2>
@@ -1367,9 +1367,9 @@ const PunkableRaffleSystem = () => {
           {/* Participants Column */}
           <div className="space-y-2">
             <h4 className="text-sm font-bold text-zinc-100 flex items-center gap-2">
-              <span className="text-pink-500">👥</span> Participants ({participants.length})
+              <span className="text-blue-500">👥</span> Participants ({participants.length})
             </h4>
-            <div className="space-y-1 h-40 overflow-y-auto border border-zinc-700 rounded-lg p-2 bg-zinc-800/30 scrollbar-thin scrollbar-thumb-zinc-600 scrollbar-track-zinc-800">
+            <div className="space-y-1 h-40 overflow-y-auto border border-blue-700/50 rounded-lg p-2 bg-blue-900/20 scrollbar-thin scrollbar-thumb-blue-600 scrollbar-track-zinc-800">
               {participants.map((participant) => (
                 <motion.div
                   key={participant.id}
@@ -1382,7 +1382,7 @@ const PunkableRaffleSystem = () => {
                         ? 'bg-gradient-to-r from-yellow-900/30 to-orange-900/30 border-yellow-500/50'
                         : participant.tickets >= 5
                           ? 'bg-gradient-to-r from-blue-900/30 to-cyan-900/30 border-blue-500/50'
-                          : 'bg-zinc-800/50 border-zinc-700'
+                          : 'bg-blue-800/50 border-blue-700'
                   }`}
                   style={{ borderLeft: `4px solid ${participant.color}` }}
                 >
@@ -1424,7 +1424,7 @@ const PunkableRaffleSystem = () => {
                               )
                             );
                           }}
-                          className="w-12 px-1 py-0.5 text-xs bg-zinc-700 border border-zinc-600 rounded text-zinc-100 focus:border-pink-500 focus:outline-none"
+                          className="w-12 px-2 py-1 text-xs bg-zinc-700 border border-zinc-600 rounded text-zinc-100 focus:border-blue-500 focus:outline-none"
                         />
                         <span className="text-xs text-zinc-400">tickets</span>
                       </div>
