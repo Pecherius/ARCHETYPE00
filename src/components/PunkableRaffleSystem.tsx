@@ -286,11 +286,15 @@ const PunkableRaffleSystem = () => {
     if (participant) {
       setParticipants((prev) => [...prev, participant])
       
-      // Update saved user usage if exists
+      // Update saved user usage if exists, or save new user
       if (newParticipantUpAddress.trim()) {
         const savedUser = userStorageService.getUserByUpAddress(newParticipantUpAddress)
         if (savedUser) {
           userStorageService.updateUserUsage(savedUser.id)
+        } else {
+          // Auto-save new user with UP address
+          const color = COLORS[userStorageService.getAllUsers().length % COLORS.length]
+          userStorageService.saveUser(newParticipantName, newParticipantUpAddress, color)
         }
       }
       
@@ -494,21 +498,17 @@ const PunkableRaffleSystem = () => {
       group.prizes = Object.values(group.prizes)
     })
 
-    // Convert to flat array for export - each prize entry represents one instance
-    const exportWinners = Object.values(groupedWinners).flatMap((group: any) => 
-      group.prizes.flatMap((prize: any) => 
-        Array(prize.count).fill(null).map(() => ({
-          participantName: group.participantName,
-          participantUpAddress: group.participantUpAddress,
-          prizeName: prize.prizeName,
-          prizeDescription: prize.prizeDescription,
-          prizeImage: prize.prizeImage,
-          selectedAt: prize.selectedAt,
-          totalTickets: group.totalTickets,
-          prizeCount: prize.count
-        }))
-      )
-    )
+    // Convert to flat array for export - each participant gets one entry with consolidated prizes
+    const exportWinners = Object.values(groupedWinners).map((group: any) => ({
+      participantName: group.participantName,
+      participantUpAddress: group.participantUpAddress,
+      prizeName: group.prizes.map((p: any) => `${p.prizeName}${p.count > 1 ? ` x${p.count}` : ''}`).join(', '),
+      prizeDescription: '',
+      prizeImage: '',
+      selectedAt: group.prizes[0]?.selectedAt || new Date().toLocaleString(),
+      totalTickets: group.totalTickets,
+      prizeCount: group.prizes.reduce((sum: number, p: any) => sum + p.count, 0)
+    }))
 
     const winnerData: WinnerExport = {
       raffleName: currentRaffle.title,
@@ -1464,7 +1464,11 @@ const PunkableRaffleSystem = () => {
                       From Saved
                     </button>
                     <button
-                      onClick={() => setShowSaveUserDialog(true)}
+                      onClick={() => {
+                        setSaveUserName(newParticipantName)
+                        setSaveUserUpAddress(newParticipantUpAddress)
+                        setShowSaveUserDialog(true)
+                      }}
                       className="px-2 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded transition-colors"
                     >
                       Save User
@@ -1660,7 +1664,11 @@ const PunkableRaffleSystem = () => {
                       From Saved
                     </button>
                     <button
-                      onClick={() => setShowSavePrizeDialog(true)}
+                      onClick={() => {
+                        setSavePrizeName(newPrizeName)
+                        setSavePrizeCount(newPrizeCount)
+                        setShowSavePrizeDialog(true)
+                      }}
                       className="px-2 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded transition-colors"
                     >
                       Save Prize

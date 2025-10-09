@@ -23,38 +23,8 @@ export function exportWinnersAsImage(winnerData: WinnerExport): void {
 }
 
 function createManualCanvas(winnerData: WinnerExport): void {
-  // Group winners by participant and consolidate duplicate prizes
-  const groupedWinners = winnerData.winners.reduce((acc: any, winner) => {
-    const key = `${winner.participantName}-${winner.participantUpAddress}`
-    if (!acc[key]) {
-      acc[key] = {
-        participantName: winner.participantName,
-        participantUpAddress: winner.participantUpAddress,
-        totalTickets: winner.totalTickets || 0,
-        prizes: {}
-      }
-    }
-    
-    // Consolidate duplicate prizes by name
-    const prizeKey = winner.prizeName
-    if (!acc[key].prizes[prizeKey]) {
-      acc[key].prizes[prizeKey] = {
-        name: winner.prizeName,
-        count: 0,
-        selectedAt: winner.selectedAt
-      }
-    }
-    acc[key].prizes[prizeKey].count += (winner.prizeCount || 1)
-    
-    return acc
-  }, {})
-
-  // Convert prizes objects to arrays
-  Object.keys(groupedWinners).forEach(key => {
-    groupedWinners[key].prizes = Object.values(groupedWinners[key].prizes)
-  })
-
-  const groupedWinnersArray = Object.values(groupedWinners)
+  // Winners are already grouped and consolidated in the data
+  const winners = winnerData.winners
 
   // Create a canvas element
   const canvas = document.createElement('canvas')
@@ -64,7 +34,7 @@ function createManualCanvas(winnerData: WinnerExport): void {
   // Calculate dynamic height based on number of winners
   const baseHeight = 400
   const winnerHeight = 140
-  const totalHeight = Math.max(baseHeight + (groupedWinnersArray.length * winnerHeight), 600)
+  const totalHeight = Math.max(baseHeight + (winners.length * winnerHeight), 600)
   
   canvas.width = 1200
   canvas.height = totalHeight
@@ -131,7 +101,7 @@ function createManualCanvas(winnerData: WinnerExport): void {
 
   // Draw grouped winners with enhanced UI
   let yPosition = 280
-  groupedWinnersArray.forEach((group: any, index) => {
+  winners.forEach((winner: any, index) => {
     if (yPosition > canvas.height - 100) return
 
     // Calculate dynamic card height based on number of prizes
@@ -165,16 +135,16 @@ function createManualCanvas(winnerData: WinnerExport): void {
     ctx.textAlign = 'left'
     
     // Calculate name width to position UP address
-    const nameWidth = ctx.measureText(group.participantName).width
+    const nameWidth = ctx.measureText(winner.participantName).width
     const upStartX = 100 + nameWidth + 10 // 10px space after name
     
     // Draw name
-    ctx.fillText(group.participantName, 100, yPosition - 10)
+    ctx.fillText(winner.participantName, 100, yPosition - 10)
     
     // Draw UP address inline
-    const truncatedUp = group.participantUpAddress.length > 20 
-      ? group.participantUpAddress.substring(0, 20) + '...'
-      : group.participantUpAddress
+    const truncatedUp = winner.participantUpAddress.length > 20 
+      ? winner.participantUpAddress.substring(0, 20) + '...'
+      : winner.participantUpAddress
     ctx.fillStyle = '#71717a'
     ctx.font = '12px monospace'
     ctx.fillText(`📍 ${truncatedUp}`, upStartX, yPosition - 10)
@@ -184,44 +154,19 @@ function createManualCanvas(winnerData: WinnerExport): void {
     ctx.fillRect(100, yPosition + 5, 120, 20)
     ctx.fillStyle = '#000000'
     ctx.font = 'bold 12px monospace'
-    ctx.fillText(`${group.totalTickets} tickets`, 110, yPosition + 18)
+    ctx.fillText(`${winner.totalTickets} tickets`, 110, yPosition + 18)
 
-    // Prizes won section - horizontal layout
+    // Prizes won section - simplified
     ctx.fillStyle = '#00ff88'
     ctx.font = 'bold 16px monospace'
     ctx.fillText('PRIZES WON:', 100, yPosition + 40)
 
-    // List prizes horizontally
-    let prizeX = 100
-    let prizeY = yPosition + 60
-    let currentPrizeY = prizeY
-    
-    group.prizes.forEach((prize: any) => {
-      // Prize background
-      ctx.fillStyle = '#2a2a2a'
-      ctx.fillRect(prizeX, currentPrizeY - 15, 150, 25)
-      ctx.strokeStyle = '#00ff88'
-      ctx.lineWidth = 1
-      ctx.strokeRect(prizeX, currentPrizeY - 15, 150, 25)
-      
-      // Prize text
-      ctx.fillStyle = '#a1a1aa'
-      ctx.font = '12px monospace'
-      const prizeText = prize.count > 1 ? `🏆 ${prize.name} x${prize.count}` : `🏆 ${prize.name}`
-      ctx.fillText(prizeText, prizeX + 5, currentPrizeY)
-      
-      prizeX += 160 // Move to next prize position
-      
-      // If we run out of space, move to next line
-      if (prizeX > canvas.width - 200) {
-        prizeX = 100
-        currentPrizeY += 30
-      }
-    })
+    // Show consolidated prizes
+    ctx.fillStyle = '#a1a1aa'
+    ctx.font = '14px monospace'
+    ctx.fillText(winner.prizeName, 100, yPosition + 60)
 
-    // UP address is now inline with the name, no need for separate section
-
-    yPosition += cardHeight + 20 // Use dynamic card height plus spacing
+    yPosition += 120 // Fixed height since we're not using dynamic card height
   })
 
   // Footer with background
@@ -235,7 +180,7 @@ function createManualCanvas(winnerData: WinnerExport): void {
   ctx.font = '14px monospace'
   ctx.textAlign = 'center'
   ctx.fillText(`📅 Exported on ${winnerData.exportDate}`, canvas.width / 2, canvas.height - 40)
-  ctx.fillText(`👥 Total Winners: ${groupedWinnersArray.length}`, canvas.width / 2, canvas.height - 25)
+  ctx.fillText(`👥 Total Winners: ${winners.length}`, canvas.width / 2, canvas.height - 25)
 
   // Convert to image and download
   canvas.toBlob((blob) => {
