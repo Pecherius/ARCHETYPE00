@@ -104,22 +104,17 @@ function createManualCanvas(winnerData: WinnerExport): void {
   winners.forEach((winner: any, index) => {
     if (yPosition > canvas.height - 100) return
 
-    // Calculate dynamic card height based on number of prizes
-    const prizesPerRow = Math.floor((canvas.width - 300) / 160) // How many prizes fit per row
-    const prizeRows = Math.ceil(group.prizes.length / prizesPerRow)
-    const cardHeight = 120 + (prizeRows > 1 ? (prizeRows - 1) * 30 : 0) // Add space for additional rows
-
     // Winner card background with gradient
-    const cardGradient = ctx.createLinearGradient(50, yPosition - 40, 50, yPosition + cardHeight - 40)
+    const cardGradient = ctx.createLinearGradient(50, yPosition - 40, 50, yPosition + 100)
     cardGradient.addColorStop(0, '#1a1a1a')
     cardGradient.addColorStop(1, '#2a2a2a')
     ctx.fillStyle = cardGradient
-    ctx.fillRect(50, yPosition - 40, canvas.width - 100, cardHeight)
+    ctx.fillRect(50, yPosition - 40, canvas.width - 100, 100)
 
     // Winner card border with glow effect
     ctx.strokeStyle = '#ff69b4'
     ctx.lineWidth = 2
-    ctx.strokeRect(50, yPosition - 40, canvas.width - 100, cardHeight)
+    ctx.strokeRect(50, yPosition - 40, canvas.width - 100, 100)
 
     // Winner number badge
     ctx.fillStyle = '#ff69b4'
