@@ -2007,23 +2007,25 @@ function ArchetypeExclusivePrizesMuseum() {
                 className="relative max-w-full max-h-full"
               >
                 {/* Image Frame - Compact */}
-                <div className={`relative bg-gradient-to-br from-zinc-900/90 to-zinc-800/70 backdrop-blur-sm border rounded-lg p-3 shadow-2xl ${
-                  currentImage.rarity === 'LEGENDARY' 
-                    ? 'border-yellow-500/50 shadow-yellow-500/20' 
-                    : 'border-zinc-700/50'
-                }`}>
-                  {/* Legendary Glow Effect */}
+                <div
+                  className={`relative overflow-hidden bg-[#2596be] backdrop-blur-sm border rounded-xl p-3 shadow-2xl ${
+                    currentImage.rarity === 'LEGENDARY'
+                      ? 'border-yellow-400/60 shadow-yellow-400/30'
+                      : 'border-white/30'
+                  }`}
+                >
+                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.35),transparent_65%)] opacity-70 mix-blend-soft-light pointer-events-none z-0"></div>
                   {currentImage.rarity === 'LEGENDARY' && (
-                    <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/10 via-transparent to-amber-500/10 rounded-lg animate-pulse"></div>
+                    <div className="absolute inset-0 bg-gradient-to-br from-yellow-400/25 via-transparent to-amber-500/25 pointer-events-none z-10 animate-pulse"></div>
                   )}
-                  
+
                   {/* Number Badge */}
-                  <div className="absolute -top-1 -left-1 bg-orange-500 text-black font-bold text-xs px-2 py-1 rounded-full font-mono z-20">
+                  <div className="absolute -top-1 -left-1 bg-orange-500 text-black font-bold text-xs px-2 py-1 rounded-full font-mono z-30 shadow-[0_2px_6px_rgba(0,0,0,0.3)]">
                     #{currentImage.id}
                   </div>
 
                   {/* Rarity Badge */}
-                  <div className={`absolute -top-1 -right-1 px-2 py-1 rounded-full text-xs font-mono font-bold ${getRarityStyle(currentImage.rarity)}`}>
+                  <div className={`absolute -top-1 -right-1 px-2 py-1 rounded-full text-xs font-mono font-bold z-30 shadow-[0_2px_6px_rgba(0,0,0,0.35)] ${getRarityStyle(currentImage.rarity)}`}>
                     {currentImage.rarity}
                   </div>
 
@@ -2033,7 +2035,7 @@ function ArchetypeExclusivePrizesMuseum() {
                     alt={currentImage.title}
                     loading="lazy"
                     referrerPolicy="no-referrer"
-                    className={`max-w-full max-h-[150px] object-contain drop-shadow-lg ${
+                    className={`relative z-20 max-w-full max-h-[150px] object-contain drop-shadow-lg ${
                       currentImage.rarity === 'LEGENDARY'
                         ? 'animate-pulse'
                         : ''
