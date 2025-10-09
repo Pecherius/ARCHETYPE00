@@ -487,18 +487,24 @@ const PunkableRaffleSystem = () => {
       return acc
     }, {} as Record<string, any>)
 
-    // Get ticket count for each participant
+    // Get ticket count for each participant - simplified search
     Object.values(groupedWinners).forEach((group: any) => {
-      const participant = participants.find(p => 
+      // First try exact match with name and UP address
+      let participant = participants.find(p => 
         p.name === group.participantName && p.up_address === group.participantUpAddress
       )
+      
+      // If not found, try just by name (in case UP address is missing or different)
+      if (!participant) {
+        participant = participants.find(p => p.name === group.participantName)
+      }
       
       // Debug logging
       console.log('Looking for participant:', {
         name: group.participantName,
         upAddress: group.participantUpAddress,
         found: participant,
-        allParticipants: participants.map(p => ({ name: p.name, up_address: p.up_address, tickets: p.tickets }))
+        foundTickets: participant?.tickets
       })
       
       group.totalTickets = participant?.tickets || 0

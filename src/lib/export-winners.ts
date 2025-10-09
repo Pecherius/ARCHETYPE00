@@ -26,6 +26,19 @@ function createManualCanvas(winnerData: WinnerExport): void {
   // Winners are already grouped and consolidated in the data
   const winners = winnerData.winners
 
+  // Debug logging
+  console.log('Export data received:', {
+    raffleName: winnerData.raffleName,
+    winnersCount: winners.length,
+    winners: winners.map(w => ({
+      name: w.participantName,
+      upAddress: w.participantUpAddress,
+      tickets: w.totalTickets,
+      prizeName: w.prizeName,
+      prizeCount: w.prizeCount
+    }))
+  })
+
   // Create a canvas element
   const canvas = document.createElement('canvas')
   const ctx = canvas.getContext('2d')
