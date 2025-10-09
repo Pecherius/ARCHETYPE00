@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef, useCallback } from "react"
+import { useState, useEffect, useRef, useCallback, useMemo } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import confetti from "canvas-confetti"
 import { RaffleService, type Raffle, type Participant, type Prize, type Winner } from "../lib/raffle-service"
@@ -75,6 +75,136 @@ const PunkableRaffleSystem = () => {
 
   // Removed unused loadRaffleData function
 
+  const totalTickets = useMemo(
+    () => participants.reduce((sum, participant) => sum + participant.tickets, 0),
+    [participants],
+  )
+
+  const weightedParticipantPool = useMemo(() => {
+    if (participants.length === 0) return []
+
+    return participants.flatMap((participant) =>
+      Array.from({ length: Math.max(participant.tickets, 0) }, () => participant),
+    )
+  }, [participants])
+
+  const availablePrizes = useMemo(
+    () => prizes.filter((prize) => prize.remaining > 0),
+    [prizes],
+  )
+
+  const remainingPrizeCount = useMemo(
+    () => prizes.reduce((sum, prize) => sum + prize.remaining, 0),
+    [prizes],
+  )
+
+  const groupedWinnerSummaries = useMemo(() => {
+    if (winners.length === 0) {
+      return [] as Array<{
+        key: string
+        participant: Participant | undefined
+        participantName: string
+        participantColor: string
+        upAddress: string
+        prizeList: Array<{ name: string; count: number; wonAt: string }>
+        ticketCount: number
+        totalPrizes: number
+      }>
+    }
+
+    const groups = winners.reduce(
+      (acc, winner) => {
+        const key = `${winner.participant_id}-${winner.up_address ?? "no-up"}`
+
+        if (!acc.has(key)) {
+          acc.set(key, {
+            key,
+            participantId: winner.participant_id,
+            participantName: winner.participant_name,
+            upAddress: winner.up_address ?? "",
+            prizes: new Map<string, { name: string; count: number; wonAt: string }>(),
+          })
+        }
+
+        const entry = acc.get(key)!
+        const existingPrize = entry.prizes.get(winner.prize_name)
+
+        if (existingPrize) {
+          entry.prizes.set(winner.prize_name, {
+            ...existingPrize,
+            count: existingPrize.count + 1,
+            wonAt: winner.won_at,
+          })
+        } else {
+          entry.prizes.set(winner.prize_name, {
+            name: winner.prize_name,
+            count: 1,
+            wonAt: winner.won_at,
+          })
+        }
+
+        return acc
+      },
+      new Map<
+        string,
+        {
+          key: string
+          participantId: string
+          participantName: string
+          upAddress: string
+          prizes: Map<string, { name: string; count: number; wonAt: string }>
+        }
+      >(),
+    )
+
+    return Array.from(groups.values())
+      .map((entry) => {
+        const participant = participants.find((p) => p.id === entry.participantId)
+        const prizeList = Array.from(entry.prizes.values()).sort(
+          (a, b) => b.count - a.count || a.name.localeCompare(b.name),
+        )
+        const ticketCount = participant?.tickets ?? 0
+        const totalPrizesWon = prizeList.reduce((sum, prize) => sum + prize.count, 0)
+
+        return {
+          key: entry.key,
+          participant,
+          participantName: entry.participantName,
+          participantColor: participant?.color ?? "#8B5CF6",
+          upAddress: entry.upAddress,
+          prizeList,
+          ticketCount,
+          totalPrizes: totalPrizesWon,
+        }
+      })
+      .sort((a, b) => b.totalPrizes - a.totalPrizes || b.ticketCount - a.ticketCount)
+  }, [participants, winners])
+
+  const raffleStats = useMemo(
+    () => [
+      { label: "PARTICIPANTS", value: participants.length },
+      { label: "PRIZES", value: prizes.length },
+      { label: "WINNERS", value: winners.length },
+      { label: "REMAINING", value: remainingPrizeCount },
+    ],
+    [participants.length, prizes.length, winners.length, remainingPrizeCount],
+  )
+
+  const participantProbabilities = useMemo(
+    () => (
+      totalTickets === 0
+        ? []
+        : participants.map((participant) => ({
+            id: participant.id,
+            name: participant.name,
+            tickets: participant.tickets,
+            color: participant.color,
+            upAddress: participant.up_address,
+            probability: participant.tickets / totalTickets,
+          }))
+    ),
+    [participants, totalTickets],
+  )
 
   const handleCreateRaffle = async () => {
     if (!newRaffleTitle.trim()) return
@@ -121,8 +251,7 @@ const PunkableRaffleSystem = () => {
   }
 
   const getRandomWeightedParticipant = useCallback(() => {
-    if (participants.length === 0) return null
-    const totalTickets = participants.reduce((sum, p) => sum + p.tickets, 0)
+    if (participants.length === 0 || totalTickets === 0) return null
     let random = Math.random() * totalTickets
 
     for (const participant of participants) {
@@ -131,15 +260,15 @@ const PunkableRaffleSystem = () => {
         return participant
       }
     }
-    return participants[0]
-  }, [participants])
+
+    return participants[participants.length - 1] ?? null
+  }, [participants, totalTickets])
 
   const getRandomPrize = useCallback(() => {
-    const availablePrizes = prizes.filter((p) => p.remaining > 0)
     if (availablePrizes.length === 0) return null
     const randomIndex = Math.floor(Math.random() * availablePrizes.length)
     return availablePrizes[randomIndex]
-  }, [prizes])
+  }, [availablePrizes])
 
   const selectWinner = useCallback(async () => {
     if (selecting || participants.length === 0 || !currentRaffle) return
@@ -154,16 +283,20 @@ const PunkableRaffleSystem = () => {
       return
     }
 
-    // Pre-calculate weighted array once for better performance
-    const weightedArray = participants.flatMap((p) => Array(p.tickets).fill(p))
-
     let shuffleCount = 0
     const totalShuffles = 12 // Reduced from 15 for better performance
 
     const shuffle = () => {
       if (shuffleCount < totalShuffles) {
-        const randomIndex = Math.floor(Math.random() * weightedArray.length)
-        setCurrentParticipant(weightedArray[randomIndex])
+        const pool = weightedParticipantPool.length > 0 ? weightedParticipantPool : participants
+
+        if (pool.length === 0) {
+          setSelecting(false)
+          return
+        }
+
+        const randomIndex = Math.floor(Math.random() * pool.length)
+        setCurrentParticipant(pool[randomIndex])
 
         shuffleCount++
         shuffleRef.current = setTimeout(shuffle, 40 + shuffleCount * 8) // Faster animation
@@ -221,7 +354,14 @@ const PunkableRaffleSystem = () => {
     }
 
     shuffle()
-  }, [selecting, participants, currentRaffle, getRandomPrize, getRandomWeightedParticipant])
+  }, [
+    selecting,
+    participants,
+    currentRaffle,
+    getRandomPrize,
+    getRandomWeightedParticipant,
+    weightedParticipantPool,
+  ])
 
   const addParticipant = async () => {
     if (
@@ -457,54 +597,19 @@ const PunkableRaffleSystem = () => {
 
   // Handle export winners - Simplified approach
   const handleExportWinners = (format: 'image' | 'json') => {
-    if (!currentRaffle || winners.length === 0) return
+    if (!currentRaffle || groupedWinnerSummaries.length === 0) return
 
-    // Create a simple map of participant -> prizes won
-    const participantPrizes = new Map()
-    
-    winners.forEach(winner => {
-      const key = winner.participant_name
-      if (!participantPrizes.has(key)) {
-        participantPrizes.set(key, {
-          participantName: winner.participant_name,
-          participantUpAddress: winner.up_address || '',
-          prizes: new Map(),
-          totalTickets: 0
-        })
-      }
-      
-      const participant = participantPrizes.get(key)
-      const prizeKey = winner.prize_name
-      
-      if (!participant.prizes.has(prizeKey)) {
-        participant.prizes.set(prizeKey, {
-          name: prizeKey,
-          count: 0
-        })
-      }
-      
-      participant.prizes.get(prizeKey).count += 1
-    })
-
-    // Get ticket counts from current participants
-    participantPrizes.forEach((participant, name) => {
-      const currentParticipant = participants.find(p => p.name === name)
-      participant.totalTickets = currentParticipant?.tickets || 0
-      
-      // Convert Map to array
-      participant.prizes = Array.from(participant.prizes.values())
-    })
-
-    // Convert to export format
-    const exportWinners = Array.from(participantPrizes.values()).map(participant => ({
-      participantName: participant.participantName,
-      participantUpAddress: participant.participantUpAddress,
-      prizeName: participant.prizes.map((p: any) => `${p.name}${p.count > 1 ? ` x${p.count}` : ''}`).join(', '),
+    const exportWinners = groupedWinnerSummaries.map((summary) => ({
+      participantName: summary.participantName,
+      participantUpAddress: summary.upAddress,
+      prizeName: summary.prizeList
+        .map((prize) => `${prize.name}${prize.count > 1 ? ` x${prize.count}` : ''}`)
+        .join(', '),
       prizeDescription: '',
       prizeImage: '',
       selectedAt: new Date().toLocaleString(),
-      totalTickets: participant.totalTickets,
-      prizeCount: participant.prizes.reduce((sum: number, p: any) => sum + p.count, 0)
+      totalTickets: summary.ticketCount,
+      prizeCount: summary.totalPrizes,
     }))
 
     const winnerData: WinnerExport = {
@@ -658,7 +763,9 @@ const PunkableRaffleSystem = () => {
   if (currentView === "results" && currentRaffle) {
     return (
       <div className="mx-auto max-w-6xl px-4 pb-8 sm:px-6">
-        <div className="border border-zinc-800 p-4 rounded-lg bg-gradient-to-br from-zinc-900/50 to-zinc-800/30">
+        <div className="relative overflow-hidden border border-zinc-800/60 p-4 rounded-2xl bg-gradient-to-br from-zinc-950/90 to-zinc-900/70 shadow-[0_0_45px_rgba(34,197,94,0.12)]">
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(34,197,94,0.12),transparent_65%)]"></div>
+          <div className="relative">
           {/* Header */}
           <div className="text-center mb-4">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-green-500/20 to-emerald-500/20 border border-green-500/30 rounded-full text-green-400 text-xs font-medium mb-2">
@@ -673,117 +780,81 @@ const PunkableRaffleSystem = () => {
 
           {/* Winners Grid - Grouped by Participant */}
           <div data-section="winners" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mb-4">
-            {(() => {
-              // Group winners by participant and consolidate duplicate prizes
-              const groupedWinners = winners.reduce((acc, winner) => {
-                const key = `${winner.participant_name}-${winner.up_address}`;
-                if (!acc[key]) {
-                  acc[key] = {
-                    participantName: winner.participant_name,
-                    upAddress: winner.up_address,
-                    prizes: {},
-                    participant: participants.find(p => 
-                      p.name === winner.participant_name && p.up_address === winner.up_address
-                    )
-                  };
-                }
-                
-                // Consolidate duplicate prizes
-                if (acc[key].prizes[winner.prize_name]) {
-                  acc[key].prizes[winner.prize_name].count++;
-                  acc[key].prizes[winner.prize_name].wonAt = winner.won_at; // Keep latest time
-                } else {
-                  acc[key].prizes[winner.prize_name] = {
-                    name: winner.prize_name,
-                    count: 1,
-                    wonAt: winner.won_at
-                  };
-                }
-                return acc;
-              }, {} as Record<string, any>);
+            {groupedWinnerSummaries.map((group, index) => {
+              const { prizeList, ticketCount, totalPrizes, participantColor, participantName, upAddress } = group
 
-              return Object.values(groupedWinners).map((group: any, index) => {
-                const participant = group.participant;
-                const ticketCount = participant?.tickets || 0;
-                const prizeList = Object.values(group.prizes);
-                const totalPrizes = prizeList.reduce((sum: number, prize: any) => sum + prize.count, 0);
-                
-                // Get emoji based on ticket count
-                const getEmoji = () => {
-                  if (ticketCount >= 20) return '🐋';
-                  if (ticketCount >= 10) return '💎';
-                  if (ticketCount >= 5) return '⭐';
-                  return '🎫';
-                };
+              const getEmoji = () => {
+                if (ticketCount >= 20) return "🐋"
+                if (ticketCount >= 10) return "💎"
+                if (ticketCount >= 5) return "⭐"
+                return "🎫"
+              }
 
-                // Get color based on ticket count
-                const getColorClass = () => {
-                  if (ticketCount >= 20) return 'from-purple-500/10 to-pink-500/10 border-purple-500/20';
-                  if (ticketCount >= 10) return 'from-yellow-500/10 to-orange-500/10 border-yellow-500/20';
-                  if (ticketCount >= 5) return 'from-blue-500/10 to-cyan-500/10 border-blue-500/20';
-                  return 'from-pink-500/10 to-purple-500/10 border-pink-500/20';
-                };
+              const getColorClass = () => {
+                if (ticketCount >= 20) return "from-purple-500/10 to-pink-500/10 border-purple-500/20"
+                if (ticketCount >= 10) return "from-yellow-500/10 to-orange-500/10 border-yellow-500/20"
+                if (ticketCount >= 5) return "from-blue-500/10 to-cyan-500/10 border-blue-500/20"
+                return "from-pink-500/10 to-purple-500/10 border-pink-500/20"
+              }
 
-                // Calculate dynamic height based on number of prizes
-                const getCardHeight = () => {
-                  const baseHeight = 120; // Base height for name and basic info
-                  const prizeHeight = 40; // Height per prize
-                  const maxHeight = 300; // Maximum height to prevent too tall cards
-                  return Math.min(baseHeight + (prizeList.length * prizeHeight), maxHeight);
-                };
+              const getCardHeight = () => {
+                const baseHeight = 120
+                const prizeHeight = 40
+                const maxHeight = 300
+                return Math.min(baseHeight + prizeList.length * prizeHeight, maxHeight)
+              }
 
-                return (
-              <motion.div
-                    key={`${group.participantName}-${group.upAddress}`}
-                initial={{ opacity: 0, y: 20, scale: 0.9 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                transition={{ delay: index * 0.1, duration: 0.5 }}
-                    className={`bg-gradient-to-br ${getColorClass()} p-3 rounded-lg border relative overflow-hidden`}
-                    style={{ minHeight: `${getCardHeight()}px` }}
-                  >
-                    <div className="absolute top-0 right-0 w-12 h-12 bg-gradient-to-br from-pink-500/20 to-purple-500/20 rounded-full -translate-y-6 translate-x-6"></div>
-                    <div className="relative z-10 h-full flex flex-col">
-                      <div className="flex items-center gap-2 mb-2">
-                        <div 
-                          className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold"
-                          style={{ backgroundColor: participant?.color || '#8B5CF6' }}
-                        >
-                          {getEmoji()}
+              return (
+                <motion.div
+                  key={group.key}
+                  initial={{ opacity: 0, y: 20, scale: 0.9 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  transition={{ delay: index * 0.1, duration: 0.5 }}
+                  className={`bg-gradient-to-br ${getColorClass()} p-3 rounded-lg border relative overflow-hidden`}
+                  style={{ minHeight: `${getCardHeight()}px` }}
+                >
+                  <div className="absolute top-0 right-0 w-12 h-12 bg-gradient-to-br from-pink-500/20 to-purple-500/20 rounded-full -translate-y-6 translate-x-6"></div>
+                  <div className="relative z-10 h-full flex flex-col">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div
+                        className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold"
+                        style={{ backgroundColor: participantColor }}
+                      >
+                        {getEmoji()}
+                      </div>
+                      <div>
+                        <h3 className="text-sm font-bold text-pink-400 font-mono">{participantName}</h3>
+                        <p className="text-zinc-400 text-xs font-mono">
+                          {totalPrizes} prize{totalPrizes > 1 ? "s" : ""} • {ticketCount} tickets
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                          <h3 className="text-sm font-bold text-pink-400 font-mono">{group.participantName}</h3>
-                          <p className="text-zinc-400 text-xs font-mono">
-                            {totalPrizes} prize{totalPrizes > 1 ? 's' : ''} • {ticketCount} tickets
+                    <div className="space-y-1 flex-1">
+                      {prizeList.map((prize, prizeIndex) => (
+                        <div key={`${group.key}-${prize.name}-${prizeIndex}`} className="bg-zinc-800/50 p-2 rounded border border-zinc-700">
+                          <p className="text-zinc-300 text-xs font-medium">
+                            🎁 {prize.name}
+                            {prize.count > 1 && (
+                              <span className="ml-1 px-1.5 py-0.5 bg-pink-500/20 text-pink-400 text-xs rounded-full">
+                                x{prize.count}
+                              </span>
+                            )}
                           </p>
+                          <p className="text-zinc-500 text-xs font-mono">
+                            Won: {new Date(prize.wonAt).toLocaleString()}
+                          </p>
+                        </div>
+                      ))}
+                      {upAddress && (
+                        <p className="text-zinc-500 text-xs font-mono mt-1">
+                          UP: {upAddress.slice(0, 20)}{upAddress.length > 20 ? "..." : ""}
+                        </p>
+                      )}
                     </div>
                   </div>
-                      <div className="space-y-1 flex-1">
-                        {prizeList.map((prize: any, prizeIndex: number) => (
-                          <div key={prizeIndex} className="bg-zinc-800/50 p-2 rounded border border-zinc-700">
-                            <p className="text-zinc-300 text-xs font-medium">
-                              🎁 {prize.name}
-                              {prize.count > 1 && (
-                                <span className="ml-1 px-1.5 py-0.5 bg-pink-500/20 text-pink-400 text-xs rounded-full">
-                                  x{prize.count}
-                                </span>
-                              )}
-                            </p>
-                            <p className="text-zinc-500 text-xs font-mono">
-                              Won: {new Date(prize.wonAt).toLocaleString()}
-                            </p>
-                          </div>
-                        ))}
-                        {group.upAddress && (
-                          <p className="text-zinc-500 text-xs font-mono mt-1">
-                            UP: {group.upAddress.slice(0, 20)}...
-                      </p>
-                    )}
-                  </div>
-                </div>
-              </motion.div>
-                );
-              });
-            })()}
+                </motion.div>
+              )
+            })}
           </div>
 
           {/* Export and Actions */}
@@ -834,6 +905,7 @@ const PunkableRaffleSystem = () => {
               </button>
             </div>
           </div>
+          </div>
         </div>
       </div>
     )
@@ -843,7 +915,9 @@ const PunkableRaffleSystem = () => {
   if (currentView === "selector") {
     return (
       <section className="mx-auto max-w-6xl px-4 pb-8 sm:px-6">
-        <div className="border border-zinc-800 p-6 text-sm leading-relaxed text-zinc-300 bg-zinc-950">
+        <div className="relative overflow-hidden border border-zinc-800/60 p-6 text-sm leading-relaxed text-zinc-300 rounded-2xl bg-gradient-to-br from-zinc-950/90 to-zinc-900/70 shadow-[0_0_45px_rgba(236,72,153,0.08)]">
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(236,72,153,0.12),transparent_60%)]"></div>
+          <div className="relative space-y-6">
           {/* Language Selector - Inside the main container */}
           <div className="flex justify-end mb-6">
             {/* Language selector removed */}
@@ -1259,6 +1333,7 @@ const PunkableRaffleSystem = () => {
               </motion.div>
             )}
           </AnimatePresence>
+          </div>
         </div>
       </section>
     )
@@ -1275,7 +1350,6 @@ const PunkableRaffleSystem = () => {
     )
   }
 
-  const remainingPrizeCount = prizes.reduce((sum, p) => sum + p.remaining, 0);
   const canSelectWinner = participants.length > 0 && remainingPrizeCount > 0 && !selecting;
 
   return (
@@ -1287,9 +1361,11 @@ const PunkableRaffleSystem = () => {
       </div>
         <div className="text-xs text-zinc-500 font-mono">v2.1</div>
       </div>
-      <div className="border border-zinc-800 p-3 text-xs leading-relaxed text-zinc-300 rounded-lg">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-3">
+      <div className="relative overflow-hidden border border-zinc-800/60 p-4 md:p-6 text-xs leading-relaxed text-zinc-300 rounded-2xl bg-gradient-to-br from-zinc-950/95 to-zinc-900/70 shadow-[0_0_45px_rgba(236,72,153,0.1)]">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(236,72,153,0.14),transparent_55%)]"></div>
+        <div className="relative space-y-4">
+          {/* Header */}
+          <div className="flex items-center justify-between">
           <button
             onClick={goBackToRaffles}
             className="group relative overflow-hidden border-2 border-zinc-500 bg-gradient-to-r from-zinc-900/30 to-zinc-800/30 px-3 py-1.5 text-zinc-400 hover:from-zinc-800/40 hover:to-zinc-700/40 transition-all duration-300 hover:scale-105 font-mono font-bold text-xs rounded-lg"
@@ -1324,6 +1400,22 @@ const PunkableRaffleSystem = () => {
           </div>
           
           <div className="w-24"></div> {/* Spacer for balance */}
+        </div>
+
+        {/* Raffle Stats */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+          {raffleStats.map((stat) => (
+            <div
+              key={stat.label}
+              className="relative overflow-hidden border border-zinc-700/60 rounded-lg bg-zinc-900/60 px-3 py-2"
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-zinc-700/10 to-transparent"></div>
+              <div className="relative flex flex-col">
+                <span className="text-[10px] text-zinc-500 font-mono tracking-wide">{stat.label}</span>
+                <span className="text-sm text-zinc-100 font-mono">{stat.value}</span>
+              </div>
+            </div>
+          ))}
         </div>
 
         {/* Winner Alert - Floating */}
@@ -1450,6 +1542,45 @@ const PunkableRaffleSystem = () => {
                   )}
                 </motion.div>
               ))}
+            </div>
+
+            <div className="border border-blue-700/40 bg-blue-900/10 rounded-lg p-3 space-y-2">
+              <h5 className="text-xs font-semibold text-blue-300 tracking-wide uppercase">Fair odds snapshot</h5>
+              <p className="text-[11px] text-blue-100/80 leading-relaxed">
+                Each ticket equals one entry in the weighted draw. With
+                <span className="mx-1 font-semibold text-blue-200">{totalTickets}</span>
+                total tickets, even a single ticket holds a
+                <span className="mx-1 font-semibold text-blue-200">
+                  {totalTickets > 0 ? ((1 / totalTickets) * 100).toFixed(2) : '0.00'}%
+                </span>
+                chance in every selection.
+              </p>
+              <div className="space-y-1 max-h-24 overflow-y-auto pr-1">
+                {participantProbabilities.length === 0 ? (
+                  <p className="text-[11px] text-blue-200/70 font-mono">Add participants to calculate odds.</p>
+                ) : (
+                  participantProbabilities
+                    .slice()
+                    .sort((a, b) => b.probability - a.probability)
+                    .map((entry) => (
+                      <div
+                        key={entry.id}
+                        className="flex items-center justify-between text-[11px] font-mono text-blue-100/90"
+                      >
+                        <span className="flex items-center gap-1">
+                          <span
+                            className="inline-block h-2 w-2 rounded-full"
+                            style={{ backgroundColor: entry.color }}
+                          ></span>
+                          {entry.name}
+                        </span>
+                        <span className="text-blue-200">
+                          {(entry.probability * 100).toFixed(2)}%
+                        </span>
+                      </div>
+                    ))
+                )}
+              </div>
             </div>
 
             {/* Add Participant Form */}
@@ -1769,6 +1900,7 @@ const PunkableRaffleSystem = () => {
             )}
           </div>
         </div>
+      </div>
       </div>
 
       {/* Saved Users Manager */}

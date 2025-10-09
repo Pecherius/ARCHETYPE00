@@ -2007,51 +2007,55 @@ function ArchetypeExclusivePrizesMuseum() {
                 className="relative max-w-full max-h-full"
               >
                 {/* Image Frame - Compact */}
-                <div className={`relative bg-gradient-to-br from-zinc-900/90 to-zinc-800/70 backdrop-blur-sm border rounded-lg p-3 shadow-2xl ${
-                  currentImage.rarity === 'LEGENDARY' 
-                    ? 'border-yellow-500/50 shadow-yellow-500/20' 
-                    : 'border-zinc-700/50'
-                }`}>
-                  {/* Legendary Glow Effect */}
-                  {currentImage.rarity === 'LEGENDARY' && (
-                    <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/10 via-transparent to-amber-500/10 rounded-lg animate-pulse"></div>
-                  )}
-                  
+                <div className="relative pt-6">
                   {/* Number Badge */}
-                  <div className="absolute -top-1 -left-1 bg-orange-500 text-black font-bold text-xs px-2 py-1 rounded-full font-mono z-20">
+                  <div className="absolute left-0 top-0 -translate-y-1/2 bg-orange-500 text-black font-bold text-xs px-2 py-1 rounded-full font-mono z-30 shadow-[0_2px_6px_rgba(0,0,0,0.3)]">
                     #{currentImage.id}
                   </div>
 
                   {/* Rarity Badge */}
-                  <div className={`absolute -top-1 -right-1 px-2 py-1 rounded-full text-xs font-mono font-bold ${getRarityStyle(currentImage.rarity)}`}>
+                  <div className={`absolute right-0 top-0 -translate-y-1/2 px-2 py-1 rounded-full text-xs font-mono font-bold z-30 shadow-[0_2px_6px_rgba(0,0,0,0.35)] ${getRarityStyle(currentImage.rarity)}`}>
                     {currentImage.rarity}
                   </div>
 
-                  {/* Image */}
-                  <img
-                    src={currentImageSrc}
-                    alt={currentImage.title}
-                    loading="lazy"
-                    referrerPolicy="no-referrer"
-                    className={`max-w-full max-h-[150px] object-contain drop-shadow-lg ${
+                  <div
+                    className={`relative overflow-hidden bg-[#D5D5D2] text-zinc-900 border rounded-xl p-4 shadow-2xl ${
                       currentImage.rarity === 'LEGENDARY'
-                        ? 'animate-pulse'
-                        : ''
+                        ? 'border-yellow-400/60 shadow-yellow-400/30'
+                        : 'border-black/10 shadow-black/10'
                     }`}
-                    style={{
-                      filter: currentImage.rarity === 'LEGENDARY'
-                        ? 'contrast(1.1) saturate(1.2) brightness(1.1) drop-shadow(0 0 10px rgba(255, 215, 0, 0.3))'
-                        : 'contrast(1.05) saturate(1.1) brightness(1.02)',
-                      imageRendering: 'auto'
-                    }}
-                    onError={(e) =>
-                      handleMuseumImageError(
-                        currentIndex,
-                        e.currentTarget,
-                        mainImageDimensions
-                      )
-                    }
-                  />
+                  >
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.55),transparent_70%)] opacity-80 mix-blend-soft-light pointer-events-none z-0"></div>
+                    {currentImage.rarity === 'LEGENDARY' && (
+                      <div className="absolute inset-0 bg-gradient-to-br from-yellow-400/25 via-transparent to-amber-500/25 pointer-events-none z-10 animate-pulse"></div>
+                    )}
+
+                    {/* Image */}
+                    <img
+                      src={currentImageSrc}
+                      alt={currentImage.title}
+                      loading="lazy"
+                      referrerPolicy="no-referrer"
+                      className={`relative z-20 max-w-full max-h-[150px] object-contain drop-shadow-xl ${
+                        currentImage.rarity === 'LEGENDARY'
+                          ? 'animate-pulse'
+                          : ''
+                      }`}
+                      style={{
+                        filter: currentImage.rarity === 'LEGENDARY'
+                          ? 'contrast(1.1) saturate(1.2) brightness(1.1) drop-shadow(0 0 12px rgba(255, 215, 0, 0.35))'
+                          : 'contrast(1.02) saturate(1.05) brightness(1.01)',
+                        imageRendering: 'auto'
+                      }}
+                      onError={(e) =>
+                        handleMuseumImageError(
+                          currentIndex,
+                          e.currentTarget,
+                          mainImageDimensions
+                        )
+                      }
+                    />
+                  </div>
                 </div>
               </motion.div>
             </div>
