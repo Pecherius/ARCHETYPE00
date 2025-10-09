@@ -1717,7 +1717,7 @@ const PunkableRaffleSystem = () => {
         </div>
       </div>
 
-      {/* Winners Section - Full Width */}
+      {/* Winners Section - Full Width - Updated */}
       <div className="mt-4">
         <div className="bg-gradient-to-br from-zinc-800/50 to-zinc-900/50 rounded-lg p-4 border border-zinc-700">
           <div className="flex items-center justify-between mb-3">
