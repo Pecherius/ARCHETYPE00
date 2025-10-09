@@ -1460,31 +1460,31 @@ const PunkableRaffleSystem = () => {
             </div>
 
             {/* Add Participant Form */}
-            <div className="bg-zinc-800/30 p-2 rounded border border-zinc-700">
-              <div className="flex items-center justify-between mb-2">
-                <h5 className="text-xs font-semibold text-zinc-300">Add New Participant</h5>
-                  <div className="flex gap-1">
+            <div className="bg-zinc-800/30 p-4 rounded border border-zinc-700 h-[200px] flex flex-col">
+              <div className="flex items-center justify-between mb-3">
+                <h5 className="text-sm font-semibold text-zinc-300">Add New Participant</h5>
+                  <div className="flex gap-2">
                     <button
                       onClick={() => setShowSavedUsers(true)}
-                      className="px-1.5 py-0.5 bg-zinc-700 hover:bg-zinc-600 text-zinc-300 text-xs rounded transition-colors"
+                      className="px-2 py-1 bg-zinc-700 hover:bg-zinc-600 text-zinc-300 text-xs rounded transition-colors"
                     >
                       From Saved
                     </button>
                     <button
                       onClick={() => setShowSaveUserDialog(true)}
-                      className="px-1.5 py-0.5 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded transition-colors"
+                      className="px-2 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded transition-colors"
                     >
                       Save User
                     </button>
                   </div>
               </div>
-              <div className="space-y-2">
+              <div className="space-y-2 flex-1">
                 <input
                   type="text"
                   value={newParticipantName}
                   onChange={(e) => setNewParticipantName(e.target.value)}
                   placeholder="Enter name"
-                  className="w-full px-2 py-1 bg-zinc-700 border border-zinc-600 rounded text-zinc-100 text-xs"
+                  className="w-full px-3 py-2 bg-zinc-700 border border-zinc-600 rounded text-zinc-100 text-sm"
                 />
                 <input
                   type="number"
@@ -1492,14 +1492,14 @@ const PunkableRaffleSystem = () => {
                   onChange={(e) => setNewParticipantTickets(e.target.value)}
                   placeholder="Number of tickets"
                   min="1"
-                  className="w-full px-2 py-1 bg-zinc-700 border border-zinc-600 rounded text-zinc-100 text-xs"
+                  className="w-full px-3 py-2 bg-zinc-700 border border-zinc-600 rounded text-zinc-100 text-sm"
                 />
                 <input
                   type="text"
                   value={newParticipantUpAddress}
                   onChange={(e) => setNewParticipantUpAddress(e.target.value)}
                   placeholder="UP Address (optional)"
-                  className="w-full px-2 py-1 bg-zinc-700 border border-zinc-600 rounded text-zinc-100 text-xs"
+                  className="w-full px-3 py-2 bg-zinc-700 border border-zinc-600 rounded text-zinc-100 text-sm"
                 />
                 {duplicateUpAddressError && (
                   <p className="text-xs text-red-400">{duplicateUpAddressError}</p>
@@ -1507,7 +1507,7 @@ const PunkableRaffleSystem = () => {
                 <button
                   onClick={addParticipant}
                   disabled={!!duplicateUpAddressError || !newParticipantName.trim() || !newParticipantTickets.trim() || Number.parseInt(newParticipantTickets) <= 0}
-                  className="w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-semibold py-1 rounded text-xs disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-semibold py-2 rounded text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                     Add Participant
                 </button>
@@ -1520,18 +1520,6 @@ const PunkableRaffleSystem = () => {
                     💾 Save User
                   </button>
                 )}
-          </div>
-
-              {/* LocalStorage Warning */}
-              <div className="mt-4 p-3 bg-yellow-900/20 border border-yellow-500/30 rounded-lg">
-                <div className="flex items-start gap-2">
-                  <span className="text-yellow-400 text-sm">⚠️</span>
-                  <div className="text-xs text-yellow-300">
-                    <p className="font-semibold mb-1">ATTENTION:</p>
-                    <p>Your raffles are saved in your browser's localStorage. If you clear cookies or use a different browser, your data will be lost.</p>
-                    <p className="mt-1 text-yellow-400">Consider exporting your raffles as backup!</p>
-                    </div>
-                    </div>
               </div>
             </div>
           </div>
@@ -1544,7 +1532,7 @@ const PunkableRaffleSystem = () => {
               <h4 className="text-sm font-bold text-zinc-100 flex items-center gap-2 mb-2">
                 <span className="text-pink-500">🏆</span> Prizes ({remainingPrizeCount})
               </h4>
-              <div className="space-y-1 h-40 overflow-y-auto border border-zinc-700 rounded-lg p-2 bg-zinc-800/30 scrollbar-thin scrollbar-thumb-zinc-600 scrollbar-track-zinc-800">
+              <div className="space-y-1 h-40 overflow-y-auto border border-yellow-700 rounded-lg p-2 bg-gradient-to-br from-yellow-900/20 to-amber-900/20 scrollbar-thin scrollbar-thumb-yellow-600 scrollbar-track-zinc-800">
                 {prizes.map((prize) => (
                   <motion.div
                     key={prize.id}
@@ -1601,7 +1589,7 @@ const PunkableRaffleSystem = () => {
               </div>
 
               {/* Add Prize Form */}
-              <div className="mt-4 bg-zinc-800/30 p-4 rounded-lg border border-zinc-700">
+              <div className="mt-4 bg-gradient-to-br from-yellow-900/30 to-amber-900/30 p-4 rounded-lg border border-yellow-700 h-[200px] flex flex-col">
                 <div className="flex items-center justify-between mb-3">
                   <h5 className="text-sm font-semibold text-zinc-300">Add New Prize</h5>
                   <div className="flex gap-2">
@@ -1619,7 +1607,7 @@ const PunkableRaffleSystem = () => {
                     </button>
                   </div>
                 </div>
-                <div className="space-y-3">
+                <div className="space-y-3 flex-1">
                   <input
                     type="text"
                     value={newPrizeName}
@@ -1720,8 +1708,9 @@ const PunkableRaffleSystem = () => {
         </div>
       </div>
 
-      {/* Ready to Draw Section - Full Width */}
-      <div className="mt-4">
+      {/* Ready to Draw and Winners Section - Side by Side */}
+      <div className="mt-4 grid grid-cols-1 lg:grid-cols-2 gap-4">
+        {/* Ready to Draw */}
         <div className="bg-gradient-to-br from-zinc-800/50 to-zinc-900/50 rounded-lg p-4 border border-zinc-700">
           <div className="text-center">
             <h4 className="text-sm font-bold text-zinc-100 mb-3 font-mono">READY_TO_DRAW</h4>
@@ -1785,6 +1774,62 @@ const PunkableRaffleSystem = () => {
                 </div>
               </button>
             </div>
+          </div>
+        </div>
+
+        {/* Winners */}
+        <div className="bg-gradient-to-br from-zinc-800/50 to-zinc-900/50 rounded-lg p-4 border border-zinc-700">
+          <div className="flex items-center justify-between mb-3">
+            <h4 className="text-sm font-bold text-zinc-100 flex items-center gap-2">
+              <span className="text-pink-500">🎉</span> Winners ({winners.length})
+            </h4>
+            {winners.length > 0 && (
+              <button
+                onClick={() => setCurrentView("results")}
+                className="group relative overflow-hidden border-2 border-green-500 bg-gradient-to-r from-green-900/30 to-emerald-900/30 px-2 py-1 text-green-400 hover:from-green-800/40 hover:to-emerald-800/40 transition-all duration-300 hover:scale-105 font-mono font-bold text-xs rounded-lg animate-pulse"
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 to-emerald-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="relative flex items-center gap-1">
+                  <span>🏆</span>
+                  <span>VIEW</span>
+                </div>
+              </button>
+            )}
+          </div>
+          <div className="space-y-1 h-40 overflow-y-auto border border-zinc-700 rounded-lg p-2 bg-zinc-800/30 scrollbar-thin scrollbar-thumb-zinc-600 scrollbar-track-zinc-800">
+            {winners.length === 0 ? (
+              <div className="text-center text-zinc-500 py-4">
+                <span className="text-2xl mb-2 block">🎉</span>
+                <p className="text-xs">No winners yet</p>
+              </div>
+            ) : (
+              winners.map((win) => (
+                <motion.div
+                  key={win.id}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="bg-zinc-800/50 p-2 rounded border-l-4"
+                  style={{ borderLeftColor: win.participant_color }}
+                >
+                  <div className="flex items-center gap-1 mb-1">
+                    <div
+                      className="w-4 h-4 rounded-full shadow-sm flex items-center justify-center"
+                      style={{ backgroundColor: win.participant_color }}
+                    >
+                      <ParticipantIcon
+                        participantId={win.participant_id}
+                        participantName={win.participant_name}
+                        className="w-2 h-2 text-white"
+                      />
+                    </div>
+                    <span className="font-semibold text-zinc-100 text-xs">{win.participant_name}</span>
+                  </div>
+                  <span className="text-xs font-bold text-pink-400 bg-pink-500/20 px-1 py-0.5 rounded-full">
+                    {win.prize_name}
+                  </span>
+                </motion.div>
+              ))
+            )}
           </div>
         </div>
       </div>
@@ -2082,6 +2127,18 @@ const PunkableRaffleSystem = () => {
         onClose={() => setShowSavedPrizes(false)}
         isOpen={showSavedPrizes}
       />
+
+      {/* LocalStorage Warning - Full Width */}
+      <div className="mt-6 p-4 bg-yellow-900/20 border border-yellow-500/30 rounded-lg">
+        <div className="flex items-start gap-2">
+          <span className="text-yellow-400 text-sm">⚠️</span>
+          <div className="text-sm text-yellow-300">
+            <p className="font-semibold mb-2">ATTENTION:</p>
+            <p>Your raffles are saved in your browser's localStorage. If you clear cookies or use a different browser, your data will be lost.</p>
+            <p className="mt-2 text-yellow-400 font-semibold">Consider exporting your raffles as backup!</p>
+          </div>
+        </div>
+      </div>
     </section>
   )
 }
