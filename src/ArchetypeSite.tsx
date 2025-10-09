@@ -1839,15 +1839,15 @@ function ArchetypeExclusivePrizesMuseum() {
   }, []);
 
   const currentImage = ARCHETYPE_EXCLUSIVE_PRIZES[currentIndex];
-  const currentSourceIndex = getSafeSourceIndex(
-    currentImage,
-    imageSourceIndices[currentIndex] ?? 0
-  );
-  const resolvedMainSrc = resolvePrizeImageSrc(currentImage, currentSourceIndex);
+  // const currentSourceIndex = getSafeSourceIndex(
+  //   currentImage,
+  //   imageSourceIndices[currentIndex] ?? 0
+  // );
+  // const resolvedMainSrc = resolvePrizeImageSrc(currentImage, currentSourceIndex);
   const mainImageDimensions = { width: 300, height: 200, fontSize: 12 };
-  const currentImageSrc =
-    resolvedMainSrc ??
-    createMuseumPlaceholder(currentImage.title, mainImageDimensions);
+  // const currentImageSrc =
+  //   resolvedMainSrc ??
+  //   createMuseumPlaceholder(currentImage.title, mainImageDimensions);
 
   const handleMuseumImageError = useCallback(
     (
@@ -2029,7 +2029,7 @@ function ArchetypeExclusivePrizesMuseum() {
 
                   {/* Image */}
                   <img
-                    src={currentImage.url}
+                    src={currentImage.imageUrl}
                     alt={currentImage.title}
                     className={`max-w-full max-h-[150px] object-contain drop-shadow-lg ${
                       currentImage.rarity === 'LEGENDARY' 
