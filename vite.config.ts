@@ -6,7 +6,18 @@ export default defineConfig({
   base: '/',
   build: {
     outDir: 'dist',
-    assetsDir: 'assets'
+    assetsDir: 'assets',
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          motion: ['framer-motion'],
+          confetti: ['canvas-confetti'],
+          utils: ['html2canvas', 'lucide-react']
+        }
+      }
+    },
+    chunkSizeWarningLimit: 1000
   },
   resolve: {
     extensions: ['.js', '.jsx', '.ts', '.tsx']

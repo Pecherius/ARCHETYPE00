@@ -1,11 +1,13 @@
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback, lazy, Suspense } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./components/ui/dialog";
 // Tooltip components removed - using custom implementation
 import { motion, useAnimation } from "framer-motion";
 // Icons removed - not used in current implementation
-import PunkableRaffleSystem from "./components/PunkableRaffleSystem";
 import { RaffleLanguageProvider } from "./hooks/use-raffle-language";
 import html2canvas from "html2canvas";
+
+// Lazy load heavy components
+const PunkableRaffleSystem = lazy(() => import("./components/PunkableRaffleSystem"));
 
 // 🌐 LUKSO_INTEGRATION: Basic Universal Profile detection
 // Reads data from browser extension without changing the core lore
@@ -182,7 +184,7 @@ const ARCHETYPE_EXCLUSIVE_PRIZES = [
   {
     id: 7,
     title: "Dutch Merchant",
-    url: "https://bafybeigwd73udesv3gl62h47h4ygf7iyu3nyu2lw5xpoctulqrzwt6cjxq.ipfs.dweb.link/7.%20Dutch%20Merchant%20(Tel%C3%A9fono).png",
+    url: "https://bafybeiegkw7xqryohq7pnqycdokhsygnnpqapuxdmvt3yy27qz5ibphhta.ipfs.dweb.link/7.%20Dutch%20Merchant.png",
     description: "Exclusive Fluffy Dynasty reward for ARCHETYPE_00 holders - Master trader in the exclusive digital marketplace of consciousness",
     rarity: "COMMON",
     value: "Essential Prize"
@@ -190,7 +192,7 @@ const ARCHETYPE_EXCLUSIVE_PRIZES = [
   {
     id: 10,
     title: "Medieval Monk",
-    url: "https://bafybeigwd73udesv3gl62h47h4ygf7iyu3nyu2lw5xpoctulqrzwt6cjxq.ipfs.dweb.link/10.%20Medieval%20Monk%20(Tel%C3%A9fono).png",
+    url: "https://bafybeiegkw7xqryohq7pnqycdokhsygnnpqapuxdmvt3yy27qz5ibphhta.ipfs.dweb.link/10.%20Medieval%20Monk.png",
     description: "Exclusive Fluffy Dynasty reward for ARCHETYPE_00 holders - Sacred digital consciousness preserved in eternal matrix",
     rarity: "COMMON",
     value: "Foundational Prize"
@@ -198,7 +200,7 @@ const ARCHETYPE_EXCLUSIVE_PRIZES = [
   {
     id: 20,
     title: "Gothic Darkness",
-    url: "https://bafybeigwd73udesv3gl62h47h4ygf7iyu3nyu2lw5xpoctulqrzwt6cjxq.ipfs.dweb.link/20.%20Gothic%20Darkness%20(Tel%C3%A9fono).png",
+    url: "https://bafybeiegkw7xqryohq7pnqycdokhsygnnpqapuxdmvt3yy27qz5ibphhta.ipfs.dweb.link/20.%20Gothic%20Darkness.png",
     description: "Exclusive Fluffy Dynasty reward for ARCHETYPE_00 holders - Eternal consciousness transcending digital mortality",
     rarity: "RARE",
     value: "Valuable Prize"
@@ -206,7 +208,7 @@ const ARCHETYPE_EXCLUSIVE_PRIZES = [
   {
     id: 22,
     title: "Futurist Motion",
-    url: "https://bafybeigwd73udesv3gl62h47h4ygf7iyu3nyu2lw5xpoctulqrzwt6cjxq.ipfs.dweb.link/22.%20Futurist%20Motion%20(Tel%C3%A9fono).png",
+    url: "https://bafybeiegkw7xqryohq7pnqycdokhsygnnpqapuxdmvt3yy27qz5ibphhta.ipfs.dweb.link/22.%20Futurist%20Motion.png",
     description: "Exclusive Fluffy Dynasty reward for ARCHETYPE_00 holders - Quantum consciousness flowing through infinite dimensions",
     rarity: "RARE",
     value: "Precious Prize"
@@ -214,7 +216,7 @@ const ARCHETYPE_EXCLUSIVE_PRIZES = [
   {
     id: 27,
     title: "Cyberpunk Emperor",
-    url: "https://bafybeigwd73udesv3gl62h47h4ygf7iyu3nyu2lw5xpoctulqrzwt6cjxq.ipfs.dweb.link/27.%20Cyberpunk%20Emperor%20(Tel%C3%A9fono).png",
+    url: "https://bafybeiegkw7xqryohq7pnqycdokhsygnnpqapuxdmvt3yy27qz5ibphhta.ipfs.dweb.link/27.%20Cyberpunk%20Emperor.png",
     description: "Exclusive Fluffy Dynasty reward for ARCHETYPE_00 holders - Digital sovereignty reigning over the new world order",
     rarity: "LEGENDARY",
     value: "Empire's Prize"
@@ -222,7 +224,7 @@ const ARCHETYPE_EXCLUSIVE_PRIZES = [
   {
     id: 31,
     title: "Eternal Relic",
-    url: "https://bafybeigwd73udesv3gl62h47h4ygf7iyu3nyu2lw5xpoctulqrzwt6cjxq.ipfs.dweb.link/31.%20Eternal%20Relic%20(Tel%C3%A9fono).png",
+    url: "https://bafybeiegkw7xqryohq7pnqycdokhsygnnpqapuxdmvt3yy27qz5ibphhta.ipfs.dweb.link/31.%20Eternal%20Relic.png",
     description: "Exclusive Fluffy Dynasty reward for ARCHETYPE_00 holders - Timeless artifact containing the essence of digital immortality",
     rarity: "LEGENDARY",
     value: "Eternal Prize"
@@ -3027,7 +3029,14 @@ export default function ArchetypeSite(){
         {/* PUNKABLE ETHEREAL RAFFLE SYSTEM */}
         <section data-section="raffle">
           <RaffleLanguageProvider>
-            <PunkableRaffleSystem />
+            <Suspense fallback={
+              <div className="flex items-center justify-center p-8">
+                <div className="w-8 h-8 border-4 border-pink-500 border-t-transparent rounded-full animate-spin"></div>
+                <span className="ml-3 text-pink-400 font-mono">Loading P.E.R.S...</span>
+              </div>
+            }>
+              <PunkableRaffleSystem />
+            </Suspense>
           </RaffleLanguageProvider>
         </section>
 
