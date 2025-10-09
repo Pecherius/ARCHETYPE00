@@ -1649,7 +1649,7 @@ const PunkableRaffleSystem = () => {
               </div>
 
               {/* Add Prize Form */}
-              <div className="mt-4 bg-gradient-to-br from-yellow-900/30 to-amber-900/30 p-3 rounded-lg border border-yellow-700 flex-1 flex flex-col">
+              <div className="bg-gradient-to-br from-yellow-900/30 to-amber-900/30 p-3 rounded-lg border border-yellow-700 flex-1 flex flex-col">
                 <div className="flex items-center justify-between mb-3">
                   <h5 className="text-sm font-semibold text-zinc-300 font-mono">Add New Prize</h5>
                   <div className="flex gap-2">
