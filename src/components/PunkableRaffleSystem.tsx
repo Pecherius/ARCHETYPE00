@@ -1363,7 +1363,7 @@ const PunkableRaffleSystem = () => {
         </AnimatePresence>
 
         {/* Main Content Grid */}
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           {/* Participants Column */}
           <div className="space-y-2">
             <h4 className="text-sm font-bold text-zinc-100 flex items-center gap-2">
@@ -1536,69 +1536,6 @@ const PunkableRaffleSystem = () => {
             </div>
           </div>
 
-          {/* Main Selection Area */}
-          <div className="flex flex-col items-center justify-center order-2 xl:order-1">
-            <div data-section="results" className="bg-gradient-to-br from-zinc-800/50 to-zinc-900/50 rounded-2xl p-8 border border-zinc-700 w-full text-center">
-              <AnimatePresence mode="wait">
-                {currentParticipant ? (
-                  <motion.div
-                    key={currentParticipant.id}
-                    initial={{ opacity: 0, scale: 0.8, y: 20 }}
-                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.8, y: -20 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <div
-                      className="w-24 h-24 rounded-full mx-auto mb-4 shadow-2xl border-4 border-zinc-600 flex items-center justify-center"
-                      style={{
-                        backgroundColor: currentParticipant.color,
-                        boxShadow: `0 20px 40px ${currentParticipant.color}40`,
-                      }}
-                    >
-                      <ParticipantIcon
-                        participantId={currentParticipant.id}
-                        participantName={currentParticipant.name}
-                        className="w-12 h-12 text-white"
-                      />
-                    </div>
-                    <h3 className="text-xl font-bold text-zinc-100 mb-2 font-mono">{currentParticipant.name}</h3>
-                    <p className="text-sm text-pink-400 bg-pink-500/20 px-4 py-2 rounded-full font-mono">
-                      {currentParticipant.tickets} tickets
-                    </p>
-                  </motion.div>
-                ) : (
-                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                    <div className="w-24 h-24 rounded-full mx-auto mb-4 bg-gradient-to-br from-pink-500/20 to-purple-500/20 flex items-center justify-center">
-                      <span className="text-5xl">🎲</span>
-                    </div>
-                    <h3 className="text-lg font-bold text-zinc-400 mb-2 font-mono">READY_TO_DRAW</h3>
-                    <p className="text-zinc-500">Click to select winner</p>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-
-              <button
-                onClick={selectWinner}
-                disabled={!canSelectWinner}
-                className="group relative overflow-hidden border-2 border-pink-500 bg-gradient-to-r from-pink-900/30 to-purple-900/30 px-6 py-3 text-pink-400 hover:from-pink-800/40 hover:to-purple-800/40 transition-all duration-300 hover:scale-105 font-mono font-bold text-sm rounded-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
-              >
-                <div className="absolute inset-0 bg-gradient-to-r from-pink-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                <div className="relative flex items-center justify-center gap-2">
-                  {selecting ? (
-                    <>
-                      <div className="w-4 h-4 border-2 border-pink-400 border-t-transparent rounded-full animate-spin" />
-                      <span>SELECTING...</span>
-                    </>
-                  ) : (
-                    <>
-                      <span>🎲</span>
-                      <span>SELECT_WINNER</span>
-                    </>
-                  )}
-                </div>
-              </button>
-            </div>
-          </div>
 
           {/* Prizes and Winners Column */}
           <div className="space-y-2 order-1 xl:order-2">
@@ -1778,6 +1715,75 @@ const PunkableRaffleSystem = () => {
                   ))
                 )}
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Ready to Draw Section - Full Width */}
+      <div className="mt-4">
+        <div className="bg-gradient-to-br from-zinc-800/50 to-zinc-900/50 rounded-lg p-6 border border-zinc-700">
+          <div className="text-center">
+            <h4 className="text-lg font-bold text-zinc-100 mb-4 font-mono">READY_TO_DRAW</h4>
+            <div data-section="results" className="flex flex-col items-center justify-center min-h-[200px]">
+              <AnimatePresence mode="wait">
+                {currentParticipant ? (
+                  <motion.div
+                    key={currentParticipant.id}
+                    initial={{ opacity: 0, scale: 0.8, y: 20 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.8, y: -20 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <div
+                      className="w-20 h-20 rounded-full mx-auto mb-3 shadow-2xl border-4 border-zinc-600 flex items-center justify-center"
+                      style={{
+                        backgroundColor: currentParticipant.color,
+                        boxShadow: `0 20px 40px ${currentParticipant.color}40`,
+                      }}
+                    >
+                      <ParticipantIcon
+                        participantId={currentParticipant.id}
+                        participantName={currentParticipant.name}
+                        className="w-10 h-10 text-white"
+                      />
+                    </div>
+                    <h3 className="text-xl font-bold text-zinc-100 mb-2 font-mono">{currentParticipant.name}</h3>
+                    <p className="text-sm text-pink-400 bg-pink-500/20 px-4 py-2 rounded-full font-mono">
+                      {currentParticipant.tickets} tickets
+                    </p>
+                  </motion.div>
+                ) : (
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                    <div className="w-20 h-20 rounded-full mx-auto mb-3 bg-gradient-to-br from-pink-500/20 to-purple-500/20 flex items-center justify-center">
+                      <span className="text-3xl">🎲</span>
+                    </div>
+                    <h3 className="text-xl font-bold text-zinc-400 mb-2 font-mono">SELECT_WINNER</h3>
+                    <p className="text-sm text-zinc-500">Click to select winner</p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              <button
+                onClick={selectWinner}
+                disabled={!canSelectWinner}
+                className="group relative overflow-hidden border-2 border-pink-500 bg-gradient-to-r from-pink-900/30 to-purple-900/30 px-6 py-3 text-pink-400 hover:from-pink-800/40 hover:to-purple-800/40 transition-all duration-300 hover:scale-105 font-mono font-bold text-sm rounded-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none mt-4"
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-pink-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="relative flex items-center justify-center gap-2">
+                  {selecting ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-pink-400 border-t-transparent rounded-full animate-spin" />
+                      <span>SELECTING...</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>🎲</span>
+                      <span>SELECT_WINNER</span>
+                    </>
+                  )}
+                </div>
+              </button>
             </div>
           </div>
         </div>
