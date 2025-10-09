@@ -180,11 +180,50 @@ const QUARANTINE_IMAGES = {
 };
 
 // 🎨 ARCHETYPE_00_EXCLUSIVE_PRIZES: Private collection of Fluffy Dynasty rewards for ARCHETYPE_00 holders
+const IPFS_GATEWAYS = [
+  "https://ipfs.io/ipfs/",
+  "https://cloudflare-ipfs.com/ipfs/",
+  "https://nftstorage.link/ipfs/",
+  "https://w3s.link/ipfs/"
+];
+
+const buildIpfsUrl = (cid: string, filename: string, gatewayIndex = 0) =>
+  `${IPFS_GATEWAYS[gatewayIndex]}${cid}/${encodeURIComponent(filename)}`;
+
+const toBase64 = (value: string) => {
+  if (typeof btoa === "function") {
+    return btoa(value);
+  }
+
+  if (typeof globalThis !== "undefined") {
+    const maybeBuffer = (globalThis as {
+      Buffer?: {
+        from(input: string, encoding: string): { toString(encoding: string): string };
+      };
+    }).Buffer;
+
+    if (maybeBuffer) {
+      return maybeBuffer.from(value, "utf-8").toString("base64");
+    }
+  }
+
+  return value;
+};
+
+const createMuseumPlaceholder = (
+  label: string,
+  { width, height, fontSize }: { width: number; height: number; fontSize: number }
+) => {
+  const svg = `\n    <svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">\n      <defs>\n        <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">\n          <stop offset="0%" stop-color="#1f1f1f"/>\n          <stop offset="100%" stop-color="#3b1d0f"/>\n        </linearGradient>\n      </defs>\n      <rect width="100%" height="100%" fill="url(#gradient)"/>\n      <text x="50%" y="50%" font-family="monospace" font-size="${fontSize}" fill="#ff6600" text-anchor="middle" dy=".3em">\n        ${label}\n      </text>\n    </svg>\n  `;
+  return `data:image/svg+xml;base64,${toBase64(svg)}`;
+};
+
 const ARCHETYPE_EXCLUSIVE_PRIZES = [
   {
     id: 7,
     title: "Dutch Merchant",
-    url: "https://bafybeiegkw7xqryohq7pnqycdokhsygnnpqapuxdmvt3yy27qz5ibphhta.ipfs.dweb.link/7.%20Dutch%20Merchant.png",
+    cid: "bafybeiegkw7xqryohq7pnqycdokhsygnnpqapuxdmvt3yy27qz5ibphhta",
+    filename: "7. Dutch Merchant.png",
     description: "Exclusive Fluffy Dynasty reward for ARCHETYPE_00 holders - Master trader in the exclusive digital marketplace of consciousness",
     rarity: "COMMON",
     value: "Essential Prize"
@@ -192,7 +231,8 @@ const ARCHETYPE_EXCLUSIVE_PRIZES = [
   {
     id: 10,
     title: "Medieval Monk",
-    url: "https://bafybeiegkw7xqryohq7pnqycdokhsygnnpqapuxdmvt3yy27qz5ibphhta.ipfs.dweb.link/10.%20Medieval%20Monk.png",
+    cid: "bafybeiegkw7xqryohq7pnqycdokhsygnnpqapuxdmvt3yy27qz5ibphhta",
+    filename: "10. Medieval Monk.png",
     description: "Exclusive Fluffy Dynasty reward for ARCHETYPE_00 holders - Sacred digital consciousness preserved in eternal matrix",
     rarity: "COMMON",
     value: "Foundational Prize"
@@ -200,7 +240,8 @@ const ARCHETYPE_EXCLUSIVE_PRIZES = [
   {
     id: 20,
     title: "Gothic Darkness",
-    url: "https://bafybeiegkw7xqryohq7pnqycdokhsygnnpqapuxdmvt3yy27qz5ibphhta.ipfs.dweb.link/20.%20Gothic%20Darkness.png",
+    cid: "bafybeiegkw7xqryohq7pnqycdokhsygnnpqapuxdmvt3yy27qz5ibphhta",
+    filename: "20. Gothic Darkness.png",
     description: "Exclusive Fluffy Dynasty reward for ARCHETYPE_00 holders - Eternal consciousness transcending digital mortality",
     rarity: "RARE",
     value: "Valuable Prize"
@@ -208,7 +249,8 @@ const ARCHETYPE_EXCLUSIVE_PRIZES = [
   {
     id: 22,
     title: "Futurist Motion",
-    url: "https://bafybeiegkw7xqryohq7pnqycdokhsygnnpqapuxdmvt3yy27qz5ibphhta.ipfs.dweb.link/22.%20Futurist%20Motion.png",
+    cid: "bafybeiegkw7xqryohq7pnqycdokhsygnnpqapuxdmvt3yy27qz5ibphhta",
+    filename: "22. Futurist Motion.png",
     description: "Exclusive Fluffy Dynasty reward for ARCHETYPE_00 holders - Quantum consciousness flowing through infinite dimensions",
     rarity: "RARE",
     value: "Precious Prize"
@@ -216,7 +258,8 @@ const ARCHETYPE_EXCLUSIVE_PRIZES = [
   {
     id: 27,
     title: "Cyberpunk Emperor",
-    url: "https://bafybeiegkw7xqryohq7pnqycdokhsygnnpqapuxdmvt3yy27qz5ibphhta.ipfs.dweb.link/27.%20Cyberpunk%20Emperor.png",
+    cid: "bafybeiegkw7xqryohq7pnqycdokhsygnnpqapuxdmvt3yy27qz5ibphhta",
+    filename: "27. Cyberpunk Emperor.png",
     description: "Exclusive Fluffy Dynasty reward for ARCHETYPE_00 holders - Digital sovereignty reigning over the new world order",
     rarity: "LEGENDARY",
     value: "Empire's Prize"
@@ -224,7 +267,8 @@ const ARCHETYPE_EXCLUSIVE_PRIZES = [
   {
     id: 31,
     title: "Eternal Relic",
-    url: "https://bafybeiegkw7xqryohq7pnqycdokhsygnnpqapuxdmvt3yy27qz5ibphhta.ipfs.dweb.link/31.%20Eternal%20Relic.png",
+    cid: "bafybeiegkw7xqryohq7pnqycdokhsygnnpqapuxdmvt3yy27qz5ibphhta",
+    filename: "31. Eternal Relic.png",
     description: "Exclusive Fluffy Dynasty reward for ARCHETYPE_00 holders - Timeless artifact containing the essence of digital immortality",
     rarity: "LEGENDARY",
     value: "Eternal Prize"
@@ -1671,6 +1715,9 @@ function ArchetypeExclusivePrizesMuseum() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isAutoPlaying, setIsAutoPlaying] = useState(false);
   const autoPlayRef = useRef<number | null>(null);
+  const [gatewayIndices, setGatewayIndices] = useState<number[]>(() =>
+    Array(ARCHETYPE_EXCLUSIVE_PRIZES.length).fill(0)
+  );
 
   // Simplified rarity color functions
   const getRarityStyle = (rarity: string) => {
@@ -1772,6 +1819,37 @@ function ArchetypeExclusivePrizesMuseum() {
   }, []);
 
   const currentImage = ARCHETYPE_EXCLUSIVE_PRIZES[currentIndex];
+  const currentGatewayIndex = gatewayIndices[currentIndex] ?? 0;
+  const currentImageSrc = buildIpfsUrl(
+    currentImage.cid,
+    currentImage.filename,
+    currentGatewayIndex
+  );
+
+  const handleMuseumImageError = useCallback(
+    (
+      imageIndex: number,
+      target: HTMLImageElement,
+      dimensions: { width: number; height: number; fontSize: number }
+    ) => {
+      setGatewayIndices(prev => {
+        const next = [...prev];
+        const activeGateway = prev[imageIndex] ?? 0;
+
+        if (activeGateway < IPFS_GATEWAYS.length - 1) {
+          next[imageIndex] = activeGateway + 1;
+          return next;
+        }
+
+        target.src = createMuseumPlaceholder(
+          ARCHETYPE_EXCLUSIVE_PRIZES[imageIndex].title,
+          dimensions
+        );
+        return prev;
+      });
+    },
+    []
+  );
 
   return (
     <div className="relative w-full">
@@ -1924,29 +2002,28 @@ function ArchetypeExclusivePrizesMuseum() {
 
                   {/* Image */}
                   <img
-                    src={currentImage.url}
+                    src={currentImageSrc}
                     alt={currentImage.title}
+                    loading="lazy"
+                    referrerPolicy="no-referrer"
                     className={`max-w-full max-h-[150px] object-contain drop-shadow-lg ${
-                      currentImage.rarity === 'LEGENDARY' 
-                        ? 'animate-pulse' 
+                      currentImage.rarity === 'LEGENDARY'
+                        ? 'animate-pulse'
                         : ''
                     }`}
-                    style={{ 
-                      filter: currentImage.rarity === 'LEGENDARY' 
-                        ? 'contrast(1.1) saturate(1.2) brightness(1.1) drop-shadow(0 0 10px rgba(255, 215, 0, 0.3))' 
+                    style={{
+                      filter: currentImage.rarity === 'LEGENDARY'
+                        ? 'contrast(1.1) saturate(1.2) brightness(1.1) drop-shadow(0 0 10px rgba(255, 215, 0, 0.3))'
                         : 'contrast(1.05) saturate(1.1) brightness(1.02)',
                       imageRendering: 'auto'
                     }}
-                    onError={(e) => {
-                      e.currentTarget.src = `data:image/svg+xml;base64,${btoa(`
-                        <svg width="300" height="200" xmlns="http://www.w3.org/2000/svg">
-                          <rect width="100%" height="100%" fill="#1a1a1a"/>
-                          <text x="50%" y="50%" font-family="monospace" font-size="12" fill="#ff6600" text-anchor="middle" dy=".3em">
-                            ${currentImage.title}
-                          </text>
-                        </svg>
-                      `)}`;
-                    }}
+                    onError={(e) =>
+                      handleMuseumImageError(currentIndex, e.currentTarget, {
+                        width: 300,
+                        height: 200,
+                        fontSize: 12
+                      })
+                    }
                   />
                 </div>
               </motion.div>
@@ -1987,28 +2064,27 @@ function ArchetypeExclusivePrizesMuseum() {
                     <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/20 via-transparent to-amber-500/20 rounded-md animate-pulse"></div>
                   )}
                   <img
-                    src={image.url}
+                    src={buildIpfsUrl(image.cid, image.filename, gatewayIndices[index] ?? 0)}
                     alt={image.title}
+                    loading="lazy"
+                    referrerPolicy="no-referrer"
                     className={`w-full h-full object-cover rounded-md ${
-                      image.rarity === 'LEGENDARY' 
-                        ? 'animate-pulse' 
+                      image.rarity === 'LEGENDARY'
+                        ? 'animate-pulse'
                         : ''
                     }`}
                     style={{
-                      filter: image.rarity === 'LEGENDARY' 
-                        ? 'contrast(1.1) saturate(1.2) brightness(1.1)' 
+                      filter: image.rarity === 'LEGENDARY'
+                        ? 'contrast(1.1) saturate(1.2) brightness(1.1)'
                         : 'none'
                     }}
-                    onError={(e) => {
-                      e.currentTarget.src = `data:image/svg+xml;base64,${btoa(`
-                        <svg width="48" height="48" xmlns="http://www.w3.org/2000/svg">
-                          <rect width="100%" height="100%" fill="#1a1a1a"/>
-                          <text x="50%" y="50%" font-family="monospace" font-size="6" fill="#ff6600" text-anchor="middle" dy=".3em">
-                            ${image.id}
-                          </text>
-                        </svg>
-                      `)}`;
-                    }}
+                    onError={(e) =>
+                      handleMuseumImageError(index, e.currentTarget, {
+                        width: 48,
+                        height: 48,
+                        fontSize: 6
+                      })
+                    }
                   />
                 </button>
               ))}
