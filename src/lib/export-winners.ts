@@ -174,7 +174,7 @@ function createManualCanvas(winnerData: WinnerExport): void {
     let prizeX = 100
     let prizeY = yPosition + 60
     
-    prizes.forEach((prize, prizeIndex) => {
+    prizes.forEach((prize: string) => {
       // Check if we need to wrap to next line
       if (prizeX > canvas.width - 200) {
         prizeX = 100

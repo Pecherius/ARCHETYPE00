@@ -857,7 +857,7 @@ const PunkableRaffleSystem = () => {
               <span className="text-red-500">P.E.R.S.</span>
             </h3>
             <p className="text-xs text-zinc-400 font-mono mb-2">Punkable Ethereal Raffle System</p>
-            <div className="max-w-2xl mx-auto space-y-2">
+            <div className="max-w-6xl mx-auto space-y-2">
               <p className="text-zinc-300 text-sm leading-relaxed px-2 md:px-0">
                 A transparent raffle system that uses <span className="text-green-400 font-semibold">weighted selection</span> based on participant data. 
                 Unlike simple random generators, P.E.R.S. considers <span className="text-pink-400 font-semibold">ticket counts and participation history</span> to ensure fair distribution.
@@ -886,9 +886,9 @@ const PunkableRaffleSystem = () => {
                 </div>
 
                 {/* Right side - 3 feature cards stacked */}
-                <div className="space-y-2">
+                <div className="space-y-2 flex flex-col h-full">
                   {/* WEIGHTED_SELECTION */}
-                  <div className="group relative overflow-hidden border border-pink-500/30 rounded-lg bg-gradient-to-br from-pink-500/10 to-purple-500/10 p-2 backdrop-blur-sm hover:border-pink-400/50 transition-all duration-300">
+                  <div className="group relative overflow-hidden border border-pink-500/30 rounded-lg bg-gradient-to-br from-pink-500/10 to-purple-500/10 p-2 backdrop-blur-sm hover:border-pink-400/50 transition-all duration-300 flex-1 flex flex-col justify-center">
                     <div className="absolute inset-0 bg-gradient-to-br from-pink-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     <div className="relative">
                       <div className="flex items-center gap-1 mb-1">
