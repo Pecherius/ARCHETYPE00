@@ -1356,9 +1356,9 @@ const PunkableRaffleSystem = () => {
         </AnimatePresence>
 
         {/* Main Content Grid - 3 Columns */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
           {/* Left Column - Participants */}
-          <div className="lg:col-span-3 space-y-2">
+          <div className="lg:col-span-3 space-y-2 flex flex-col">
             <h4 className="text-sm font-bold text-zinc-100 flex items-center gap-2">
               <span className="text-blue-500">👥</span> Participants ({participants.length})
             </h4>
@@ -1453,7 +1453,7 @@ const PunkableRaffleSystem = () => {
             </div>
 
             {/* Add Participant Form */}
-            <div className="bg-zinc-800/30 p-3 rounded border border-zinc-700 h-[160px] flex flex-col">
+            <div className="bg-zinc-800/30 p-3 rounded border border-zinc-700 flex-1 flex flex-col">
               <div className="flex items-center justify-between mb-3">
                 <h5 className="text-sm font-semibold text-zinc-300">Add New Participant</h5>
                   <div className="flex gap-2">
@@ -1588,7 +1588,7 @@ const PunkableRaffleSystem = () => {
 
 
           {/* Right Column - Prizes */}
-          <div className="lg:col-span-3 space-y-2">
+          <div className="lg:col-span-3 space-y-2 flex flex-col">
             {/* Prizes */}
             <div>
               <h4 className="text-sm font-bold text-zinc-100 flex items-center gap-2 mb-2">
@@ -1651,7 +1651,7 @@ const PunkableRaffleSystem = () => {
               </div>
 
               {/* Add Prize Form */}
-              <div className="mt-4 bg-gradient-to-br from-yellow-900/30 to-amber-900/30 p-3 rounded-lg border border-yellow-700 h-[160px] flex flex-col">
+              <div className="mt-4 bg-gradient-to-br from-yellow-900/30 to-amber-900/30 p-3 rounded-lg border border-yellow-700 flex-1 flex flex-col">
                 <div className="flex items-center justify-between mb-3">
                   <h5 className="text-sm font-semibold text-zinc-300">Add New Prize</h5>
                   <div className="flex gap-2">
