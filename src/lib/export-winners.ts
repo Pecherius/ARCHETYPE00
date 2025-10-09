@@ -44,12 +44,17 @@ function createManualCanvas(winnerData: WinnerExport): void {
   const ctx = canvas.getContext('2d')
   if (!ctx) return
 
-  // Calculate dynamic height based on number of winners
+  // Calculate dynamic dimensions based on number of winners
   const baseHeight = 400
-  const winnerHeight = 140
-  const totalHeight = Math.max(baseHeight + (winners.length * winnerHeight), 600)
+  const winnersPerRow = 3 // Winners per row
+  const winnerWidth = 380 // Width per winner card
+  const winnerHeight = 200 // Height per winner card
   
-  canvas.width = 1200
+  const rows = Math.ceil(winners.length / winnersPerRow)
+  const totalWidth = Math.max(1400, winnersPerRow * winnerWidth + 100) // Increased minimum width
+  const totalHeight = Math.max(600, baseHeight + (rows * winnerHeight) + 50)
+  
+  canvas.width = totalWidth
   canvas.height = totalHeight
 
   // Background with gradient
@@ -112,91 +117,99 @@ function createManualCanvas(winnerData: WinnerExport): void {
   ctx.textAlign = 'left'
   ctx.fillText('🏆 WINNERS:', 70, 225)
 
-  // Draw grouped winners with enhanced UI
-  let yPosition = 280
+  // Draw winners in grid layout
+  let currentRow = 0
+  let currentCol = 0
+  
   winners.forEach((winner: any, index) => {
-    if (yPosition > canvas.height - 100) return
-
+    const x = 50 + (currentCol * winnerWidth)
+    const y = 280 + (currentRow * winnerHeight)
+    
     // Winner card background with gradient
-    const cardGradient = ctx.createLinearGradient(50, yPosition - 40, 50, yPosition + 100)
+    const cardGradient = ctx.createLinearGradient(x, y, x, y + winnerHeight - 20)
     cardGradient.addColorStop(0, '#1a1a1a')
     cardGradient.addColorStop(1, '#2a2a2a')
     ctx.fillStyle = cardGradient
-    ctx.fillRect(50, yPosition - 40, canvas.width - 100, 100)
+    ctx.fillRect(x, y, winnerWidth - 20, winnerHeight - 20)
 
     // Winner card border with glow effect
     ctx.strokeStyle = '#ff69b4'
     ctx.lineWidth = 2
-    ctx.strokeRect(50, yPosition - 40, canvas.width - 100, 100)
+    ctx.strokeRect(x, y, winnerWidth - 20, winnerHeight - 20)
 
     // Winner number badge
     ctx.fillStyle = '#ff69b4'
-    ctx.fillRect(60, yPosition - 35, 30, 25)
+    ctx.fillRect(x + 10, y + 10, 30, 25)
     ctx.fillStyle = '#000000'
     ctx.font = 'bold 16px monospace'
     ctx.textAlign = 'center'
-    ctx.fillText(`${index + 1}`, 75, yPosition - 18)
+    ctx.fillText(`${index + 1}`, x + 25, y + 28)
 
     // Winner name with UP address inline
     ctx.fillStyle = '#ffffff'
-    ctx.font = 'bold 20px monospace'
+    ctx.font = 'bold 18px monospace'
     ctx.textAlign = 'left'
     
     // Calculate name width to position UP address
     const nameWidth = ctx.measureText(winner.participantName).width
-    const upStartX = 100 + nameWidth + 10 // 10px space after name
+    const upStartX = x + 50 + nameWidth + 10 // 10px space after name
     
     // Draw name
-    ctx.fillText(winner.participantName, 100, yPosition - 10)
+    ctx.fillText(winner.participantName, x + 50, y + 30)
     
     // Draw UP address inline
-    const truncatedUp = winner.participantUpAddress.length > 20 
-      ? winner.participantUpAddress.substring(0, 20) + '...'
+    const truncatedUp = winner.participantUpAddress.length > 15 
+      ? winner.participantUpAddress.substring(0, 15) + '...'
       : winner.participantUpAddress
     ctx.fillStyle = '#71717a'
     ctx.font = '12px monospace'
-    ctx.fillText(`📍 ${truncatedUp}`, upStartX, yPosition - 10)
+    ctx.fillText(`📍 ${truncatedUp}`, upStartX, y + 30)
 
     // Ticket count badge
     ctx.fillStyle = '#a1a1aa'
-    ctx.fillRect(100, yPosition + 5, 120, 20)
+    ctx.fillRect(x + 50, y + 45, 120, 20)
     ctx.fillStyle = '#000000'
     ctx.font = 'bold 12px monospace'
-    ctx.fillText(`${winner.totalTickets} tickets`, 110, yPosition + 18)
+    ctx.fillText(`${winner.totalTickets} tickets`, x + 60, y + 58)
 
     // Prizes won section - horizontal layout
     ctx.fillStyle = '#00ff88'
-    ctx.font = 'bold 16px monospace'
-    ctx.fillText('PRIZES WON:', 100, yPosition + 40)
+    ctx.font = 'bold 14px monospace'
+    ctx.fillText('PRIZES:', x + 50, y + 85)
 
     // Parse and display prizes horizontally
     const prizes = winner.prizeName.split(', ')
-    let prizeX = 100
-    let prizeY = yPosition + 60
+    let prizeX = x + 50
+    let prizeY = y + 105
     
     prizes.forEach((prize: string) => {
-      // Check if we need to wrap to next line
-      if (prizeX > canvas.width - 200) {
-        prizeX = 100
+      // Check if we need to wrap to next line within the card
+      if (prizeX > x + winnerWidth - 80) {
+        prizeX = x + 50
         prizeY += 25
       }
       
       // Prize badge background
       ctx.fillStyle = '#2a2a2a'
-      ctx.fillRect(prizeX, prizeY - 15, Math.min(prize.length * 8 + 20, 200), 25)
+      ctx.fillRect(prizeX, prizeY - 15, Math.min(prize.length * 7 + 15, 150), 25)
       ctx.strokeStyle = '#00ff88'
       ctx.lineWidth = 1
-      ctx.strokeRect(prizeX, prizeY - 15, Math.min(prize.length * 8 + 20, 200), 25)
+      ctx.strokeRect(prizeX, prizeY - 15, Math.min(prize.length * 7 + 15, 150), 25)
       
       // Prize text
       ctx.fillStyle = '#a1a1aa'
-      ctx.font = '12px monospace'
-      ctx.fillText(prize.trim(), prizeX + 5, prizeY)
+      ctx.font = '11px monospace'
+      ctx.fillText(prize.trim(), prizeX + 3, prizeY)
       
-      prizeX += Math.min(prize.length * 8 + 30, 220) // Move to next prize position
+      prizeX += Math.min(prize.length * 7 + 20, 170) // Move to next prize position
     })
 
-    yPosition += Math.max(120, 60 + (Math.ceil(prizes.length / 4) * 25)) // Dynamic height based on prize count
+    // Move to next position
+    currentCol++
+    if (currentCol >= winnersPerRow) {
+      currentCol = 0
+      currentRow++
+    }
   })
 
   // Footer with background
