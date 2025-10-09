@@ -1706,7 +1706,6 @@ const PunkableRaffleSystem = () => {
             </div>
           </div>
         </div>
-      </div>
 
       {/* Winners Section - Full Width - Updated */}
       <div className="mt-4">
