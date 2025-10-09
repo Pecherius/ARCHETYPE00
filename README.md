@@ -64,6 +64,22 @@ npm install
 npm run dev
 ```
 
+## 📦 **Deployment (a.k.a. "How Do I Ship This Thing?")**
+
+This site is deployed with **GitHub Pages** using an automated **GitHub Actions** workflow. The pipeline runs every time changes
+land on the `main` branch, so the only manual work is committing and pushing your updates.
+
+1. `git add .` – Stage whatever you changed.
+2. `git commit -m "feat: describe your change"` – Commit locally.
+3. `git push origin main` – Push to the repository you control.
+
+Once the push finishes, GitHub Actions installs dependencies, runs `npm run build`, and publishes the contents of `dist/` to
+GitHub Pages. You can watch the progress under **Actions → latest workflow run** in your repo. When it turns green, the updated
+site is live.
+
+> ℹ️ **Note:** This coding assistant can't push to your GitHub account from inside the sandbox, so you'll need to run the `git
+push` step yourself. After that the automation takes over.
+
 ## 🎭 **The Code Comments (The Real Entertainment)**
 
 If you actually look at the code, you'll find comments like:
