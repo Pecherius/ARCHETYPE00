@@ -164,17 +164,39 @@ function createManualCanvas(winnerData: WinnerExport): void {
     ctx.font = 'bold 12px monospace'
     ctx.fillText(`${winner.totalTickets} tickets`, 110, yPosition + 18)
 
-    // Prizes won section - simplified
+    // Prizes won section - horizontal layout
     ctx.fillStyle = '#00ff88'
     ctx.font = 'bold 16px monospace'
     ctx.fillText('PRIZES WON:', 100, yPosition + 40)
 
-    // Show consolidated prizes
-    ctx.fillStyle = '#a1a1aa'
-    ctx.font = '14px monospace'
-    ctx.fillText(winner.prizeName, 100, yPosition + 60)
+    // Parse and display prizes horizontally
+    const prizes = winner.prizeName.split(', ')
+    let prizeX = 100
+    let prizeY = yPosition + 60
+    
+    prizes.forEach((prize, prizeIndex) => {
+      // Check if we need to wrap to next line
+      if (prizeX > canvas.width - 200) {
+        prizeX = 100
+        prizeY += 25
+      }
+      
+      // Prize badge background
+      ctx.fillStyle = '#2a2a2a'
+      ctx.fillRect(prizeX, prizeY - 15, Math.min(prize.length * 8 + 20, 200), 25)
+      ctx.strokeStyle = '#00ff88'
+      ctx.lineWidth = 1
+      ctx.strokeRect(prizeX, prizeY - 15, Math.min(prize.length * 8 + 20, 200), 25)
+      
+      // Prize text
+      ctx.fillStyle = '#a1a1aa'
+      ctx.font = '12px monospace'
+      ctx.fillText(prize.trim(), prizeX + 5, prizeY)
+      
+      prizeX += Math.min(prize.length * 8 + 30, 220) // Move to next prize position
+    })
 
-    yPosition += 120 // Fixed height since we're not using dynamic card height
+    yPosition += Math.max(120, 60 + (Math.ceil(prizes.length / 4) * 25)) // Dynamic height based on prize count
   })
 
   // Footer with background
