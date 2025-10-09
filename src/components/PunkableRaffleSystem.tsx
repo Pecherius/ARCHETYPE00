@@ -455,74 +455,56 @@ const PunkableRaffleSystem = () => {
     alert("Prize saved as template! You can reuse it in future raffles.")
   }
 
-  // Handle export winners - Group by participant
+  // Handle export winners - Simplified approach
   const handleExportWinners = (format: 'image' | 'json') => {
     if (!currentRaffle || winners.length === 0) return
 
-    // Group winners by participant (name + address) - same logic as display
-    const groupedWinners = winners.reduce((acc, winner) => {
-      const key = `${winner.participant_name}-${winner.up_address}`
-      if (!acc[key]) {
-        acc[key] = {
-        participantName: winner.participant_name,
-        participantUpAddress: winner.up_address || '',
-          prizes: {},
+    // Create a simple map of participant -> prizes won
+    const participantPrizes = new Map()
+    
+    winners.forEach(winner => {
+      const key = winner.participant_name
+      if (!participantPrizes.has(key)) {
+        participantPrizes.set(key, {
+          participantName: winner.participant_name,
+          participantUpAddress: winner.up_address || '',
+          prizes: new Map(),
           totalTickets: 0
-        }
+        })
       }
       
-      // Consolidate duplicate prizes by name (same as display logic)
+      const participant = participantPrizes.get(key)
       const prizeKey = winner.prize_name
-      if (!acc[key].prizes[prizeKey]) {
-        acc[key].prizes[prizeKey] = {
-        prizeName: winner.prize_name,
-        prizeDescription: '',
-        prizeImage: '',
-          selectedAt: new Date(winner.won_at).toLocaleString(),
+      
+      if (!participant.prizes.has(prizeKey)) {
+        participant.prizes.set(prizeKey, {
+          name: prizeKey,
           count: 0
-        }
-      }
-      acc[key].prizes[prizeKey].count += 1
-      
-      return acc
-    }, {} as Record<string, any>)
-
-    // Get ticket count for each participant - simplified search
-    Object.values(groupedWinners).forEach((group: any) => {
-      // First try exact match with name and UP address
-      let participant = participants.find(p => 
-        p.name === group.participantName && p.up_address === group.participantUpAddress
-      )
-      
-      // If not found, try just by name (in case UP address is missing or different)
-      if (!participant) {
-        participant = participants.find(p => p.name === group.participantName)
+        })
       }
       
-      // Debug logging
-      console.log('Looking for participant:', {
-        name: group.participantName,
-        upAddress: group.participantUpAddress,
-        found: participant,
-        foundTickets: participant?.tickets
-      })
-      
-      group.totalTickets = participant?.tickets || 0
-      
-      // Convert prizes object to array
-      group.prizes = Object.values(group.prizes)
+      participant.prizes.get(prizeKey).count += 1
     })
 
-    // Convert to flat array for export - each participant gets one entry with consolidated prizes
-    const exportWinners = Object.values(groupedWinners).map((group: any) => ({
-      participantName: group.participantName,
-      participantUpAddress: group.participantUpAddress,
-      prizeName: group.prizes.map((p: any) => `${p.prizeName}${p.count > 1 ? ` x${p.count}` : ''}`).join(', '),
+    // Get ticket counts from current participants
+    participantPrizes.forEach((participant, name) => {
+      const currentParticipant = participants.find(p => p.name === name)
+      participant.totalTickets = currentParticipant?.tickets || 0
+      
+      // Convert Map to array
+      participant.prizes = Array.from(participant.prizes.values())
+    })
+
+    // Convert to export format
+    const exportWinners = Array.from(participantPrizes.values()).map(participant => ({
+      participantName: participant.participantName,
+      participantUpAddress: participant.participantUpAddress,
+      prizeName: participant.prizes.map((p: any) => `${p.name}${p.count > 1 ? ` x${p.count}` : ''}`).join(', '),
       prizeDescription: '',
       prizeImage: '',
-      selectedAt: group.prizes[0]?.selectedAt || new Date().toLocaleString(),
-      totalTickets: group.totalTickets,
-      prizeCount: group.prizes.reduce((sum: number, p: any) => sum + p.count, 0)
+      selectedAt: new Date().toLocaleString(),
+      totalTickets: participant.totalTickets,
+      prizeCount: participant.prizes.reduce((sum: number, p: any) => sum + p.count, 0)
     }))
 
     const winnerData: WinnerExport = {
@@ -531,7 +513,7 @@ const PunkableRaffleSystem = () => {
       raffleImage: currentRaffle.image_url || '',
       winners: exportWinners,
       exportDate: new Date().toLocaleString(),
-      totalWinners: Object.keys(groupedWinners).length
+      totalWinners: exportWinners.length
     }
 
     if (format === 'image') {
