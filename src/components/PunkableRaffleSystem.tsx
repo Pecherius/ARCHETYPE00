@@ -862,21 +862,20 @@ const PunkableRaffleSystem = () => {
                 A transparent raffle system that uses <span className="text-green-400 font-semibold">weighted selection</span> based on participant data. 
                 Unlike simple random generators, P.E.R.S. considers <span className="text-pink-400 font-semibold">ticket counts and participation history</span> to ensure fair distribution.
               </p>
-              <div className="bg-gradient-to-r from-zinc-800/50 to-zinc-900/50 border border-zinc-700/50 rounded-lg p-3 backdrop-blur-sm">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                {/* Left side - HOW PERS WORKS */}
+                <div className="bg-gradient-to-r from-zinc-800/50 to-zinc-900/50 border border-zinc-700/50 rounded-lg p-3 backdrop-blur-sm">
                   <h4 className="text-xs font-bold text-pink-400 mb-1 flex items-center gap-1 font-mono">
-                  <span className="text-xs">⚡</span>
-                  HOW_P.E.R.S._WORKS
-                </h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
-                  <div className="space-y-2">
+                    <span className="text-xs">⚡</span>
+                    HOW_P.E.R.S._WORKS
+                  </h4>
+                  <div className="space-y-2 text-xs">
                     <p className="text-zinc-300">
                       <span className="text-green-400 font-semibold">• Weighted Selection:</span> More tickets = higher chance to win. Each participant's probability is calculated based on their ticket count.
                     </p>
                     <p className="text-zinc-300">
                       <span className="text-blue-400 font-semibold">• Transparent Process:</span> All selections are logged and verifiable. You can see exactly how winners are chosen.
                     </p>
-                  </div>
-                  <div className="space-y-2">
                     <p className="text-zinc-300">
                       <span className="text-purple-400 font-semibold">• Fair Distribution:</span> Designed for community raffles. No hidden algorithms or unfair advantages.
                     </p>
@@ -885,53 +884,57 @@ const PunkableRaffleSystem = () => {
                     </p>
                   </div>
                 </div>
-              </div>
-            </div>
-          </div>
 
-          <div className="grid md:grid-cols-3 gap-2 mb-4">
-            <div className="group relative overflow-hidden border border-pink-500/30 rounded-lg bg-gradient-to-br from-pink-500/10 to-purple-500/10 p-2 backdrop-blur-sm hover:border-pink-400/50 transition-all duration-300">
-              <div className="absolute inset-0 bg-gradient-to-br from-pink-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              <div className="relative">
-                <div className="flex items-center gap-1 mb-1">
-                  <div className="w-4 h-4 rounded bg-pink-500/20 flex items-center justify-center">
-                    <span className="text-pink-400 text-xs">⚡</span>
+                {/* Right side - 3 feature cards stacked */}
+                <div className="space-y-2">
+                  {/* WEIGHTED_SELECTION */}
+                  <div className="group relative overflow-hidden border border-pink-500/30 rounded-lg bg-gradient-to-br from-pink-500/10 to-purple-500/10 p-2 backdrop-blur-sm hover:border-pink-400/50 transition-all duration-300">
+                    <div className="absolute inset-0 bg-gradient-to-br from-pink-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div className="relative">
+                      <div className="flex items-center gap-1 mb-1">
+                        <div className="w-4 h-4 rounded bg-pink-500/20 flex items-center justify-center">
+                          <span className="text-pink-400 text-xs">⚡</span>
+                        </div>
+                        <h4 className="text-pink-400 font-semibold text-xs">WEIGHTED_SELECTION</h4>
+                      </div>
+                      <p className="text-xs text-zinc-400 leading-tight">
+                        More tickets = higher probability of winning.
+                      </p>
+                    </div>
                   </div>
-                  <h4 className="text-pink-400 font-semibold text-xs">WEIGHTED_SELECTION</h4>
-                </div>
-                <p className="text-xs text-zinc-400 leading-tight">
-                  More tickets = higher probability of winning.
-                </p>
-              </div>
-            </div>
-            
-            <div className="group relative overflow-hidden border border-green-500/30 rounded-lg bg-gradient-to-br from-green-500/10 to-emerald-500/10 p-2 backdrop-blur-sm hover:border-green-400/50 transition-all duration-300">
-              <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              <div className="relative">
-                <div className="flex items-center gap-1 mb-1">
-                  <div className="w-4 h-4 rounded bg-green-500/20 flex items-center justify-center">
-                    <span className="text-green-400 text-xs">💾</span>
+                  
+                  {/* DATA_STORAGE */}
+                  <div className="group relative overflow-hidden border border-green-500/30 rounded-lg bg-gradient-to-br from-green-500/10 to-emerald-500/10 p-2 backdrop-blur-sm hover:border-green-400/50 transition-all duration-300">
+                    <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div className="relative">
+                      <div className="flex items-center gap-1 mb-1">
+                        <div className="w-4 h-4 rounded bg-green-500/20 flex items-center justify-center">
+                          <span className="text-green-400 text-xs">💾</span>
+                        </div>
+                        <h4 className="text-green-400 font-semibold text-xs">DATA_STORAGE</h4>
+                      </div>
+                      <p className="text-xs text-zinc-400 leading-tight">
+                        <span className="text-yellow-400 font-semibold">⚠️</span> Stored locally only. Export as backup!
+                      </p>
+                    </div>
                   </div>
-                  <h4 className="text-green-400 font-semibold text-xs">DATA_STORAGE</h4>
-                </div>
-                <p className="text-xs text-zinc-400 leading-tight">
-                  <span className="text-yellow-400 font-semibold">⚠️</span> Stored locally only. Export as backup!
-                </p>
-              </div>
-            </div>
-            
-            <div className="group relative overflow-hidden border border-purple-500/30 rounded-lg bg-gradient-to-br from-purple-500/10 to-pink-500/10 p-2 backdrop-blur-sm hover:border-purple-400/50 transition-all duration-300">
-              <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              <div className="relative">
-                <div className="flex items-center gap-1 mb-1">
-                  <div className="w-4 h-4 rounded bg-purple-500/20 flex items-center justify-center">
-                    <span className="text-purple-400 text-xs">🎉</span>
+                  
+                  {/* FAIR_SELECTION */}
+                  <div className="group relative overflow-hidden border border-purple-500/30 rounded-lg bg-gradient-to-br from-purple-500/10 to-pink-500/10 p-2 backdrop-blur-sm hover:border-purple-400/50 transition-all duration-300">
+                    <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div className="relative">
+                      <div className="flex items-center gap-1 mb-1">
+                        <div className="w-4 h-4 rounded bg-purple-500/20 flex items-center justify-center">
+                          <span className="text-purple-400 text-xs">🎉</span>
+                        </div>
+                        <h4 className="text-purple-400 font-semibold text-xs">FAIR_SELECTION</h4>
+                      </div>
+                      <p className="text-xs text-zinc-400 leading-tight">
+                        Transparent algorithms for community raffles.
+                      </p>
+                    </div>
                   </div>
-                  <h4 className="text-purple-400 font-semibold text-xs">FAIR_SELECTION</h4>
                 </div>
-                <p className="text-xs text-zinc-400 leading-tight">
-                  Transparent algorithms for community raffles.
-                </p>
               </div>
             </div>
           </div>
