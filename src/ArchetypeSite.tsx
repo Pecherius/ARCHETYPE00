@@ -1902,7 +1902,7 @@ function ArchetypeExclusivePrizesMuseum() {
                 className="relative max-w-full max-h-full"
               >
                 {/* Image Frame - Compact */}
-                <div className={`relative bg-gradient-to-br from-zinc-900/90 to-zinc-800/70 backdrop-blur-sm border rounded-lg p-3 shadow-2xl ${
+                <div className={`relative bg-gradient-to-br from-gray-800/90 to-gray-700/70 backdrop-blur-sm border rounded-lg p-3 shadow-2xl ${
                   currentImage.rarity === 'LEGENDARY' 
                     ? 'border-yellow-500/50 shadow-yellow-500/20' 
                     : 'border-zinc-700/50'
@@ -1913,12 +1913,12 @@ function ArchetypeExclusivePrizesMuseum() {
                   )}
                   
                   {/* Number Badge */}
-                  <div className="absolute -top-1 -left-1 bg-orange-500 text-black font-bold text-xs px-2 py-1 rounded-full font-mono z-20">
+                  <div className="absolute top-2 left-2 bg-orange-500 text-black font-bold text-xs px-2 py-1 rounded-full font-mono z-20">
                     #{currentImage.id}
                   </div>
 
                   {/* Rarity Badge */}
-                  <div className={`absolute -top-1 -right-1 px-2 py-1 rounded-full text-xs font-mono font-bold ${getRarityStyle(currentImage.rarity)}`}>
+                  <div className={`absolute top-2 right-2 px-2 py-1 rounded-full text-xs font-mono font-bold ${getRarityStyle(currentImage.rarity)}`}>
                     {currentImage.rarity}
                   </div>
 
