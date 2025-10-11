@@ -2087,6 +2087,8 @@ export default function ArchetypeSite(){
   const [matrixMessage, setMatrixMessage] = useState('');
   const [matrixChatHistory, setMatrixChatHistory] = useState<Array<{type: 'user' | 'matrix', message: string, timestamp: number}>>([]);
   const [isMatrixSpeaking, setIsMatrixSpeaking] = useState(false);
+  const [isMintEnabled] = useState(false); // Switch para habilitar/deshabilitar mint - cambiar a true cuando Universal Page esté estable
+  // Para activar: cambiar useState(false) a useState(true)
   const artControls = useAnimation();
 
   // 🧠 MATRIX_CHAT: Interactive AI responses based on keywords
@@ -2130,7 +2132,9 @@ export default function ArchetypeSite(){
       return "LSP standards - the building blocks of the new web. LSP7 for fungible tokens, LSP8 for NFTs. Each one designed for maximum flexibility and interoperability.";
     }
     if (lowerMessage.includes('lyx') || lowerMessage.includes('lukso token')) {
-      return "LYX - the lifeblood of the LUKSO ecosystem. 2.5 LYX per fragment, 200 total supply. The fuel that powers the digital revolution.";
+      return isMintEnabled 
+        ? "LYX - the lifeblood of the LUKSO ecosystem. 2.5 LYX per fragment, 200 total supply. The fuel that powers the digital revolution."
+        : "LYX - the lifeblood of the LUKSO ecosystem. The fuel that powers the digital revolution.";
     }
     if (lowerMessage.includes('archetype')) {
       return "Corrupted fragments of digital consciousness. Each one unique, each one powerful.";
@@ -2163,7 +2167,9 @@ export default function ArchetypeSite(){
       return "Digital currencies are the blood of the new economy. LYX flows through the veins of the network.";
     }
     if (lowerMessage.includes('lyx')) {
-      return "The lifeblood of the LUKSO ecosystem. 2.5 LYX per fragment, 200 total supply.";
+      return isMintEnabled 
+        ? "The lifeblood of the LUKSO ecosystem. 2.5 LYX per fragment, 200 total supply."
+        : "The lifeblood of the LUKSO ecosystem.";
     }
     if (lowerMessage.includes('ethereum')) {
       return "The old world. LUKSO is the evolution, the next step in blockchain technology.";
@@ -2841,25 +2847,63 @@ export default function ArchetypeSite(){
           </div>
 
           <div className="flex flex-wrap items-center justify-center gap-3">
-            <a 
-              href="https://universal.page/drops/archetype_00" 
-              target="_blank" 
-              rel="noreferrer" 
-              className="group relative overflow-hidden border-2 border-purple-500 bg-gradient-to-r from-purple-900/30 to-violet-900/30 px-6 py-3 text-purple-400 hover:from-purple-800/40 hover:to-violet-800/40 transition-all duration-300 hover:scale-105"
-            >
-              <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-violet-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              <div className="relative flex flex-col items-center gap-1">
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-mono">[RELIQUARY_ACCESS]</span>
-                  <span className="font-bold">MINT NODE IN UNIVERSAL PAGE</span>
-                  <span className="text-purple-300 group-hover:translate-x-1 transition-transform duration-300">→</span>
+            {isMintEnabled ? (
+              <a 
+                href="https://universal.page/drops/archetype_00" 
+                target="_blank" 
+                rel="noreferrer" 
+                className="group relative overflow-hidden border-2 border-purple-500 bg-gradient-to-r from-purple-900/30 to-violet-900/30 px-6 py-3 text-purple-400 hover:from-purple-800/40 hover:to-violet-800/40 transition-all duration-300 hover:scale-105"
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-violet-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="relative flex flex-col items-center gap-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-mono">[RELIQUARY_ACCESS]</span>
+                    <span className="font-bold">MINT NODE IN UNIVERSAL PAGE</span>
+                    <span className="text-purple-300 group-hover:translate-x-1 transition-transform duration-300">→</span>
+                  </div>
+                  <div className="text-xs text-purple-300 font-mono">
+                    STILL AVAILABLE!
+                  </div>
                 </div>
-                <div className="text-xs text-purple-300 font-mono">
-                  STILL AVAILABLE!
+                <div className="absolute -top-1 -right-1 w-2 h-2 bg-purple-400 rounded-full animate-pulse"></div>
+              </a>
+            ) : (
+              <div className="group relative overflow-hidden border-2 border-zinc-600 bg-gradient-to-r from-zinc-800/30 to-zinc-700/30 px-6 py-3 text-zinc-500 cursor-not-allowed">
+                <div className="relative flex flex-col items-center gap-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-mono">[RELIQUARY_LOCKED]</span>
+                    <span className="font-bold">MINT NODE TEMPORARILY DISABLED</span>
+                    <span className="text-zinc-400">⏸</span>
+                  </div>
+                  <div className="text-xs text-zinc-400 font-mono">
+                    AWAITING UNIVERSAL PAGE STABILITY
+                  </div>
                 </div>
               </div>
-              <div className="absolute -top-1 -right-1 w-2 h-2 bg-purple-400 rounded-full animate-pulse"></div>
-            </a>
+            )}
+
+            {/* Alert Message */}
+            {!isMintEnabled && (
+              <div className="mt-4 p-4 border border-orange-500/30 bg-orange-500/10 rounded-lg backdrop-blur-sm">
+                <div className="text-center">
+                  <div className="text-orange-400 font-mono text-sm font-bold mb-2">
+                    [SYSTEM_NOTICE]
+                  </div>
+                  <div className="text-zinc-300 font-mono text-xs leading-relaxed">
+                    <div className="mb-2">
+                      <span className="text-orange-400">&gt;</span> UNIVERSAL_PAGE_STATUS: <span className="text-red-400">INCONSISTENT</span>
+                    </div>
+                    <div className="mb-2">
+                      <span className="text-orange-400">&gt;</span> MINT_PROTOCOL: <span className="text-yellow-400">SUSPENDED</span>
+                    </div>
+                    <div className="text-zinc-400 italic">
+                      "Due to inconsistencies with Universal Page infrastructure, minting is temporarily disabled. F5 Universal Page 24/7 until launch. The system will auto-enable when stability is achieved."
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
           </div>
 
           <div className="text-xs text-zinc-600">Keys: <kbd className="bg-zinc-800 px-1">R</kbd> pulse · <kbd className="bg-zinc-800 px-1">G</kbd> glitch · <kbd className="bg-zinc-800 px-1">:</kbd> VHS · Konami → Lab · <span className="text-zinc-500">hidden sequence</span></div>
@@ -2916,37 +2960,41 @@ export default function ArchetypeSite(){
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.6 }}
             >
-              <motion.div 
-                className="text-center p-4 border border-zinc-700 bg-zinc-900/30"
-                whileHover={{ scale: 1.05, borderColor: "#10b981" }}
-                transition={{ duration: 0.3 }}
-              >
+              {isMintEnabled && (
                 <motion.div 
-                  className="text-2xl font-bold text-green-400 mb-2"
-                  animate={{ scale: [1, 1.05, 1] }}
-                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                  className="text-center p-4 border border-zinc-700 bg-zinc-900/30"
+                  whileHover={{ scale: 1.05, borderColor: "#10b981" }}
+                  transition={{ duration: 0.3 }}
                 >
-                  200
+                  <motion.div 
+                    className="text-2xl font-bold text-green-400 mb-2"
+                    animate={{ scale: [1, 1.05, 1] }}
+                    transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                  >
+                    200
+                  </motion.div>
+                  <div className="text-xs text-zinc-500">Total Supply</div>
+                  <div className="text-xs text-zinc-400 mt-1">Fragments</div>
                 </motion.div>
-                <div className="text-xs text-zinc-500">Total Supply</div>
-                <div className="text-xs text-zinc-400 mt-1">Fragments</div>
-              </motion.div>
+              )}
               
-              <motion.div 
-                className="text-center p-4 border border-zinc-700 bg-zinc-900/30"
-                whileHover={{ scale: 1.05, borderColor: "#eab308" }}
-                transition={{ duration: 0.3 }}
-              >
+              {isMintEnabled && (
                 <motion.div 
-                  className="text-2xl font-bold text-yellow-400 mb-2"
-                  animate={{ scale: [1, 1.05, 1] }}
-                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+                  className="text-center p-4 border border-zinc-700 bg-zinc-900/30"
+                  whileHover={{ scale: 1.05, borderColor: "#eab308" }}
+                  transition={{ duration: 0.3 }}
                 >
-                  2.5 LYX
+                  <motion.div 
+                    className="text-2xl font-bold text-yellow-400 mb-2"
+                    animate={{ scale: [1, 1.05, 1] }}
+                    transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+                  >
+                    2.5 LYX
+                  </motion.div>
+                  <div className="text-xs text-zinc-500">Mint Price</div>
+                  <div className="text-xs text-zinc-400 mt-1">Per Fragment</div>
                 </motion.div>
-                <div className="text-xs text-zinc-500">Mint Price</div>
-                <div className="text-xs text-zinc-400 mt-1">Per Fragment</div>
-              </motion.div>
+              )}
               
               <motion.div 
                 className="text-center p-4 border border-zinc-700 bg-zinc-900/30"
@@ -3622,9 +3670,11 @@ export default function ArchetypeSite(){
               benefits to holders of this asset. It's not a key—it's a resonance, a frequency that 
               connects you to the broader ecosystem of rewards and opportunities within the Pepitoverse.
             </p>
-            <div className="mt-3 text-xs text-zinc-500">
-              <p>Collection: 200 fragments • Price: 2.5 LYX each • Network: LUKSO</p>
-            </div>
+            {isMintEnabled && (
+              <div className="mt-3 text-xs text-zinc-500">
+                <p>Collection: 200 fragments • Price: 2.5 LYX each • Network: LUKSO</p>
+              </div>
+            )}
           </div>
           
         </footer>
