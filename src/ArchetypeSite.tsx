@@ -1740,12 +1740,12 @@ function ArchetypeExclusivePrizesMuseum() {
   // Simplified rarity color functions
   const getRarityStyle = (rarity: string) => {
     const rarityStyles = {
-      'MYTHIC': 'bg-purple-400/20 border-purple-400/40',
-      'LEGENDARY': 'bg-yellow-400/20 border-yellow-400/40',
-      'EPIC': 'bg-pink-400/20 border-pink-400/40',
-      'RARE': 'bg-blue-400/20 border-blue-400/40',
-      'COMMON': 'bg-green-400/20 border-green-400/40',
-      'default': 'bg-zinc-400/20 border-zinc-400/40'
+      'MYTHIC': 'bg-purple-400/60 border-purple-400/80',
+      'LEGENDARY': 'bg-yellow-400/60 border-yellow-400/80',
+      'EPIC': 'bg-pink-400/60 border-pink-400/80',
+      'RARE': 'bg-blue-400/60 border-blue-400/80',
+      'COMMON': 'bg-green-400/60 border-green-400/80',
+      'default': 'bg-zinc-400/60 border-zinc-400/80'
     };
     return rarityStyles[rarity as keyof typeof rarityStyles] || rarityStyles.default;
   };
