@@ -9,6 +9,7 @@
     "deploy": "node scripts/deploy-ipfs.js"
   },
   "dependencies": {
+    "@types/html2canvas": "^0.5.35",
     "canvas-confetti": "^1.9.3",
     "framer-motion": "^10.16.4",
     "html2canvas": "^1.4.1",

@@ -910,8 +910,6 @@ function NeuralPingPong() {
     setIsCapturing(true);
     try {
       const canvas = await html2canvas(gameContainerRef.current, {
-        backgroundColor: '#000000',
-        scale: 2, // Higher quality
         useCORS: true,
         allowTaint: true,
         logging: false
