@@ -9,8 +9,10 @@
     "deploy": "node scripts/deploy-ipfs.js"
   },
   "dependencies": {
+    "@lukso/lsp-smart-contracts": "^0.16.7",
     "@types/html2canvas": "^0.5.35",
     "canvas-confetti": "^1.9.3",
+    "ethers": "^6.15.0",
     "framer-motion": "^10.16.4",
     "html2canvas": "^1.4.1",
     "lucide-react": "^0.292.0",

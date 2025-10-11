@@ -283,7 +283,7 @@ const PunkableRaffleSystem = () => {
         setCurrentParticipant(pool[randomIndex])
 
         shuffleCount++
-        shuffleRef.current = setTimeout(shuffle, 40 + shuffleCount * 8) // Faster animation
+        shuffleRef.current = setTimeout(shuffle, 40 + shuffleCount * 8) as any // Faster animation
       } else {
         setCurrentParticipant(selectedWinner)
         setLatestWinner({ participant: selectedWinner, prize })
@@ -302,7 +302,7 @@ const PunkableRaffleSystem = () => {
         }
         winnerAlertTimeoutRef.current = setTimeout(() => {
           setShowWinnerAlert(false)
-        }, 3000)
+        }, 3000) as any
 
         // Batch state updates for better performance
         const updatePrize = () => {

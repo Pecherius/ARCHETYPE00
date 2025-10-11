@@ -4,6 +4,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./components/u
 import { motion, useAnimation } from "framer-motion";
 // Icons removed - not used in current implementation
 import { RaffleLanguageProvider } from "./hooks/use-raffle-language";
+import { useUniversalProfile } from "./hooks/use-universal-profile";
+import UniversalProfileIndicator from "./components/UniversalProfileIndicator";
 import html2canvas from "html2canvas";
 
 // Lazy load heavy components
@@ -17,68 +19,6 @@ const devLog: typeof console.log = (...args) => {
 
 // 🌐 LUKSO_INTEGRATION: Basic Universal Profile detection
 // Reads data from browser extension without changing the core lore
-
-// Hook to detect Universal Profile extension and read basic data - Optimized
-function useUniversalProfile() {
-  const [profileData, setProfileData] = useState<{
-    address?: string;
-    name?: string;
-    avatar?: string;
-    isConnected: boolean;
-  }>({ isConnected: false });
-
-  useEffect(() => {
-    let isMounted = true;
-    
-    const checkUP = async () => {
-      try {
-        // Check if the extension is installed
-        if (typeof window === 'undefined' || !(window as any).lukso) {
-          return;
-        }
-        
-        const lukso = (window as any).lukso;
-        
-        // Try to get basic profile data
-        if (lukso.isConnected && lukso.isConnected()) {
-          const accounts = await lukso.request({ method: 'eth_accounts' });
-          if (accounts && accounts.length > 0 && isMounted) {
-            const address = accounts[0];
-            
-            // Try to get profile metadata (basic info)
-            try {
-              setProfileData({
-                address,
-                name: `Profile_${address.slice(0, 6)}`,
-                isConnected: true
-              });
-            } catch (e) {
-              // Fallback to basic address info
-              if (isMounted) {
-                setProfileData({
-                  address,
-                  name: `UP_${address.slice(0, 6)}`,
-                  isConnected: true
-                });
-              }
-            }
-          }
-        }
-      } catch (error) {
-        // Only log in development
-        devLog("Universal Profile not detected");
-      }
-    };
-
-    checkUP();
-    
-    return () => {
-      isMounted = false;
-    };
-  }, []);
-
-  return profileData;
-}
 
 /**
  * ARCHETYPE_00 — Single-file React microsite (public, no secrets)
@@ -677,7 +617,7 @@ const Binary = ({ text, label }: { text: string; label?: string }) => {
   const handleMouseLeave = () => {
     timeoutRef.current = setTimeout(() => {
       setShowTooltip(false);
-    }, 2000); // 2 seconds delay
+    }, 2000) as any; // 2 seconds delay
   };
   
   return (
@@ -1756,7 +1696,7 @@ function ArchetypeExclusivePrizesMuseum() {
     setIsAutoPlaying(true);
     autoPlayRef.current = setInterval(() => {
       setCurrentIndex(prev => (prev + 1) % ARCHETYPE_EXCLUSIVE_PRIZES.length);
-    }, 4000);
+    }, 4000) as any;
   }, []);
 
   const stopAutoPlay = useCallback(() => {
@@ -2380,7 +2320,7 @@ export default function ArchetypeSite(){
     if (showGlitchImage) {
       const timer = setTimeout(() => {
         setShowGlitchImage(false);
-      }, 200);
+      }, 200) as any;
       return () => clearTimeout(timer);
     }
   }, [showGlitchImage]);
@@ -2436,6 +2376,11 @@ export default function ArchetypeSite(){
             </div>
           </button>
         )}
+
+        {/* Universal Profile Status Indicator */}
+        <div className="fixed top-4 left-4 z-40">
+          <UniversalProfileIndicator />
+        </div>
 
         {/* Mobile Menu Overlay */}
         {isMobile && isMenuOpen && (
