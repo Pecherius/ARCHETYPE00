@@ -2146,7 +2146,7 @@ export default function ArchetypeSite(){
   const [d34dNotification, setD34dNotification] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [matrixChatOpen, setMatrixChatOpen] = useState(false);
+  const [matrixChatOpen, setMatrixChatOpen] = useState(true);
   const [matrixMessage, setMatrixMessage] = useState('');
   const [matrixChatHistory, setMatrixChatHistory] = useState<Array<{type: 'user' | 'matrix', message: string, timestamp: number}>>([]);
   const [isMatrixSpeaking, setIsMatrixSpeaking] = useState(false);
@@ -3146,12 +3146,21 @@ export default function ArchetypeSite(){
           <div data-section="matrix" className="mb-6 md:mb-8 border border-cyan-500 p-4 md:p-6 bg-gradient-to-r from-cyan-900/10 to-blue-900/10 rounded-lg">
             <div className="flex flex-col md:flex-row items-center justify-between mb-4 gap-3">
               <h3 className="text-sm md:text-lg font-semibold text-cyan-400 text-center md:text-left">MATRIX_INTERFACE // AI_CONVERSATION</h3>
-              <button
-                onClick={() => setMatrixChatOpen(!matrixChatOpen)}
-                className="px-3 md:px-4 py-2 border border-cyan-500 bg-cyan-500/20 text-cyan-400 hover:bg-cyan-500/30 text-xs md:text-sm rounded"
-              >
-                {matrixChatOpen ? 'DISCONNECT' : 'CONNECT_TO_MATRIX'}
-              </button>
+              {matrixChatOpen ? (
+                <button
+                  onClick={() => setMatrixChatOpen(false)}
+                  className="px-3 md:px-4 py-2 border border-cyan-500 bg-cyan-500/20 text-cyan-400 hover:bg-cyan-500/30 text-xs md:text-sm rounded"
+                >
+                  DISCONNECT
+                </button>
+              ) : (
+                <button
+                  onClick={() => setMatrixChatOpen(true)}
+                  className="px-3 md:px-4 py-2 border border-zinc-600 bg-zinc-600/20 text-zinc-400 hover:bg-zinc-500/30 text-xs md:text-sm rounded"
+                >
+                  CONNECT_TO_MATRIX
+                </button>
+              )}
             </div>
             
             {matrixChatOpen && (
