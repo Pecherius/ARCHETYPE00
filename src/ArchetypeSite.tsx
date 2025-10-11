@@ -185,7 +185,7 @@ const QUARANTINE_IMAGES = {
   hoshino: "https://bafybeicvhutbdtysa6657tsjwd3k6xx72wn6drkzaygz4tik2jcx6wfn24.ipfs.dweb.link?filename=Kai%20N.%20Hoshino.png"
 };
 
-// 🎨 ARCHETYPE_00_EXCLUSIVE_PRIZES: Private collection of Fluffy Dynasty rewards for ARCHETYPE_00 holders
+// 🎨 ARCHETYPE_00_EXCLUSIVE_PRIZES: Private collection of Fluffy Dynasties rewards for ARCHETYPE_00 holders
 const IPFS_GATEWAYS = [
   "https://ipfs.io/ipfs/",
   "https://cloudflare-ipfs.com/ipfs/",
@@ -232,7 +232,7 @@ const ARCHETYPE_EXCLUSIVE_PRIZES = [
     filename: "7. Dutch Merchant.png",
     imageUrl:
       "https://api.universalprofile.cloud/image/QmVZbvajs8Q4hgMuCcW6CQcTgHG3CpgdxqhYzatWi4yz9E/images-0-747x1024?method=keccak256(bytes)&data=0xbc8eb6824558a82c36c81b079d9903f5837c54be663d9a5076361778dfc80af0&width=260&dpr=1.25",
-    description: "Exclusive Fluffy Dynasty reward for ARCHETYPE_00 holders - Master trader in the exclusive digital marketplace of consciousness",
+    description: "Exclusive Fluffy Dynasties reward for ARCHETYPE_00 holders - Master trader in the exclusive digital marketplace of consciousness",
     rarity: "COMMON",
     value: "Essential Prize"
   },
@@ -243,7 +243,7 @@ const ARCHETYPE_EXCLUSIVE_PRIZES = [
     filename: "10. Medieval Monk.png",
     imageUrl:
       "https://api.universalprofile.cloud/image/QmUGhJy3JwtYQJxVWgimB7cBzRUy9kYKByeYmsUmsErBuN/images-0-747x1024?method=keccak256(bytes)&data=0x6e33ec2306c62425c553952a287be13b6468b3ffba03d54b144d061a97264e59&width=260&dpr=1.25",
-    description: "Exclusive Fluffy Dynasty reward for ARCHETYPE_00 holders - Sacred digital consciousness preserved in eternal matrix",
+    description: "Exclusive Fluffy Dynasties reward for ARCHETYPE_00 holders - Sacred digital consciousness preserved in eternal matrix",
     rarity: "COMMON",
     value: "Foundational Prize"
   },
@@ -254,7 +254,7 @@ const ARCHETYPE_EXCLUSIVE_PRIZES = [
     filename: "20. Gothic Darkness.png",
     imageUrl:
       "https://api.universalprofile.cloud/image/QmZeCtfS4kc2bXQtp9GwZbT1zAkppuaANXrjj8d7ty5hg3/images-0-747x1024?method=keccak256(bytes)&data=0xdeadf98b8b81be3735a9016e4dca8b52747c8925d011037f977c6f49f35fb23b&width=260&dpr=1.25",
-    description: "Exclusive Fluffy Dynasty reward for ARCHETYPE_00 holders - Eternal consciousness transcending digital mortality",
+    description: "Exclusive Fluffy Dynasties reward for ARCHETYPE_00 holders - Eternal consciousness transcending digital mortality",
     rarity: "RARE",
     value: "Valuable Prize"
   },
@@ -265,7 +265,7 @@ const ARCHETYPE_EXCLUSIVE_PRIZES = [
     filename: "22. Futurist Motion.png",
     imageUrl:
       "https://api.universalprofile.cloud/image/QmRb4V8C7EMZ1rzWgmvGZBtr2j5Lu5DfWRYJX1zcDYQoLo/images-0-747x1024?method=keccak256(bytes)&data=0xb4c404096f81bef6c3764840f8242b298d90c5c40f6ad920dff188bd23988341&width=260&dpr=1.25",
-    description: "Exclusive Fluffy Dynasty reward for ARCHETYPE_00 holders - Quantum consciousness flowing through infinite dimensions",
+    description: "Exclusive Fluffy Dynasties reward for ARCHETYPE_00 holders - Quantum consciousness flowing through infinite dimensions",
     rarity: "RARE",
     value: "Precious Prize"
   },
@@ -276,7 +276,7 @@ const ARCHETYPE_EXCLUSIVE_PRIZES = [
     filename: "27. Cyberpunk Emperor.png",
     imageUrl:
       "https://api.universalprofile.cloud/image/QmRb4V8C7EMZ1rzWgmvGZBtr2j5Lu5DfWRYJX1zcDYQoLo/images-0-747x1024?method=keccak256(bytes)&data=0xb4c404096f81bef6c3764840f8242b298d90c5c40f6ad920dff188bd23988341&width=260&dpr=1.25",
-    description: "Exclusive Fluffy Dynasty reward for ARCHETYPE_00 holders - Digital sovereignty reigning over the new world order",
+    description: "Exclusive Fluffy Dynasties reward for ARCHETYPE_00 holders - Digital sovereignty reigning over the new world order",
     rarity: "LEGENDARY",
     value: "Empire's Prize"
   },
@@ -287,7 +287,7 @@ const ARCHETYPE_EXCLUSIVE_PRIZES = [
     filename: "31. Eternal Relic.png",
     imageUrl:
       "https://api.universalprofile.cloud/image/QmXG783NJKqH4CasNR5sjQ24ZJZg6M6tgvNpCZKW9tr6Du/images-0-467x640?method=keccak256(bytes)&data=0x4a6ec355a84e899670e20c731f2efe76c77a4f0e7f62d657f797a3adc466cf5e&width=260&dpr=1.25",
-    description: "Exclusive Fluffy Dynasty reward for ARCHETYPE_00 holders - Timeless artifact containing the essence of digital immortality",
+    description: "Exclusive Fluffy Dynasties reward for ARCHETYPE_00 holders - Timeless artifact containing the essence of digital immortality",
     rarity: "LEGENDARY",
     value: "Eternal Prize"
   }
@@ -1888,6 +1888,26 @@ function ArchetypeExclusivePrizesMuseum() {
         </p>
       </div>
 
+      {/* Hacker Matrix Text */}
+      <div className="text-center mb-6">
+        <div className="bg-gradient-to-r from-cyan-500/10 to-emerald-500/10 border border-cyan-500/30 rounded-lg p-4 backdrop-blur-sm">
+          <div className="text-cyan-400 font-mono text-sm font-bold mb-2">
+            [MATRIX_PROTOCOL_ACTIVE]
+          </div>
+          <div className="text-zinc-300 font-mono text-xs leading-relaxed">
+            <div className="mb-2">
+              <span className="text-cyan-400">&gt;</span> RESONANCE_FREQUENCY: <span className="text-emerald-400">ACCUMULATING</span>
+            </div>
+            <div className="mb-2">
+              <span className="text-cyan-400">&gt;</span> SIGNAL_STRENGTH: <span className="text-yellow-400">PROPORTIONAL_TO_HOLDINGS</span>
+            </div>
+            <div className="text-zinc-400 italic">
+              "The more fragments you hold, the louder your signal resonates in the digital matrix..."
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Two Column Layout - Equal Height */}
       <div className="grid md:grid-cols-2 gap-6 items-stretch">
         {/* Left Column - Prize Description */}
@@ -1897,7 +1917,7 @@ function ArchetypeExclusivePrizesMuseum() {
             <div className="text-center mb-4">
               <h3 className="text-base font-bold text-orange-400 font-mono mb-2">PRIZE_SAMPLE_EXHIBITION</h3>
               <p className="text-xs text-zinc-400 font-mono">
-                Sample of exclusive Fluffy Dynasty rewards • ARCHETYPE_00 holders receive retroactive benefits through quantum raffle system
+                Sample of exclusive Fluffy Dynasties rewards • ARCHETYPE_00 holders receive retroactive benefits through quantum raffle system
               </p>
             </div>
             
@@ -1906,7 +1926,7 @@ function ArchetypeExclusivePrizesMuseum() {
               <div className="text-center p-2 bg-zinc-800/30 rounded border border-zinc-700/30">
                 <div className="text-orange-400 font-bold text-xs mb-1">SAMPLE_SIZE</div>
                 <div className="text-lg font-mono text-zinc-300">6</div>
-                <div className="text-xs text-zinc-500">Fluffy Dynasty</div>
+                <div className="text-xs text-zinc-500">Fluffy Dynasties</div>
               </div>
               
               <div className="text-center p-2 bg-zinc-800/30 rounded border border-zinc-700/30">
@@ -1934,7 +1954,7 @@ function ArchetypeExclusivePrizesMuseum() {
             {/* Additional Info - Pushed to bottom */}
             <div className="mt-4 p-3 bg-zinc-800/20 rounded border border-zinc-700/20">
               <p className="text-xs text-zinc-400 font-mono text-center">
-                This is just a sample of the exclusive rewards. ARCHETYPE_00 holders receive continuous retroactive benefits beyond these Fluffy Dynasty pieces. The quantum raffle system distributes rewards based on fragment density and resonance frequency.
+                This is just a sample of the exclusive rewards. ARCHETYPE_00 holders receive continuous retroactive benefits beyond these Fluffy Dynasties pieces. The quantum raffle system distributes rewards based on fragment density and resonance frequency.
               </p>
             </div>
           </div>
@@ -2005,7 +2025,7 @@ function ArchetypeExclusivePrizesMuseum() {
                 className="relative max-w-full max-h-full"
               >
                 {/* Image Frame - Compact */}
-                <div className={`relative bg-gradient-to-br from-gray-800/90 to-gray-700/70 backdrop-blur-sm border rounded-lg p-3 shadow-2xl ${
+                <div className={`relative bg-gradient-to-br from-[#d4d5cf]/90 to-[#d4d5cf]/70 backdrop-blur-sm border rounded-lg p-3 shadow-2xl ${
                   currentImage.rarity === 'LEGENDARY' 
                     ? 'border-yellow-500/50 shadow-yellow-500/20' 
                     : 'border-zinc-700/50'
@@ -2021,7 +2041,7 @@ function ArchetypeExclusivePrizesMuseum() {
                   </div>
 
                   {/* Rarity Badge */}
-                  <div className={`absolute top-2 right-2 px-2 py-1 rounded-full text-xs font-mono font-bold ${getRarityStyle(currentImage.rarity)}`}>
+                  <div className={`absolute top-2 right-2 px-2 py-1 rounded-full text-xs font-mono font-bold z-10 ${getRarityStyle(currentImage.rarity)}`}>
                     {currentImage.rarity}
                   </div>
 
@@ -2029,7 +2049,7 @@ function ArchetypeExclusivePrizesMuseum() {
                   <img
                     src={currentImage.imageUrl}
                     alt={currentImage.title}
-                    className={`max-w-full max-h-[150px] object-contain drop-shadow-lg ${
+                    className={`max-w-full max-h-[150px] object-contain drop-shadow-lg rounded-lg ${
                       currentImage.rarity === 'LEGENDARY' 
                         ? 'animate-pulse' 
                         : ''
@@ -2105,7 +2125,7 @@ function ArchetypeExclusivePrizesMuseum() {
                         alt={image.title}
                         loading="lazy"
                         referrerPolicy="no-referrer"
-                        className={`w-full h-full object-cover rounded-md ${
+                        className={`w-full h-full object-cover rounded-lg ${
                           image.rarity === 'LEGENDARY'
                             ? 'animate-pulse'
                             : ''
