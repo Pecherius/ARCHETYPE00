@@ -4,8 +4,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./components/u
 import { motion, useAnimation } from "framer-motion";
 // Icons removed - not used in current implementation
 import { RaffleLanguageProvider } from "./hooks/use-raffle-language";
-import { useUniversalProfile } from "./hooks/use-universal-profile";
-import UniversalProfileIndicator from "./components/UniversalProfileIndicator";
 import html2canvas from "html2canvas";
 
 // Lazy load heavy components
@@ -16,9 +14,6 @@ const devLog: typeof console.log = (...args) => {
     console.log(...args);
   }
 };
-
-// 🌐 LUKSO_INTEGRATION: Basic Universal Profile detection
-// Reads data from browser extension without changing the core lore
 
 /**
  * ARCHETYPE_00 — Single-file React microsite (public, no secrets)
@@ -2092,7 +2087,6 @@ export default function ArchetypeSite(){
   const [matrixMessage, setMatrixMessage] = useState('');
   const [matrixChatHistory, setMatrixChatHistory] = useState<Array<{type: 'user' | 'matrix', message: string, timestamp: number}>>([]);
   const [isMatrixSpeaking, setIsMatrixSpeaking] = useState(false);
-  const upProfile = useUniversalProfile();
   const artControls = useAnimation();
 
   // 🧠 MATRIX_CHAT: Interactive AI responses based on keywords
@@ -2341,13 +2335,6 @@ export default function ArchetypeSite(){
     );
   }, []);
 
-  // Universal Profile detection easter egg
-  useEffect(() => {
-    if (upProfile.isConnected) {
-      devLog("%c[NEURAL_NETWORK] Universal Profile detected. Establishing secure connection...", "color:#00ff88; font-family: monospace; font-weight: bold;");
-    }
-  }, [upProfile.isConnected]);
-
   return (
     <main className={`min-h-screen ${bg} font-mono text-zinc-200 selection:bg-pink-300/30`}>
       <div className="relative overflow-hidden">
@@ -2378,11 +2365,6 @@ export default function ArchetypeSite(){
             </div>
           </button>
         )}
-
-        {/* Universal Profile Status Indicator */}
-        <div className="fixed top-4 left-4 z-40">
-          <UniversalProfileIndicator />
-        </div>
 
         {/* Mobile Menu Overlay */}
         {isMobile && isMenuOpen && (
@@ -3611,19 +3593,6 @@ export default function ArchetypeSite(){
         {/* FOOTER with hum */}
         <footer className="mx-auto max-w-6xl px-4 pb-20 text-center text-xs text-zinc-600 sm:px-6">
           <div className="mb-3 break-words">The system doesn't reward. It reacts. • <Binary label="binary" text="resonance accumulating"/></div>
-          
-          {/* Universal Profile Status */}
-          {upProfile.isConnected && (
-            <div className="mb-3 text-zinc-500 break-words">
-              <span className="text-zinc-400">Neural Network Status:</span> Connected • 
-              <span className="ml-1 text-zinc-300 break-all">{upProfile.name}</span>
-              {upProfile.address && (
-                <span className="ml-2 text-zinc-600 font-mono text-[10px] break-all">
-                  {upProfile.address.slice(0, 6)}...{upProfile.address.slice(-4)}
-                </span>
-              )}
-            </div>
-          )}
           
           <div className="mb-4">
             <a 
