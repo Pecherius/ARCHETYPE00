@@ -1888,26 +1888,6 @@ function ArchetypeExclusivePrizesMuseum() {
         </p>
       </div>
 
-      {/* Hacker Matrix Text */}
-      <div className="text-center mb-6">
-        <div className="bg-gradient-to-r from-cyan-500/10 to-emerald-500/10 border border-cyan-500/30 rounded-lg p-4 backdrop-blur-sm">
-          <div className="text-cyan-400 font-mono text-sm font-bold mb-2">
-            [MATRIX_PROTOCOL_ACTIVE]
-          </div>
-          <div className="text-zinc-300 font-mono text-xs leading-relaxed">
-            <div className="mb-2">
-              <span className="text-cyan-400">&gt;</span> RESONANCE_FREQUENCY: <span className="text-emerald-400">ACCUMULATING</span>
-            </div>
-            <div className="mb-2">
-              <span className="text-cyan-400">&gt;</span> SIGNAL_STRENGTH: <span className="text-yellow-400">PROPORTIONAL_TO_HOLDINGS</span>
-            </div>
-            <div className="text-zinc-400 italic">
-              "The more fragments you hold, the louder your signal resonates in the digital matrix..."
-            </div>
-          </div>
-        </div>
-      </div>
-
       {/* Two Column Layout - Equal Height */}
       <div className="grid md:grid-cols-2 gap-6 items-stretch">
         {/* Left Column - Prize Description */}
@@ -2956,6 +2936,26 @@ export default function ArchetypeSite(){
           <div className="text-xs text-zinc-600">Keys: <kbd className="bg-zinc-800 px-1">R</kbd> pulse · <kbd className="bg-zinc-800 px-1">G</kbd> glitch · <kbd className="bg-zinc-800 px-1">:</kbd> VHS · Konami → Lab · <span className="text-zinc-500">hidden sequence</span></div>
         </section>
 
+        {/* Hacker Matrix Text */}
+        <div className="text-center mb-6">
+          <div className="bg-gradient-to-r from-cyan-500/10 to-emerald-500/10 border border-cyan-500/30 rounded-lg p-4 backdrop-blur-sm">
+            <div className="text-cyan-400 font-mono text-sm font-bold mb-2">
+              [MATRIX_PROTOCOL_ACTIVE]
+            </div>
+            <div className="text-zinc-300 font-mono text-xs leading-relaxed">
+              <div className="mb-2">
+                <span className="text-cyan-400">&gt;</span> RESONANCE_FREQUENCY: <span className="text-emerald-400">ACCUMULATING</span>
+              </div>
+              <div className="mb-2">
+                <span className="text-cyan-400">&gt;</span> SIGNAL_STRENGTH: <span className="text-yellow-400">PROPORTIONAL_TO_HOLDINGS</span>
+              </div>
+              <div className="text-zinc-400 italic">
+                "The more fragments you hold, the louder your signal resonates in the digital matrix..."
+              </div>
+            </div>
+          </div>
+        </div>
+
 
         {/* MINT OPERATION - MOVED BEFORE PING PONG */}
         <section className="mx-auto max-w-6xl px-4 pb-12 sm:px-6">
@@ -3141,61 +3141,9 @@ export default function ArchetypeSite(){
         {/* NEURAL MATRIX SECTION - Dynamic cypherpunk visualization */}
         <section data-section="matrix" className="mx-auto max-w-6xl px-4 pb-8 sm:px-6">
           <h2 className="mb-6 text-lg tracking-wide text-zinc-100">NEURAL_MATRIX // RESONANCE_VISUALIZATION</h2>
-          <div className="grid gap-6 md:grid-cols-2">
-            <div className="border border-zinc-800 p-6 bg-zinc-950">
-              <h3 className="text-lg font-semibold text-zinc-100 mb-4">SYSTEM_STATUS</h3>
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-zinc-400">Neural Link:</span>
-                  <span className="text-sm text-green-400 font-mono">ACTIVE</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-zinc-400">Resonance Level:</span>
-                  <span className="text-sm text-pink-400 font-mono">HIGH</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-zinc-400">Fragment Count:</span>
-                  <span className="text-sm text-blue-400 font-mono">200/200</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-zinc-400">Signal Strength:</span>
-                  <span className="text-sm text-yellow-400 font-mono">MAXIMUM</span>
-                </div>
-              </div>
-              <div className="mt-6 p-4 border border-pink-400/30 bg-pink-400/10 rounded">
-                <p className="text-xs text-pink-400 font-mono">
-                  WARNING: Neural feedback detected. Resonance levels approaching critical threshold.
-                </p>
-              </div>
-            </div>
-            
-            <div className="border border-zinc-800 p-6 bg-zinc-950">
-              <h3 className="text-lg font-semibold text-zinc-100 mb-4">MATRIX_DATA</h3>
-              <div className="space-y-3">
-                <div className="text-xs font-mono text-zinc-500">
-                  <div>01001000 01110101 01101101 01100001 01101110</div>
-                  <div>01000001 01010010 01000011 01001000 01000101 01010100 01011001 01010000 01000101</div>
-                  <div>01010010 01100101 01110011 01101111 01101110 01100001 01101110 01100011 01100101</div>
-                </div>
-                <div className="mt-4 p-3 border border-zinc-700 bg-zinc-900 rounded">
-                  <p className="text-xs text-zinc-400">
-                    Each fragment emits a unique resonance frequency. When multiple fragments 
-                    are held by the same entity, their frequencies synchronize, creating 
-                    a stronger collective signal that the system can detect and respond to.
-                  </p>
-                </div>
-                <div className="mt-4 flex gap-2">
-                  <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                  <div className="w-2 h-2 bg-pink-400 rounded-full animate-pulse" style={{animationDelay: '0.5s'}}></div>
-                  <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse" style={{animationDelay: '1s'}}></div>
-                  <span className="text-xs text-zinc-500 ml-2">Signal pulses detected</span>
-                </div>
-              </div>
-            </div>
-          </div>
           
           {/* MATRIX CHAT INTERFACE - Mobile Responsive */}
-          <div data-section="matrix" className="mt-6 md:mt-8 border border-cyan-500 p-4 md:p-6 bg-gradient-to-r from-cyan-900/10 to-blue-900/10 rounded-lg">
+          <div data-section="matrix" className="mb-6 md:mb-8 border border-cyan-500 p-4 md:p-6 bg-gradient-to-r from-cyan-900/10 to-blue-900/10 rounded-lg">
             <div className="flex flex-col md:flex-row items-center justify-between mb-4 gap-3">
               <h3 className="text-sm md:text-lg font-semibold text-cyan-400 text-center md:text-left">MATRIX_INTERFACE // AI_CONVERSATION</h3>
               <button
@@ -3468,6 +3416,59 @@ export default function ArchetypeSite(){
                 </div>
               </div>
             )}
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-2">
+            <div className="border border-zinc-800 p-6 bg-zinc-950">
+              <h3 className="text-lg font-semibold text-zinc-100 mb-4">SYSTEM_STATUS</h3>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-zinc-400">Neural Link:</span>
+                  <span className="text-sm text-green-400 font-mono">ACTIVE</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-zinc-400">Resonance Level:</span>
+                  <span className="text-sm text-pink-400 font-mono">HIGH</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-zinc-400">Fragment Count:</span>
+                  <span className="text-sm text-blue-400 font-mono">200/200</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-zinc-400">Signal Strength:</span>
+                  <span className="text-sm text-yellow-400 font-mono">MAXIMUM</span>
+                </div>
+              </div>
+              <div className="mt-6 p-4 border border-pink-400/30 bg-pink-400/10 rounded">
+                <p className="text-xs text-pink-400 font-mono">
+                  WARNING: Neural feedback detected. Resonance levels approaching critical threshold.
+                </p>
+              </div>
+            </div>
+            
+            <div className="border border-zinc-800 p-6 bg-zinc-950">
+              <h3 className="text-lg font-semibold text-zinc-100 mb-4">MATRIX_DATA</h3>
+              <div className="space-y-3">
+                <div className="text-xs font-mono text-zinc-500">
+                  <div>01001000 01110101 01101101 01100001 01101110</div>
+                  <div>01000001 01010010 01000011 01001000 01000101 01010100 01011001 01010000 01000101</div>
+                  <div>01010010 01100101 01110011 01101111 01101110 01100001 01101110 01100011 01100101</div>
+                </div>
+                <div className="mt-4 p-3 border border-zinc-700 bg-zinc-900 rounded">
+                  <p className="text-xs text-zinc-400">
+                    Each fragment emits a unique resonance frequency. When multiple fragments 
+                    are held by the same entity, their frequencies synchronize, creating 
+                    a stronger collective signal that the system can detect and respond to.
+                  </p>
+                </div>
+                <div className="mt-4 flex gap-2">
+                  <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                  <div className="w-2 h-2 bg-pink-400 rounded-full animate-pulse" style={{animationDelay: '0.5s'}}></div>
+                  <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse" style={{animationDelay: '1s'}}></div>
+                  <span className="text-xs text-zinc-500 ml-2">Signal pulses detected</span>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
