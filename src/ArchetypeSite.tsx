@@ -1892,17 +1892,17 @@ function ArchetypeExclusivePrizesMuseum() {
       <div className="text-center mb-6">
         <div className="bg-gradient-to-r from-cyan-500/10 to-emerald-500/10 border border-cyan-500/30 rounded-lg p-4 backdrop-blur-sm">
           <div className="text-cyan-400 font-mono text-sm font-bold mb-2">
-            [MATRIX_PROTOCOL_ACTIVE]
+            [ARCHETYPE_ACCUMULATION_PROTOCOL]
           </div>
           <div className="text-zinc-300 font-mono text-xs leading-relaxed">
             <div className="mb-2">
-              <span className="text-cyan-400">&gt;</span> RESONANCE_FREQUENCY: <span className="text-emerald-400">ACCUMULATING</span>
+              <span className="text-cyan-400">&gt;</span> FRAGMENTS_HELD: <span className="text-emerald-400">MULTIPLYING_BENEFITS</span>
             </div>
             <div className="mb-2">
-              <span className="text-cyan-400">&gt;</span> SIGNAL_STRENGTH: <span className="text-yellow-400">PROPORTIONAL_TO_HOLDINGS</span>
+              <span className="text-cyan-400">&gt;</span> REWARD_SCALING: <span className="text-yellow-400">EXPONENTIAL_WITH_HOLDINGS</span>
             </div>
             <div className="text-zinc-400 italic">
-              "The more fragments you hold, the louder your signal resonates in the digital matrix..."
+              "More Archetypes = More exclusive rewards, better odds, and higher-tier benefits..."
             </div>
           </div>
         </div>
