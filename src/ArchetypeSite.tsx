@@ -585,6 +585,8 @@ const TerminalInterface = () => {
           <span className="text-green-300">root@archetype:~$</span>
           <input
             type="text"
+            id="terminal-command-input"
+            name="terminalCommand"
             value={currentCommand}
             onChange={(e) => setCurrentCommand(e.target.value)}
             onKeyDown={handleKeyDown}
@@ -3351,6 +3353,8 @@ export default function ArchetypeSite(){
                 <div className="flex gap-2">
                   <input
                     type="text"
+                    id="matrix-message-input"
+                    name="matrixMessage"
                     value={matrixMessage}
                     onChange={(e) => setMatrixMessage(e.target.value)}
                     onKeyPress={(e) => e.key === 'Enter' && sendMatrixMessage()}

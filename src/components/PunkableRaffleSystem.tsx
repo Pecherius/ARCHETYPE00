@@ -1554,6 +1554,8 @@ const PunkableRaffleSystem = () => {
               <div className="space-y-2 flex-1">
                 <input
                   type="text"
+                  id="new-participant-name"
+                  name="newParticipantName"
                   value={newParticipantName}
                   onChange={(e) => setNewParticipantName(e.target.value)}
                   placeholder="Enter name"
@@ -1569,6 +1571,8 @@ const PunkableRaffleSystem = () => {
                 />
                 <input
                   type="text"
+                  id="new-participant-up-address"
+                  name="newParticipantUpAddress"
                   value={newParticipantUpAddress}
                   onChange={(e) => setNewParticipantUpAddress(e.target.value)}
                   placeholder="UP Address (optional)"
