@@ -26,16 +26,39 @@ export const useUniversalProfile = (): UniversalProfileData => {
         console.log('Starting Universal Profile detection...');
         
         // Verificar si hay la extensión específica de Universal Profiles
-        if (typeof window !== 'undefined' && (window as any).lukso) {
+        // Usar try-catch para evitar conflictos con otras extensiones
+        let luksoExtension = null;
+        
+        try {
+          luksoExtension = (window as any).lukso;
+        } catch (error) {
+          console.log('Error accessing window.lukso:', error);
+          return;
+        }
+        
+        if (typeof window !== 'undefined' && luksoExtension) {
           console.log('Universal Profile extension found');
           
-          const lukso = (window as any).lukso;
+          // Verificar si está conectado de forma segura
+          let isConnected = false;
+          try {
+            isConnected = luksoExtension.isConnected && luksoExtension.isConnected();
+          } catch (error) {
+            console.log('Error checking connection status:', error);
+            return;
+          }
           
-          // Verificar si está conectado
-          if (lukso.isConnected && lukso.isConnected()) {
+          if (isConnected) {
             console.log('Universal Profile is connected');
             
-            const accounts = await lukso.request({ method: 'eth_accounts' });
+            let accounts = [];
+            try {
+              accounts = await luksoExtension.request({ method: 'eth_accounts' });
+            } catch (error) {
+              console.log('Error getting accounts:', error);
+              return;
+            }
+            
             console.log('UP accounts found:', accounts);
             
             if (accounts.length > 0) {
@@ -78,10 +101,15 @@ export const useUniversalProfile = (): UniversalProfileData => {
 
     detectWallet();
 
-    // Escuchar cambios en la cuenta
-    if (typeof window !== 'undefined' && (window as any).lukso) {
-      const lukso = (window as any).lukso;
-      
+    // Escuchar cambios en la cuenta de forma segura
+    let luksoExtension = null;
+    try {
+      luksoExtension = (window as any).lukso;
+    } catch (error) {
+      console.log('Error accessing window.lukso for event listener:', error);
+    }
+    
+    if (typeof window !== 'undefined' && luksoExtension) {
       const handleAccountsChanged = (accounts: string[]) => {
         console.log('UP accounts changed:', accounts);
         if (accounts.length === 0) {
@@ -98,11 +126,19 @@ export const useUniversalProfile = (): UniversalProfileData => {
         }
       };
 
-      lukso.on('accountsChanged', handleAccountsChanged);
+      try {
+        luksoExtension.on('accountsChanged', handleAccountsChanged);
+      } catch (error) {
+        console.log('Error setting up accounts changed listener:', error);
+      }
 
       return () => {
-        if (lukso.removeListener) {
-          lukso.removeListener('accountsChanged', handleAccountsChanged);
+        try {
+          if (luksoExtension && luksoExtension.removeListener) {
+            luksoExtension.removeListener('accountsChanged', handleAccountsChanged);
+          }
+        } catch (error) {
+          console.log('Error removing accounts changed listener:', error);
         }
       };
     }
