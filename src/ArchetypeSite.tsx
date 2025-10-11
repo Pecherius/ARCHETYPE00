@@ -1892,17 +1892,17 @@ function ArchetypeExclusivePrizesMuseum() {
       <div className="text-center mb-6">
         <div className="bg-gradient-to-r from-cyan-500/10 to-emerald-500/10 border border-cyan-500/30 rounded-lg p-4 backdrop-blur-sm">
           <div className="text-cyan-400 font-mono text-sm font-bold mb-2">
-            [ARCHETYPE_ACCUMULATION_PROTOCOL]
+            [MATRIX_PROTOCOL_ACTIVE]
           </div>
           <div className="text-zinc-300 font-mono text-xs leading-relaxed">
             <div className="mb-2">
-              <span className="text-cyan-400">&gt;</span> FRAGMENTS_HELD: <span className="text-emerald-400">MULTIPLYING_BENEFITS</span>
+              <span className="text-cyan-400">&gt;</span> RESONANCE_FREQUENCY: <span className="text-emerald-400">ACCUMULATING</span>
             </div>
             <div className="mb-2">
-              <span className="text-cyan-400">&gt;</span> REWARD_SCALING: <span className="text-yellow-400">EXPONENTIAL_WITH_HOLDINGS</span>
+              <span className="text-cyan-400">&gt;</span> SIGNAL_STRENGTH: <span className="text-yellow-400">PROPORTIONAL_TO_HOLDINGS</span>
             </div>
             <div className="text-zinc-400 italic">
-              "More Archetypes = More exclusive rewards, better odds, and higher-tier benefits..."
+              "The more fragments you hold, the louder your signal resonates in the digital matrix..."
             </div>
           </div>
         </div>
@@ -2956,20 +2956,6 @@ export default function ArchetypeSite(){
           <div className="text-xs text-zinc-600">Keys: <kbd className="bg-zinc-800 px-1">R</kbd> pulse · <kbd className="bg-zinc-800 px-1">G</kbd> glitch · <kbd className="bg-zinc-800 px-1">:</kbd> VHS · Konami → Lab · <span className="text-zinc-500">hidden sequence</span></div>
         </section>
 
-        {/* GRID: Function cards */}
-        <section className="mx-auto grid max-w-6xl grid-cols-1 gap-3 px-4 pb-8 sm:px-6 md:grid-cols-3">
-          {[{icon: "🌊", title: "Resonance", text: "Measurable frequency emitted by each fragment."},{icon: "👁", title: "Visibility", text: "Recognition increases with cumulative signal."},{icon: "⚡", title: "Network Events", text: "Raffles, retroactive drops, anomaly triggers — responses, not promises."}].map(({icon,title,text}) => (
-            <div key={title} className="border border-zinc-800 bg-black p-4 sm:p-5">
-              <div className="flex items-start gap-3">
-                <span className="text-lg">{icon}</span>
-                <div>
-                  <h3 className="tracking-wide text-zinc-100">{title}</h3>
-                  <p className="text-sm text-zinc-400">{text}</p>
-                </div>
-              </div>
-            </div>
-          ))}
-        </section>
 
         {/* MINT OPERATION - MOVED BEFORE PING PONG */}
         <section className="mx-auto max-w-6xl px-4 pb-12 sm:px-6">
@@ -3151,181 +3137,6 @@ export default function ArchetypeSite(){
             </Suspense>
           </RaffleLanguageProvider>
         </section>
-
-        {/* PROJECT FAQ */}
-        <section className="mx-auto max-w-6xl px-4 pb-16 sm:px-6">
-          <h2 className="mb-3 text-lg tracking-wide text-zinc-100">FAQ // Punkable Ethereal System</h2>
-          <div className="grid gap-3 md:grid-cols-2">
-            <div className="border border-zinc-800 p-5">
-              <h3 className="mb-2 text-zinc-100">What is ARCHETYPE_00?</h3>
-              <p className="text-sm text-zinc-400">A corrupted fragment that emits a measurable resonance. All 200 units are identical in form; behavior emerges via holder resonance density.</p>
-            </div>
-            <div className="border border-zinc-800 p-5">
-              <h3 className="mb-2 text-zinc-100">Why LSP7 and not LSP8?</h3>
-              <p className="text-sm text-zinc-400">LSP7 allows identical editions with programmable permissions. Our model doesn't rely on trait rarity; it relies on <em>signal</em>. Uniform form, divergent resonance.</p>
-            </div>
-            <div className="border border-zinc-800 p-5">
-              <h3 className="mb-2 text-zinc-100">How do reactions work?</h3>
-              <p className="text-sm text-zinc-400">Holding fragments increases your resonance density. The system may react with unannounced raffles and retroactive NFTs (e.g., similar to how Pebubu holders later received Fluffy Dynasties). Your Universal Profile on LUKSO enables seamless integration across the ecosystem.</p>
-            </div>
-            <div className="border border-zinc-800 p-5">
-              <h3 className="mb-2 text-zinc-100">Do I need a Universal Profile?</h3>
-              <p className="text-sm text-zinc-400">Yes. UP is your identity container on LUKSO. It lets the network detect your signal across apps and handle permissions without seed juggling.</p>
-            </div>
-            <div className="border border-zinc-800 p-5 md:col-span-2">
-              <h3 className="mb-2 text-zinc-100">What do I actually get by holding?</h3>
-              <p className="text-sm text-zinc-400">No explicit access. You establish a detectable frequency that can trigger: Punkable Ethereal raffles, retroactive NFT emissions, and anomaly events. More fragments → stronger echo → higher probability of reaction.</p>
-            </div>
-          </div>
-        </section>
-
-        {/* EASTER EGGS UI */}
-        <section className="mx-auto max-w-6xl px-4 pb-24 sm:px-6">
-          <div className="grid gap-3 md:grid-cols-2">
-            <div className="border border-zinc-800 p-5">
-              <h3 className="mb-2 text-lg tracking-wide text-zinc-100">System Notice</h3>
-              <p className="text-sm text-zinc-400">Holding one doesn't grant access — the system simply <Binary label="recognizes" text="recognizes resonance"/>.</p>
-              <p className="mt-2 text-xs text-zinc-600">Hover the underlined word to see its binary payload.</p>
-            </div>
-            <div className="border border-zinc-800 p-5">
-              <h3 className="mb-2 flex items-center gap-2 text-lg text-zinc-100"><span className="text-lg">🛡️</span>Hidden Access</h3>
-              <p className="text-sm text-zinc-400">Enter the Konami code to open the Resonance Lab. Discover the hidden sequence to access quarantine records.</p>
-              <div className="mt-3 p-2 bg-zinc-900/50 rounded border border-zinc-700">
-                <p className="text-xs text-zinc-500 font-mono">
-                  <span className="text-yellow-400">[QUARANTINE_HINT]</span> Some sequences are marked as d34d in the system logs.
-                  <br />
-                  <span className="text-zinc-600">Type the sequence to breach quarantine protocols.</span>
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Binary ticker */}
-          <div className="mt-6 overflow-hidden border border-zinc-800 py-2">
-            <motion.div initial={{ x: "0%" }} animate={{ x: ["0%", "-50%"] }} transition={{ duration: 30, repeat: Infinity, ease: "linear" }} className="whitespace-nowrap text-[10px] text-zinc-500">
-              01010000 01110101 01101110 01101011 01100001 01100010 01101100 01100101 • 01000001 01010010 01000011 01001000 01000101 01010100 01011001 01010000 01000101 01011111 00110000 00110000 • 01010010 01100101 01110011 01101111 01101110 01100001 01101110 01100011 01100101 00100000 01100001 01100011 01100011 01110101 01101101 01110101 01101100 01100001 01110100 01101001 01101110 01100111 • 01000100 00110011 00110100 01000100 00100000 01110001 01110101 01100001 01110010 01100001 01101110 01110100 01101001 01101110 01100101
-            </motion.div>
-          </div>
-        </section>
-
-        {/* Resonance Lab — unlocked */}
-        <Dialog open={labOpen} onOpenChange={setLabOpen}>
-          <DialogContent className="bg-black border border-zinc-700 sm:max-w-3xl">
-            <DialogHeader>
-              <DialogTitle className="flex items-center gap-2 tracking-wide text-zinc-100"><span className="text-sm">📻</span> RESONANCE LAB // UNLOCKED</DialogTitle>
-            </DialogHeader>
-            <div className="grid gap-6 md:grid-cols-2">
-              <div>
-                <h4 className="font-semibold text-zinc-100">ARCHETYPE_00</h4>
-                <p className="text-sm text-zinc-400">Core asset establishing frequency. Press <kbd className="bg-zinc-800 px-1">R</kbd> to pulse.</p>
-              </div>
-              <div className="border border-zinc-700 p-4">
-                <div className="relative h-40 w-full overflow-hidden bg-zinc-900">
-                  <motion.div key={pulseKey} className="absolute left-1/2 top-1/2 h-64 w-64 -translate-x-1/2 -translate-y-1/2 border border-pink-400/70"
-                    initial={{ scale: 0.8, opacity: 0.3 }} animate={{ scale: [0.8,1.05,0.85], opacity: [0.3,0.6,0.35] }} transition={{ duration: 2.1, repeat: Infinity }} />
-                </div>
-              </div>
-            </div>
-          </DialogContent>
-        </Dialog>
-
-        {/* External Node — Punkable on X */}
-        <section className="mx-auto max-w-6xl px-4 pb-10 text-center sm:px-6">
-          <div className="flex flex-col items-center gap-3 border border-zinc-800 p-5">
-            <div className="text-xs text-zinc-500">EXTERNAL_NODE // SIGNAL RELAY</div>
-            <a href="https://x.com/punkabl3" target="_blank" rel="noreferrer" className="text-zinc-100 underline decoration-dotted hover:opacity-80">@punkabl3</a>
-            <p className="max-w-xl text-sm text-zinc-400">Outbound relay to the Punkable field log. Expect cryptic emissions, timestamps, and resonance notices.</p>
-          </div>
-        </section>
-
-        {/* Obituaries / d34d */}
-        <Dialog open={obitOpen} onOpenChange={setObitOpen}>
-          <DialogContent className="bg-black border border-green-500 sm:max-w-4xl max-h-[80vh] overflow-hidden">
-            <DialogHeader>
-              <div className="border-b border-green-500 pb-2">
-                <DialogTitle className="flex items-center gap-2 text-green-400 font-mono text-sm">
-                  <span className="text-green-500">root@archetype:~$</span> QUARANTINE_TERMINAL v2.1.3
-                  <div className="flex gap-1 ml-auto">
-                    <div className="w-2 h-2 bg-red-500 rounded-full"></div>
-                    <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
-                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                  </div>
-                </DialogTitle>
-                <button
-                  onClick={() => setObitOpen(false)}
-                  className="absolute top-4 right-4 text-green-400 hover:text-green-300 text-xl font-bold"
-                >
-                  ×
-                </button>
-              </div>
-            </DialogHeader>
-            
-            <div className={`flex ${isMobile ? 'flex-col h-[70vh]' : 'h-[60vh]'}`}>
-              {/* Left Panel - Terminal */}
-              <div className={`flex-1 bg-zinc-900 ${isMobile ? 'border-b border-green-500' : 'border-r border-green-500'} p-4 font-mono text-xs overflow-y-auto`}>
-                <TerminalInterface />
-              </div>
-              
-              {/* Right Panel - Data */}
-              <div className={`${isMobile ? 'w-full' : 'w-80'} bg-zinc-950 p-4 overflow-y-auto`}>
-                <div className="space-y-4 text-sm">
-                  <div className="border border-green-500 p-3 bg-zinc-900/50">
-                    <div className="text-green-400 font-semibold mb-2">[CLASSIFIED_PROFILES]</div>
-                    <div className="space-y-3">
-                      <div className="flex gap-3 items-start">
-                        <img 
-                          src={QUARANTINE_IMAGES.tsumori} 
-                          alt="Dr. Mikhail R. Tsumori" 
-                          className="w-16 h-16 object-cover border border-green-500"
-                          onLoad={() => debugImageLoad(QUARANTINE_IMAGES.tsumori, "Dr. Tsumori")}
-                          onError={() => debugImageLoad(QUARANTINE_IMAGES.tsumori, "Dr. Tsumori")}
-                        />
-              <div>
-                          <div className="text-green-300 font-semibold">Dr. Mikhail R. Tsumori</div>
-                          <div className="text-red-400 text-xs">STATUS: d34d</div>
-                          <p className="text-zinc-400 text-xs mt-1">Lead Resonance Engineer. Neural feedback loop persisted beyond termination threshold.</p>
-              </div>
-                      </div>
-                      <div className="flex gap-3 items-start">
-                        <img 
-                          src={QUARANTINE_IMAGES.hoshino} 
-                          alt="Kai N. Hoshino" 
-                          className="w-16 h-16 object-cover border border-green-500"
-                          onLoad={() => debugImageLoad(QUARANTINE_IMAGES.hoshino, "Kai Hoshino")}
-                          onError={() => debugImageLoad(QUARANTINE_IMAGES.hoshino, "Kai Hoshino")}
-                        />
-              <div>
-                          <div className="text-green-300 font-semibold">Kai N. Hoshino</div>
-                          <div className="text-red-400 text-xs">STATUS: d34d</div>
-                          <p className="text-zinc-400 text-xs mt-1">System Architect / Codebreaker. Layer 3A breach; archetype frequencies duplicated and re-encrypted.</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="border border-green-500 p-3 bg-zinc-900/50">
-                    <div className="text-green-400 font-semibold mb-2">[SYSTEM_STATUS]</div>
-                    <div className="space-y-1 text-xs">
-                      <div className="flex justify-between">
-                        <span className="text-zinc-400">Neural Network:</span>
-                        <span className="text-green-400">ONLINE</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-zinc-400">Archetype Sync:</span>
-                        <span className="text-yellow-400">UNSTABLE</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-zinc-400">Quarantine:</span>
-                        <span className="text-red-400">BREACHED</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </DialogContent>
-        </Dialog>
-
 
         {/* NEURAL MATRIX SECTION - Dynamic cypherpunk visualization */}
         <section data-section="matrix" className="mx-auto max-w-6xl px-4 pb-8 sm:px-6">
@@ -3659,6 +3470,181 @@ export default function ArchetypeSite(){
             )}
           </div>
         </section>
+
+        {/* PROJECT FAQ */}
+        <section className="mx-auto max-w-6xl px-4 pb-16 sm:px-6">
+          <h2 className="mb-3 text-lg tracking-wide text-zinc-100">FAQ // Punkable Ethereal System</h2>
+          <div className="grid gap-3 md:grid-cols-2">
+            <div className="border border-zinc-800 p-5">
+              <h3 className="mb-2 text-zinc-100">What is ARCHETYPE_00?</h3>
+              <p className="text-sm text-zinc-400">A corrupted fragment that emits a measurable resonance. All 200 units are identical in form; behavior emerges via holder resonance density.</p>
+            </div>
+            <div className="border border-zinc-800 p-5">
+              <h3 className="mb-2 text-zinc-100">Why LSP7 and not LSP8?</h3>
+              <p className="text-sm text-zinc-400">LSP7 allows identical editions with programmable permissions. Our model doesn't rely on trait rarity; it relies on <em>signal</em>. Uniform form, divergent resonance.</p>
+            </div>
+            <div className="border border-zinc-800 p-5">
+              <h3 className="mb-2 text-zinc-100">How do reactions work?</h3>
+              <p className="text-sm text-zinc-400">Holding fragments increases your resonance density. The system may react with unannounced raffles and retroactive NFTs (e.g., similar to how Pebubu holders later received Fluffy Dynasties). Your Universal Profile on LUKSO enables seamless integration across the ecosystem.</p>
+            </div>
+            <div className="border border-zinc-800 p-5">
+              <h3 className="mb-2 text-zinc-100">Do I need a Universal Profile?</h3>
+              <p className="text-sm text-zinc-400">Yes. UP is your identity container on LUKSO. It lets the network detect your signal across apps and handle permissions without seed juggling.</p>
+            </div>
+            <div className="border border-zinc-800 p-5 md:col-span-2">
+              <h3 className="mb-2 text-zinc-100">What do I actually get by holding?</h3>
+              <p className="text-sm text-zinc-400">No explicit access. You establish a detectable frequency that can trigger: Punkable Ethereal raffles, retroactive NFT emissions, and anomaly events. More fragments → stronger echo → higher probability of reaction.</p>
+            </div>
+          </div>
+        </section>
+
+        {/* EASTER EGGS UI */}
+        <section className="mx-auto max-w-6xl px-4 pb-24 sm:px-6">
+          <div className="grid gap-3 md:grid-cols-2">
+            <div className="border border-zinc-800 p-5">
+              <h3 className="mb-2 text-lg tracking-wide text-zinc-100">System Notice</h3>
+              <p className="text-sm text-zinc-400">Holding one doesn't grant access — the system simply <Binary label="recognizes" text="recognizes resonance"/>.</p>
+              <p className="mt-2 text-xs text-zinc-600">Hover the underlined word to see its binary payload.</p>
+            </div>
+            <div className="border border-zinc-800 p-5">
+              <h3 className="mb-2 flex items-center gap-2 text-lg text-zinc-100"><span className="text-lg">🛡️</span>Hidden Access</h3>
+              <p className="text-sm text-zinc-400">Enter the Konami code to open the Resonance Lab. Discover the hidden sequence to access quarantine records.</p>
+              <div className="mt-3 p-2 bg-zinc-900/50 rounded border border-zinc-700">
+                <p className="text-xs text-zinc-500 font-mono">
+                  <span className="text-yellow-400">[QUARANTINE_HINT]</span> Some sequences are marked as d34d in the system logs.
+                  <br />
+                  <span className="text-zinc-600">Type the sequence to breach quarantine protocols.</span>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Binary ticker */}
+          <div className="mt-6 overflow-hidden border border-zinc-800 py-2">
+            <motion.div initial={{ x: "0%" }} animate={{ x: ["0%", "-50%"] }} transition={{ duration: 30, repeat: Infinity, ease: "linear" }} className="whitespace-nowrap text-[10px] text-zinc-500">
+              01010000 01110101 01101110 01101011 01100001 01100010 01101100 01100101 • 01000001 01010010 01000011 01001000 01000101 01010100 01011001 01010000 01000101 01011111 00110000 00110000 • 01010010 01100101 01110011 01101111 01101110 01100001 01101110 01100011 01100101 00100000 01100001 01100011 01100011 01110101 01101101 01110101 01101100 01100001 01110100 01101001 01101110 01100111 • 01000100 00110011 00110100 01000100 00100000 01110001 01110101 01100001 01110010 01100001 01101110 01110100 01101001 01101110 01100101
+            </motion.div>
+          </div>
+        </section>
+
+        {/* Resonance Lab — unlocked */}
+        <Dialog open={labOpen} onOpenChange={setLabOpen}>
+          <DialogContent className="bg-black border border-zinc-700 sm:max-w-3xl">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2 tracking-wide text-zinc-100"><span className="text-sm">📻</span> RESONANCE LAB // UNLOCKED</DialogTitle>
+            </DialogHeader>
+            <div className="grid gap-6 md:grid-cols-2">
+              <div>
+                <h4 className="font-semibold text-zinc-100">ARCHETYPE_00</h4>
+                <p className="text-sm text-zinc-400">Core asset establishing frequency. Press <kbd className="bg-zinc-800 px-1">R</kbd> to pulse.</p>
+              </div>
+              <div className="border border-zinc-700 p-4">
+                <div className="relative h-40 w-full overflow-hidden bg-zinc-900">
+                  <motion.div key={pulseKey} className="absolute left-1/2 top-1/2 h-64 w-64 -translate-x-1/2 -translate-y-1/2 border border-pink-400/70"
+                    initial={{ scale: 0.8, opacity: 0.3 }} animate={{ scale: [0.8,1.05,0.85], opacity: [0.3,0.6,0.35] }} transition={{ duration: 2.1, repeat: Infinity }} />
+                </div>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* External Node — Punkable on X */}
+        <section className="mx-auto max-w-6xl px-4 pb-10 text-center sm:px-6">
+          <div className="flex flex-col items-center gap-3 border border-zinc-800 p-5">
+            <div className="text-xs text-zinc-500">EXTERNAL_NODE // SIGNAL RELAY</div>
+            <a href="https://x.com/punkabl3" target="_blank" rel="noreferrer" className="text-zinc-100 underline decoration-dotted hover:opacity-80">@punkabl3</a>
+            <p className="max-w-xl text-sm text-zinc-400">Outbound relay to the Punkable field log. Expect cryptic emissions, timestamps, and resonance notices.</p>
+          </div>
+        </section>
+
+        {/* Obituaries / d34d */}
+        <Dialog open={obitOpen} onOpenChange={setObitOpen}>
+          <DialogContent className="bg-black border border-green-500 sm:max-w-4xl max-h-[80vh] overflow-hidden">
+            <DialogHeader>
+              <div className="border-b border-green-500 pb-2">
+                <DialogTitle className="flex items-center gap-2 text-green-400 font-mono text-sm">
+                  <span className="text-green-500">root@archetype:~$</span> QUARANTINE_TERMINAL v2.1.3
+                  <div className="flex gap-1 ml-auto">
+                    <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                    <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  </div>
+                </DialogTitle>
+                <button
+                  onClick={() => setObitOpen(false)}
+                  className="absolute top-4 right-4 text-green-400 hover:text-green-300 text-xl font-bold"
+                >
+                  ×
+                </button>
+              </div>
+            </DialogHeader>
+            
+            <div className={`flex ${isMobile ? 'flex-col h-[70vh]' : 'h-[60vh]'}`}>
+              {/* Left Panel - Terminal */}
+              <div className={`flex-1 bg-zinc-900 ${isMobile ? 'border-b border-green-500' : 'border-r border-green-500'} p-4 font-mono text-xs overflow-y-auto`}>
+                <TerminalInterface />
+              </div>
+              
+              {/* Right Panel - Data */}
+              <div className={`${isMobile ? 'w-full' : 'w-80'} bg-zinc-950 p-4 overflow-y-auto`}>
+                <div className="space-y-4 text-sm">
+                  <div className="border border-green-500 p-3 bg-zinc-900/50">
+                    <div className="text-green-400 font-semibold mb-2">[CLASSIFIED_PROFILES]</div>
+                    <div className="space-y-3">
+                      <div className="flex gap-3 items-start">
+                        <img 
+                          src={QUARANTINE_IMAGES.tsumori} 
+                          alt="Dr. Mikhail R. Tsumori" 
+                          className="w-16 h-16 object-cover border border-green-500"
+                          onLoad={() => debugImageLoad(QUARANTINE_IMAGES.tsumori, "Dr. Tsumori")}
+                          onError={() => debugImageLoad(QUARANTINE_IMAGES.tsumori, "Dr. Tsumori")}
+                        />
+              <div>
+                          <div className="text-green-300 font-semibold">Dr. Mikhail R. Tsumori</div>
+                          <div className="text-red-400 text-xs">STATUS: d34d</div>
+                          <p className="text-zinc-400 text-xs mt-1">Lead Resonance Engineer. Neural feedback loop persisted beyond termination threshold.</p>
+              </div>
+                      </div>
+                      <div className="flex gap-3 items-start">
+                        <img 
+                          src={QUARANTINE_IMAGES.hoshino} 
+                          alt="Kai N. Hoshino" 
+                          className="w-16 h-16 object-cover border border-green-500"
+                          onLoad={() => debugImageLoad(QUARANTINE_IMAGES.hoshino, "Kai Hoshino")}
+                          onError={() => debugImageLoad(QUARANTINE_IMAGES.hoshino, "Kai Hoshino")}
+                        />
+              <div>
+                          <div className="text-green-300 font-semibold">Kai N. Hoshino</div>
+                          <div className="text-red-400 text-xs">STATUS: d34d</div>
+                          <p className="text-zinc-400 text-xs mt-1">System Architect / Codebreaker. Layer 3A breach; archetype frequencies duplicated and re-encrypted.</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="border border-green-500 p-3 bg-zinc-900/50">
+                    <div className="text-green-400 font-semibold mb-2">[SYSTEM_STATUS]</div>
+                    <div className="space-y-1 text-xs">
+                      <div className="flex justify-between">
+                        <span className="text-zinc-400">Neural Network:</span>
+                        <span className="text-green-400">ONLINE</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-zinc-400">Archetype Sync:</span>
+                        <span className="text-yellow-400">UNSTABLE</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-zinc-400">Quarantine:</span>
+                        <span className="text-red-400">BREACHED</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+
 
         {/* PEPITOVERSE 2026 — easter egg */}
         <PepitoVerse/>
